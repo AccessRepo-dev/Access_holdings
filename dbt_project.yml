@@ -40,12 +40,23 @@ models:
     # Applies to all files under models/example/
     example:
       +materialized: table
+
     wagway:
       silver:
-        +database: "{{ env_var('WagWay_Dev', 'wagway_dev') }}"
+        +database: "{{ env_var('DBT_WAGWAY', 'wagway_dev') }}"
         +schema: SILVER
         +materialized: table   # optional, override default
       gold:
-        +database:  "{{ env_var('WagWay_Dev', 'wagway_dev') }}"
+        +database:  "{{ env_var('DBT_WAGWAY', 'wagway_dev') }}"
+        +schema: GOLD
+        +materialized: table   # optional
+
+    playfly:
+      silver:
+        +database: "{{ env_var('DBT_PLAYFLY', 'playfly_dev') }}"
+        +schema: SILVER
+        +materialized: table   # optional, override default
+      gold:
+        +database:  "{{ env_var('DBT_PLAYFLY', 'playfly_dev') }}"
         +schema: GOLD
         +materialized: table   # optional
