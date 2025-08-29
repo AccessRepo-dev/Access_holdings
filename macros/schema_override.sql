@@ -8,5 +8,5 @@
     {%- elif custom_schema_name is not none -%} {{ custom_schema_name | trim }}
     {%- else -%} {{ default_schema | trim }}_{{ custom_schema_name | trim }}
     {%- endif -%}
-{%END macro%}
+{%- endmacro %}
  

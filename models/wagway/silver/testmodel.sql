@@ -1,0 +1,1 @@
+select * from {{ source('wagway_netsuite', 'ACCOUNT') }}
