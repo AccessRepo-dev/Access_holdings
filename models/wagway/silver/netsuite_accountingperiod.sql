@@ -1,6 +1,6 @@
 {{ config(
     materialized = 'incremental',
-    unique_key = 'ID',
+    unique_key = 'POSTING_PERIOD_ID',
     incremental_strategy = 'merge'
 ) }}
 
