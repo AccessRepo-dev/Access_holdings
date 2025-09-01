@@ -1,0 +1,16 @@
+{{ config(
+    materialized = 'incremental',
+    unique_key = 'ID',
+    incremental_strategy = 'merge'
+) }}
+
+SELECT
+    CAST(ID AS INT) AS POSTING_PERIOD_ID,
+    CAST(CLOSEDONDATE AS DATE) AS CLOSED_ON_DATE,
+    CAST(LASTMODIFIEDDATE AS DATE) AS LAST_MODIFIED_DATE,
+    CAST(ENDDATE AS DATE) AS END_DATE,
+    PERIODNAME AS PERIOD_NAME,
+    CAST(STARTDATE AS DATE) AS START_DATE,
+    CAST(YEAR AS INT) AS YEAR,
+    CURRENT_TIMESTAMP() AS SILVER_LOAD_DATE
+FROM {{ source('wagway_netsuite', 'ACCOUNTINGPERIOD') }}
