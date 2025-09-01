@@ -1,0 +1,42 @@
+{{ config(
+    materialized = 'incremental',
+    unique_key = 'ITEM_ID',
+    incremental_strategy = 'merge'
+) }}
+
+SELECT
+    CAST(id AS INT) AS ITEM_ID,
+    CAST(averagecost AS FLOAT) AS AVERAGE_COST,
+    CAST(class AS INT) AS CLASS_ID,
+    CAST(cost AS FLOAT) AS COST,
+    costingmethod AS COSTING_METHOD,
+    CAST(createddate AS DATE) AS CREATED_DATE,
+    CAST(department AS INT) AS DEPARTMENT_ID,
+    description AS DESCRIPTION,
+    displayname AS DISPLAY_NAME,
+    fullname AS FULL_NAME,
+    itemid AS ITEM_CODE,
+    CAST(incomeaccount AS INT) AS INCOME_ACCOUNT_ID,
+    isfulfillable AS IS_FULFILLABLE,
+    isinactive AS IS_INACTIVE,
+    itemtype AS ITEM_TYPE,
+    CAST(lastmodifieddate AS DATE) AS LAST_MODIFIED_DATE,
+    CAST(lastpurchaseprice AS FLOAT) AS LAST_PURCHASE_PRICE,
+    CAST(location AS INT) AS LOCATION_ID,
+    manufacturer AS MANUFACTURER,
+    CAST(maximumquantity AS FLOAT) AS MAXIMUM_QUANTITY,
+    CAST(parent AS INT) AS PARENT_ID,
+    CAST(pricinggroup AS INT) AS PRICING_GROUP_ID,
+    CAST(quantityavailable AS FLOAT) AS QUANTITY_AVAILABLE,
+    CAST(saleunit AS INT) AS SALE_UNIT_ID,
+    CAST(shippingcost AS FLOAT) AS SHIPPING_COST,
+    CAST(stockunit AS INT) AS STOCK_UNIT_ID,
+    stockdescription AS STOCK_DESCRIPTION,
+    CAST(subsidiary AS INT) AS SUBSIDIARY_ID,
+    subtype AS SUB_TYPE,
+    CAST(totalvalue AS FLOAT) AS TOTAL_VALUE,
+    CAST(unitstype AS INT) AS UNITS_TYPE_ID,
+    vendorname AS VENDOR_NAME,
+    CAST(weight AS FLOAT) AS WEIGHT,
+    CURRENT_TIMESTAMP()::TIMESTAMP AS SILVER_LOAD_DATE
+FROM {{ source('wagway_netsuite', 'ITEM') }}
