@@ -6,7 +6,19 @@ sources:
     schema: netsuite
     tables:
       - name: ACCOUNT
-      - name: ACCOUNTCONTEXTSEARCH
+      - name: ACCOUNTINGPERIOD
+      - name: CLASSIFICATION
+      - name: CURRENCYRATE
+      - name: DEPARTMENT
+      - name: EMPLOYEE
+      - name: ENTITY
+      - name: ITEM
+      - name: LOCATION
+      - name: SUBSIDIARY
+      - name: TRANSACTION
+      - name: TRANSACTIONACCOUNTINGLINE
+      - name: TRANSACTIONLINE
+
 
   - name: wagway_hubspot
     database: wagway_raw
