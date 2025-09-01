@@ -1,0 +1,43 @@
+{{ config(
+    materialized = 'incremental',
+    unique_key = 'UNIQUE_KEY',
+    incremental_strategy = 'merge'
+) }}
+
+SELECT
+    accountinglinetype AS ACCOUNTING_LINE_TYPE,
+    CAST(actualshipdate AS DATE) AS ACTUAL_SHIP_DATE,
+    CAST(billeddate AS DATE) AS BILLED_DATE,
+    CAST(billingschedule AS INT) AS BILLING_SCHEDULE_ID,
+    CAST(class AS INT) AS CLASS_ID,
+    CAST(closedate AS DATE) AS CLOSE_DATE,
+    CAST(createdfrom AS INT) AS CREATED_FROM_TRANSACTION_ID,
+    CAST(department AS INT) AS DEPARTMENT_ID,
+    CAST(entity AS INT) AS ENTITY_ID,
+    CAST(foreignamount AS FLOAT) AS FOREIGN_AMOUNT,
+    CAST(id AS INT) AS TRANSACTION_LINE_ID,
+    isbillable AS IS_BILLABLE,
+    isclosed AS IS_CLOSED,
+    iscogs AS IS_COGS,
+    isfullyshipped AS IS_FULLY_SHIPPED,
+    CAST(item AS INT) AS ITEM_ID,
+    itemtype AS ITEM_TYPE,
+    CAST(linelastmodifieddate AS DATE) AS LINE_LAST_MODIFIED_DATE,
+    CAST(linesequencenumber AS INT) AS LINE_SEQUENCE_NUMBER_ID,
+    CAST(location AS INT) AS LOCATION_ID,
+    memo AS MEMO,
+    CAST(netamount AS FLOAT) AS NET_AMOUNT,
+    CAST(orderpriority AS INT) AS ORDER_PRIORITY,
+    CAST(paymentmethod AS INT) AS PAYMENT_METHOD_ID,
+    CAST(price AS INT) AS PRICE_ID,
+    CAST(quantity AS FLOAT) AS QUANTITY,
+    CAST(rate AS FLOAT) AS RATE,
+    CAST(subsidiary AS INT) AS SUBSIDIARY_ID,
+    taxline AS TAX_LINE,
+    CAST(transaction AS INT) AS TRANSACTION_ID,
+    transactiondiscount AS TRANSACTION_DISCOUNT,
+    transactionlinetype AS TRANSACTION_LINE_TYPE,
+    CAST(uniquekey AS STRING) AS UNIQUE_KEY,
+    CAST(units AS INT) AS UNITS_ID,
+    CURRENT_TIMESTAMP()::TIMESTAMP AS SILVER_LOAD_DATE
+FROM {{ source('wagway_netsuite', 'TRANSACTIONLINE') }}
