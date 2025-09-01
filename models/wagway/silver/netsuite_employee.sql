@@ -6,21 +6,35 @@
     )
 }}
 
-select
-    accountnumber as account_number,
-    cast(class as int) as class_id,
-    cast(datecreated as date) as date_created,
-    cast(currency as int) as currency,
-    cast(department as int) as department_id,
-    email as email,
-    cast(id as int) as employee_id,
-    employeetype as employee_type_id,
-    entityid as entity_id,
-    isinactive as is_inactive,
-    jobdescription as job_description,
-    cast(lastmodifieddate as date) as last_modified_date,
-    cast(location as int) as location_id,
-    cast(subsidiary as int) as subsidiary,
-    title as title,
-    current_timestamp() as silver_load_date
-from {{ source("wagway_netsuite", "EMPLOYEE") }}
+SELECT
+    CAST(ID AS INT) AS EMPLOYEE_ID,
+    TRIM(ENTITYID) AS ENTITY_ID,
+    ACCOUNTNUMBER AS ACCOUNT_NUMBER,
+    EMPLOYEETYPE AS EMPLOYEE_TYPE_ID,
+    TRIM(TITLE) AS TITLE,
+    TRIM(EMAIL) AS EMAIL,
+    TRIM(JOBDESCRIPTION) AS JOB_DESCRIPTION,
+    CAST(CLASS AS INT) AS CLASS_ID,
+    CAST(DEPARTMENT AS INT) AS DEPARTMENT_ID,
+    CAST(LOCATION AS INT) AS LOCATION_ID,
+    CAST(CURRENCY AS INT) AS CURRENCY,
+    CAST(SUBSIDIARY AS INT) AS SUBSIDIARY_ID,
+    CAST(DATECREATED AS DATE) AS DATE_CREATED,
+    CAST(
+        CASE 
+            WHEN ISINACTIVE = 'T' THEN TRUE
+            WHEN ISINACTIVE = 'F' THEN FALSE
+            ELSE NULL
+        END AS BOOLEAN
+    ) AS IS_INACTIVE,
+    CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
+
+FROM {{ source("wagway_netsuite", "EMPLOYEE") }}
+
+{% if is_incremental() %}
+WHERE CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) > (
+    SELECT COALESCE(MAX(LAST_MODIFIED_DATE), '1900-01-01'::TIMESTAMP_NTZ)
+    FROM {{ this }}
+)
+{% endif %}
