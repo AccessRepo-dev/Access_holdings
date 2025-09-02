@@ -45,18 +45,28 @@ models:
       silver:
         +database: "{{ env_var('DBT_WAGWAY', 'wagway_dev') }}"
         +schema: SILVER
-        +materialized: table   # optional, override default
+        +materialized: table
       gold:
         +database:  "{{ env_var('DBT_WAGWAY', 'wagway_dev') }}"
         +schema: GOLD
-        +materialized: table   # optional
+        +materialized: table
 
     playfly:
       silver:
         +database: "{{ env_var('DBT_PLAYFLY', 'playfly_dev') }}"
         +schema: SILVER
-        +materialized: table   # optional, override default
+        +materialized: table
       gold:
         +database:  "{{ env_var('DBT_PLAYFLY', 'playfly_dev') }}"
         +schema: GOLD
-        +materialized: table   # optional
+        +materialized: table
+
+    spotless:
+      silver:
+        +database: "{{ env_var('DBT_SPOTLESS', 'spotless_dev') }}"
+        +schema: SILVER
+        +materialized: table
+      gold:
+        +database:  "{{ env_var('DBT_SPOTLESS', 'spotless_dev') }}"
+        +schema: GOLD
+        +materialized: table
