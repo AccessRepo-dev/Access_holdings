@@ -48,7 +48,7 @@ FROM {{ source('spotless_sage', 'GL_ACCOUNT') }}
 
 {% if is_incremental() %}
 WHERE CAST(WHENMODIFIED AS TIMESTAMP_NTZ) > (
-    SELECT COALESCE(MAX(MODIFIED_DATE), '1900-01-01'::TIMESTAMP_NTZ)
+    SELECT COALESCE(MAX(WHEN_MODIFIED), '1900-01-01'::TIMESTAMP_NTZ)
     FROM {{ this }}
 )
 {% endif %}
