@@ -1,5 +1,6 @@
 {% set company = var('company', 'Unknown company') | lower %}
 {% set sourcesystem  = var('sourcesystem', 'Unknown source') | lower %}
+{{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
@@ -49,7 +50,7 @@ cleaned as (
         SHIPPINGCOST AS SHIPPING_COST,
         TOTALVALUE AS TOTAL_VALUE,
         {% if company == 'playfly' and sourcesystem == 'netsuite' %}
-            TOTALQUANTITYINHAND AS QUANTITY_AVAILABLE,
+            totalquantityonhand AS QUANTITY_AVAILABLE,
         {% else %}
             QUANTITYAVAILABLE AS QUANTITY_AVAILABLE,
         {% endif %}
