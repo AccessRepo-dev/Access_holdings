@@ -40,6 +40,14 @@ models:
     # Applies to all files under models/example/
     example:
       +materialized: table
+    
+    integrations:
+      silver:
+        netsuite:
+         # +database: "{{ env_var('DBT_WAGWAY', 'wagway_dev') }}"
+          +schema: SILVER
+          +materialized: table   # optional, override default
+      gold:
 
     wagway:
       silver:

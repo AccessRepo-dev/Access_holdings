@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: wagway_netsuite_raw
+    database: wagway_raw     # the actual raw DB name in Snowflake
+    schema: netsuite        # change if your schema name differs
+    tables:
+      - name: ACCOUNT
+      - name: ACCOUNTCONTEXTSEARCH
+
+  - name: playfly_netsuite_raw
+    database: playfly_raw
+    schema: netsuite
+    tables:
+      - name: ACCOUNT
+      - name: ACCOUNTCONTEXTSEARCH
