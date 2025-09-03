@@ -41,6 +41,16 @@ models:
     example:
       +materialized: table
     
+    consolidated:
+      silver:
+        +database: "{{ env_var('DBT_ACCESS', 'access_dev') }}"
+        +schema: SILVER
+        +materialized: table
+      gold:
+        +database:  "{{ env_var('DBT_ACCESS', 'access_dev') }}"
+        +schema: GOLD
+        +materialized: table
+    
     integrations:
       silver:
         netsuite:
