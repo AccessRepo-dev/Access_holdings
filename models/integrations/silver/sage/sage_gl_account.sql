@@ -1,5 +1,6 @@
 {% set company = var('company', 'unknown_company') | lower %}
 {% set sourcesystem = var('sourcesystem', 'unknown_source') | lower %}
+{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
 
 {{ config(
     database = get_target_database(company),
