@@ -17,6 +17,6 @@
   {% set env_key = 'DBT_' ~ company_up %}
 
   {# Read from environment variable, fallback to company_dev if not set #}
-  {{ env_var(env_key, company | lower ~ '_dev1') }}
+  {{ env_var(env_key, company | lower ~ '_dev') }}
 {%- endmacro %}
 
