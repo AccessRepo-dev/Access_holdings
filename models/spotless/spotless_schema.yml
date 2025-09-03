@@ -1,0 +1,25 @@
+version: 2
+
+sources:
+  - name: spotless_sage
+    database: spotless_raw
+    schema: sage
+    tables:
+      - name: ASSET
+      - name: BANKACCOUNT
+      - name: CLASS
+      - name: CUSTOMER
+      - name: DEPARTMENT
+      - name: DEPRECIATION_SUMMARY
+      - name: EMPLOYEE
+      - name: ENTITYACCTDEFAULT
+      - name: GL_ACCOUNT
+      - name: GL_BATCH
+      - name: GL_COA_CAT_MEMBER
+      - name: GL_ENTRY
+      - name: ITEM
+      - name: LOCATION
+      - name: LOCATION_ENTITY
+      - name: PROJECT
+      - name: REPORTING_PERIOD
+      - name: CURRENCY
