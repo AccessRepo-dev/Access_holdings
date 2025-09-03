@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: spotless_sage
+  - name: spotless_sage_raw
     database: spotless_raw
     schema: sage
     tables:

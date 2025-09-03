@@ -44,7 +44,10 @@ models:
     integrations:
       silver:
         netsuite:
-         # +database: "{{ env_var('DBT_WAGWAY', 'wagway_dev') }}"
+         
+          +schema: SILVER
+          +materialized: table   # optional, override default
+        sage:
           +schema: SILVER
           +materialized: table   # optional, override default
       gold:
