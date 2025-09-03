@@ -6,11 +6,33 @@ sources:
     schema: netsuite        # change if your schema name differs
     tables:
       - name: ACCOUNT
-      - name: ACCOUNTCONTEXTSEARCH
+      - name: ACCOUNTINGPERIOD
+      - name: CLASSIFICATION
+      - name: CURRENCYRATE
+      - name: DEPARTMENT
+      - name: EMPLOYEE
+      - name: ENTITY
+      - name: ITEM
+      - name: LOCATION
+      - name: SUBSIDIARY
+      - name: TRANSACTION
+      - name: TRANSACTIONACCOUNTINGLINE
+      - name: TRANSACTIONLINE
 
   - name: playfly_netsuite_raw
     database: playfly_raw
     schema: netsuite
     tables:
       - name: ACCOUNT
-      - name: ACCOUNTCONTEXTSEARCH
+      - name: ACCOUNTINGPERIOD
+      - name: CLASSIFICATION
+      - name: CURRENCYRATE
+      - name: DEPARTMENT
+      - name: EMPLOYEE
+      - name: ENTITY
+      - name: ITEM
+      - name: LOCATION
+      - name: SUBSIDIARY
+      - name: TRANSACTION
+      - name: TRANSACTIONACCOUNTINGLINE
+      - name: TRANSACTIONLINE
