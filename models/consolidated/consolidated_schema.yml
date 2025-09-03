@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: wagway_dev_silver
+    database: wagway_dev
+    schema: silver
+    tables:
+      - name: netsuite_account
+
+  - name: playfly_dev_silver
+    database: playfly_dev
+    schema: silver
+    tables:
+      - name: netsuite_account
