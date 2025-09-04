@@ -64,9 +64,6 @@ models:
            and STATUS = 'STARTED'
        )"
   Access_Holdings:
-    # Applies to all files under models/example/
-    example:
-      +materialized: table
     
     consolidated:
       silver:
@@ -88,38 +85,9 @@ models:
           +materialized: table   # optional, override default
       gold:
         wagway:
+          +database: "{{ env_var('DBT_WAGWAY', 'wagway_dev') }}"
           +schema: GOLD
           +materialized: table 
-
-    wagway:
-      silver:
-        +database: "{{ env_var('DBT_WAGWAY', 'wagway_dev') }}"
-        +schema: SILVER
-        +materialized: table
-      gold:
-        +database:  "{{ env_var('DBT_WAGWAY', 'wagway_dev') }}"
-        +schema: GOLD
-        +materialized: table
-
-    playfly:
-      silver:
-        +database: "{{ env_var('DBT_PLAYFLY', 'playfly_dev') }}"
-        +schema: SILVER
-        +materialized: table
-      gold:
-        +database:  "{{ env_var('DBT_PLAYFLY', 'playfly_dev') }}"
-        +schema: GOLD
-        +materialized: table
-
-    spotless:
-      silver:
-        +database: "{{ env_var('DBT_SPOTLESS', 'spotless_dev') }}"
-        +schema: SILVER
-        +materialized: table
-      gold:
-        +database:  "{{ env_var('DBT_SPOTLESS', 'spotless_dev') }}"
-        +schema: GOLD
-        +materialized: table
 
 on-run-end:
   - "{{ audit_failures(results) }}"

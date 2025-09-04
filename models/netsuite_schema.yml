@@ -38,21 +38,20 @@ sources:
       - name: TRANSACTIONLINE
 
   - name: wagway_silver
-    database: wagway_dev     # the actual raw DB name in Snowflake
-    schema: silver        # change if your schema name differs
+    database: wagway_dev
+    schema: silver
     tables:
-      - name: NETSUITE_ACCOUNT
-      - name: NETSUITE_ACCOUNTINGPERIOD
-      - name: NETSUITE_CLASSIFICATION
-      - name: NETSUITE_CURRENCYRATE
-      - name: NETSUITE_DEPARTMENT
-      - name: NETSUITE_EMPLOYEE
-      - name: NETSUITE_ENTITY
-      - name: NETSUITE_ITEM
-      - name: NETSUITE_LOCATION
-      - name: NETSUITE_SUBSIDIARY
-      - name: NETSUITE_TRANSACTION
-      - name: NETSUITE_TRANSACTIONACCOUNTINGLINE
-      - name: NETSUITE_TRANSACTIONLINE
+      - name: netsuite_account
+      - name: netsuite_accountingperiod
+      - name: netsuite_classification
+      - name: netsuite_currencyrate
+      - name: netsuite_department
+      - name: netsuite_employee
+      - name: netsuite_entity
+      - name: netsuite_item
+      - name: netsuite_location
+      - name: netsuite_subsidiary
+      - name: netsuite_transaction
+      - name: netsuite_transactionaccountingline
+      - name: netsuite_transactionline
 
-      -
