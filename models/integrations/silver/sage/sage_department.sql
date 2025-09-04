@@ -22,47 +22,48 @@ with source_data as (
 ),
 
 cleaned as (
-    select
-        -- Primary Key
-        UPPER(TRIM(DEPARTMENTID)) AS DEPARTMENT_ID,
+    SELECT
+    -- Primary Key
+    UPPER(TRIM(DEPARTMENTID)) AS DEPARTMENTID,
 
-        -- Core Identifiers
-        TRY_CAST(RECORDNO AS INT) AS RECORD_NO,
-        TRIM(TITLE) AS DEPARTMENT_TITLE,
+    -- Core Identifiers
+    TRY_CAST(RECORDNO AS INT) AS RECORDNO,
+    TRIM(TITLE) AS TITLE,
 
-        -- extract the code inside parentheses (e.g., 15, 10a, 07)
-        REGEXP_SUBSTR(TITLE, '^\\(([0-9]+[a-z]?)\\)', 1, 1, 'e', 1) AS DEPARTMENT_TITLE_CODE,
+    -- extract the code inside parentheses (e.g., 15, 10a, 07)
+    REGEXP_SUBSTR(TITLE, '^\\(([0-9]+[a-z]?)\\)', 1, 1, 'e', 1) AS DEPARTMENT_TITLE_CODE,
 
-        -- remove the (xx) prefix entirely to get just description
-        TRIM(REGEXP_REPLACE(TITLE, '^\\([0-9]+[a-z]?\\)\\s*', '')) AS DEPARTMENT_TITLE_DESCRIPTION,
+    -- remove the (xx) prefix entirely to get just description
+    TRIM(REGEXP_REPLACE(TITLE, '^\\([0-9]+[a-z]?\\)\\s*', '')) AS DEPARTMENT_TITLE_DESCRIPTION,
 
-        TRIM(CUSTTITLE) AS CUSTOM_TITLE,
-        TRIM(STATUS) AS STATUS,
+    TRIM(CUSTTITLE) AS CUSTTITLE,
+    TRIM(STATUS) AS STATUS,
 
-        -- Hierarchy
-        TRIM(PARENTID) AS PARENT_ID,
-        TRY_CAST(PARENTKEY AS INT) AS PARENT_KEY,
-        TRIM(PARENTNAME) AS PARENT_NAME,
+    -- Hierarchy
+    TRIM(PARENTID) AS PARENTID,
+    TRY_CAST(PARENTKEY AS INT) AS PARENTKEY,
+    TRIM(PARENTNAME) AS PARENTNAME,
 
-        -- Supervisor
-        TRIM(SUPERVISORID) AS SUPERVISOR_ID,
-        TRY_CAST(SUPERVISORKEY AS INT) AS SUPERVISOR_KEY,
-        INITCAP(TRIM(SUPERVISORNAME)) AS SUPERVISOR_NAME,
+    -- Supervisor
+    TRIM(SUPERVISORID) AS SUPERVISORID,
+    TRY_CAST(SUPERVISORKEY AS INT) AS SUPERVISORKEY,
+    INITCAP(TRIM(SUPERVISORNAME)) AS SUPERVISORNAME,
 
-        -- Relationships
-        TRY_CAST(CREATEDBY AS INT) AS CREATED_BY,
-        TRY_CAST(MODIFIEDBY AS INT) AS MODIFIED_BY,
+    -- Relationships
+    TRY_CAST(CREATEDBY AS INT) AS CREATEDBY,
+    TRY_CAST(MODIFIEDBY AS INT) AS MODIFIEDBY,
 
-        -- Dates
-        CAST(WHENCREATED AS TIMESTAMP_NTZ) AS WHEN_CREATED,
-        CAST(WHENMODIFIED AS TIMESTAMP_NTZ) AS WHEN_MODIFIED,
+    -- Dates
+    CAST(WHENCREATED AS TIMESTAMP_NTZ) AS WHENCREATED,
+    CAST(WHENMODIFIED AS TIMESTAMP_NTZ) AS WHENMODIFIED,
 
-        -- Flags / Deletes
-        _FIVETRAN_DELETED AS IS_DELETED,
+    -- Flags / Deletes
+    _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
 
-        -- Audit
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
-    from source_data
+    -- Audit
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
+FROM source_data
+
 )
 
 select *
