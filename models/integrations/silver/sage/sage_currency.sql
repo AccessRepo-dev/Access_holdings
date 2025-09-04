@@ -22,27 +22,28 @@ with source_data as (
 ),
 
 cleaned as (
-    select
-        -- Primary Key
-        TRY_CAST(ID AS INT) AS CURRENCY_ID,
+    SELECT
+    -- Primary Key
+    TRY_CAST(ID AS INT) AS ID,
 
-        -- Core Info
-        TRIM(CURRENCY_NAME) AS CURRENCY_NAME,
-        TRIM(NAME) AS NAME,
-        TRIM(SYMBOL) AS SYMBOL,
+    -- Core Info
+    TRIM(CURRENCY_NAME) AS CURRENCY_NAME,
+    TRIM(NAME) AS NAME,
+    TRIM(SYMBOL) AS SYMBOL,
 
-        -- Audit Info
-        TRY_CAST(CREATED_BY AS INT) AS CREATED_BY,
-        TRY_CAST(UPDATED_BY AS INT) AS UPDATED_BY,
-        TRY_CAST(CREATED_AT AS TIMESTAMP_NTZ) AS CREATED_AT,
-        TRY_CAST(UPDATED_AT AS TIMESTAMP_NTZ) AS UPDATED_AT,
+    -- Audit Info
+    TRY_CAST(CREATED_BY AS INT) AS CREATED_BY,
+    TRY_CAST(UPDATED_BY AS INT) AS UPDATED_BY,
+    TRY_CAST(CREATED_AT AS TIMESTAMP_NTZ) AS CREATED_AT,
+    TRY_CAST(UPDATED_AT AS TIMESTAMP_NTZ) AS UPDATED_AT,
 
-        -- Flags / Deletes
-        _FIVETRAN_DELETED AS IS_DELETED,
+    -- Flags / Deletes
+    _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
 
-        -- Load Audit
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
-    from source_data
+    -- Load Audit
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
+FROM source_data;
+
 )
 
 select *

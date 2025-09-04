@@ -16,14 +16,14 @@ with source_data as (
 cleaned as (
     select
         -- Primary Key
-        TRIM(ENTITYID) AS ENTITY_ID,
+        TRIM(ENTITYID) AS ENTITYID,
 
         -- Core Identifiers
-        TRIM(ENTITYSTATUS) AS ENTITY_STATUS,
-        TRY_CAST(RECORDNO AS INT) AS RECORD_NO,
+        TRIM(ENTITYSTATUS) AS ENTITYSTATUS,
+        TRY_CAST(RECORDNO AS INT) AS RECORDNO,
 
         -- Audit
-        _FIVETRAN_DELETED AS IS_DELETED,
+        _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
 
     from source_data
