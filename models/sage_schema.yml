@@ -23,3 +23,5 @@ sources:
       - name: PROJECT
       - name: REPORTING_PERIOD
       - name: CURRENCY
+      - name: GL_ACCT_GRP
+      - name: GL_ACCT_GRP_MEMBER
