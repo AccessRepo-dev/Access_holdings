@@ -118,3 +118,6 @@ models:
         +database:  "{{ env_var('DBT_SPOTLESS', 'spotless_dev') }}"
         +schema: GOLD
         +materialized: table
+
+on-run-end:
+  - "{{ audit_failures(results) }}"
