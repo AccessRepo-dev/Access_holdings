@@ -1,12 +1,10 @@
 {% set company = var('company', 'Unknown company') | lower %}
-{% set sourcesystem  = var('sourcesystem', 'Unknown source') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'ID'
+    unique_key = 'EMPLOYEE_ID'
 ) }}
 
 with source as (
@@ -27,13 +25,14 @@ with source as (
         NULL AS EMPLOYEE_STATUS_ID,
         SUBSIDIARY AS SUBSIDIARY,
         TITLE AS TITLE
-    from {{ get_raw_source(company, sourcesystem, 'netsuite_employee') }}
+    from {{ get_silver_source(company, 'netsuite_employee') }}
     where (_fivetran_deleted is null or _fivetran_deleted = false)
-      and (IS_DELETED is null or IS_DELETED = false)
+    {% if is_incremental() %}
+    and LASTMODIFIEDDATE > (
+        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
+        from {{ this }}
+    )
+    {% endif %}
 )
 select *
 from source
-
-{% if is_incremental() %}
-where EMPLOYEE_ID not in (select EMPLOYEE_ID from {{ this }})
-{% endif %}
