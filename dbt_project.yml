@@ -84,8 +84,7 @@ models:
           +schema: SILVER
           +materialized: table   # optional, override default
       gold:
-        wagway:
-          +database: "{{ env_var('DBT_WAGWAY', 'wagway_dev') }}"
+        netsuite:
           +schema: GOLD
           +materialized: table 
 
