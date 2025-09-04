@@ -36,6 +36,33 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 
 models:
+  +pre-hook:
+    - "insert into PIPELINE_AUDIT_DB.AUDIT_SCHEMA.PIPELINE_AUDIT_LOGS
+        (PORTCO, SOURCE_SYSTEM,USER_NAME,DESTINATION_DB,DESTINATION_SCHEMA, TABLE_NAME, PIPELINE_TYPE, STATUS, STARTTIME)
+     values
+        ('{{ var('company','unknown') }}',
+         '{{ var('sourcesystem','unknown') }}',
+         CURRENT_USER(),
+         '{{ this.database }}',
+         '{{ this.schema }}',
+         '{{ this.name }}',
+         'dbt_transform',
+         'STARTED',
+         current_timestamp()
+        )"
+  +post-hook:
+    - "update PIPELINE_AUDIT_DB.AUDIT_SCHEMA.PIPELINE_AUDIT_LOGS
+       set
+         STATUS = 'SUCCESS',
+         ENDTIME = current_timestamp(),
+         RUN_TIME = datediff('second', STARTTIME, current_timestamp()),
+         ROWCOUNT = (select count(*) from {{ this }})
+       where ID = (
+         select max(ID)
+         from PIPELINE_AUDIT_DB.AUDIT_SCHEMA.PIPELINE_AUDIT_LOGS
+         where TABLE_NAME = '{{ this.name }}'
+           and STATUS = 'STARTED'
+       )"
   Access_Holdings:
     # Applies to all files under models/example/
     example:
