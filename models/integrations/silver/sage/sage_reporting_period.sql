@@ -26,34 +26,34 @@ with source_data as (
 
 cleaned as (
 
-    select
+   SELECT
+    -- Primary Key
+    TRY_CAST(RECORDNO AS INT) AS RECORDNO,
 
-        -- Primary Key
-        try_cast(RECORDNO as int) as REPORTING_PERIOD_ID,
+    -- Core Info
+    TRIM(NAME) AS NAME,
+    TRIM(STATUS) AS STATUS,
+    TRY_CAST(DATETYPE AS FLOAT) AS DATETYPE,
+    CAST(BUDGETING AS BOOLEAN) AS BUDGETING,
 
-        -- Core Info
-        trim(NAME) as REPORTING_PERIOD_NAME,
-        trim(STATUS) as STATUS,
-        try_cast(DATETYPE as float) as DATE_TYPE,
-        cast(BUDGETING as boolean) as IS_BUDGETING,
+    -- Headers
+    TRIM(HEADER_1) AS HEADER_1,
+    TRIM(HEADER_2) AS HEADER_2,
 
-        -- Headers
-        trim(HEADER_1) as HEADER_1,
-        trim(HEADER_2) as HEADER_2,
+    -- Dates
+    CAST(START_DATE AS DATE) AS START_DATE,
+    CAST(END_DATE AS DATE) AS END_DATE,
+    CAST(WHENCREATED AS TIMESTAMP_NTZ) AS WHENCREATED,
+    CAST(WHENMODIFIED AS TIMESTAMP_NTZ) AS WHENMODIFIED,
 
-        -- Dates
-        cast(START_DATE as date) as START_DATE,
-        cast(END_DATE as date) as END_DATE,
-        cast(WHENCREATED as timestamp_ntz) as WHEN_CREATED,
-        cast(WHENMODIFIED as timestamp_ntz) as WHEN_MODIFIED,
+    -- Fivetran
+    _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+    
+    -- Silver Load Metadata
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
 
-        -- Fivetran
-        _FIVETRAN_DELETED as IS_DELETED,
-        
-        -- Silver Load Metadata
-        current_timestamp()::timestamp_ntz as SILVER_LOAD_DATE
+FROM source_data;
 
-    from source_data
 
 )
 

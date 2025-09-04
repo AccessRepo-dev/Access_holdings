@@ -23,7 +23,7 @@ with source_data as (
 
 cleaned as (
     select
-        TRY_CAST(ID AS INT) AS DEPRECIATION_SUMMARY_ID,
+        TRY_CAST(ID AS INT) AS ID,
         TRY_CAST(AMOUNT AS FLOAT) AS AMOUNT,
         TRY_CAST(NAME AS INT) AS NAME,
 

@@ -26,27 +26,26 @@ with source_data as (
 
 cleaned as (
 
-    select
+    SELECT
+    -- Primary Key
+    TRIM(CATEGORYNAME) AS CATEGORYNAME,
 
-        -- Primary Key
-        trim(CATEGORYNAME) as CATEGORY_NAME,
+    -- Core Identifiers
+    TRY_CAST(RECORDNO AS INT) AS RECORDNO,
+    TRY_CAST(PARENTKEY AS INT) AS PARENTKEY,
+    TRY_CAST(SORTORD AS INT) AS SORTORD,
+    TRIM(RECORD_URL) AS RECORD_URL,
 
-        -- Core Identifiers
-        try_cast(RECORDNO as int) as RECORD_NO,
-        try_cast(PARENTKEY as int) as PARENT_KEY,
-        try_cast(SORTORD as int) as SORT_ORDER,
-        trim(RECORD_URL) as RECORD_URL,
+    -- Audit
+    TRY_CAST(CREATEDBY AS INT) AS CREATEDBY,
+    TRY_CAST(MODIFIEDBY AS INT) AS MODIFIEDBY,
+    CAST(WHENCREATED AS TIMESTAMP_NTZ) AS WHENCREATED,
+    CAST(WHENMODIFIED AS TIMESTAMP_NTZ) AS WHENMODIFIED,
 
-        -- Audit
-        try_cast(CREATEDBY as int) as CREATED_BY,
-        try_cast(MODIFIEDBY as int) as MODIFIED_BY,
-        cast(WHENCREATED as timestamp_ntz) as CREATED_DATE,
-        cast(WHENMODIFIED as timestamp_ntz) as WHEN_MODIFIED,
+    -- Silver Load Metadata
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
+FROM source_data;
 
-        -- Silver Load Metadata
-        current_timestamp()::timestamp_ntz as SILVER_LOAD_DATE
-
-    from source_data
 
 )
 
