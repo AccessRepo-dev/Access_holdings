@@ -2,8 +2,8 @@ version: 2
 
 sources:
   - name: wagway_netsuite_raw
-    database: wagway_raw     # the actual raw DB name in Snowflake
-    schema: netsuite        # change if your schema name differs
+    database: wagway_raw     
+    schema: netsuite        
     tables:
       - name: ACCOUNT
       - name: ACCOUNTINGPERIOD
@@ -36,3 +36,20 @@ sources:
       - name: TRANSACTION
       - name: TRANSACTIONACCOUNTINGLINE
       - name: TRANSACTIONLINE
+
+  - name: wagway_silver
+    database: wagway_dev     # the actual raw DB name in Snowflake
+    schema: silver        # change if your schema name differs
+    tables:
+      - name: NETSUIT_ACCOUNTINGPERIOD
+      # - name: CLASSIFICATION
+      # - name: CURRENCYRATE
+      # - name: DEPARTMENT
+      # - name: EMPLOYEE
+      # - name: ENTITY
+      # - name: ITEM
+      # - name: LOCATION
+      # - name: SUBSIDIARY
+      # - name: TRANSACTION
+      # - name: TRANSACTIONACCOUNTINGLINE
+      # - name: TRANSACTIONLINE

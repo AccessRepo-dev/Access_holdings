@@ -81,13 +81,15 @@ models:
     integrations:
       silver:
         netsuite:
-         
           +schema: SILVER
           +materialized: table   # optional, override default
         sage:
           +schema: SILVER
           +materialized: table   # optional, override default
       gold:
+        wagway:
+          +schema: GOLD
+          +materialized: table 
 
     wagway:
       silver:
