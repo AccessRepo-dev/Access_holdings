@@ -5,7 +5,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
-    unique_key = 'ENTITY_ID'
+    unique_key = 'ENTITYID'
 ) }}
 
 with source_data as (

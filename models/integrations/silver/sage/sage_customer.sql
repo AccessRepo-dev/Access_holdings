@@ -6,7 +6,7 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'CUSTOMER_ID'
+    unique_key = 'CUSTOMERID'
 ) }}
 
 with source_data as (
@@ -14,7 +14,7 @@ with source_data as (
     from {{ get_raw_source(company, sourcesystem, 'CUSTOMER') }}
     {% if is_incremental() %}
     where CAST(WHENMODIFIED AS TIMESTAMP_NTZ) > (
-        select coalesce(max(WHEN_MODIFIED), '1900-01-01'::timestamp_ntz)
+        select coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz)
         from {{ this }}
     )
     or _FIVETRAN_DELETED = true

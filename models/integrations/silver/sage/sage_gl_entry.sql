@@ -6,7 +6,7 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'RECORD_NO'
+    unique_key = 'RECORDNO'
 ) }}
 
 with source_data as (
@@ -15,8 +15,8 @@ with source_data as (
     from {{ get_raw_source(company, sourcesystem, 'GL_ENTRY') }}
 
     {% if is_incremental() %}
-        where WHENCREATED > (
-            select coalesce(max(WHEN_MODIFIED), '1900-01-01'::timestamp_ntz)
+        where WHENMODIFIED > (
+            select coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz)
             from {{ this }}
         )
     {% endif %}
