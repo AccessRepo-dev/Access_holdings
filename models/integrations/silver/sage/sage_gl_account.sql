@@ -73,7 +73,7 @@ cleaned as (
     -- Fivetran & Audit
     _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
-FROM source_data;
+FROM source_data
 
 )
 

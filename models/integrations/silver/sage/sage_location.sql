@@ -3,7 +3,7 @@
 {{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
 
 {{ config(
-    database = get_target_database(COMPANY),
+    database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'LOCATION_ID'
@@ -99,7 +99,7 @@ cleaned as (
     _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
 
-FROM source_data;
+FROM source_data
 
 )
 

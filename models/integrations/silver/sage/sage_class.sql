@@ -54,7 +54,7 @@ cleaned as (
 
     -- Audit
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
-FROM source_data;
+FROM source_data
 
 )
 
