@@ -6,7 +6,7 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'EMPLOYEE_ID'
+    unique_key = 'ID'
 ) }}
 
 with source_data as (
@@ -14,7 +14,7 @@ with source_data as (
     from {{ get_raw_source(company, sourcesystem, 'EMPLOYEE') }}
     {% if is_incremental() %}
     where LASTMODIFIEDDATE > (
-        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
+        select coalesce(max(LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
         from {{ this }}
     )
     or _FIVETRAN_DELETED = true
@@ -23,28 +23,28 @@ with source_data as (
 
 cleaned as (
     select
-        TRY_CAST(ID AS INT) AS EMPLOYEE_ID,
-        TRIM(ENTITYID) AS ENTITY_ID,
-        ACCOUNTNUMBER AS ACCOUNT_NUMBER,
-        TRIM(EMPLOYEETYPE) AS EMPLOYEE_TYPE_ID,
+        TRY_CAST(ID AS INT) AS ID,
+        TRIM(ENTITYID) AS ENTITYID,
+        ACCOUNTNUMBER AS ACCOUNTNUMBER,
+        TRIM(EMPLOYEETYPE) AS EMPLOYEETYPE,
         TRIM(TITLE) AS TITLE,
         TRIM(EMAIL) AS EMAIL,
-        TRIM(JOBDESCRIPTION) AS JOB_DESCRIPTION,
-        TRY_CAST(CLASS AS INT) AS CLASS_ID,
-        TRY_CAST(DEPARTMENT AS INT) AS DEPARTMENT_ID,
-        TRY_CAST(LOCATION AS INT) AS LOCATION_ID,
-        TRY_CAST(CURRENCY AS INT) AS CURRENCY_ID,
-        TRY_CAST(SUBSIDIARY AS INT) AS SUBSIDIARY_ID,
-        CAST(DATECREATED AS DATE) AS DATE_CREATED,
+        TRIM(JOBDESCRIPTION) AS JOBDESCRIPTION,
+        TRY_CAST(CLASS AS INT) AS CLASS,
+        TRY_CAST(DEPARTMENT AS INT) AS DEPARTMENT,
+        TRY_CAST(LOCATION AS INT) AS LOCATION,
+        TRY_CAST(CURRENCY AS INT) AS CURRENCY,
+        TRY_CAST(SUBSIDIARY AS INT) AS SUBSIDIARY,
+        CAST(DATECREATED AS DATE) AS DATECREATED,
         CAST(
             CASE 
                 WHEN ISINACTIVE = 'T' THEN TRUE
                 WHEN ISINACTIVE = 'F' THEN FALSE
                 ELSE NULL
             END AS BOOLEAN
-        ) AS IS_INACTIVE,
-        CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
-        _FIVETRAN_DELETED AS IS_DELETED,
+        ) AS ISINACTIVE,
+        CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
+        _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
     from source_data
 )

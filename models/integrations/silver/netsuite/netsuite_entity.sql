@@ -6,7 +6,7 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'INTERNAL_ENTITY_ID'
+    unique_key = 'ID'
 ) }}
 
 with source_data as (
@@ -14,7 +14,7 @@ with source_data as (
     from {{ get_raw_source(company, sourcesystem, 'ENTITY') }}
     {% if is_incremental() %}
     where LASTMODIFIEDDATE > (
-        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
+        select coalesce(max(LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
         from {{ this }}
     )
     or _FIVETRAN_DELETED = true
@@ -23,37 +23,37 @@ with source_data as (
 
 cleaned as (
     select
-        TRY_CAST(ID AS INT) AS INTERNAL_ENTITY_ID,
-        TRIM(ENTITYID) AS ENTITY_ID,
-        TRY_CAST(ENTITYNUMBER AS INT) AS ENTITY_NUMBER,
-        TRIM("TYPE") AS ENTITY_TYPE,
-        TRIM(ENTITYTITLE) AS ENTITY_TITLE,
-        TRIM(FIRSTNAME) AS FIRST_NAME,
-        TRIM(LASTNAME) AS LAST_NAME,
+        TRY_CAST(ID AS INT) AS ID,
+        TRIM(ENTITYID) AS ENTITYID,
+        TRY_CAST(ENTITYNUMBER AS INT) AS ENTITYNUMBER,
+        TRIM("TYPE") AS "TYPE",
+        TRIM(ENTITYTITLE) AS ENTITYTITLE,
+        TRIM(FIRSTNAME) AS FIRSTNAME,
+        TRIM(LASTNAME) AS LASTNAME,
         TRIM(EMAIL) AS EMAIL,
-        TRY_CAST(CUSTOMER AS INT) AS CUSTOMER_ID,
-        TRY_CAST(VENDOR AS INT) AS VENDOR_ID,
-        TRY_CAST(EMPLOYEE AS INT) AS EMPLOYEE_ID,
-        TRY_CAST(CONTACT AS INT) AS CONTACT_ID,
-        TRY_CAST("GROUP" AS INT) AS GROUP_ID,
-        TRY_CAST(PARENT AS INT) AS PARENT_ID,
+        TRY_CAST(CUSTOMER AS INT) AS CUSTOMER,
+        TRY_CAST(VENDOR AS INT) AS VENDOR,
+        TRY_CAST(EMPLOYEE AS INT) AS EMPLOYEE,
+        TRY_CAST(CONTACT AS INT) AS CONTACT,
+        TRY_CAST("GROUP" AS INT) AS "GROUP",
+        TRY_CAST(PARENT AS INT) AS PARENT,
         CAST(
             CASE 
                 WHEN ISPERSON = 'T' THEN TRUE
                 WHEN ISPERSON = 'F' THEN FALSE
                 ELSE NULL
             END AS BOOLEAN
-        ) AS IS_PERSON,
+        ) AS ISPERSON,
         CAST(
             CASE 
                 WHEN ISINACTIVE = 'T' THEN TRUE
                 WHEN ISINACTIVE = 'F' THEN FALSE
                 ELSE NULL
             END AS BOOLEAN
-        ) AS IS_INACTIVE,
-        CAST(DATECREATED AS DATE) AS DATE_CREATED,
-        CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
-        _FIVETRAN_DELETED AS IS_DELETED,
+        ) AS ISINACTIVE,
+        CAST(DATECREATED AS DATE) AS DATECREATED,
+        CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
+        _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
     from source_data
 )

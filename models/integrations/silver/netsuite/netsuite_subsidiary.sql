@@ -6,7 +6,7 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'SUBSIDIARY_ID'
+    unique_key = 'ID'
 ) }}
 
 with source_data as (
@@ -14,7 +14,7 @@ with source_data as (
     from {{ get_raw_source(company, sourcesystem, 'SUBSIDIARY') }}
     {% if is_incremental() %}
     where LASTMODIFIEDDATE > (
-        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
+        select coalesce(max(LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
         from {{ this }}
     )
     or _FIVETRAN_DELETED = true
@@ -23,20 +23,20 @@ with source_data as (
 
 cleaned as (
     select
-        TRY_CAST(ID AS INT) AS SUBSIDIARY_ID,
-        TRIM(NAME) AS SUBSIDIARY_NAME,
-        TRIM(FULLNAME) AS SUBSIDIARY_FULL_NAME,
-        TRY_CAST(PARENT AS INT) AS PARENT_ID,
-        TRY_CAST(CURRENCY AS INT) AS CURRENCY_ID,
+        TRY_CAST(ID AS INT) AS ID,
+        TRIM(NAME) AS NAME,
+        TRIM(FULLNAME) AS FULLNAME,
+        TRY_CAST(PARENT AS INT) AS PARENT,
+        TRY_CAST(CURRENCY AS INT) AS CURRENCY,
         CAST(
             CASE 
                 WHEN ISINACTIVE = 'T' THEN TRUE
                 WHEN ISINACTIVE = 'F' THEN FALSE
                 ELSE NULL
             END AS BOOLEAN
-        ) AS IS_INACTIVE,
-        CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
-        _FIVETRAN_DELETED AS IS_DELETED,
+        ) AS ISINACTIVE,
+        CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
+        _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
     from source_data
 )
