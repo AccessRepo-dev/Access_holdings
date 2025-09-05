@@ -6,15 +6,15 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'ID'
+    unique_key = 'STATUS_KEY'
 ) }}
 
 with source_data as (
     select *
-    from {{ get_raw_source(company, sourcesystem, 'CURRENCYRATE') }}
+    from {{ get_raw_source(company, sourcesystem, 'TRANSACTIONSTATUS') }}
     {% if is_incremental() %}
-    where LASTMODIFIEDDATE > (
-        select coalesce(max(LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
+    where _FIVETRAN_SYNCED > (
+        select coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
         from {{ this }}
     )
     or _FIVETRAN_DELETED = true
@@ -23,13 +23,14 @@ with source_data as (
 
 cleaned as (
     select
-        TRY_CAST(ID AS INT) AS ID,
-        BASECURRENCY AS BASECURRENCY,
-        TRY_CAST(TRANSACTIONCURRENCY AS INT) AS TRANSACTIONCURRENCY,
-        TRY_CAST(EXCHANGERATE AS FLOAT) AS EXCHANGERATE,
-        CAST(EFFECTIVEDATE AS DATE) AS EFFECTIVEDATE,
-        CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
-        _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+        md5(concat(coalesce(ID, 'NA'), '-', coalesce(TRANTYPE, 'NA'))) as STATUS_KEY,
+        ID,
+        FULLNAME,
+        NAME,
+        TRANCUSTOMTYPE,
+        TRANTYPE,
+        _FIVETRAN_SYNCED,
+        _FIVETRAN_DELETED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
     from source_data
 )

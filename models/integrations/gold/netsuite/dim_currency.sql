@@ -5,19 +5,18 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'SUBSIDIARY_ID'
+    unique_key = 'CURRENCY_ID'
 ) }}
 
 with source as (
-    select
-        ID AS SUBSIDIARY_ID,
-        NAME AS SUBSIDIARY_NAME,
-        FULLNAME AS SUBSIDIARY_FULL_NAME,
-        CURRENCY AS CURRENCY_ID,
-        ISINACTIVE AS IS_INACTIVE,
-        PARENT AS PARENT_ID,
-        LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
-    from {{ get_silver_source(company, 'netsuite_subsidiary') }}
+    select 
+    ID AS CURRENCY_ID,
+    NAME AS CURRENCY_NAME,
+    SYMBOL AS DISPLAY_SYMBOL,
+    ISINACTIVE AS IS_INACTIVE,
+    ISBASECURRENCY AS IS_BASE_CURRENCY,
+    LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
+from {{ get_silver_source(company, 'netsuite_currency') }}
     where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}
     and LASTMODIFIEDDATE > (
