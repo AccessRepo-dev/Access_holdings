@@ -17,7 +17,6 @@ with source_data as (
         select coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz)
         from {{ this }}
     )
-    or _FIVETRAN_DELETED = true
     {% endif %}
 ),
 
