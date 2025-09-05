@@ -8,6 +8,8 @@ sources:
       - name: ACCOUNT
       - name: ACCOUNTINGPERIOD
       - name: CLASSIFICATION
+      - name: CURRENCY
+      - name: CONSOLIDATEDEXCHANGERATE
       - name: CURRENCYRATE
       - name: DEPARTMENT
       - name: EMPLOYEE
@@ -26,6 +28,8 @@ sources:
       - name: ACCOUNT
       - name: ACCOUNTINGPERIOD
       - name: CLASSIFICATION
+      - name: CURRENCY
+      - name: CONSOLIDATEDEXCHANGERATE
       - name: CURRENCYRATE
       - name: DEPARTMENT
       - name: EMPLOYEE
