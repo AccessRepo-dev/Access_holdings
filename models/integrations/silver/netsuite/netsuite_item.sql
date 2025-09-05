@@ -50,7 +50,7 @@ cleaned as (
         SHIPPINGCOST AS SHIPPINGCOST,
         TOTALVALUE AS TOTALVALUE,
         {% if company == 'playfly' and sourcesystem == 'netsuite' %}
-            TOTALQUANTITYONHAND AS TOTALQUANTITYONHAND,
+            TOTALQUANTITYONHAND AS QUANTITYAVAILABLE,
         {% else %}
             QUANTITYAVAILABLE AS QUANTITYAVAILABLE,
         {% endif %}

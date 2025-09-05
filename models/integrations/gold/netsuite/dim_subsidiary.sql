@@ -15,8 +15,8 @@ with source as (
         FULLNAME AS SUBSIDIARY_FULL_NAME,
         CURRENCY AS CURRENCY_ID,
         ISINACTIVE AS IS_INACTIVE,
-        PARENT AS PARENT_ID
-        
+        PARENT AS PARENT_ID,
+        LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
     from {{ get_silver_source(company, 'netsuite_subsidiary') }}
     where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}
