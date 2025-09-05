@@ -1,5 +1,5 @@
 {% set company = var('company', 'Unknown company') | lower %}
-
+{% set sourcesystem = 'netsuite' %}
 
 {{ config(
     database = get_target_database(company),
