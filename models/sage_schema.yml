@@ -25,3 +25,4 @@ sources:
       - name: CURRENCY
       - name: GL_ACCT_GRP
       - name: GL_ACCT_GRP_MEMBER
+      - name: GL_DETAIL
