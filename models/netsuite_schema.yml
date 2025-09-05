@@ -55,3 +55,20 @@ sources:
       - name: netsuite_transactionaccountingline
       - name: netsuite_transactionline
 
+  - name: playfly_silver
+    database: playfly_dev
+    schema: silver
+    tables:
+      - name: netsuite_account
+      - name: netsuite_accountingperiod
+      - name: netsuite_classification
+      - name: netsuite_currencyrate
+      - name: netsuite_department
+      - name: netsuite_employee
+      - name: netsuite_entity
+      - name: netsuite_item
+      - name: netsuite_location
+      - name: netsuite_subsidiary
+      - name: netsuite_transaction
+      - name: netsuite_transactionaccountingline
+      - name: netsuite_transactionline
