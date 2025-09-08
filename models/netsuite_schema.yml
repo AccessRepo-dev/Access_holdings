@@ -62,6 +62,7 @@ sources:
       - name: netsuite_transaction
       - name: netsuite_transactionaccountingline
       - name: netsuite_transactionline
+      - name: netsuite_transactionstatus
 
   - name: playfly_silver
     database: playfly_dev
@@ -82,3 +83,4 @@ sources:
       - name: netsuite_transaction
       - name: netsuite_transactionaccountingline
       - name: netsuite_transactionline
+      - name: netsuite_transactionstatus
