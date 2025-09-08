@@ -87,6 +87,9 @@ models:
         netsuite:
           +schema: GOLD
           +materialized: table 
+        sage:
+          +schema: GOLD
+          +materialized: table 
 
 on-run-end:
   - "{{ audit_failures(results) }}"
