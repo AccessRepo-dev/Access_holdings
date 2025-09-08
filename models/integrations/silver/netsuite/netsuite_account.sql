@@ -26,9 +26,30 @@ cleaned as (
         TRY_CAST(ID AS INT) AS ID,
         TRIM(ACCTNUMBER) AS ACCTNUMBER,
         TRIM(FULLNAME) AS FULLNAME,
-        TRIM(SPLIT_PART(FULLNAME, ':', 1)) AS FULLNAME_1,
-        TRIM(SPLIT_PART(FULLNAME, ':', 2)) AS FULLNAME_2,
-        TRIM(SPLIT_PART(FULLNAME, ':', 3)) AS FULLNAME_3,
+        case
+            when POSITION(':' in FULLNAME) > 0 then NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 1)), '')
+            when POSITION('-' in FULLNAME) > 0 then NULLIF(TRIM(SPLIT_PART(FULLNAME, '-', 1)), '')
+            else TRIM(FULLNAME)
+        end as MAIN_ACCOUNT_NAME,
+
+        case
+            when POSITION(':' in FULLNAME) > 0 then NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 2)), '')
+            when POSITION('-' in FULLNAME) > 0 then NULLIF(TRIM(SPLIT_PART(FULLNAME, '-', 2)), '')
+            else null
+        end as ACCOUNT_NAME_SUBCATEGORY_1,
+
+        case
+            when POSITION(':' in FULLNAME) > 0 then NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 3)), '')
+            when POSITION('-' in FULLNAME) > 0 then NULLIF(TRIM(SPLIT_PART(FULLNAME, '-', 3)), '')
+            else null
+        end as ACCOUNT_NAME_SUBCATEGORY_2,
+
+        case
+            when POSITION(':' in FULLNAME) > 0 then NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 4)), '')
+            when POSITION('-' in FULLNAME) > 0 then NULLIF(TRIM(SPLIT_PART(FULLNAME, '-', 4)), '')
+            else null
+        end as ACCOUNT_NAME_SUBCATEGORY_3,
+
         TRIM(ACCTTYPE) AS ACCTTYPE,
         TRIM(DESCRIPTION) AS DESCRIPTION,
         TRIM(ACCOUNTSEARCHDISPLAYNAME) AS ACCOUNTSEARCHDISPLAYNAME,
