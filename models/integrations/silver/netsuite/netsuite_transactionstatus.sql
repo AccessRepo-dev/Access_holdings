@@ -23,7 +23,7 @@ with source_data as (
 
 cleaned as (
     select
-        md5(concat(coalesce(ID, 'NA'), '-', coalesce(TRANTYPE, 'NA'))) as STATUS_KEY,
+        (_FIVETRAN_ID) as STATUS_KEY,
         ID,
         FULLNAME,
         NAME,
