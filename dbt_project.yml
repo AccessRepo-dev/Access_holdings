@@ -66,23 +66,19 @@ models:
   Access_Holdings:
     
     consolidated:
-      silver:
-        +database: "{{ env_var('DBT_ACCESS', 'access_dev') }}"
-        +schema: SILVER
+      gold:
+        +database:  "{{ env_var('DBT_CONSOLIDATED', 'consolidated_dev') }}"
+        +schema: GOLD
         +materialized: table
-      # gold:
-      #   +database:  "{{ env_var('DBT_ACCESS', 'access_dev') }}"
-      #   +schema: GOLD
-      #   +materialized: table
     
     integrations:
       silver:
         netsuite:
           +schema: SILVER
-          +materialized: table   # optional, override default
+          +materialized: table
         sage:
           +schema: SILVER
-          +materialized: table   # optional, override default
+          +materialized: table
       gold:
         netsuite:
           +schema: GOLD
