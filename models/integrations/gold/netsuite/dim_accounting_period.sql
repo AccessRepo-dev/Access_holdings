@@ -20,7 +20,7 @@ with source as (
     from {{ get_silver_source(company, 'netsuite_accountingperiod') }}
     --where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}
-    and LASTMODIFIEDDATE > (
+    where LASTMODIFIEDDATE > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         from {{ this }}
     )
