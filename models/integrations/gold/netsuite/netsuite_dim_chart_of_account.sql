@@ -32,13 +32,8 @@ WITH flattened_accounts AS (
 )
 
 SELECT
-    {{ dbt_utils.generate_surrogate_key([
-        'ACCOUNT_ID',
-        'ACCOUNT_SUBSIDIARY_ID',
-        'CLASS_ID',
-        'DEPARTMENT_ID'
-    ]) }} AS DIM_ACCOUNT_ID,   -- surrogate key
-    ea.ACCOUNT_ID,             -- natural key
+    ABS(HASH(ACCOUNT_ID, ACCOUNT_SUBSIDIARY_ID, CLASS_ID, DEPARTMENT_ID)) as DIM_ACCOUNT_ID,
+    ea.ACCOUNT_ID,            
     ea.ACCOUNT_NAME,
     ea.MAIN_ACCOUNT_NAME,
     ea.ACCOUNT_NAME_SUBCATEGORY_1,
