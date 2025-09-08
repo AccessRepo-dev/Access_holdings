@@ -26,3 +26,29 @@ sources:
       - name: GL_ACCT_GRP
       - name: GL_ACCT_GRP_MEMBER
       - name: GL_DETAIL
+
+  - name: spotless_silver
+    database: spotless_dev
+    schema: silver
+    tables:
+      - name: sage_asset
+      - name: sage_bankaccount
+      - name: sage_class
+      - name: sage_customer
+      - name: sage_department
+      - name: sage_depreciation_summary
+      - name: sage_employee
+      - name: sage_entityacctdefault
+      - name: sage_gl_account
+      - name: sage_gl_batch
+      - name: sage_gl_coa_cat_member
+      - name: sage_gl_entry
+      - name: sage_item
+      - name: sage_location
+      - name: sage_location_entity
+      - name: sage_project
+      - name: sage_reporting_period
+      - name: sage_currency
+      - name: sage_gl_detail
+      - name: sage_gl_acct_grp
+      - name: sage_gl_acct_grp_member
