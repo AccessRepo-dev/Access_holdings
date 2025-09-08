@@ -27,8 +27,8 @@ sources:
       - name: GL_ACCT_GRP_MEMBER
       - name: GL_DETAIL
 
-  - name: sage_silver
-    database: sage_dev
+  - name: spotless_silver
+    database: spotless_dev
     schema: silver
     tables:
       - name: sage_asset
