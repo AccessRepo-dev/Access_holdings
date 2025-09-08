@@ -1,5 +1,5 @@
 {% set company = var('company', 'Unknown company') | lower %}
-{% set sourcesystem = 'netsuite' %}
+{{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
@@ -21,10 +21,7 @@ with source as (
         tl.ITEM,
         tl.CLASS,
         CONCAT
-        (
-        tal.ACCOUNT, '-', tl.CLASS
-        )
-        AS CHART_OF_ACCOUNTS_UNIQUE_ID,
+        (tal.ACCOUNT, '-', tl.CLASS )AS CHART_OF_ACCOUNTS_UNIQUE_ID,
         t.POSTINGPERIOD,
         t.EMPLOYEE,
         tl.ENTITY,
@@ -32,15 +29,12 @@ with source as (
         t.SHIPPINGADDRESS,
         t.CURRENCY,
         CONCAT
-        (
-        tl.SUBSIDIARY, '-', t.POSTINGPERIOD, '-', t.CURRENCY
-        ) 
+        (tl.SUBSIDIARY, '-', t.POSTINGPERIOD, '-', t.CURRENCY) 
         AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
         tl.SUBSIDIARY,
         t.ID AS T_ID,
         t.STATUS ,  
         tl.DEPARTMENT,
-        cer.ACCOUNTINGBOOK,
         a.ACCTNUMBER,
         a.ACCTTYPE,
         a.FULLNAME AS ACCOUNT_NAME,
@@ -67,20 +61,16 @@ with source as (
         txs.NAME
     
         FROM {{ get_silver_source(company, 'netsuite_transactionline') }}  tL
-       JOIN  {{ get_silver_source(company, 'netsuite_transaction') }} t --- equi join
+       JOIN  {{ get_silver_source(company, 'netsuite_transaction') }} t 
         ON t.ID = tl.TRANSACTION
        JOIN {{ get_silver_source(company, 'netsuite_transactionaccountingline') }} tal 
-        ON tl.ID = tal.TRANSACTIONLINE --equi join
+        ON  tl.transaction = tal.transaction and tl.id=tal.transactionline 
       LEFT JOIN {{ get_silver_source(company, 'netsuite_account') }} a 
         ON a.ID = tal.ACCOUNT
       LEFT JOIN {{ get_silver_source(company, 'netsuite_accountingperiod') }} per 
         ON per.ID = t.POSTINGPERIOD
       LEFT JOIN {{ get_silver_source(company, 'netsuite_transactionstatus') }} txs 
-         ON txs.ID = t.status  and txs.trantype = t.type
-       LEFT JOIN {{ get_silver_source(company, 'netsuite_consolidatedexchangerate') }} cer 
-        ON cer.POSTINGPERIOD = t.POSTINGPERIOD 
-        AND cer.TOSUBSIDIARY = tl.SUBSIDIARY
-        AND cer.FROMCURRENCY = t.CURRENCY 
+         ON txs.ID = t.status  and txs.trantype = t.type and t.customtype=txs.trancustomtype
 )
 select *
 from source
