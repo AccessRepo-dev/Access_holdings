@@ -87,6 +87,13 @@ models:
         netsuite:
           +schema: GOLD
           +materialized: table 
+vars:
+  company_source_map:
+    netsuite:
+      - wagway
+    sage:
+      - playfly
+
 
 on-run-end:
   - "{{ audit_failures(results) }}"
