@@ -1,14 +1,34 @@
 version: 2
 
 sources:
-  - name: wagway_dev_silver
-    database: wagway_dev
-    schema: silver
+  - name: wagway_gold
+    database: "{{ env_var('DBT_CONSOLIDATED', 'consolidated_dev') }}"
+    schema: gold
     tables:
-      - name: netsuite_account
+      - name: NETSUITE_DIM_ITEM
+      - name: NETSUITE_DIM_EMPLOYEE
+      - name: NETSUITE_DIM_ACCOUNTING_PERIOD
+      - name: NETSUITE_DIM_ENTITY
+      - name: NETSUITE_DIM_CURRENCYRATE
+      - name: NETSUITE_DIM_CURRENCY
+      - name: NETSUITE_DIM_SUBSIDIARY
+      - name: NETSUITE_DIM_DEPARTMENT
+      - name: NETSUITE_DIM_LOCATION
+      - name: NETSUITE_DIM_CHART_OF_ACCOUNT
+      - name: NETSUITE_FACT_TRANSACTION
 
-  - name: playfly_dev_silver
-    database: playfly_dev
-    schema: silver
+  - name: playfly_gold
+    database: "{{ env_var('DBT_CONSOLIDATED', 'consolidated_dev') }}"
+    schema: gold
     tables:
-      - name: netsuite_account
+      - name: NETSUITE_DIM_ITEM
+      - name: NETSUITE_DIM_EMPLOYEE
+      - name: NETSUITE_DIM_ACCOUNTING_PERIOD
+      - name: NETSUITE_DIM_ENTITY
+      - name: NETSUITE_DIM_CURRENCYRATE
+      - name: NETSUITE_DIM_CURRENCY
+      - name: NETSUITE_DIM_SUBSIDIARY
+      - name: NETSUITE_DIM_DEPARTMENT
+      - name: NETSUITE_DIM_LOCATION
+      - name: NETSUITE_DIM_CHART_OF_ACCOUNT
+      - name: NETSUITE_FACT_TRANSACTION

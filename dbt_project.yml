@@ -66,27 +66,24 @@ models:
   Access_Holdings:
     
     consolidated:
-      silver:
-        +database: "{{ env_var('DBT_ACCESS', 'access_dev') }}"
-        +schema: SILVER
+      gold:
+        +database:  "{{ env_var('DBT_CONSOLIDATED', 'consolidated_dev') }}"
+        +schema: GOLD
         +materialized: table
-      # gold:
-      #   +database:  "{{ env_var('DBT_ACCESS', 'access_dev') }}"
-      #   +schema: GOLD
-      #   +materialized: table
     
     integrations:
       silver:
         netsuite:
           +schema: SILVER
-          +materialized: table   # optional, override default
+          +materialized: table
         sage:
           +schema: SILVER
-          +materialized: table   # optional, override default
+          +materialized: table
       gold:
         netsuite:
           +schema: GOLD
           +materialized: table 
+<<<<<<< HEAD
 vars:
   company_source_map:
     netsuite:
@@ -94,6 +91,11 @@ vars:
     sage:
       - playfly
 
+=======
+        sage:
+          +schema: GOLD
+          +materialized: table 
+>>>>>>> b2aa4e5689ebb0d1d1876e4d9947ca20cd47a5ae
 
 on-run-end:
   - "{{ audit_failures(results) }}"

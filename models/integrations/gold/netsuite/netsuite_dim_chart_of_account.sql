@@ -14,6 +14,10 @@ WITH flattened_accounts AS (
         a.LOCATION AS LOCATION_ID,
         a.ID AS ACCOUNT_ID,
         a.FULLNAME AS ACCOUNT_NAME,
+        a.MAIN_ACCOUNT_NAME,
+        a.ACCOUNT_NAME_SUBCATEGORY_1,
+        a.ACCOUNT_NAME_SUBCATEGORY_2,
+        a.ACCOUNT_NAME_SUBCATEGORY_3,
         a.ACCTNUMBER AS ACCOUNT_NUMBER,
         a.PARENT AS ACCOUNT_PARENT_ID,
         CAST(f.value AS INT) AS ACCOUNT_SUBSIDIARY_ID,
@@ -28,14 +32,13 @@ WITH flattened_accounts AS (
 )
 
 SELECT
-    {{ dbt_utils.generate_surrogate_key([
-        'ACCOUNT_ID',
-        'ACCOUNT_SUBSIDIARY_ID',
-        'CLASS_ID',
-        'DEPARTMENT_ID'
-    ]) }} AS DIM_ACCOUNT_ID,   -- surrogate key
-    ea.ACCOUNT_ID,             -- natural key
+    ABS(HASH(ACCOUNT_ID, ACCOUNT_SUBSIDIARY_ID, CLASS_ID, DEPARTMENT_ID)) as DIM_ACCOUNT_ID,
+    ea.ACCOUNT_ID,            
     ea.ACCOUNT_NAME,
+    ea.MAIN_ACCOUNT_NAME,
+    ea.ACCOUNT_NAME_SUBCATEGORY_1,
+    ea.ACCOUNT_NAME_SUBCATEGORY_2,
+    ea.ACCOUNT_NAME_SUBCATEGORY_3,    
     ea.ACCOUNT_NUMBER,
     ea.ACCOUNT_DESCRIPTION,
     ea.ACCOUNT_PARENT_ID,
