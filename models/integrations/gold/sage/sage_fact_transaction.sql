@@ -18,6 +18,7 @@ with source as (
     e.BATCHNO AS TRANSACTION_NUMBER,
     e.LINE_NO AS TRANSACTION_LINE_NO,
     d.LINE_NO AS ACCOUNTING_LINE_NO,
+    l.ENTITY AS SUBSIDIARY_ID,
 
     e.TR_TYPE AS TRANSACTION_TYPE,
     e.BATCHTITLE AS TITLE,
@@ -35,13 +36,14 @@ with source as (
     e.CURRENCY AS CURRENCY_ID,
     e.LOCATIONKEY AS LOCATION_ID,
     e.DEPARTMENTKEY AS DEPARTMENT_ID,
-    d.LOCATIONID AS SUBSIDIARY_ID,
+    --d.LOCATIONID AS SUBSIDIARY_ID,
     d.TRX_AMOUNT AS NET_AMOUNT,
     d.AMOUNT AS AMOUNT,
     b.WHENMODIFIED AS LAST_MODIFIED_DATE
     FROM {{ get_silver_source(company, 'sage_gl_detail') }} d 
     LEFT JOIN {{ get_silver_source(company, 'sage_gl_batch') }}  b on d.batchkey = b.recordno 
     LEFT JOIN {{ get_silver_source(company, 'sage_gl_entry') }}  e on d.GLENTRYKEY = e.recordno
+    LEFT JOIN {{ get_silver_source(company, 'sage_location') }}  l on l.RECORDNO = e.LOCATIONKEY 
 
 )
 SELECT *
