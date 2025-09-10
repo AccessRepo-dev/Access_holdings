@@ -15,7 +15,9 @@ sources:
       - name: NETSUITE_DIM_DEPARTMENT
       - name: NETSUITE_DIM_LOCATION
       - name: NETSUITE_DIM_CHART_OF_ACCOUNT
+      - name: NETSUITE_DIM_BUDGET_CATEGORY
       - name: NETSUITE_FACT_TRANSACTION
+      - name : NETSUITE_FACT_BUDGET
 
   - name: playfly_gold
     database: "{{ env_var('DBT_CONSOLIDATED', 'consolidated_dev') }}"
@@ -31,4 +33,6 @@ sources:
       - name: NETSUITE_DIM_DEPARTMENT
       - name: NETSUITE_DIM_LOCATION
       - name: NETSUITE_DIM_CHART_OF_ACCOUNT
+      - name: NETSUITE_DIM_BUDGET_CATEGORY
       - name: NETSUITE_FACT_TRANSACTION
+      - name : NETSUITE_FACT_BUDGET

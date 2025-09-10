@@ -1,13 +1,13 @@
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = ['POSTING_PERIOD_ID','COMPANY']
+    unique_key = ['BUDGET_ID','COMPANY']
 ) }}
 
 select
     *,
     'wagway' as company
-from {{ env_var('DBT_WAGWAY', 'wagway_dev') }}.gold.NETSUITE_DIM_ACCOUNTING_PERIOD
+from {{ env_var('DBT_WAGWAY', 'wagway_dev') }}.gold.NETSUITE_DIM_BUDGET_CATEGORY
 where
     {% if is_incremental() %}
     LAST_MODIFIED_DATE > (
@@ -21,7 +21,7 @@ union all
 select
     *,
     'playfly' as company
-from {{ env_var('DBT_PLAYFLY', 'playfly_dev') }}.gold.NETSUITE_DIM_ACCOUNTING_PERIOD
+from {{ env_var('DBT_PLAYFLY', 'playfly_dev') }}.gold.NETSUITE_DIM_BUDGET_CATEGORY
 where
     {% if is_incremental() %}
     LAST_MODIFIED_DATE > (
