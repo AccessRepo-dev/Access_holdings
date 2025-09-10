@@ -21,6 +21,8 @@ sources:
       - name: TRANSACTIONACCOUNTINGLINE
       - name: TRANSACTIONLINE
       - name: TRANSACTIONSTATUS
+      - name: BUDGETLEGACY
+      - name: BUDGETCATEGORY 
 
   - name: playfly_netsuite_raw
     database: playfly_raw
@@ -42,6 +44,8 @@ sources:
       - name: TRANSACTIONACCOUNTINGLINE
       - name: TRANSACTIONLINE
       - name: TRANSACTIONSTATUS
+      - name: BUDGETLEGACY
+      - name: BUDGETCATEGORY 
 
   - name: wagway_silver
     database: wagway_dev
@@ -63,6 +67,8 @@ sources:
       - name: netsuite_transactionaccountingline
       - name: netsuite_transactionline
       - name: netsuite_transactionstatus
+      - name: netsuite_budgetlegacy 
+      - name: netsuite_budgetcategory
 
   - name: playfly_silver
     database: playfly_dev
@@ -84,3 +90,5 @@ sources:
       - name: netsuite_transactionaccountingline
       - name: netsuite_transactionline
       - name: netsuite_transactionstatus
+      - name: netsuite_budgetlegacy
+      - name: netsuite_budgetcategory
