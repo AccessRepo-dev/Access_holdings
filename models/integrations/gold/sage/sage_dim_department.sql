@@ -12,7 +12,8 @@
 with source as (
     select
         RECORDNO      AS DIM_DEPARTMENT_ID,
-        DEPARTMENTID  AS DEPARTMENT_ID,       
+        DEPARTMENTID  AS DEPARTMENT_ID,
+        PARENTKEY AS PARENT_ID,
         PARENTID       AS PARENT_DEPARTMENT_ID, 
         TITLE          AS DEPARTMENT_NAME,     
         STATUS         AS IS_INACTIVE,        
@@ -28,4 +29,4 @@ with source as (
     {% endif %}
 )
 select *
-from source
+from source 
