@@ -6,7 +6,7 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'DEPARTMENTID'
+    unique_key = 'RECORDNO'
 ) }}
 
 with source_data as (
@@ -30,13 +30,6 @@ cleaned as (
     TRY_CAST(RECORDNO AS INT) AS RECORDNO,
     TRIM(TITLE) AS TITLE,
 
-    -- extract the code inside parentheses (e.g., 15, 10a, 07)
-    REGEXP_SUBSTR(TITLE, '^\\(([0-9]+[a-z]?)\\)', 1, 1, 'e', 1) AS DEPARTMENT_TITLE_CODE,
-
-    -- remove the (xx) prefix entirely to get just description
-    TRIM(REGEXP_REPLACE(TITLE, '^\\([0-9]+[a-z]?\\)\\s*', '')) AS DEPARTMENT_TITLE_DESCRIPTION,
-
-    TRIM(CUSTTITLE) AS CUSTTITLE,
     TRIM(STATUS) AS STATUS,
 
     -- Hierarchy
@@ -44,17 +37,6 @@ cleaned as (
     TRY_CAST(PARENTKEY AS INT) AS PARENTKEY,
     TRIM(PARENTNAME) AS PARENTNAME,
 
-    -- Supervisor
-    TRIM(SUPERVISORID) AS SUPERVISORID,
-    TRY_CAST(SUPERVISORKEY AS INT) AS SUPERVISORKEY,
-    INITCAP(TRIM(SUPERVISORNAME)) AS SUPERVISORNAME,
-
-    -- Relationships
-    TRY_CAST(CREATEDBY AS INT) AS CREATEDBY,
-    TRY_CAST(MODIFIEDBY AS INT) AS MODIFIEDBY,
-
-    -- Dates
-    CAST(WHENCREATED AS TIMESTAMP_NTZ) AS WHENCREATED,
     CAST(WHENMODIFIED AS TIMESTAMP_NTZ) AS WHENMODIFIED,
 
     -- Flags / Deletes
