@@ -26,6 +26,8 @@ with source as (
 
         -- Chart of accounts / account details
         tal.ACCOUNT,
+        tal.TRANSACTIONLINE,
+        tal.POSTING,
         a.ACCTNUMBER,
         a.ACCTTYPE,
         a.FULLNAME AS ACCOUNT_NAME,
@@ -40,6 +42,8 @@ with source as (
         tl.TRANSACTIONLINETYPE,
         tl.ACCOUNTINGLINETYPE,
         tl.SUBSIDIARY,
+        tl.CREATEDFROM,
+        tal.ACCOUNTINGBOOK,
 
         -- Period / currency / consolidation
         t.POSTINGPERIOD,
