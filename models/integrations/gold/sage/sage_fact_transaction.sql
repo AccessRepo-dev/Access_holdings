@@ -13,7 +13,7 @@ with source as (
     e.RECORDNO AS TRANSACTION_LINE_ID,
     d.RECORDNO AS TRANSACTIONS_UNIQUE_ID,
     b.RECORDNO AS TRAN_ID,
-
+    
     d.BATCHKEY AS TRANSACTION_ID,
     e.BATCHNO AS TRANSACTION_NUMBER,
     e.LINE_NO AS TRANSACTION_LINE_NO,
@@ -31,7 +31,7 @@ with source as (
 
     e.ACCOUNTKEY AS ACCOUNT_ID,
     e.CLASSID AS CLASS_ID,
-    CONCAT(ACCOUNTKEY,e.CLASSID) AS CHART_OF_ACCOUNTS_UNIQUE_ID,
+    ABS(HASH(e.ACCOUNTKEY,l.ENTITY)) AS CHART_OF_ACCOUNTS_UNIQUE_ID,
     e.ITEMID AS ITEM_ID,
     e.CURRENCY AS CURRENCY_ID,
     e.LOCATIONKEY AS LOCATION_ID,
@@ -44,6 +44,7 @@ with source as (
     LEFT JOIN {{ get_silver_source(company, 'sage_gl_batch') }}  b on d.batchkey = b.recordno 
     LEFT JOIN {{ get_silver_source(company, 'sage_gl_entry') }}  e on d.GLENTRYKEY = e.recordno
     LEFT JOIN {{ get_silver_source(company, 'sage_location') }}  l on l.RECORDNO = e.LOCATIONKEY 
+    
 
 )
 SELECT *
