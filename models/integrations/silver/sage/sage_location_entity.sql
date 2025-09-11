@@ -31,7 +31,7 @@ cleaned as (
 
     -- Core Identifiers
     TRIM(LOCATIONID) AS LOCATIONID,
-
+    TRIM(NAME) AS NAME ,
     TRIM(ENTITY) AS ENTITY,
     TRIM(STATUS) AS STATUS,
 

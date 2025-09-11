@@ -35,17 +35,16 @@ with source as (
     e.ITEMID AS ITEM_ID,
     e.CURRENCY AS CURRENCY_ID,
     e.LOCATIONKEY AS LOCATION_ID,
+    e.LOCATIONNAME AS LOCATION_NAME,
     e.DEPARTMENTKEY AS DEPARTMENT_ID,
-    --d.LOCATIONID AS SUBSIDIARY_ID,
+ 
     e.TRX_AMOUNT AS NET_AMOUNT,
     e.AMOUNT AS AMOUNT,
-    b.WHENMODIFIED AS LAST_MODIFIED_DATE
+    e.WHENMODIFIED AS LAST_MODIFIED_DATE
     FROM {{ get_silver_source(company, 'sage_gl_entry') }}  e 
     LEFT JOIN  {{ get_silver_source(company, 'sage_gl_detail') }} d on d.GLENTRYKEY = e.recordno
     LEFT JOIN {{ get_silver_source(company, 'sage_gl_batch') }}  b on d.batchkey = b.recordno 
     LEFT JOIN {{ get_silver_source(company, 'sage_location') }}  l on l.RECORDNO = e.LOCATIONKEY 
-    
-
 )
 SELECT *
 FROM source

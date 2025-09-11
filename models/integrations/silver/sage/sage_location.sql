@@ -43,8 +43,15 @@ cleaned as (
     TRIM(ADDRESSCOUNTRYDEFAULT) AS ADDRESSCOUNTRYDEFAULT,
 
     -- Relationships
-    TRIM(PARENTNAME) AS PARENTNAME,
-    TRY_CAST(PARENTKEY AS INT) AS PARENTKEY,
+
+     {% if company == 'spotless' and sourcesystem == 'sage' %}
+        TRIM(PARENTNAME) AS PARENTNAME,
+        TRY_CAST(PARENTKEY AS INT) AS PARENTKEY,
+    {% else %}
+        null AS PARENTNAME,
+        null AS PARENTKEY,
+    {% endif%}
+   
     
     -- Audit
     _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
