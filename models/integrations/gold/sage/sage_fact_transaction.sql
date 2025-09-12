@@ -27,25 +27,24 @@ with source as (
 
     e.ENTRY_DATE AS TRAN_DATE,
     b.BATCH_DATE AS REPORTING_PERIOD_ID,
-    b.BATCH_DATE AS POSTING_PERIOD_DATE,
+    e.BATCH_DATE AS POSTING_PERIOD_DATE,
 
     e.ACCOUNTKEY AS ACCOUNT_ID,
     e.CLASSID AS CLASS_ID,
     ABS(HASH(e.ACCOUNTKEY,l.ENTITY)) AS CHART_OF_ACCOUNTS_UNIQUE_ID,
-    e.ITEMID AS ITEM_ID,
+    e.ITEMDIMKEY as ITEM_ID,
     e.CURRENCY AS CURRENCY_ID,
     e.LOCATIONKEY AS LOCATION_ID,
+    e.LOCATIONNAME AS LOCATION_NAME,
     e.DEPARTMENTKEY AS DEPARTMENT_ID,
-    --d.LOCATIONID AS SUBSIDIARY_ID,
-    d.TRX_AMOUNT AS NET_AMOUNT,
-    d.AMOUNT AS AMOUNT,
-    b.WHENMODIFIED AS LAST_MODIFIED_DATE
-    FROM {{ get_silver_source(company, 'sage_gl_detail') }} d 
+ 
+    e.TRX_AMOUNT AS NET_AMOUNT,
+    e.AMOUNT AS AMOUNT,
+    e.WHENMODIFIED AS LAST_MODIFIED_DATE
+    FROM {{ get_silver_source(company, 'sage_gl_entry') }}  e 
+    LEFT JOIN  {{ get_silver_source(company, 'sage_gl_detail') }} d on d.GLENTRYKEY = e.recordno
     LEFT JOIN {{ get_silver_source(company, 'sage_gl_batch') }}  b on d.batchkey = b.recordno 
-    LEFT JOIN {{ get_silver_source(company, 'sage_gl_entry') }}  e on d.GLENTRYKEY = e.recordno
     LEFT JOIN {{ get_silver_source(company, 'sage_location') }}  l on l.RECORDNO = e.LOCATIONKEY 
-    
-
 )
 SELECT *
 FROM source
