@@ -46,3 +46,19 @@ select
     'SPOTLESS' as company,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
 from {{ env_var('DBT_SPOTLESS', 'spotless_dev') }}.gold.SAGE_DIM_REPORTING_PERIOD
+
+union all
+
+select
+    REPORTING_PERIOD_ID AS POSTING_PERIOD_ID,
+    PERIOD_NAME,
+    START_DATE,
+    END_DATE,
+    NULL AS CLOSED_ON_DATE,
+    LAST_MODIFIED_DATE,
+    NULL YEAR,
+    'SAGE' as sourcesystem,
+    'AMH' as company,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
+from {{ env_var('DBT_AMH', 'amh_dev') }}.gold.SAGE_DIM_REPORTING_PERIOD
+
