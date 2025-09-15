@@ -63,13 +63,11 @@ cleaned as (
                 ELSE NULL
             END AS BOOLEAN
         ) AS ISFULFILLABLE,
-        CAST(
-            CASE 
-                WHEN ISINACTIVE = 'T' THEN TRUE
-                WHEN ISINACTIVE = 'F' THEN FALSE
-                ELSE NULL
-            END AS BOOLEAN
-        ) AS ISINACTIVE,
+        CASE 
+            WHEN ISINACTIVE = 'T' THEN TRUE
+            WHEN ISINACTIVE = 'F' THEN FALSE
+            ELSE NULL
+        END AS ISINACTIVE,
         CAST(CREATEDDATE AS TIMESTAMP_NTZ) AS CREATEDDATE,
         CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
         _FIVETRAN_DELETED AS _FIVETRAN_DELETED,

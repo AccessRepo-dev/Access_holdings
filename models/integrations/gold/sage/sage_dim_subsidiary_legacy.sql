@@ -6,20 +6,22 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'REPORTING_PERIOD_ID'
+    unique_key = 'DIM_SUBSIDIARY_ID'
 ) }}
 
 with source as (
     SELECT 
-        RECORDNO AS PERIOD_ID,
-        NAME AS PERIOD_NAME,
-        START_DATE AS START_DATE,
-        END_DATE AS END_DATE,
-        NULL AS CLOSED_ON_DATE,
+        RECORDNO AS DIM_SUBSIDIARY_ID,
+        LOCATIONID AS SUBSIDIARY_ID,
+        ENTITY AS SUBSIDIARY_TITLE,
+        FEDERALID AS SUBSIDIARY_NUMBER,
         STATUS AS IS_INACTIVE,
+        WHENCREATED AS DATE_CREATED,
         WHENMODIFIED AS LAST_MODIFIED_DATE
 
-    FROM {{ get_silver_source(company, 'sage_reporting_period') }}
+
+
+    FROM {{ get_silver_source(company, 'sage_location_entity') }}
     
     {% if is_incremental() %}
     and WHENMODIFIED > (
