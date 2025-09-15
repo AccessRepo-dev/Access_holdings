@@ -10,8 +10,8 @@
 
 with source as (
     select
+        ID AS DIM_ENTITY_ID,
         ENTITYID AS ENTITY_ID,
-        ID AS INTERNAL_ENTITY_ID,
         ENTITYNUMBER AS ENTITY_NUMBER,
         ENTITYTITLE AS ENTITY_TITLE,
         FIRSTNAME AS FIRST_NAME,

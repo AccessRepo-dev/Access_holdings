@@ -31,8 +31,8 @@ with source as (
         a.ACCTNUMBER,
         a.ACCTTYPE,
         a.FULLNAME AS ACCOUNT_NAME,
-        ABS(HASH(tal.ACCOUNT, tl.SUBSIDIARY)) AS CHART_OF_ACCOUNT_UNIQUE_ID,
-
+        ABS(HASH(tal.ACCOUNT, tl.SUBSIDIARY)) AS DIM_CHART_OF_ACCOUNT_ID,
+        ABS(HASH(tl.CLASS, tl.SUBSIDIARY)) AS DIM_CLASS_ID,
         -- Transaction line details
         tl.ITEM,
         tl.CLASS,

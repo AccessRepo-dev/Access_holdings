@@ -12,21 +12,31 @@ with source as (
     select
         ABS(HASH(ACCOUNT, SUBSIDIARY)) as DIM_ACCOUNT_ID,
         ID AS BUDGET_ID,
+    
+        -- Core Dimensions
+        SUBSIDIARY AS SUBSIDIARY_ID,
         ACCOUNT AS ACCOUNT_ID,
-        AMOUNT AS AMOUNT,
-        CATEGORY AS CATEGORY_ID,
         CLASS AS CLASS_ID,
+        CATEGORY AS CATEGORY_ID,
+        DEPARTMENT AS DIM_DEPARTMENT_ID,
+        LOCATION AS DIM_LOCATION_ID,
+        PERIOD AS DIM_PERIOD_ID,
+        CURRENCY AS DIM_CURRENCY_ID,
+        CUSTOMER AS CUSTOMER_ID,
+        ITEM AS ITEM_ID,
         CSEG1 AS CSEG1_ID,
         CSEG3 AS CSEG3_ID,
-        --CSEG_CP_STORE_LOC AS CSEG_CP_STORE_LOC_ID,
-        CURRENCY AS CURRENCY_ID,
-        CUSTOMER AS CUSTOMER_ID,
-        DEPARTMENT AS DEPARTMENT_ID,
-        ITEM AS ITEM_ID,
-        LOCATION AS LOCATION_ID,
-        PERIOD AS PERIOD_ID,
-        SUBSIDIARY AS SUBSIDIARY_ID,
+        
+        -- Derived Dimension Hashes
+        ABS(HASH(ACCOUNT, SUBSIDIARY)) AS DIM_CHART_OF_ACCOUNT_ID,
+        ABS(HASH(CLASS, SUBSIDIARY)) AS DIM_CLASS_ID,
+        
+        -- Measure
+        AMOUNT AS AMOUNT,
+        
+        -- Metadata
         LASTMODIFIEDDATE AS LAST_MODIFIED_DATE
+
     from {{ get_silver_source(company, 'netsuite_budgetlegacy') }}
     where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}
