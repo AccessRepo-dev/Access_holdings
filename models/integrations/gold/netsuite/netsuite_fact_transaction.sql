@@ -41,6 +41,7 @@ with source as (
         tl.ITEMTYPE,
         tl.TRANSACTIONLINETYPE,
         tl.ACCOUNTINGLINETYPE,
+        tl.LOCATION,
         tl.SUBSIDIARY,
         tl.CREATEDFROM,
         tal.ACCOUNTINGBOOK,
