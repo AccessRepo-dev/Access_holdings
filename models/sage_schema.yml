@@ -107,3 +107,4 @@ sources:
       - name: sage_gl_detail
       - name: sage_gl_acct_grp
       - name: sage_gl_acct_grp_member
+      - name : sage_gl_acct_grp_hierarchy
