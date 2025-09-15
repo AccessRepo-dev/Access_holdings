@@ -16,18 +16,12 @@ with source as (
         TITLE AS TITLE,
         PERSONALINFO_EMAIL_1 AS EMAIL,
         DEPARTMENTKEY AS DEPARTMENT_ID,
-        DEPARTMENTID AS DEPARTMENT,
+        NULL AS CLASS_ID,
         LOCATIONKEY AS LOCATION_ID,
-        LOCATIONID AS LOCATION,
         MEGAENTITYKEY AS SUBSIDIARY_ID,
-        MEGAENTITYID AS SUBSIDIARY,
-        ENTITY AS ENTITY_ID,
-        EMPTYPEKEY AS EMPLOYEE_TYPE_ID,
         STATUS AS IS_INACTIVE,
         WHENCREATED AS DATE_CREATED,
         WHENMODIFIED AS LAST_MODIFIED_DATE
-  
-
     from {{ get_silver_source(company, 'sage_employee') }}
     
     {% if is_incremental() %}
