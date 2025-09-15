@@ -7,7 +7,7 @@
 
 with source as (
     select
-        ID,
+        ID AS DIM_BUDGET_CATEGORY_ID,
         BUDGETTYPE AS BUDGET_TYPE,
         ISINACTIVE AS IS_INACTIVE,
         NAME

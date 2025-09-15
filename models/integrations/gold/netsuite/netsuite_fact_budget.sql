@@ -10,9 +10,7 @@
 
 with source as (
     select
-        ABS(HASH(ACCOUNT, SUBSIDIARY)) as DIM_ACCOUNT_ID,
         ID AS BUDGET_ID,
-    
         -- Core Dimensions
         SUBSIDIARY AS SUBSIDIARY_ID,
         ACCOUNT AS ACCOUNT_ID,

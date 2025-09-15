@@ -10,7 +10,7 @@
 
 with source as (
     select
-        ID as EMPLOYEE_ID,
+        ID as DIM_EMPLOYEE_ID,
         TITLE as TITLE,
         EMAIL as EMAIL,
         DEPARTMENT as DEPARTMENT_ID,
