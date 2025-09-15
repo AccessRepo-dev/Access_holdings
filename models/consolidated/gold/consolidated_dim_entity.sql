@@ -5,6 +5,7 @@
 ) }}
 
 select
+    DIM_ENTITY_ID,
     ENTITY_ID,
     INTERNAL_ENTITY_ID,
     ENTITY_NUMBER,

@@ -23,6 +23,7 @@ sources:
       - name: TRANSACTIONSTATUS
       - name: BUDGETLEGACY
       - name: BUDGETCATEGORY 
+      - name: CLASSIFICATIONSUBSIDIARYMAP
 
   - name: playfly_netsuite_raw
     database: playfly_raw
@@ -46,6 +47,7 @@ sources:
       - name: TRANSACTIONSTATUS
       - name: BUDGETLEGACY
       - name: BUDGETCATEGORY 
+      - name: CLASSIFICATIONSUBSIDIARYMAP
 
   - name: wagway_silver
     database: wagway_dev
@@ -69,6 +71,7 @@ sources:
       - name: netsuite_transactionstatus
       - name: netsuite_budgetlegacy 
       - name: netsuite_budgetcategory
+      - name: netsuite_classificationsubsidiarymap
 
   - name: playfly_silver
     database: playfly_dev
@@ -92,3 +95,4 @@ sources:
       - name: netsuite_transactionstatus
       - name: netsuite_budgetlegacy
       - name: netsuite_budgetcategory
+      - name: netsuite_classificationsubsidiarymap
