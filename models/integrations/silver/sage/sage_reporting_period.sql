@@ -32,7 +32,10 @@ cleaned as (
 
     -- Core Info
     TRIM(NAME) AS NAME,
-    --TRIM(STATUS) AS STATUS,
+    CASE 
+        WHEN STATUS = 'active' THEN FALSE 
+        ELSE TRUE 
+    END AS STATUS,
     -- Dates
     CAST(START_DATE AS DATE) AS START_DATE,
     CAST(END_DATE AS DATE) AS END_DATE,

@@ -11,12 +11,13 @@
 
 with source as (
     SELECT 
-        RECORDNO AS REPORTING_PERIOD_ID,
+        RECORDNO AS PERIOD_ID,
         NAME AS PERIOD_NAME,
         START_DATE AS START_DATE,
         END_DATE AS END_DATE,
+        NULL AS CLOSED_ON_DATE,
+        STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
-
 
     FROM {{ get_silver_source(company, 'sage_reporting_period') }}
     

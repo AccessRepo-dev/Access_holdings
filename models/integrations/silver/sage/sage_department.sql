@@ -29,8 +29,10 @@ cleaned as (
     -- Core Identifiers
     TRY_CAST(RECORDNO AS INT) AS RECORDNO,
     TRIM(TITLE) AS TITLE,
-
-    TRIM(STATUS) AS STATUS,
+    CASE 
+        WHEN lower(STATUS)='active' THEN FALSE
+        ELSE TRUE 
+    END  AS STATUS,
 
     -- Hierarchy
     TRIM(PARENTID) AS PARENTID,
