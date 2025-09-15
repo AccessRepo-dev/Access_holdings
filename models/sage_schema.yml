@@ -26,6 +26,7 @@ sources:
       - name: GL_ACCT_GRP
       - name: GL_ACCT_GRP_MEMBER
       - name: GL_DETAIL
+      - name: GLACCTGRPHIERARCHY
 
   - name: spotless_silver
     database: spotless_dev
@@ -52,6 +53,7 @@ sources:
       - name: sage_gl_detail
       - name: sage_gl_acct_grp
       - name: sage_gl_acct_grp_member
+      - name: sage_gl_acct_grp_hierarchy 
 
   - name: amh_sage_raw
     database: amh_raw
@@ -78,6 +80,7 @@ sources:
       - name: GL_ACCT_GRP
       - name: GL_ACCT_GRP_MEMBER
       - name: GL_DETAIL
+      - name: GLACCTGRPHIERARCHY
 
   - name: amh_silver
     database: amh_dev
