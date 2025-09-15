@@ -44,7 +44,7 @@ with source as (
     FROM {{ get_silver_source(company, 'sage_gl_entry') }}  e 
     LEFT JOIN  {{ get_silver_source(company, 'sage_gl_detail') }} d on d.GLENTRYKEY = e.recordno
     LEFT JOIN {{ get_silver_source(company, 'sage_gl_batch') }}  b on d.batchkey = b.recordno 
-    LEFT JOIN {{ get_silver_source(company, 'sage_location') }}  l on l.RECORDNO = e.LOCATIONKEY 
+    LEFT JOIN {{ get_silver_source(company, 'sage_location') }}  l on l.LOCATION_ID = e.LOCATIONKEY 
 )
 SELECT *
 FROM source

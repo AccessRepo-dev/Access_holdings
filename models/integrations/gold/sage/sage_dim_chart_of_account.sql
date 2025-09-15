@@ -22,7 +22,7 @@ with source as (
         {{ get_silver_source(company, 'sage_gl_account') }} A
         LEFT JOIN {{ get_silver_source(company, 'sage_gl_entry') }} GE ON GE.ACCOUNTKEY = A.RECORDNO 
         LEFT JOIN {{ get_silver_source(company, 'sage_location') }} L ON GE.LOCATIONKEY = L.RECORDNO
-        LEFT JOIN {{ get_silver_source(company, 'sage_location_entity') }} LE  ON L.ENTITY = LE.ENTITY
+        LEFT JOIN {{ get_silver_source(company, 'sage_location_entity') }} LE  ON L.ENTITY = LE.LOCATIONID
     
 )
 select *

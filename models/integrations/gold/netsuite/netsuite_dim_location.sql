@@ -11,12 +11,8 @@ with source as (
     select
         ID AS LOCATION_ID,
         NAME AS LOCATION_NAME,
-        FULLNAME AS LOCATION_FULL_NAME,
-        LOCATIONTYPE AS LOCATION_TYPE,
         PARENT AS PARENT,
         SUBSIDIARY AS SUBSIDIARY_ID,
-        LATITUDE AS LATITUDE,
-        LONGITUDE AS LONGITUDE,
         ISINACTIVE AS IS_INACTIVE,
         LASTMODIFIEDDATE AS LAST_MODIFIED_DATE
     from {{ get_silver_source(company, 'netsuite_location') }}

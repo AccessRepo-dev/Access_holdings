@@ -10,22 +10,16 @@
 
 with source as (
     select
-        ACCOUNTNUMBER AS ACCOUNT_NUMBER,
-        CLASS AS CLASS_ID,
-        DATECREATED AS DATE_CREATED,
-        CURRENCY AS CURRENCY,
-        DEPARTMENT AS DEPATMENT_ID,
-        EMAIL AS EMAIL,
-        ID AS EMPLOYEE_ID,
-        EMPLOYEETYPE AS EMPLOYEE_TYPE_ID,
-        ENTITYID AS ENTITY_ID,
-        ISINACTIVE AS IS_INACTIVE,
-        JOBDESCRIPTION AS JOB_DESCRIPTION,
-        LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
-        LOCATION AS LOCATION_ID,
-        NULL AS EMPLOYEE_STATUS_ID,
-        SUBSIDIARY AS SUBSIDIARY,
-        TITLE AS TITLE
+        ID as EMPLOYEE_ID,
+        TITLE as TITLE,
+        EMAIL as EMAIL,
+        DEPARTMENT as DEPARTMENT_ID,
+        CLASS as CLASS_ID,
+        LOCATION as LOCATION_ID,
+        SUBSIDIARY AS SUBSIDIARY_ID,
+        ISINACTIVE as IS_INACTIVE,
+        DATECREATED as DATE_CREATED,
+        LASTMODIFIEDDATE as LAST_MODIFIED_DATE
     from {{ get_silver_source(company, 'netsuite_employee') }}
     where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}
