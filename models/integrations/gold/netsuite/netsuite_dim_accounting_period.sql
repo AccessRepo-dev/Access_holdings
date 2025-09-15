@@ -10,7 +10,7 @@
 
 with source as (
     select
-        ID AS PERIOD_ID,
+        ID AS DIM_PERIOD_ID,
         PERIODNAME AS PERIOD_NAME,
         STARTDATE AS START_DATE,
         ENDDATE AS END_DATE,

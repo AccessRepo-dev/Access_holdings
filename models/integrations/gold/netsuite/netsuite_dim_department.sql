@@ -10,7 +10,7 @@
 
 with source as (
     select
-        ID AS DEPARTMENT_ID,
+        ID AS DIM_DEPARTMENT_ID,
         NAME AS DEPARTMENT_NAME,
         PARENT AS PARENT,
         ISINACTIVE AS IS_INACTIVE,

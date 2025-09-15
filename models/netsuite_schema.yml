@@ -24,6 +24,7 @@ sources:
       - name: BUDGETLEGACY
       - name: BUDGETCATEGORY 
       - name: CLASSIFICATIONSUBSIDIARYMAP
+      - name: ACCOUNTSUBSIDIARYMAP
 
   - name: playfly_netsuite_raw
     database: playfly_raw
@@ -48,6 +49,7 @@ sources:
       - name: BUDGETLEGACY
       - name: BUDGETCATEGORY 
       - name: CLASSIFICATIONSUBSIDIARYMAP
+      - name: ACCOUNTSUBSIDIARYMAP
 
   - name: wagway_silver
     database: wagway_dev
@@ -72,6 +74,7 @@ sources:
       - name: netsuite_budgetlegacy 
       - name: netsuite_budgetcategory
       - name: netsuite_classificationsubsidiarymap
+      - name: netsuite_accountsubsidiarymap
 
   - name: playfly_silver
     database: playfly_dev
@@ -96,3 +99,4 @@ sources:
       - name: netsuite_budgetlegacy
       - name: netsuite_budgetcategory
       - name: netsuite_classificationsubsidiarymap
+      - name: netsuite_accountsubsidiarymap

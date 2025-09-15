@@ -9,7 +9,7 @@
 
 with source as (
     select
-        ID AS LOCATION_ID,
+        ID AS DIM_LOCATION_ID,
         NAME AS LOCATION_NAME,
         PARENT AS PARENT,
         SUBSIDIARY AS SUBSIDIARY_ID,
