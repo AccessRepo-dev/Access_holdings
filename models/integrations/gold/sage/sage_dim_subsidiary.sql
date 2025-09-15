@@ -4,31 +4,26 @@
 
 {{ config(
     database = get_target_database(company),
-    materialized = 'incremental',
-    incremental_strategy = 'merge',
-    unique_key = 'DIM_SUBSIDIARY_ID'
+    
 ) }}
 
 with source as (
-    SELECT 
-        RECORDNO AS DIM_SUBSIDIARY_ID,
-        LOCATIONID AS SUBSIDIARY_ID,
-        ENTITY AS SUBSIDIARY_TITLE,
-        FEDERALID AS SUBSIDIARY_NUMBER,
-        STATUS AS IS_INACTIVE,
-        WHENCREATED AS DATE_CREATED,
-        WHENMODIFIED AS LAST_MODIFIED_DATE
+    SELECT DISTINCT
+        ABS(HASH(A.RECORDNO ,L.ENTITY)) AS DIM_ACCOUNT_ID,
+        A.RECORDNO AS ACCOUNT_ID, 
+        A.ACCOUNTNO AS ACCOUNT_NO, 
+        A.TITLE AS ACCOUNT_TITLE,
+        A.ACCOUNTTYPE AS ACCOUNTTYPE,
+        A.NORMALBALANCE AS CREDIT_OR_DEBIT,
+        LE.ENTITY AS SUBSIDIARY_ID, 
+        LE.NAME AS SUBSIDIARY_NAME
 
-
-
-    FROM {{ get_silver_source(company, 'sage_location_entity') }}
+    FROM 
+        {{ get_silver_source(company, 'sage_gl_account') }} A
+        LEFT JOIN {{ get_silver_source(company, 'sage_gl_entry') }} GE ON GE.ACCOUNTKEY = A.RECORDNO 
+        LEFT JOIN {{ get_silver_source(company, 'sage_location') }} L ON GE.LOCATIONKEY = L.RECORDNO
+        LEFT JOIN {{ get_silver_source(company, 'sage_location_entity') }} LE  ON L.ENTITY = LE.ENTITY
     
-    {% if is_incremental() %}
-    and WHENMODIFIED > (
-        SELECT coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
-        FROM {{ this }}
-    )
-    {% endif %}
 )
-SELECT *
-FROM source
+select *
+from source 

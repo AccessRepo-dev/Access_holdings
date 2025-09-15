@@ -10,14 +10,14 @@
 
 with source as (
     select
-        ID AS POSTING_PERIOD_ID,
-        CLOSEDONDATE AS CLOSED_ON_DATE,
-        LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
-        ENDDATE AS END_DATE,
+        ID AS PERIOD_ID,
         PERIODNAME AS PERIOD_NAME,
         STARTDATE AS START_DATE,
-        YEAR AS YEAR
-    from {{ get_silver_source(company, 'netsuite_accountingperiod') }}
+        ENDDATE AS END_DATE,
+        CLOSEDONDATE AS CLOSED_ON_DATE,
+        ISINACTIVE AS IS_INACTIVE, 
+        LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
+        from {{ get_silver_source(company, 'netsuite_accountingperiod') }}
     --where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}
     where LASTMODIFIEDDATE > (
