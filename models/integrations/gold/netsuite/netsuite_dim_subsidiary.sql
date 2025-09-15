@@ -10,7 +10,7 @@
 
 with source as (
     select
-        ID AS SUBSIDIARY_ID,
+        ID AS DIM_SUBSIDIARY_ID,
         NAME AS SUBSIDIARY_NAME,
         FULLNAME AS SUBSIDIARY_FULL_NAME,
         CURRENCY AS CURRENCY_ID,
