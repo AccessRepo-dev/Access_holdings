@@ -45,9 +45,11 @@ cleaned as (
     -- Relationships
 
      {% if company == 'spotless' and sourcesystem == 'sage' %}
+        TRIM(PARENTID) AS PARENTID,
         TRIM(PARENTNAME) AS PARENTNAME,
         TRY_CAST(PARENTKEY AS INT) AS PARENTKEY,
     {% else %}
+        null as PARENTID,
         null AS PARENTNAME,
         null AS PARENTKEY,
     {% endif%}
