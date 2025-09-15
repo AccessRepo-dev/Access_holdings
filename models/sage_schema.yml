@@ -111,8 +111,4 @@ sources:
       - name: sage_gl_detail
       - name: sage_gl_acct_grp
       - name: sage_gl_acct_grp_member
-<<<<<<< HEAD
       - name: sage_gl_acct_grp_hierarchy 
-=======
-      - name : sage_gl_acct_grp_hierarchy
->>>>>>> 8356309e76d238c75a9cf25b4b278029f6f20650
