@@ -29,7 +29,6 @@ cleaned as (
         BUDGETKEY,
         CLASSDIMKEY,
         DEPTKEY,
-        ITEMDIMKEY,
         LOCATIONKEY,
         PERIODKEY,
         WHENMODIFIED,

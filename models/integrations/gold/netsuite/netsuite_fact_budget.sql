@@ -11,11 +11,10 @@
 with source as (
     select
         ID AS BUDGET_ID,
-        -- Core Dimensions
-        SUBSIDIARY AS SUBSIDIARY_ID,
+        CATEGORY AS DIM_BUDGET_HEADER_ID,
+        SUBSIDIARY AS DIM_SUBSIDIARY_ID,
         ACCOUNT AS ACCOUNT_ID,
         CLASS AS CLASS_ID,
-        CATEGORY AS CATEGORY_ID,
         DEPARTMENT AS DIM_DEPARTMENT_ID,
         LOCATION AS DIM_LOCATION_ID,
         PERIOD AS DIM_PERIOD_ID,
@@ -28,9 +27,8 @@ with source as (
         -- Derived Dimension Hashes
         ABS(HASH(ACCOUNT, SUBSIDIARY)) AS DIM_CHART_OF_ACCOUNT_ID,
         ABS(HASH(CLASS, SUBSIDIARY)) AS DIM_CLASS_ID,
-        
-        -- Measure
-        AMOUNT AS AMOUNT,
+    
+        AMOUNT, 
         
         -- Metadata
         LASTMODIFIEDDATE AS LAST_MODIFIED_DATE

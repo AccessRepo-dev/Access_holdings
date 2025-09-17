@@ -7,10 +7,11 @@
 
 with source as (
     select
-        ID AS DIM_BUDGET_CATEGORY_ID,
+        ID AS DIM_BUDGET_HEADER_ID,
         BUDGETTYPE AS BUDGET_TYPE,
-        ISINACTIVE AS IS_INACTIVE,
-        NAME
+        NAME,
+        ISINACTIVE AS IS_INACTIVE
+         
     from {{ get_silver_source(company, 'netsuite_budgetcategory') }}
    
 )
