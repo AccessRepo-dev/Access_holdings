@@ -32,6 +32,13 @@ with source as (
         a.FULLNAME AS ACCOUNT_NAME,
         ABS(HASH(tal.ACCOUNT, tl.SUBSIDIARY)) AS DIM_CHART_OF_ACCOUNT_ID,
         ABS(HASH(tl.CLASS, tl.SUBSIDIARY)) AS DIM_CLASS_ID,
+        map.METRIC_L1,	
+        map.METRIC_L2,
+        map.METRIC_L3,
+        map.METRIC_L4,
+        map.METRIC_L5,
+        map.METRIC_L6,
+
         -- Transaction line details
         tl.ITEM AS DIM_ITEM_ID,
         tl.CLASS,
@@ -86,6 +93,8 @@ with source as (
     ON per.ID = t.POSTINGPERIOD
     LEFT JOIN {{ get_silver_source(company, 'netsuite_transactionstatus') }} txs 
         ON txs.ID = t.status  and txs.trantype = t.type and t.customtype=txs.trancustomtype
+    LEFT JOIN {{ get_silver_source(company, 'netsuite_coa_mapping') }} map
+        ON ABS(HASH(tal.ACCOUNT, tl.SUBSIDIARY)) = ABS(HASH(map.ACCOUNT_ID, map.SUBSIDIARY_ID))
 )
 select *
 from source

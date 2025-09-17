@@ -75,6 +75,7 @@ sources:
       - name: netsuite_budgetcategory
       - name: netsuite_classificationsubsidiarymap
       - name: netsuite_accountsubsidiarymap
+      - name: netsuite_coa_mapping
 
   - name: playfly_silver
     database: playfly_dev
@@ -100,3 +101,4 @@ sources:
       - name: netsuite_budgetcategory
       - name: netsuite_classificationsubsidiarymap
       - name: netsuite_accountsubsidiarymap
+      - name: netsuite_coa_mapping

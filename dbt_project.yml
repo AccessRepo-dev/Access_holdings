@@ -86,6 +86,14 @@ models:
         sage:
           +schema: GOLD
           +materialized: table 
-
+seeds:
+  Access_Holdings:
+    netsuite:
+      +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
+      +schema: SILVER
+    sage:
+      +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
+      +schema: SILVER
+       
 on-run-end:
   - "{{ audit_failures(results) }}"
