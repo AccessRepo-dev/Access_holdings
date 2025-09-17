@@ -5,12 +5,13 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'EMPLOYEE_ID'
+    unique_key = 'DIM_EMPLOYEE_ID'
 ) }}
 
 with source as (
     select
         ID as DIM_EMPLOYEE_ID,
+        ID AS EMPLOYEE_ID,
         TITLE as TITLE,
         EMAIL as EMAIL,
         DEPARTMENT as DEPARTMENT_ID,
