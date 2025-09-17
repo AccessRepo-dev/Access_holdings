@@ -9,18 +9,27 @@
     unique_key = 'DIM_ACCOUNT_ID'
 ) }}
 
-with source as (
+with ACCOUNT_LOCATION AS 
+(    SELECT DISTINCT 
+            ACCOUNTKEY,
+            LOCATIONKEY
+    FROM {{ get_silver_source(company, 'sage_gl_entry') }}
+),
+source as (
     SELECT 
+
+    
         -- Primary Key
-        RECORDNO AS DIM_ACCOUNT_ID,
-
+        RECORDNO AS DIM_CHART_OF_ACCOUNT_ID,
+ 
         -- Core Identifiers
-        ACCOUNTKEY AS ACCOUNT_ID,
+        al.ACCOUNTKEY AS ACCOUNT_ID,
+        ACCOUNTNO AS ACCOUNT_NUMBER,
         GLACCTGRPKEY AS ACCOUNT_GROUP_KEY,
-
+        LOCATIONKEY AS DIM_LOCATION_ID,
         -- Descriptions
         ACCOUNTTITLE AS ACCOUNT_TITLE,
-        ACCOUNTNO AS ACCOUNT_NO,
+        
         ACCOUNTTYPE AS ACCOUNT_TYPE,
         ACCOUNTNORMALBALANCE AS ACCOUNT_NORMAL_BALANCE,
 
@@ -33,7 +42,8 @@ with source as (
         -- Metadata
         _FIVETRAN_SYNCED AS FIVETRAN_SYNCED_AT,
 
-    FROM {{ get_silver_source(company, 'sage_gl_acct_grp_hierarchy') }}
+    FROM {{ get_silver_source(company, 'sage_gl_acct_grp_hierarchy') }} h
+    LEFT JOIN ACCOUNT_LOCATION al ON al.ACCOUNTKEY = h.ACCOUNTKEY
     
     {% if is_incremental() %}
     and _FIVETRAN_SYNCED > (
