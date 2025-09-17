@@ -15,12 +15,11 @@ with source as (
         LE.LOCATIONID AS SUBSIDIARY_NAME,
         LE.NAME AS SUBSIDIARY_FULL_NAME,
         CAST(NULL AS NUMBER) AS CURRENCY_ID,
-        CASE WHEN lower(LE.STATUS)='active' THEN FALSE ELSE TRUE END AS IS_INACTIVE,
-        l.PARENTID AS PARENT_ID,
+        STATUS AS IS_INACTIVE,
+        NULL AS PARENT_ID,
         LE.WHENMODIFIED AS LAST_MODIFIED_DATE
 
     FROM {{ get_silver_source(company, 'sage_location_entity') }} AS LE
-    LEFT JOIN {{ get_silver_source(company, 'sage_location') }} AS L ON LE.LOCATIONID=L.ENTITY
     
     {% if is_incremental() %}
     and WHENMODIFIED > (
