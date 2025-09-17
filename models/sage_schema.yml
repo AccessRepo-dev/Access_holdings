@@ -58,6 +58,7 @@ sources:
       - name: sage_gl_acct_grp_hierarchy
       - name: sage_gl_budget_header
       - name: sage_gl_budget_item 
+      - name: sage_coa_mapping
 
   - name: amh_sage_raw
     database: amh_raw
@@ -116,3 +117,4 @@ sources:
       - name: sage_gl_acct_grp_hierarchy
       - name: sage_gl_budget_header
       - name: sage_gl_budget_item 
+      - name: sage_coa_mapping

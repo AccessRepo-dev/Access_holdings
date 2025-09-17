@@ -44,7 +44,9 @@ with source as (
     FROM {{ get_silver_source(company, 'sage_gl_entry') }}  e 
     LEFT JOIN  {{ get_silver_source(company, 'sage_gl_detail') }} d on d.GLENTRYKEY = e.recordno
     LEFT JOIN {{ get_silver_source(company, 'sage_gl_batch') }}  b on d.batchkey = b.recordno 
-    LEFT JOIN {{ get_silver_source(company, 'sage_location') }}  l on l.LOCATION_ID = e.LOCATIONKEY 
+    LEFT JOIN {{ get_silver_source(company, 'sage_location') }}  l on l.LOCATION_ID = e.LOCATIONKEY
+    LEFT JOIN {{ get_silver_source(company, 'sage_coa_mapping') }}  map on ABS(HASH(e.ACCOUNTKEY,l.LOCATIONKEY))= ABS(HASH(map.ACCOUNT_ID,map.LOCATION_ID))
+
 )
 SELECT *
 FROM source
