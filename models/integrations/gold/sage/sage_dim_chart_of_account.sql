@@ -18,9 +18,9 @@ with ACCOUNT_LOCATION AS
 source as (
     SELECT 
 
-    
+        DISTINCT
         -- Primary Key
-        RECORDNO AS DIM_CHART_OF_ACCOUNT_ID,
+        ABS(HASH(al.ACCOUNTKEY,LOCATIONKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
  
         -- Core Identifiers
         al.ACCOUNTKEY AS ACCOUNT_ID,

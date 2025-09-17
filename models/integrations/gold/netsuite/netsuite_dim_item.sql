@@ -11,7 +11,6 @@
 with source as (
     select
         ID AS DIM_ITEM_ID,
-        ID AS ITEM_ID,
         FULLNAME AS ITEM_NAME,
         DISPLAYNAME AS DISPLAY_NAME,
         DISPLAYNAME AS STORE_DISPLAY_NAME,

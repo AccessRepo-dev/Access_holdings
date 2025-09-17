@@ -14,6 +14,8 @@ with source as (
         ID AS DIM_CURRENCY_ID,
         NAME AS CURRENCY_NAME,
         SYMBOL AS DISPLAY_SYMBOL,
+        null AS IS_INACTIVE,
+        NULL AS IS_BASE_CURRENCY,
         UPDATED_AT AS LAST_MODIFIED_DATE   
 
     from {{ get_silver_source(company, 'sage_currency') }}

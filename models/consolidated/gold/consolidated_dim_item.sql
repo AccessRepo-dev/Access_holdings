@@ -4,164 +4,53 @@
     unique_key = ['DIM_ITEM_ID','SOURCESYSTEM','COMPANY']
 ) }}
 
-select
-    DIM_ITEM_ID
-    ,ITEM_NAME
-    ,DISPLAY_NAME
-    ,DESCRIPTION
-    ,STORE_DISPLAY_NAME
-    ,STORE_DESCRIPTION
-    ,ITEM_TYPE
-    ,SUB_TYPE
-    ,CLASS_ID
-    ,DEPARTMENT_ID
-    ,LOCATION_ID
-    ,SUBSIDIARY_ID
-    ,PARENT_ID
-    ,PRICING_GROUP
-    ,UNITS_TYPE
-    ,INCOME_ACCOUNT
-    ,COSTING_METHOD
-    ,COST
-    ,LAST_PURCHASE_PRICE
-    ,AVERAGE_COST
-    ,TOTAL_QUANTITY_ON_HAND
-    ,TOTAL_VALUE
-    ,SALE_UNIT
-    ,STOCK_UNIT
-    ,SHIPPING_COST
-    ,VENDOR_NAME
-    ,MANUFACTURER
-    ,MAXIMUM_QUANTITY
-    ,WEIGHT
-    ,IS_FULFILLABLE
-    ,IS_INACTIVE
-    ,CREATED_DATE
-    ,LAST_MODIFIED_DATE
-    ,'NETSUITE' AS SOURCESYSTEM,
-    'WAGWAY' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_WAGWAY', 'wagway_dev') }}.gold.NETSUITE_DIM_ITEM
 
-union all
+{% set companies = [
+    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY', 'wagway_dev'),   "schema": "gold", "table": "NETSUITE_DIM_ITEM", "source": "NETSUITE"},
+    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY', 'playfly_dev'), "schema": "gold", "table": "NETSUITE_DIM_ITEM", "source": "NETSUITE"},
+    {"name": "SPOTLESS", "db": env_var('DBT_SPOTLESS', 'spotless_dev'), "schema": "gold", "table": "SAGE_DIM_ITEM", "source": "SAGE"},
+    {"name": "AMH",      "db": env_var('DBT_AMH', 'amh_dev'),         "schema": "gold", "table": "SAGE_DIM_ITEM", "source": "SAGE"}
+] %}
 
-select
-    DIM_ITEM_ID
-    ,ITEM_NAME
-    ,DISPLAY_NAME
-    ,DESCRIPTION
-    ,STORE_DISPLAY_NAME
-    ,STORE_DESCRIPTION
-    ,ITEM_TYPE
-    ,SUB_TYPE
-    ,CLASS_ID
-    ,DEPARTMENT_ID
-    ,LOCATION_ID
-    ,SUBSIDIARY_ID
-    ,PARENT_ID
-    ,PRICING_GROUP
-    ,UNITS_TYPE
-    ,INCOME_ACCOUNT
-    ,COSTING_METHOD
-    ,COST
-    ,LAST_PURCHASE_PRICE
-    ,AVERAGE_COST
-    ,TOTAL_QUANTITY_ON_HAND
-    ,TOTAL_VALUE
-    ,SALE_UNIT
-    ,STOCK_UNIT
-    ,SHIPPING_COST
-    ,VENDOR_NAME
-    ,MANUFACTURER
-    ,MAXIMUM_QUANTITY
-    ,WEIGHT
-    ,IS_FULFILLABLE
-    ,IS_INACTIVE
-    ,CREATED_DATE
-    ,LAST_MODIFIED_DATE
-    ,'NETSUITE' AS SOURCESYSTEM,
-    'PLAYFLY' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_PLAYFLY', 'playfly_dev') }}.gold.NETSUITE_DIM_ITEM
-
-union all
-
-select
-    DIM_ITEM_ID
-    ,ITEM_NAME
-    ,DISPLAY_NAME
-    ,DESCRIPTION
-    ,STORE_DISPLAY_NAME
-    ,STORE_DESCRIPTION
-    ,ITEM_TYPE
-    ,SUB_TYPE
-    ,CLASS_ID
-    ,DEPARTMENT_ID
-    ,LOCATION_ID
-    ,SUBSIDIARY_ID
-    ,PARENT_ID
-    ,PRICING_GROUP
-    ,UNITS_TYPE
-    ,INCOME_ACCOUNT
-    ,COSTING_METHOD
-    ,COST
-    ,LAST_PURCHASE_PRICE
-    ,AVERAGE_COST
-    ,TOTAL_QUANTITY_ON_HAND
-    ,TOTAL_VALUE
-    ,SALE_UNIT
-    ,STOCK_UNIT
-    ,SHIPPING_COST
-    ,VENDOR_NAME
-    ,MANUFACTURER
-    ,MAXIMUM_QUANTITY
-    ,WEIGHT
-    ,IS_FULFILLABLE
-    ,CAST(IS_INACTIVE AS VARCHAR) AS IS_INACTIVE
-    ,CREATED_DATE
-    ,LAST_MODIFIED_DATE
-    ,'SAGE' AS SOURCESYSTEM,
-    'SPOTLESS' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_SPOTLESS', 'spotless_dev') }}.gold.SAGE_DIM_ITEM
-
-union all
-
-select
-    DIM_ITEM_ID
-    ,ITEM_NAME
-    ,DISPLAY_NAME
-    ,DESCRIPTION
-    ,STORE_DISPLAY_NAME
-    ,STORE_DESCRIPTION
-    ,ITEM_TYPE
-    ,SUB_TYPE
-    ,CLASS_ID
-    ,DEPARTMENT_ID
-    ,LOCATION_ID
-    ,SUBSIDIARY_ID
-    ,PARENT_ID
-    ,PRICING_GROUP
-    ,UNITS_TYPE
-    ,INCOME_ACCOUNT
-    ,COSTING_METHOD
-    ,COST
-    ,LAST_PURCHASE_PRICE
-    ,AVERAGE_COST
-    ,TOTAL_QUANTITY_ON_HAND
-    ,TOTAL_VALUE
-    ,SALE_UNIT
-    ,STOCK_UNIT
-    ,SHIPPING_COST
-    ,VENDOR_NAME
-    ,MANUFACTURER
-    ,MAXIMUM_QUANTITY
-    ,WEIGHT
-    ,IS_FULFILLABLE
-    ,CAST(IS_INACTIVE AS VARCHAR) AS IS_INACTIVE
-    ,CREATED_DATE
-    ,LAST_MODIFIED_DATE
-    ,'SAGE' AS SOURCESYSTEM,
-    'AMH' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_AMH', 'amh_dev') }}.gold.SAGE_DIM_ITEM
+{% for c in companies %}
+    select
+        HASH(DIM_ITEM_ID, '{{ c.name }}') AS DIM_ITEM_ID,
+        DIM_ITEM_ID AS ITEM_ID,
+        ITEM_NAME,
+        DISPLAY_NAME,
+        STORE_DISPLAY_NAME,
+        DESCRIPTION,
+        STORE_DESCRIPTION,
+        ITEM_TYPE,
+        SUB_TYPE,
+        CLASS_ID,
+        DEPARTMENT_ID,
+        LOCATION_ID,
+        SUBSIDIARY_ID,
+        PARENT_ID,
+        PRICING_GROUP,
+        UNITS_TYPE,
+        INCOME_ACCOUNT,
+        COSTING_METHOD,
+        COST,
+        LAST_PURCHASE_PRICE,
+        AVERAGE_COST,
+        TOTAL_QUANTITY_ON_HAND,
+        TOTAL_VALUE,
+        SALE_UNIT,
+        STOCK_UNIT,
+        SHIPPING_COST,
+        VENDOR_NAME,
+        MANUFACTURER,
+        MAXIMUM_QUANTITY,
+        WEIGHT,
+        IS_FULFILLABLE,
+        IS_INACTIVE,
+        CREATED_DATE,
+        LAST_MODIFIED_DATE,
+        '{{ c.source }}' AS SOURCESYSTEM,
+        '{{ c.name }}' AS COMPANY,
+        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
+    from {{ c.db }}.{{ c.schema }}.{{ c.table }}
+    {% if not loop.last %} union all {% endif %}
+{% endfor %}

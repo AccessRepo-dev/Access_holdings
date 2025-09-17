@@ -4,52 +4,32 @@
     unique_key = ['DEPARTMENT_ID','SOURCESYSTEM','COMPANY']
 ) }}
 
-select
-    DEPARTMENT_ID,
-    DEPARTMENT_NAME,
-    PARENT,
-    IS_INACTIVE,
-    LAST_MODIFIED_DATE,
-    'NETSUITE' AS SOURCESYSTEM,
-    'WAGWAY' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_WAGWAY', 'wagway_dev') }}.gold.NETSUITE_DIM_DEPARTMENT
+{% set companies = [
+    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY', 'wagway_dev'),   "schema": "gold", "table": "NETSUITE_DIM_DEPARTMENT", "source": "NETSUITE"},
+    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY', 'playfly_dev'), "schema": "gold", "table": "NETSUITE_DIM_DEPARTMENT", "source": "NETSUITE"},
+    {"name": "SPOTLESS", "db": env_var('DBT_SPOTLESS', 'spotless_dev'), "schema": "gold", "table": "SAGE_DIM_DEPARTMENT", "source": "SAGE"},
+    {"name": "AMH",      "db": env_var('DBT_AMH', 'amh_dev'),         "schema": "gold", "table": "SAGE_DIM_DEPARTMENT", "source": "SAGE"}
+] %}
 
-union all
+{% for c in companies %}
+    select
+        HASH(DIM_DEPARTMENT_ID, '{{ c.name }}') AS DIM_DEPARTMENT_ID,
+        DIM_DEPARTMENT_ID AS DEPARTMENT_ID,
+        DEPARTMENT_NAME,
+        PARENT,
+        IS_INACTIVE,
+        LAST_MODIFIED_DATE,
+        '{{ c.source }}' AS SOURCESYSTEM,
+        '{{ c.name }}' AS COMPANY,
+        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
+    from {{ c.db }}.{{ c.schema }}.{{ c.table }}
 
-select
-    DEPARTMENT_ID,
-    DEPARTMENT_NAME,
-    PARENT,
-    IS_INACTIVE,
-    LAST_MODIFIED_DATE,
-    'NETSUITE' AS SOURCESYSTEM,
-    'PLAYFLY' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_PLAYFLY', 'playfly_dev') }}.gold.NETSUITE_DIM_DEPARTMENT
-
-union all
-
-select
-    DEPARTMENT_ID,
-    DEPARTMENT_NAME,
-    PARENT,
-    IS_INACTIVE,
-    LAST_MODIFIED_DATE,
-    'SAGE' AS SOURCESYSTEM,
-    'SPOTLESS' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_SPOTLESS', 'spotless_dev') }}.gold.SAGE_DIM_DEPARTMENT
-
-union all
-
-select
-    DEPARTMENT_ID,
-    DEPARTMENT_NAME,
-    PARENT,
-    IS_INACTIVE,
-    LAST_MODIFIED_DATE,
-    'SAGE' AS SOURCESYSTEM,
-    'AMH' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_AMH', 'amh_dev') }}.gold.SAGE_DIM_DEPARTMENT
+    {% if is_incremental() %}
+    and LAST_MODIFIED_DATE > (
+        SELECT coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
+        FROM {{ this }} 
+        WHERE SOURCESYSTEM = '{{ c.source }}' AND COMPANY = '{{ c.name }}' 
+    )
+    {% endif %}
+    {% if not loop.last %} union all {% endif %}
+{% endfor %}
