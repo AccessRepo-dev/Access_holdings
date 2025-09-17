@@ -6,15 +6,9 @@
     materialized = 'table',
     unique_key = 'TRANSACTIONS_UNIQUE_ID'
 ) }}
-<<<<<<< HEAD
  
 with source as (
     SELECT
-=======
-
-with source as (
-    SELECT 
->>>>>>> 4bfa62a047894ae83e207d96f64fcfa82251ac5d
     -- Identifiers
     CONCAT(CAST(d.RECORDNO AS VARCHAR), '-', CAST(e.RECORDNO AS VARCHAR)) AS TRANSACTIONS_UNIQUE_ID,
     d.BATCHKEY AS TRANSACTION_ID,
@@ -24,13 +18,8 @@ with source as (
     e.TR_TYPE AS TRANSACTION_TYPE,
     e.STATE AS STATUS,
     e.BATCHTITLE AS TITLE,
-<<<<<<< HEAD
     e.STATE AS STATUS_NAME,  
  
-=======
-    e.STATE AS STATUS_NAME,   
-
->>>>>>> 4bfa62a047894ae83e207d96f64fcfa82251ac5d
     -- Accounts
     e.ACCOUNTKEY AS ACCOUNT_ID,
     acc.ACCOUNTNO AS ACCOUNT_NUMBER,
@@ -38,11 +27,7 @@ with source as (
     acc.TITLE AS ACCOUNT_NAME,
     abs(HASH(e.ACCOUNTKEY,e.LOCATIONKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
     e.CLASSID AS DIM_CLASS_ID,
-<<<<<<< HEAD
  
-=======
-
->>>>>>> 4bfa62a047894ae83e207d96f64fcfa82251ac5d
     -- Transaction Line
     e.ITEMDIMKEY AS DIM_ITEM_ID,
     e.CLASSID AS CLASS ,
@@ -54,44 +39,28 @@ with source as (
     e.LOCATIONKEY AS DIM_LOCATION_ID,
     e.LOCATIONKEY AS DIM_SUBSIDIARY_ID,
     TRUE AS IS_POSTING,
-<<<<<<< HEAD
  
-=======
-
->>>>>>> 4bfa62a047894ae83e207d96f64fcfa82251ac5d
     -- Period / Currency
     b.BATCH_DATE AS POSTINGPERIOD,
     e.BATCH_DATE AS POSTING_PERIOD_DATE,
     e.CURRENCY AS CURRENCY,
     CONCAT(e.LOCATIONKEY, '-', b.BATCH_DATE, '-', e.CURRENCY) AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
     NULL AS EXCHANGERATE,
-<<<<<<< HEAD
  
-=======
-
->>>>>>> 4bfa62a047894ae83e207d96f64fcfa82251ac5d
     -- Amounts
     e.TRX_AMOUNT AS NETAMOUNT,
     e.AMOUNT AS AMOUNT,
     e.TRX_AMOUNT AS CONVERTED_NET_AMOUNT,
     NULL AS BOM_QUANTITY,
     NULL AS QUANTITY,
-<<<<<<< HEAD
  
-=======
-
->>>>>>> 4bfa62a047894ae83e207d96f64fcfa82251ac5d
     -- Employee / Customer / Address
     NULL AS EMPLOYEE,
     NULL AS BILLINGADDRESS,
     NULL AS SHIPPINGADDRESS,
     NULL AS BILLINGSTATUS,
     b.BATCH_TITLE AS MEMO,
-<<<<<<< HEAD
  
-=======
-
->>>>>>> 4bfa62a047894ae83e207d96f64fcfa82251ac5d
     -- Dates
     e.ENTRY_DATE AS TRANDATE,
     NULL AS STARTDATE,
@@ -99,7 +68,6 @@ with source as (
     NULL AS DUEDATE,
     NULL AS CLOSEDATE,
     e.WHENMODIFIED AS LASTMODIFIEDDATE
-<<<<<<< HEAD
  
 FROM {{ get_silver_source(company, 'sage_gl_entry') }}  e
 LEFT JOIN {{ get_silver_source(company, 'sage_gl_detail') }} d
@@ -109,17 +77,6 @@ LEFT JOIN {{ get_silver_source(company, 'sage_gl_batch') }}  b
 LEFT JOIN {{ get_silver_source(company, 'sage_gl_account') }} acc
     ON e.ACCOUNTKEY  = acc.RECORDNO
  
-=======
-
-FROM {{ get_silver_source(company, 'sage_gl_entry') }}  e 
-LEFT JOIN {{ get_silver_source(company, 'sage_gl_detail') }} d 
-    ON d.GLENTRYKEY = e.recordno
-LEFT JOIN {{ get_silver_source(company, 'sage_gl_batch') }}  b 
-    ON d.batchkey = b.recordno 
-LEFT JOIN {{ get_silver_source(company, 'sage_gl_account') }} acc 
-    ON e.ACCOUNTKEY  = acc.RECORDNO 
-
->>>>>>> 4bfa62a047894ae83e207d96f64fcfa82251ac5d
 )
 SELECT *
 FROM source
