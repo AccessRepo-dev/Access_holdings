@@ -14,22 +14,21 @@ with source as (
             COALESCE(CAST(tl.TRANSACTION AS VARCHAR), '0'), '-', 
             COALESCE(CAST(tl.ID AS VARCHAR), '0')
         ) AS TRANSACTIONS_UNIQUE_ID,
-        tl.TRANSACTION,
-        tl.ID,
-        t.ID AS T_ID,
-        t.TRANSACTIONNUMBER,
+        tl.TRANSACTION AS TRANSACTION_ID,
+        tl.ID AS TRANSACTION_LINE_ID,
+        t.TRANSACTIONNUMBER AS TRANSACTION_NUMBER,
         t.TRANID,
-        t.TYPE,
+        t.TYPE AS TRANSACTION_TYPE,
         t.STATUS,
         t.TITLE,
-        txs.NAME,
+        txs.NAME AS STATUS_NAME,
 
         -- Chart of accounts / account details
-        tal.ACCOUNT,
-        tal.TRANSACTIONLINE,
-        tal.POSTING,
-        a.ACCTNUMBER,
-        a.ACCTTYPE,
+        tal.ACCOUNT AS ACCOUNT_ID,
+        --tal.TRANSACTIONLINE AS TRANSACTION_LINE_ID,
+        tal.POSTING AS IS_POSTING,
+        a.ACCTNUMBER AS ACCOUNT_NUMBER,
+        a.ACCTTYPE AS ACCOUNT_TYPE,
         a.FULLNAME AS ACCOUNT_NAME,
         ABS(HASH(tal.ACCOUNT, tl.SUBSIDIARY)) AS DIM_CHART_OF_ACCOUNT_ID,
         ABS(HASH(tl.CLASS, tl.SUBSIDIARY)) AS DIM_CLASS_ID,
@@ -41,15 +40,15 @@ with source as (
         map.METRIC_L6,
 
         -- Transaction line details
-        tl.ITEM,
+        tl.ITEM AS DIM_ITEM_ID,
         tl.CLASS,
-        tl.DEPARTMENT,
-        tl.ENTITY,
-        tl.ITEMTYPE,
-        tl.TRANSACTIONLINETYPE,
-        tl.ACCOUNTINGLINETYPE,
-        tl.LOCATION,
-        tl.SUBSIDIARY,
+        tl.DEPARTMENT AS DIM_DEPARTMENT_ID,
+        tl.ENTITY AS DIM_ENTITY_ID,
+        --tl.ITEMTYPE AS ITEM_TYPE,
+        tl.TRANSACTIONLINETYPE AS TRANSACTION_LINE_TYPE,
+        tl.ACCOUNTINGLINETYPE AS ACCOUNTING_LINE_TYPE,
+        tl.LOCATION AS DIM_LOCATION_ID,
+        tl.SUBSIDIARY AS DIM_SUBSIDIARY_ID,
         tl.CREATEDFROM,
         tal.ACCOUNTINGBOOK,
 
@@ -84,9 +83,9 @@ with source as (
 
         
     FROM {{ get_silver_source(company, 'netsuite_transactionline') }}  tL
-    JOIN  {{ get_silver_source(company, 'netsuite_transaction') }} t 
+    LEFT JOIN  {{ get_silver_source(company, 'netsuite_transaction') }} t 
     ON t.ID = tl.TRANSACTION
-    JOIN {{ get_silver_source(company, 'netsuite_transactionaccountingline') }} tal 
+    LEFT JOIN {{ get_silver_source(company, 'netsuite_transactionaccountingline') }} tal 
     ON  tl.transaction = tal.transaction and tl.id=tal.transactionline 
     LEFT JOIN {{ get_silver_source(company, 'netsuite_account') }} a 
     ON a.ID = tal.ACCOUNT

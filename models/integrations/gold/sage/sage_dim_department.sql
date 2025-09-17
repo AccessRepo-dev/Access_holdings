@@ -11,7 +11,7 @@
 
 with source as (
     select
-        RECORDNO AS DEPARTMENT_ID,
+        RECORDNO AS DIM_DEPARTMENT_ID,
         TITLE AS DEPARTMENT_NAME,
         PARENTKEY AS PARENT,
         STATUS AS IS_INACTIVE,

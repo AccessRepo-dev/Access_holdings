@@ -10,9 +10,9 @@
 
 with source as (
     select
-        RECORDNO AS DIM_BUDGET_CATEGORY_ID,
-        BUDGETID,
-        DESCRIPTION,
+        RECORDNO AS DIM_BUDGET_HEADER_ID,
+        NULL AS BUDGET_TYPE,
+        DESCRIPTION AS NAME,
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
     from {{ get_silver_source(company, 'sage_gl_budget_header') }}

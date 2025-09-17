@@ -4,17 +4,19 @@
 
 {{ config(
     database = get_target_database(company),
-    materialized = 'table'
+    materialized = 'incremental',
+    incremental_strategy = 'merge',
+    unique_key = 'DIM_SUBSIDIARY_ID'
 ) }}
 
 with source as (
     SELECT 
-        ABS(HASH(LE.LOCATIONID))  AS SUBSIDIARY_ID,
+        LE.RECORDNO  AS DIM_SUBSIDIARY_ID,
         LE.LOCATIONID AS SUBSIDIARY_NAME,
         LE.NAME AS SUBSIDIARY_FULL_NAME,
         CAST(NULL AS NUMBER) AS CURRENCY_ID,
         CASE WHEN lower(LE.STATUS)='active' THEN FALSE ELSE TRUE END AS IS_INACTIVE,
-        ABS(HASH(L.PARENTID)) AS PARENT_ID,
+        l.PARENTID AS PARENT_ID,
         LE.WHENMODIFIED AS LAST_MODIFIED_DATE
 
     FROM {{ get_silver_source(company, 'sage_location_entity') }} AS LE

@@ -11,7 +11,7 @@
 
 with source as (
     SELECT 
-        RECORDNO AS PERIOD_ID,
+        RECORDNO AS DIM_PERIOD_ID,
         NAME AS PERIOD_NAME,
         START_DATE AS START_DATE,
         END_DATE AS END_DATE,
