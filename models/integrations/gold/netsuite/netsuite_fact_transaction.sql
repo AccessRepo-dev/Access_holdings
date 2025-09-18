@@ -59,13 +59,11 @@ with source as (
         tl.ACCOUNTINGLINETYPE AS ACCOUNTING_LINE_TYPE,
         tl.LOCATION AS DIM_LOCATION_ID,
         tl.SUBSIDIARY AS DIM_SUBSIDIARY_ID,
-        tl.CREATEDFROM,
-        tal.ACCOUNTINGBOOK,
         
         -- Period / currency / consolidation
         t.POSTINGPERIOD,
         per.CLOSEDONDATE AS POSTING_PERIOD_DATE,
-        t.CURRENCY,
+        CAST(t.CURRENCY AS VARCHAR) AS CURRENCY,
         CONCAT(tl.SUBSIDIARY, '-', t.POSTINGPERIOD, '-', t.CURRENCY) AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
         t.EXCHANGERATE,
         
@@ -140,8 +138,6 @@ derived_metric_rows as (
         NULL AS ACCOUNTING_LINE_TYPE,
         NULL AS DIM_LOCATION_ID,
         NULL AS DIM_SUBSIDIARY_ID,
-        NULL AS CREATEDFROM,
-        NULL AS ACCOUNTINGBOOK,
         NULL AS POSTINGPERIOD,
         NULL AS POSTING_PERIOD_DATE,
         NULL AS CURRENCY,
@@ -167,6 +163,66 @@ derived_metric_rows as (
     UNION ALL
     {% endif %}
     {% endfor %}
+<<<<<<< HEAD
+
+    
+    UNION ALL
+    
+    -- Add Equity record with Net Income as METRIC_L2
+    SELECT
+        CAST(-{{ derived_metrics | length + 1 }} AS VARCHAR) AS TRANSACTIONS_UNIQUE_ID,  -- Continue negative sequence
+        NULL AS TRANSACTION_ID,
+        NULL AS TRANSACTION_LINE_ID,
+        NULL AS TRANSACTION_NUMBER,
+        NULL AS TRANID,
+        NULL AS TRANSACTION_TYPE,
+        NULL AS STATUS,
+        NULL AS TITLE,
+        NULL AS STATUS_NAME,
+        NULL AS ACCOUNT_ID,
+        NULL AS IS_POSTING,
+        NULL AS ACCOUNT_NUMBER,
+        NULL AS ACCOUNT_TYPE,
+        NULL AS ACCOUNT_NAME,
+        NULL AS DIM_CHART_OF_ACCOUNT_ID,
+        NULL AS DIM_CLASS_ID,
+        'Equity' AS METRIC_L1,
+        'Net Income' AS METRIC_L2,
+        NULL AS METRIC_L3,
+        NULL AS METRIC_L4,
+        NULL AS METRIC_L5,
+        NULL AS METRIC_L6,
+        NULL AS DIM_ITEM_ID,
+        NULL AS CLASS,
+        NULL AS DIM_DEPARTMENT_ID,
+        NULL AS DIM_ENTITY_ID,
+        NULL AS TRANSACTION_LINE_TYPE,
+        NULL AS ACCOUNTING_LINE_TYPE,
+        NULL AS DIM_LOCATION_ID,
+        NULL AS DIM_SUBSIDIARY_ID,
+        NULL AS POSTINGPERIOD,
+        NULL AS POSTING_PERIOD_DATE,
+        NULL AS CURRENCY,
+        NULL AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
+        NULL AS EXCHANGERATE,
+        NULL AS NETAMOUNT,
+        NULL AS AMOUNT,
+        NULL AS CONVERTED_NET_AMOUNT,
+        NULL AS BOM_QUANTITY,
+        NULL AS QUANTITY,
+        NULL AS EMPLOYEE,
+        NULL AS BILLINGADDRESS,
+        NULL AS SHIPPINGADDRESS,
+        NULL AS BILLINGSTATUS,
+        NULL AS MEMO,
+        NULL AS TRANDATE,
+        NULL AS STARTDATE,
+        NULL AS ENDDATE,
+        NULL AS DUEDATE,
+        NULL AS CLOSEDATE,
+        NULL AS LASTMODIFIEDDATE
+=======
+>>>>>>> 3be42d1b8f1091e9d42479f4d95fb8871f0a6448
 ),
 
 -- Final union of actual data and derived metrics
