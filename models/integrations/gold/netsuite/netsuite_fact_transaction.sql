@@ -163,6 +163,7 @@ derived_metric_rows as (
     UNION ALL
     {% endif %}
     {% endfor %}
+<<<<<<< HEAD
 
     
     UNION ALL
@@ -220,6 +221,8 @@ derived_metric_rows as (
         NULL AS DUEDATE,
         NULL AS CLOSEDATE,
         NULL AS LASTMODIFIEDDATE
+=======
+>>>>>>> 3be42d1b8f1091e9d42479f4d95fb8871f0a6448
 ),
 
 -- Final union of actual data and derived metrics
