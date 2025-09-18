@@ -4,61 +4,34 @@
     unique_key = ['SUBSIDIARY_ID','SOURCESYSTEM','COMPANY']
 ) }}
 
-select
-    SUBSIDIARY_ID,
-    SUBSIDIARY_NAME,
-    SUBSIDIARY_FULL_NAME,
-    CURRENCY_ID,
-    IS_INACTIVE,
-    PARENT_ID,
-    LAST_MODIFIED_DATE,
-    'NETSUITE' AS SOURCESYSTEM,
-    'WAGWAY' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_WAGWAY', 'wagway_dev') }}.gold.NETSUITE_DIM_SUBSIDIARY
+{% set companies = [
+    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY', 'wagway_dev'),   "schema": "gold", "table": "NETSUITE_DIM_SUBSIDIARY", "source": "NETSUITE"},
+    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY', 'playfly_dev'), "schema": "gold", "table": "NETSUITE_DIM_SUBSIDIARY", "source": "NETSUITE"},
+    {"name": "SPOTLESS", "db": env_var('DBT_SPOTLESS', 'spotless_dev'), "schema": "gold", "table": "SAGE_DIM_SUBSIDIARY", "source": "SAGE"},
+    {"name": "AMH",      "db": env_var('DBT_AMH', 'amh_dev'),         "schema": "gold", "table": "SAGE_DIM_SUBSIDIARY", "source": "SAGE"}
+] %}
 
+{% for c in companies %}
+    select
+        HASH(DIM_SUBSIDIARY_ID, '{{ c.name }}') as DIM_SUBSIDIARY_ID,
+        DIM_SUBSIDIARY_ID as SUBSIDIARY_ID,
+        SUBSIDIARY_NAME,
+        SUBSIDIARY_FULL_NAME,
+        CURRENCY_ID,
+        IS_INACTIVE,
+        PARENT_ID,
+        LAST_MODIFIED_DATE,
+        '{{ c.source }}' as SOURCESYSTEM,
+        '{{ c.name }}' as COMPANY,
+        current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
+    from {{ c.db }}.{{ c.schema }}.{{ c.table }}
 
-union all
-
-select
-    SUBSIDIARY_ID,
-    SUBSIDIARY_NAME,
-    SUBSIDIARY_FULL_NAME,
-    CURRENCY_ID,
-    IS_INACTIVE,
-    PARENT_ID,
-    LAST_MODIFIED_DATE,
-    'NETSUITE' AS SOURCESYSTEM,
-    'PLAYFLY' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_PLAYFLY', 'playfly_dev') }}.gold.NETSUITE_DIM_SUBSIDIARY
-
-union all
-
-select
-    SUBSIDIARY_ID,
-    SUBSIDIARY_NAME,
-    SUBSIDIARY_FULL_NAME,
-    CURRENCY_ID,
-    IS_INACTIVE,
-    PARENT_ID,
-    LAST_MODIFIED_DATE,
-    'SAGE' AS SOURCESYSTEM,
-    'SPOTLESS' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_SPOTLESS', 'spotless_dev') }}.gold.SAGE_DIM_SUBSIDIARY
-
-union all
-
-select
-    SUBSIDIARY_ID,
-    SUBSIDIARY_NAME,
-    SUBSIDIARY_FULL_NAME,
-    CURRENCY_ID,
-    IS_INACTIVE,
-    PARENT_ID,
-    LAST_MODIFIED_DATE,
-    'SAGE' AS SOURCESYSTEM,
-    'AMH' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_AMH', 'amh_dev') }}.gold.SAGE_DIM_SUBSIDIARY
+    {% if is_incremental() %}
+    where LAST_MODIFIED_DATE > (
+        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
+        from {{ this }}
+        where SOURCESYSTEM = '{{ c.source }}' and COMPANY = '{{ c.name }}'
+    )
+    {% endif %}
+    {% if not loop.last %} union all {% endif %}
+{% endfor %}

@@ -5,7 +5,7 @@
 ) }}
 
 select
-    CURRENCY_ID,
+    DIM_CURRENCY_ID,
     CURRENCY_NAME,
     DISPLAY_SYMBOL,
     IS_INACTIVE,
@@ -19,7 +19,7 @@ from {{ env_var('DBT_WAGWAY', 'wagway_dev') }}.gold.NETSUITE_DIM_CURRENCY
 union all
 
 select
-    CURRENCY_ID,
+    DIM_CURRENCY_ID,
     CURRENCY_NAME,
     DISPLAY_SYMBOL,
     IS_INACTIVE,

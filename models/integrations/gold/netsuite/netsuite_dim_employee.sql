@@ -11,7 +11,6 @@
 with source as (
     select
         ID as DIM_EMPLOYEE_ID,
-        ID AS EMPLOYEE_ID,
         TITLE as TITLE,
         EMAIL as EMAIL,
         DEPARTMENT as DEPARTMENT_ID,
