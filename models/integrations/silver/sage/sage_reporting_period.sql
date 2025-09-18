@@ -15,12 +15,19 @@ with source_data as (
     from {{ get_raw_source(company, sourcesystem, 'REPORTING_PERIOD') }}
     
     {% if is_incremental() %}
-    where cast(WHENMODIFIED as timestamp_ntz) > (
-        select coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
-    )
-    or _FIVETRAN_DELETED = true
+    where 
+        (
+            NAME ILIKE '%MONTH%' 
+            and cast(WHENMODIFIED as timestamp_ntz) > (
+                select coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz)
+                from {{ this }}
+            )
+        )
+        or _FIVETRAN_DELETED = true
+    {% else %}
+    where NAME ILIKE '%MONTH%'
     {% endif %}
+
 
 ),
 
@@ -38,6 +45,7 @@ cleaned as (
     END AS STATUS,
     -- Dates
     CAST(START_DATE AS DATE) AS START_DATE,
+    CAST(YEAR(START_DATE) || LPAD(MONTH(START_DATE), 2, '0') || LPAD(DAY(START_DATE), 2, '0')AS INTEGER) AS DATE_KEY,
     CAST(END_DATE AS DATE) AS END_DATE,
     CAST(WHENMODIFIED AS TIMESTAMP_NTZ) AS WHENMODIFIED,
 
