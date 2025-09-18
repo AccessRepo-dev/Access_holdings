@@ -9,48 +9,36 @@
     unique_key = 'DIM_ACCOUNT_ID'
 ) }}
 
-with ACCOUNT_LOCATION AS 
-(    SELECT DISTINCT 
-            ACCOUNTKEY,
-            LOCATIONKEY
-    FROM {{ get_silver_source(company, 'sage_gl_entry') }}
-),
-source as (
+
+with source as (
     SELECT 
 
-        DISTINCT
-        -- Primary Key
-        ABS(HASH(al.ACCOUNTKEY,LOCATIONKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
- 
+       
+        RECORDNO AS DIM_CHART_OF_ACCOUNT_ID,
         -- Core Identifiers
-        al.ACCOUNTKEY AS ACCOUNT_ID,
+        RECORDNO AS ACCOUNT_ID,
         ACCOUNTNO AS ACCOUNT_NUMBER,
-        GLACCTGRPKEY AS ACCOUNT_GROUP_KEY,
-        LOCATIONKEY AS DIM_LOCATION_ID,
-        -- Descriptions
-        ACCOUNTTITLE AS ACCOUNT_TITLE,
-        
+        TITLE AS ACCOUNT_NAME,
+        null AS MAIN_ACCOUNT_NAME,
+        null AS ACCOUNT_NAME_SUBCATEGORY_1,
+        null AS ACCOUNT_NAME_SUBCATEGORY_2,
+        null AS ACCOUNT_NAME_SUBCATEGORY_3,
+        null AS ACCOUNT_DESCRIPTION,
+        null AS ACCOUNT_PARENT_ID,
         ACCOUNTTYPE AS ACCOUNT_TYPE,
-        ACCOUNTNORMALBALANCE AS ACCOUNT_NORMAL_BALANCE,
+        null AS DISPLAY_NAME,
+        null  AS DISPLAY_NAME_WITH_HIERARCHY,
+        null AS SUBSIDIARY_ID,
+        null AS SUBSIDIARY_PARENT_ID,
+        null AS SUBSIDIARY_NAME,
+        null AS SUBSIDIARY_FULL_NAME,
+        null AS DIM_CURRENCY_ID
 
-        GLACCTGRPNAME AS ACCOUNT_GROUP_NAME,
-        GLACCTGRPTITLE AS ACCOUNT_GROUP_TITLE,
-        GLACCTGRPMEMBERTYPE AS ACCOUNT_GROUP_MEMBER_TYPE,
-        GLACCTGRPHOWCREATED AS ACCOUNT_GROUP_HOW_CREATED,
-        GLACCTGRPNORMALBALANCE AS ACCOUNT_GROUP_NORMAL_BALANCE,
 
-        -- Metadata
-        _FIVETRAN_SYNCED AS FIVETRAN_SYNCED_AT,
-
-    FROM {{ get_silver_source(company, 'sage_gl_acct_grp_hierarchy') }} h
-    LEFT JOIN ACCOUNT_LOCATION al ON al.ACCOUNTKEY = h.ACCOUNTKEY
-    
-    {% if is_incremental() %}
-    and _FIVETRAN_SYNCED > (
-        SELECT coalesce(max(FIVETRAN_SYNCED_AT), '1900-01-01')
-        FROM {{ this }}
-    )
-    {% endif %}
+    FROM {{ get_silver_source(company, 'sage_gl_account') }} 
+  
 )
 SELECT *
 FROM source
+
+

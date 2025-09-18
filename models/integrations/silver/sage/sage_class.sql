@@ -28,7 +28,10 @@ cleaned as (
 
     -- Core Identifiers
     TRIM(NAME) AS NAME,
-    TRIM(STATUS) AS STATUS,
+    CASE WHEN STATUS like 'active%' THEN False 
+    ELSE true
+    END AS STATUS,
+    PARENTKEY,
     TRY_CAST(RECORDNO AS INT) AS RECORDNO,
 
     -- Dates
