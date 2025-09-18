@@ -10,7 +10,7 @@
 
 SELECT
         -- Derived Dimension Key
-    ABS(HASH(a.ID, m.SUBSIDIARY)) AS DIM_CHART_OF_ACCOUNT_ID,
+    ABS(HASH(a.ID,)) AS DIM_CHART_OF_ACCOUNT_ID,
 
     -- Account (Core)
     a.ID AS ACCOUNT_ID,
@@ -34,13 +34,12 @@ SELECT
     s.NAME AS SUBSIDIARY_NAME,
     s.FULLNAME AS SUBSIDIARY_FULL_NAME,
 
-    -- Other Dimensions
-    a.LOCATION AS LOCATION_ID,
-    a.DEPARTMENT AS DEPARTMENT_ID,
     COALESCE(a.CURRENCY, s.CURRENCY) AS DIM_CURRENCY_ID
 
 FROM {{ get_silver_source(company, 'netsuite_account') }} as a
 LEFT JOIN {{ get_silver_source(company, 'netsuite_accountsubsidiarymap') }} m ON a.ID = m.ACCOUNT
 LEFT JOIN  {{ get_silver_source(company, 'netsuite_subsidiary') }} s ON s.ID = m.SUBSIDIARY
+
+
    
 
