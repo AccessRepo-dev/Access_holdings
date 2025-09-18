@@ -15,7 +15,7 @@
     select
         HASH(TRANSACTIONS_UNIQUE_ID, '{{ c.name }}') as FACT_TRANSACTION_ID,
         TRANSACTIONS_UNIQUE_ID ,
-        TRANSACTION_ID ,
+        CAST(TRANSACTION_ID AS INT) ,
         TRANSACTION_LINE_ID,
         TRANSACTION_NUMBER,
         TRANID,
@@ -24,7 +24,7 @@
         TITLE,
         STATUS_NAME,
         ACCOUNT_ID,
-        ACCOUNT_NUMBER ,
+        CAST(ACCOUNT_NUMBER AS VARCHAR) ,
         ACCOUNT_TYPE,
         ACCOUNT_NAME,
         HASH(DIM_CHART_OF_ACCOUNT_ID,'{{ c.name }}') AS  DIM_CHART_OF_ACCOUNT_ID,
