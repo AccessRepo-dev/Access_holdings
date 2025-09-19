@@ -1,19 +1,19 @@
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = ['DEPARTMENT_ID','SOURCESYSTEM','COMPANY']
+    unique_key = 'DIM_DEPARTMENT_ID'
 ) }}
 
 {% set companies = [
-    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY', 'wagway_dev'),   "schema": "gold", "table": "NETSUITE_DIM_DEPARTMENT", "source": "NETSUITE"},
-    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY', 'playfly_dev'), "schema": "gold", "table": "NETSUITE_DIM_DEPARTMENT", "source": "NETSUITE"},
-    {"name": "SPOTLESS", "db": env_var('DBT_SPOTLESS', 'spotless_dev'), "schema": "gold", "table": "SAGE_DIM_DEPARTMENT", "source": "SAGE"},
-    {"name": "AMH",      "db": env_var('DBT_AMH', 'amh_dev'),         "schema": "gold", "table": "SAGE_DIM_DEPARTMENT", "source": "SAGE"}
+    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY'),"source": "NETSUITE"},
+    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY'), "source": "NETSUITE"},
+    {"name": "SPOTLESS", "db": env_var('DBT_SPOTLESS'), "source": "SAGE"},
+    {"name": "AMH",      "db": env_var('DBT_AMH'), "source": "SAGE"}
 ] %}
 
 {% for c in companies %}
     select
-        HASH(DIM_DEPARTMENT_ID, '{{ c.name }}') AS DIM_DEPARTMENT_ID,
+        HASH(DIM_DEPARTMENT_ID, '{{ c.name }}','{{c.source}}') AS DIM_DEPARTMENT_ID,
         DIM_DEPARTMENT_ID AS DEPARTMENT_ID,
         DEPARTMENT_NAME,
         PARENT,
@@ -22,7 +22,7 @@
         '{{ c.source }}' AS SOURCESYSTEM,
         '{{ c.name }}' AS COMPANY,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-    from {{ c.db }}.{{ c.schema }}.{{ c.table }}
+    from {{ c.db }}.GOLD.DIM_DEPARTMENT
 
     {% if is_incremental() %}
     and LAST_MODIFIED_DATE > (

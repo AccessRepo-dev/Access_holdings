@@ -1,21 +1,20 @@
 {{ config(
     materialized = 'incremental',
+    alias = 'dim_chart_of_account',
     incremental_strategy = 'merge',
-    unique_key = ['ACCOUNT_ID','SOURCESYSTEM','COMPANY']
+    unique_key = 'DIM_CHART_OF_ACCOUNT_ID'
 ) }}
 
 {% set companies = [
-    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY', 'wagway_dev'),   "schema": "gold", "table": "NETSUITE_DIM_CHART_OF_ACCOUNT", "source": "NETSUITE"},
-    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY', 'playfly_dev'), "schema": "gold", "table": "NETSUITE_DIM_CHART_OF_ACCOUNT", "source": "NETSUITE"},
-    {"name": "SPOTLESS", "db": env_var('DBT_SPOTLESS', 'spotless_dev'), "schema": "gold", "table": "SAGE_DIM_CHART_OF_ACCOUNT", "source": "SAGE"},
-    {"name": "AMH",      "db": env_var('DBT_AMH', 'amh_dev'),         "schema": "gold", "table": "SAGE_DIM_CHART_OF_ACCOUNT", "source": "SAGE"}
+    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY'), "source": "NETSUITE"},
+    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY'), "source": "NETSUITE"},
+    {"name": "SPOTLESS", "db": env_var('DBT_SPOTLESS'), "source": "SAGE"},
+    {"name": "AMH",      "db": env_var('DBT_AMH'), "source": "SAGE"}
 ] %}
 
 {% for c in companies %}
     select
-        ABS(HASH(DIM_CHART_OF_ACCOUNT_ID, '{{ c.name }}')) as DIM_CHART_OF_ACCOUNT_ID,
-
-        -- Account (Core)
+        ABS(HASH(DIM_CHART_OF_ACCOUNT_ID, '{{ c.name }}','{{c.source}}')) as DIM_CHART_OF_ACCOUNT_ID,
         DIM_CHART_OF_ACCOUNT_ID AS ACCOUNT_ID,
         ACCOUNT_NUMBER,
         ACCOUNT_NAME,
@@ -26,23 +25,17 @@
         ACCOUNT_DESCRIPTION,
         ACCOUNT_PARENT_ID,
         ACCOUNT_TYPE,
-
-        -- Account Display
         DISPLAY_NAME,
         DISPLAY_NAME_WITH_HIERARCHY,
-
-        -- Subsidiary
         SUBSIDIARY_ID,
         SUBSIDIARY_PARENT_ID,
         SUBSIDIARY_NAME,
         SUBSIDIARY_FULL_NAME,
-
         DIM_CURRENCY_ID,
-
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
-    from {{ c.db }}.{{ c.schema }}.{{ c.table }}
+    from {{ c.db }}.GOLD.DIM_CHART_OF_ACCOUNT
 
     {% if is_incremental() %}
     where LAST_MODIFIED_DATE > (
