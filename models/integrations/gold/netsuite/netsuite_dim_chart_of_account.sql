@@ -11,7 +11,7 @@
 
 SELECT
         -- Derived Dimension Key
-    ABS(HASH(a.ID)) AS DIM_CHART_OF_ACCOUNT_ID,
+    HASH(a.ID, m.SUBSIDIARY) AS DIM_CHART_OF_ACCOUNT_ID,
 
     -- Account (Core)
     a.ID AS ACCOUNT_ID,

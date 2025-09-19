@@ -49,7 +49,6 @@ with source as (
     CAST(map.METRIC_L6 AS VARCHAR) AS METRIC_L6,    
     -- Transaction Line
     e.ITEMDIMKEY AS DIM_ITEM_ID,
-    e.CLASSDIMKEY AS CLASS,
     e.DEPARTMENTKEY AS DIM_DEPARTMENT_ID,
     CAST(NULL AS INT) AS DIM_ENTITY_ID,
     --NULL AS ITEM_TYPE,
@@ -60,7 +59,7 @@ with source as (
     TRUE AS IS_POSTING,
  
     -- Period / Currency
-    CAST(YEAR(e.BATCH_DATE) || LPAD(MONTH(e.BATCH_DATE), 2, '0') || '01' AS INTEGER) AS POSTINGPERIOD,
+    per.RECORDNO AS DIM_PERIOD_ID,
     e.BATCH_DATE AS POSTING_PERIOD_DATE,
     e.CURRENCY AS CURRENCY,
     CONCAT(e.LOCATIONKEY, '-', b.BATCH_DATE, '-', e.CURRENCY) AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
@@ -97,6 +96,8 @@ LEFT JOIN {{ get_silver_source(company, 'GL_ACCOUNT') }} acc
     ON e.ACCOUNTKEY  = acc.RECORDNO
 LEFT JOIN {{ get_silver_source(company, 'SAGE_COA_MAPPING') }} map
     ON ABS(HASH(e.ACCOUNTKEY, e.LOCATIONKEY)) = ABS(HASH(map.ACCOUNT_ID, map.LOCATION_ID))
+LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
+    ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
 ),
 
 -- Create derived metric rows
@@ -125,7 +126,6 @@ derived_metric_rows as (
         NULL AS METRIC_L5,
         NULL AS METRIC_L6,
         NULL AS DIM_ITEM_ID,
-        NULL AS CLASS,
         NULL AS DIM_DEPARTMENT_ID,
         NULL AS DIM_ENTITY_ID,
         NULL AS TRANSACTION_LINE_TYPE,

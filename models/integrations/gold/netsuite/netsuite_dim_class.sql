@@ -11,16 +11,15 @@
 
 with source as (
     SELECT
-        ABS(HASH(c.ID,s.SUBSIDIARY)) AS DIM_CLASS_ID,
+        c.ID AS DIM_CLASS_ID,
         ID AS CLASS_ID,
-        s.SUBSIDIARY AS SUBSIDIARY_ID,
         NAME,
         FULLNAME,
         PARENT AS PARENT_ID,
         ISINACTIVE AS IS_INACTIVE,
         LASTMODIFIEDDATE AS LAST_MODIFIED_DATE
     from {{ get_silver_source(company, 'CLASSIFICATION') }} c
-    LEFT JOIN {{ get_silver_source(company, 'CLASSIFICATIONSUBSIDIARYMAP') }} s ON c.ID = s.CLASSIFICATION
+
     {% if is_incremental() %}
     and LASTMODIFIEDDATE > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')

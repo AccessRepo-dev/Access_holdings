@@ -42,8 +42,8 @@ with source as (
         a.ACCTNUMBER AS ACCOUNT_NUMBER,
         a.ACCTTYPE AS ACCOUNT_TYPE,
         a.FULLNAME AS ACCOUNT_NAME,
-        ABS(HASH(tal.ACCOUNT, tl.SUBSIDIARY)) AS DIM_CHART_OF_ACCOUNT_ID,
-        ABS(HASH(tl.CLASS, tl.SUBSIDIARY)) AS DIM_CLASS_ID,
+        HASH(tal.ACCOUNT, tl.SUBSIDIARY) AS DIM_CHART_OF_ACCOUNT_ID,
+        tl.CLASS AS DIM_CLASS_ID,
         map.METRIC_L1,
         map.METRIC_L2,
         map.METRIC_L3,
@@ -53,7 +53,6 @@ with source as (
         
         -- Transaction line details
         tl.ITEM AS DIM_ITEM_ID,
-        tl.CLASS,
         tl.DEPARTMENT AS DIM_DEPARTMENT_ID,
         tl.ENTITY AS DIM_ENTITY_ID,
         tl.TRANSACTIONLINETYPE AS TRANSACTION_LINE_TYPE,
@@ -62,7 +61,7 @@ with source as (
         tl.SUBSIDIARY AS DIM_SUBSIDIARY_ID,
         
         -- Period / currency / consolidation
-        t.POSTINGPERIOD,
+        t.POSTINGPERIOD AS DIM_PERIOD_ID,
         per.CLOSEDONDATE AS POSTING_PERIOD_DATE,
         CAST(t.CURRENCY AS VARCHAR ) AS CURRENCY,
         CONCAT(tl.SUBSIDIARY, '-', t.POSTINGPERIOD, '-', t.CURRENCY) AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
@@ -132,14 +131,13 @@ derived_metric_rows as (
         NULL AS METRIC_L5,
         NULL AS METRIC_L6,
         NULL AS DIM_ITEM_ID,
-        NULL AS CLASS,
         NULL AS DIM_DEPARTMENT_ID,
         NULL AS DIM_ENTITY_ID,
         NULL AS TRANSACTION_LINE_TYPE,
         NULL AS ACCOUNTING_LINE_TYPE,
         NULL AS DIM_LOCATION_ID,
         NULL AS DIM_SUBSIDIARY_ID,
-        NULL AS POSTINGPERIOD,
+        NULL AS DIM_PERIOD_ID,
         NULL AS POSTING_PERIOD_DATE,
         NULL AS CURRENCY,
         NULL AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
