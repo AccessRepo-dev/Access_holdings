@@ -4,6 +4,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'dim_class',
     incremental_strategy = 'merge',
     unique_key = 'DIM_CLASS_ID'
 ) }}
@@ -18,8 +19,8 @@ with source as (
         PARENT AS PARENT_ID,
         ISINACTIVE AS IS_INACTIVE,
         LASTMODIFIEDDATE AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'netsuite_classification') }} c
-    LEFT JOIN {{ get_silver_source(company, 'netsuite_classificationsubsidiarymap') }} s ON c.ID = s.CLASSIFICATION
+    from {{ get_silver_source(company, 'CLASSIFICATION') }} c
+    LEFT JOIN {{ get_silver_source(company, 'CLASSIFICATIONSUBSIDIARYMAP') }} s ON c.ID = s.CLASSIFICATION
     {% if is_incremental() %}
     and LASTMODIFIEDDATE > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')

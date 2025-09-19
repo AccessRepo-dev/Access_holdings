@@ -4,6 +4,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'dim_item',
     incremental_strategy = 'merge',
     unique_key = 'DIM_ITEM_ID'
 ) }}
@@ -43,7 +44,7 @@ with source as (
         ISINACTIVE AS IS_INACTIVE,
         CREATEDDATE AS CREATED_DATE,
         LASTMODIFIEDDATE AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'netsuite_item') }}
+    from {{ get_silver_source(company, 'ITEM') }}
     where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}
     and LASTMODIFIEDDATE > (

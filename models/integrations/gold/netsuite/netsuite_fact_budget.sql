@@ -4,36 +4,58 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'fact_budget',
     incremental_strategy = 'merge',
     unique_key = 'BUDGET_ID'
 ) }}
 
+-- Define derived metrics as a macro variable for reusability
+{% set derived_metrics = [
+    'Gross Profit',
+    'Gross Margin',
+    'EBITDA',
+    'EBITDA Margin',
+    'Field EBITDA',
+    'Field EBITDA Margin',
+    'Post Corporate EBITDA',
+    'Post Corporate EBITDA Margin',
+    'Net Income'
+] %}
+
 with source as (
     select
-        ID AS BUDGET_ID,
-        CATEGORY AS DIM_BUDGET_HEADER_ID,
-        SUBSIDIARY AS DIM_SUBSIDIARY_ID,
-        ACCOUNT AS ACCOUNT_ID,
-        CLASS AS CLASS_ID,
-        DEPARTMENT AS DIM_DEPARTMENT_ID,
-        LOCATION AS DIM_LOCATION_ID,
-        PERIOD AS DIM_PERIOD_ID,
-        CURRENCY AS DIM_CURRENCY_ID,
-        CUSTOMER AS CUSTOMER_ID,
-        ITEM AS ITEM_ID,
-        CSEG1 AS CSEG1_ID,
-        CSEG3 AS CSEG3_ID,
+        BUDGET.ID AS BUDGET_ID,
+        BUDGET.CATEGORY AS DIM_BUDGET_HEADER_ID,
+        BUDGET.SUBSIDIARY AS DIM_SUBSIDIARY_ID,
+        BUDGET.ACCOUNT AS ACCOUNT_ID,
+        BUDGET.CLASS AS CLASS_ID,
+        BUDGET.DEPARTMENT AS DIM_DEPARTMENT_ID,
+        BUDGET.LOCATION AS DIM_LOCATION_ID,
+        BUDGET.PERIOD AS DIM_PERIOD_ID,
+        BUDGET.CURRENCY AS DIM_CURRENCY_ID,
+        BUDGET.CUSTOMER AS CUSTOMER_ID,
+        BUDGET.ITEM AS ITEM_ID,
+        BUDGET.CSEG1 AS CSEG1_ID,
+        BUDGET.CSEG3 AS CSEG3_ID,
         
         -- Derived Dimension Hashes
-        ABS(HASH(ACCOUNT, SUBSIDIARY)) AS DIM_CHART_OF_ACCOUNT_ID,
-        ABS(HASH(CLASS, SUBSIDIARY)) AS DIM_CLASS_ID,
-    
-        AMOUNT, 
+        ABS(HASH(BUDGET.ACCOUNT, BUDGET.SUBSIDIARY)) AS DIM_CHART_OF_ACCOUNT_ID,
+        ABS(HASH(BUDGET.CLASS, BUDGET.SUBSIDIARY)) AS DIM_CLASS_ID,
+        map.METRIC_L1,
+        map.METRIC_L2,
+        map.METRIC_L3,
+        map.METRIC_L4,
+        map.METRIC_L5,
+        map.METRIC_L6,
+        BUDGET.AMOUNT, 
         
         -- Metadata
-        LASTMODIFIEDDATE AS LAST_MODIFIED_DATE
+        BUDGET.LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
 
-    from {{ get_silver_source(company, 'netsuite_budgetlegacy') }}
+
+    from {{ get_silver_source(company, 'BUDGETLEGACY') }} AS BUDGET
+    LEFT JOIN {{ get_silver_source(company, 'NETSUITE_COA_MAPPING') }} map
+        ON ABS(HASH(BUDGET.ACCOUNT, BUDGET.SUBSIDIARY)) = ABS(HASH(map.ACCOUNT_ID, map.SUBSIDIARY_ID))
     where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}
       and LASTMODIFIEDDATE > (
@@ -41,6 +63,47 @@ with source as (
           from {{ this }}
       )
     {% endif %}
+),
+-- Create derived metric rows
+derived_metric_rows as (
+    {% for metric in derived_metrics %}
+    SELECT
+        CAST({{ -loop.index }} AS VARCHAR) AS BUDGET_ID,  -- Negative integers for uniqueness
+        NULL AS DIM_BUDGET_HEADER_ID,
+        NULL AS DIM_SUBSIDIARY_ID,
+        NULL AS ACCOUNT_ID,
+        NULL AS CLASS_ID,
+        NULL AS DIM_DEPARTMENT_ID,
+        NULL AS DIM_LOCATION_ID,
+        NULL AS DIM_PERIOD_ID,
+        NULL AS DIM_CURRENCY_ID,
+        NULL AS CUSTOMER_ID,
+        NULL AS ITEM_ID,
+        NULL AS CSEG1_ID,
+        NULL AS CSEG3_ID,
+        NULL AS DIM_CHART_OF_ACCOUNT_ID,
+        NULL AS DIM_CLASS_ID,
+        '{{ metric }}' AS METRIC_L1,  -- Only METRIC_L1 is populated with the derived metric name
+        NULL AS METRIC_L2,
+        NULL AS METRIC_L3,
+        NULL AS METRIC_L4,
+        NULL AS METRIC_L5,
+        NULL AS METRIC_L6,
+        NULL AS AMOUNT,
+        NULL AS LAST_MODIFIED_DATE,
+
+
+    {% if not loop.last %}
+    UNION ALL
+    {% endif %}
+    {% endfor %}
+),
+
+-- Final union of actual data and derived metrics
+final_result as (
+    SELECT * FROM source
+    UNION ALL
+    SELECT * FROM derived_metric_rows
 )
 
 select *
