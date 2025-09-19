@@ -4,6 +4,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'dim_period',
     incremental_strategy = 'merge',
     unique_key = 'POSTING_PERIOD_ID'
 ) }}
@@ -17,7 +18,7 @@ with source as (
         CLOSEDONDATE AS CLOSED_ON_DATE,
         ISINACTIVE AS IS_INACTIVE, 
         LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
-        from {{ get_silver_source(company, 'netsuite_accountingperiod') }}
+        from {{ get_silver_source(company, 'ACCOUNTINGPERIOD') }}
     --where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}
     where LASTMODIFIEDDATE > (

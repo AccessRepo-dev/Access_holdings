@@ -55,50 +55,50 @@ sources:
     database: wagway_dev
     schema: silver
     tables:
-      - name: netsuite_account
-      - name: netsuite_accountingperiod
-      - name: netsuite_classification
-      - name: netsuite_currencyrate
-      - name: netsuite_currency
-      - name: netsuite_consolidatedexchangerate
-      - name: netsuite_department
-      - name: netsuite_employee
-      - name: netsuite_entity
-      - name: netsuite_item
-      - name: netsuite_location
-      - name: netsuite_subsidiary
-      - name: netsuite_transaction
-      - name: netsuite_transactionaccountingline
-      - name: netsuite_transactionline
-      - name: netsuite_transactionstatus
-      - name: netsuite_budgetlegacy 
+      - name: ACCOUNT
+      - name: ACCOUNTINGPERIOD
+      - name: CLASSIFICATION
+      - name: CURRENCYRATE
+      - name: CURRENCY
+      - name: CONSOLIDATEDEXCHANGERATE
+      - name: DEPARTMENT
+      - name: EMPLOYEE
+      - name: ENTITY
+      - name: ITEM
+      - name: LOCATION
+      - name: SUBSIDIARY
+      - name: TRANSACTION
+      - name: TRANSACTIONACCOUNTINGLINE
+      - name: TRANSACTIONLINE
+      - name: TRANSACTIONSTATUS
+      - name: BUDGETLEGACY 
       - name: BUDGETCATEGORY
-      - name: netsuite_classificationsubsidiarymap
-      - name: netsuite_accountsubsidiarymap
-      - name: netsuite_coa_mapping
+      - name: CLASSIFICATIONSUBSIDIARYMAP
+      - name: ACCOUNTSUBSIDIARYMAP
+      - name: NETSUITE_COA_MAPPING
 
   - name: playfly_silver
     database: playfly_dev
     schema: silver
     tables:
-      - name: netsuite_account
-      - name: netsuite_accountingperiod
-      - name: netsuite_classification
-      - name: netsuite_currencyrate
-      - name: netsuite_currency
-      - name: netsuite_consolidatedexchangerate
-      - name: netsuite_department
-      - name: netsuite_employee
-      - name: netsuite_entity
-      - name: netsuite_item
-      - name: netsuite_location
-      - name: netsuite_subsidiary
-      - name: netsuite_transaction
-      - name: netsuite_transactionaccountingline
-      - name: netsuite_transactionline
-      - name: netsuite_transactionstatus
-      - name: netsuite_budgetlegacy
-      - name: netsuite_budgetcategory
-      - name: netsuite_classificationsubsidiarymap
-      - name: netsuite_accountsubsidiarymap
-      - name: netsuite_coa_mapping
+      - name: ACCOUNT
+      - name: ACCOUNTINGPERIOD
+      - name: CLASSIFICATION
+      - name: CURRENCYRATE
+      - name: CURRENCY
+      - name: CONSOLIDATEDEXCHANGERATE
+      - name: DEPARTMENT
+      - name: EMPLOYEE
+      - name: ENTITY
+      - name: ITEM
+      - name: LOCATION
+      - name: SUBSIDIARY
+      - name: TRANSACTION
+      - name: TRANSACTIONACCOUNTINGLINE
+      - name: TRANSACTIONLINE
+      - name: TRANSACTIONSTATUS
+      - name: BUDGETLEGACY
+      - name: BUDGETCATEGORY
+      - name: CLASSIFICATIONSUBSIDIARYMAP
+      - name: ACCOUNTSUBSIDIARYMAP
+      - name: NETSUITE_COA_MAPPING

@@ -3,7 +3,8 @@
 
 {{ config(
     database = get_target_database(company),
-    materialized = 'table'
+    materialized = 'table',
+    alias = 'fact_transaction'
 ) }}
 
 -- Define derived metrics as a macro variable for reusability
@@ -89,18 +90,18 @@ with source as (
         t.CLOSEDATE,
         t.LASTMODIFIEDDATE
         
-    FROM {{ get_silver_source(company, 'netsuite_transactionline') }} tl
-    LEFT JOIN {{ get_silver_source(company, 'netsuite_transaction') }} t
+    FROM {{ get_silver_source(company, 'TRANSACTIONLINE') }} tl
+    LEFT JOIN {{ get_silver_source(company, 'TRANSACTION') }} t
         ON t.ID = tl.TRANSACTION
-    LEFT JOIN {{ get_silver_source(company, 'netsuite_transactionaccountingline') }} tal
+    LEFT JOIN {{ get_silver_source(company, 'TRANSACTIONACCOUNTINGLINE') }} tal
         ON tl.transaction = tal.transaction and tl.id = tal.transactionline
-    LEFT JOIN {{ get_silver_source(company, 'netsuite_account') }} a
+    LEFT JOIN {{ get_silver_source(company, 'ACCOUNT') }} a
         ON a.ID = tal.ACCOUNT
-    LEFT JOIN {{ get_silver_source(company, 'netsuite_accountingperiod') }} per
+    LEFT JOIN {{ get_silver_source(company, 'ACCOUNTINGPERIOD') }} per
         ON per.ID = t.POSTINGPERIOD
-    LEFT JOIN {{ get_silver_source(company, 'netsuite_transactionstatus') }} txs
+    LEFT JOIN {{ get_silver_source(company, 'TRANSACTIONSTATUS') }} txs
         ON txs.ID = t.status and txs.trantype = t.type and t.customtype = txs.trancustomtype
-    LEFT JOIN {{ get_silver_source(company, 'netsuite_coa_mapping') }} map
+    LEFT JOIN {{ get_silver_source(company, 'NETSUITE_COA_MAPPING') }} map
         ON ABS(HASH(tal.ACCOUNT, tl.SUBSIDIARY)) = ABS(HASH(map.ACCOUNT_ID, map.SUBSIDIARY_ID))
 ),
 
