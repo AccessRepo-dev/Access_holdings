@@ -5,6 +5,7 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
+    alias = 'dim_budget_header',
     unique_key = 'DIM_BUDGET_CATEGORY_ID'
 ) }}
 
@@ -15,7 +16,7 @@ with source as (
         DESCRIPTION AS NAME,
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'sage_gl_budget_header') }}
+    from {{ get_silver_source(company, 'GL_BUDGET_HEADER') }}
     
     {% if is_incremental() %}
     where WHENMODIFIED > (

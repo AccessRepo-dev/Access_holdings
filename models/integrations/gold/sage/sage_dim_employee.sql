@@ -4,6 +4,7 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'dim_employee',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'DIM_EMPLOYEE_ID'
@@ -21,7 +22,7 @@ with source as (
         STATUS AS IS_INACTIVE,
         WHENCREATED AS DATE_CREATED,
         WHENMODIFIED AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'sage_employee') }}
+    from {{ get_silver_source(company, 'EMPLOYEE') }}
     
     {% if is_incremental() %}
     and WHENMODIFIED > (
