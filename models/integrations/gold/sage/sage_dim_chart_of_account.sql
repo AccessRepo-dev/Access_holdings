@@ -4,6 +4,7 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'dim_chart_of_account',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'DIM_ACCOUNT_ID'
@@ -35,7 +36,7 @@ with source as (
          CAST(null AS INT) AS DIM_CURRENCY_ID
 
 
-    FROM {{ get_silver_source(company, 'sage_gl_account') }} 
+    FROM {{ get_silver_source(company, 'GL_ACCOUNT') }} 
   
 )
 SELECT *
