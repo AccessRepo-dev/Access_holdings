@@ -12,7 +12,7 @@
 
 with source as (
     SELECT 
-        DATE_KEY AS DIM_PERIOD_ID,
+        RECORDNO AS DIM_PERIOD_ID,
         NAME AS PERIOD_NAME,
         START_DATE AS START_DATE,
         END_DATE AS END_DATE,

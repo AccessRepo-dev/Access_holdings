@@ -3,7 +3,7 @@
 
 {{ config(
     database = get_target_database(company),
-    alias = 'class',
+    alias = 'dim_class',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'DIM_CLASS_ID'
@@ -12,10 +12,9 @@
 with source as (
     select
         RECORDNO AS DIM_CLASS_ID,
-        RECORDNO AS CLASS_ID,
-        null AS SUBSIDIARY_ID,
-        CLASS_ID AS NAME,
-        NAME AS FULLNAME,
+        cast(NULL AS INT) AS CLASS_ID,
+        NAME AS NAME,
+        null AS FULLNAME,
         PARENTKEY AS PARENT_ID,
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE

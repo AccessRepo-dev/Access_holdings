@@ -29,19 +29,18 @@ with source as (
         BUDGETKEY AS DIM_BUDGET_HEADER_ID,
         b.LOCATIONKEY AS DIM_SUBSIDIARY_ID,       
         b.ACCOUNTKEY AS ACCOUNT_ID,
-        b.CLASSDIMKEY AS CLASS_ID,           
+        b.CLASSDIMKEY AS DIM_CLASS_ID,           
         b.DEPTKEY AS DIM_DEPARTMENT_ID,
         b.LOCATIONKEY AS DIM_LOCATION_ID,
         b.PERIODKEY AS DIM_PERIOD_ID,
         NULL AS DIM_CURRENCY_ID,         
         NULL AS CUSTOMER_ID,
-        NULL AS ITEM_ID,
+        NULL AS DIM_ITEM_ID,
         NULL AS CSEG1_ID,               
         NULL AS CSEG3_ID,
 
         -- Derived Dimension Hashes (for conformed COA / Class across subs)
         ABS(HASH(b.ACCOUNTKEY, b.LOCATIONKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
-        ABS(HASH(b.CLASSDIMKEY, b.LOCATIONKEY)) AS DIM_CLASS_ID,
 
         -- Measure
         b.AMOUNT AS AMOUNT,
@@ -74,17 +73,17 @@ derived_metric_rows as (
         NULL AS DIM_BUDGET_HEADER_ID,
         NULL AS DIM_SUBSIDIARY_ID,
         NULL AS ACCOUNT_ID,
-        NULL AS CLASS_ID,
+        NULL AS DIM_CLASS_ID,
         NULL AS DIM_DEPARTMENT_ID,
         NULL AS DIM_LOCATION_ID,
-        NULL AS DIM_PERIOD_ID,
+        NULL AS POSTINGPERIOD,
         NULL AS DIM_CURRENCY_ID,
         NULL AS DIM_CUSTOMER_ID,
         NULL AS ITEM_ID,
         NULL AS CSEG1_ID,
         NULL AS CSEG3_ID,
         NULL AS DIM_CHART_OF_ACCOUNT_ID,
-        NULL AS DIM_CLASS_ID,
+
         NULL AS AMOUNT,
         '{{ metric }}' AS METRIC_L1,  -- Only METRIC_L1 is populated with the derived metric name
         NULL AS METRIC_L2,
