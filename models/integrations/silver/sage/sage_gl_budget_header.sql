@@ -5,6 +5,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'gl_budget_header',
     incremental_strategy = 'merge',
     unique_key = 'RECORDNO'
 ) }}

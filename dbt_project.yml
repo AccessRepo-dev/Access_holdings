@@ -36,6 +36,8 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 
 models:
+  +materialized: table
+  +transient: false
   +pre-hook:
     - "insert into PIPELINE_AUDIT_DB.AUDIT_SCHEMA.PIPELINE_AUDIT_LOGS
         (PORTCO, SOURCE_SYSTEM,USER_NAME,DESTINATION_DB,DESTINATION_SCHEMA, TABLE_NAME, PIPELINE_TYPE, STATUS, STARTTIME)
@@ -86,6 +88,7 @@ models:
         sage:
           +schema: GOLD
           +materialized: table 
+
 seeds:
   Access_Holdings:
     netsuite:
