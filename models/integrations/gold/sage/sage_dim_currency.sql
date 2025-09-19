@@ -4,6 +4,7 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'dim_currency',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'DIM_CURRENCY_ID'
@@ -18,7 +19,7 @@ with source as (
         NULL AS IS_BASE_CURRENCY,
         UPDATED_AT AS LAST_MODIFIED_DATE   
 
-    from {{ get_silver_source(company, 'sage_currency') }}
+    from {{ get_silver_source(company, 'CURRENCY') }}
     
     {% if is_incremental() %}
     and UPDATED_AT > (

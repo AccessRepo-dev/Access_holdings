@@ -4,6 +4,7 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'dim_period',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'REPORTING_PERIOD_ID'
@@ -19,7 +20,7 @@ with source as (
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
 
-    FROM {{ get_silver_source(company, 'sage_reporting_period') }}
+    FROM {{ get_silver_source(company, 'REPORTING_PERIOD') }}
     
     {% if is_incremental() %}
     and WHENMODIFIED > (

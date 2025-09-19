@@ -3,6 +3,7 @@
  
 {{ config(
     database = get_target_database(company),
+    alias = 'fact_transaction',
     materialized = 'table',
     unique_key = 'TRANSACTIONS_UNIQUE_ID'
 ) }}
@@ -87,14 +88,14 @@ with source as (
     CAST(NULL AS DATE) AS CLOSEDATE,
     e.WHENMODIFIED AS LASTMODIFIEDDATE
  
-FROM {{ get_silver_source(company, 'sage_gl_entry') }}  e
-LEFT JOIN {{ get_silver_source(company, 'sage_gl_detail') }} d
+FROM {{ get_silver_source(company, 'GL_ENTRY') }}  e
+LEFT JOIN {{ get_silver_source(company, 'GL_DETAIL') }} d
     ON d.GLENTRYKEY = e.recordno
-LEFT JOIN {{ get_silver_source(company, 'sage_gl_batch') }}  b
+LEFT JOIN {{ get_silver_source(company, 'GL_BATCH') }}  b
     ON d.batchkey = b.recordno
-LEFT JOIN {{ get_silver_source(company, 'sage_gl_account') }} acc
+LEFT JOIN {{ get_silver_source(company, 'GL_ACCOUNT') }} acc
     ON e.ACCOUNTKEY  = acc.RECORDNO
-LEFT JOIN {{ get_silver_source(company, 'sage_coa_mapping') }} map
+LEFT JOIN {{ get_silver_source(company, 'SAGE_COA_MAPPING') }} map
     ON ABS(HASH(e.ACCOUNTKEY, e.LOCATIONKEY)) = ABS(HASH(map.ACCOUNT_ID, map.LOCATION_ID))
 ),
 

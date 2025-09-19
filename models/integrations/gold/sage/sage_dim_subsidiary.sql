@@ -4,6 +4,7 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'dim_subsidiary',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'DIM_SUBSIDIARY_ID'
@@ -19,7 +20,7 @@ with source as (
         NULL AS PARENT_ID,
         LE.WHENMODIFIED AS LAST_MODIFIED_DATE
 
-    FROM {{ get_silver_source(company, 'sage_location_entity') }} AS LE
+    FROM {{ get_silver_source(company, 'LOCATION_ENTITY') }} AS LE
     
     {% if is_incremental() %}
     and WHENMODIFIED > (

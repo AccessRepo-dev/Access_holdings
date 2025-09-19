@@ -4,6 +4,7 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'dim_item',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'DIM_ITEM_ID'
@@ -47,7 +48,7 @@ with source as (
 
   
 
-    from {{ get_silver_source(company, 'sage_item') }}
+    from {{ get_silver_source(company, 'ITEM') }}
     
     {% if is_incremental() %}
     and WHENMODIFIED > (

@@ -4,6 +4,7 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'dim_location',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'LOCATION_ID'
@@ -18,8 +19,8 @@ with source as (
         l.STATUS AS IS_INACTIVE,
         l.WHENMODIFIED AS LAST_MODIFIED_DATE
 
-    FROM {{ get_silver_source(company, 'sage_location') }} l
-    LEFT JOIN {{ get_silver_source(company, 'sage_location_entity') }} le ON l.ENTITY = le.LOCATIONID 
+    FROM {{ get_silver_source(company, 'LOCATION') }} l
+    LEFT JOIN {{ get_silver_source(company, 'LOCATION_ENTITY') }} le ON l.ENTITY = le.LOCATIONID 
     
     {% if is_incremental() %}
     and WHENMODIFIED > (
