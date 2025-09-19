@@ -3,6 +3,7 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'dim_budget_header'
 ) }}
 
 with source as (
@@ -12,7 +13,7 @@ with source as (
         NAME,
         ISINACTIVE AS IS_INACTIVE
          
-    from {{ get_silver_source(company, 'netsuite_budgetcategory') }}
+    from {{ get_silver_source(company, 'BUDGETCATEGORY') }}
    
 )
 

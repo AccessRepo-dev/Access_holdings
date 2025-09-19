@@ -5,6 +5,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'consolidatedexchangerate',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}
