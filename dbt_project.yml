@@ -81,13 +81,18 @@ models:
         sage:
           +schema: SILVER
           +materialized: table
+        macro: 
+        +database: "{{env_var('DBT_ACCESS')}}"
+        +schema: SILVER
+        +materialized: table
+
       gold:
         netsuite:
           +schema: GOLD
           +materialized: table 
         sage:
           +schema: GOLD
-          +materialized: table 
+          +materialized: table
 
 seeds:
   Access_Holdings:
