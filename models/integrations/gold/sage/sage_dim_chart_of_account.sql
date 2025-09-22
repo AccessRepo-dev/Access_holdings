@@ -4,43 +4,42 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'dim_chart_of_account',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'DIM_ACCOUNT_ID'
 ) }}
 
+
 with source as (
     SELECT 
-        -- Primary Key
-        RECORDNO AS DIM_ACCOUNT_ID,
 
+       
+        RECORDNO AS DIM_CHART_OF_ACCOUNT_ID,
         -- Core Identifiers
-        ACCOUNTKEY AS ACCOUNT_ID,
-        GLACCTGRPKEY AS ACCOUNT_GROUP_KEY,
-
-        -- Descriptions
-        ACCOUNTTITLE AS ACCOUNT_TITLE,
-        ACCOUNTNO AS ACCOUNT_NO,
+        RECORDNO AS ACCOUNT_ID,
+        CAST(ACCOUNTNO AS VARCHAR) AS ACCOUNT_NUMBER,
+        TITLE AS ACCOUNT_NAME,
+        null AS MAIN_ACCOUNT_NAME,
+        null AS ACCOUNT_NAME_SUBCATEGORY_1,
+        null AS ACCOUNT_NAME_SUBCATEGORY_2,
+        null AS ACCOUNT_NAME_SUBCATEGORY_3,
+        null AS ACCOUNT_DESCRIPTION,
+        CAST(null AS INT) AS ACCOUNT_PARENT_ID,
         ACCOUNTTYPE AS ACCOUNT_TYPE,
-        ACCOUNTNORMALBALANCE AS ACCOUNT_NORMAL_BALANCE,
+        null AS DISPLAY_NAME,
+        null  AS DISPLAY_NAME_WITH_HIERARCHY,
+        CAST(null AS INT) AS SUBSIDIARY_ID,
+        CAST(null AS INT) AS SUBSIDIARY_PARENT_ID,
+        null AS SUBSIDIARY_NAME,
+        null AS SUBSIDIARY_FULL_NAME,
+         CAST(null AS INT) AS DIM_CURRENCY_ID
 
-        GLACCTGRPNAME AS ACCOUNT_GROUP_NAME,
-        GLACCTGRPTITLE AS ACCOUNT_GROUP_TITLE,
-        GLACCTGRPMEMBERTYPE AS ACCOUNT_GROUP_MEMBER_TYPE,
-        GLACCTGRPHOWCREATED AS ACCOUNT_GROUP_HOW_CREATED,
-        GLACCTGRPNORMALBALANCE AS ACCOUNT_GROUP_NORMAL_BALANCE,
 
-        -- Metadata
-        _FIVETRAN_SYNCED AS FIVETRAN_SYNCED_AT,
-
-    FROM {{ get_silver_source(company, 'sage_gl_acct_grp_hierarchy') }}
-    
-    {% if is_incremental() %}
-    and _FIVETRAN_SYNCED > (
-        SELECT coalesce(max(FIVETRAN_SYNCED_AT), '1900-01-01')
-        FROM {{ this }}
-    )
-    {% endif %}
+    FROM {{ get_silver_source(company, 'GL_ACCOUNT') }} 
+  
 )
 SELECT *
 FROM source
+
+

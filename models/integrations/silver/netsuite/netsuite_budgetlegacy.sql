@@ -5,6 +5,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'budgetlegacy',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}
@@ -27,7 +28,7 @@ with cleaned as (
         TRY_CAST(CUSTOMER AS INT) AS CUSTOMER,
         TRY_CAST(DEPARTMENT AS INT) AS DEPARTMENT,
         TRY_CAST(ITEM AS INT) AS ITEM,
-        CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
+        LASTMODIFIEDDATE,
         TRY_CAST(LOCATION AS INT) AS LOCATION,
         TRY_CAST(PERIOD AS INT) AS PERIOD,
         TRY_CAST(SUBSIDIARY AS INT) AS SUBSIDIARY,

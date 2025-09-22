@@ -4,20 +4,22 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
-    alias = 'dim_department',
+    alias = 'dim_class',
     incremental_strategy = 'merge',
-    unique_key = 'DEPARTMENT_ID'
+    unique_key = 'DIM_CLASS_ID'
 ) }}
 
 with source as (
-    select
-        ID AS DIM_DEPARTMENT_ID,
-        NAME AS DEPARTMENT_NAME,
-        PARENT AS PARENT,
+    SELECT
+        c.ID AS DIM_CLASS_ID,
+        ID AS CLASS_ID,
+        NAME,
+        FULLNAME,
+        PARENT AS PARENT_ID,
         ISINACTIVE AS IS_INACTIVE,
         LASTMODIFIEDDATE AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'DEPARTMENT') }}
-    where (_fivetran_deleted is null or _fivetran_deleted = false)
+    from {{ get_silver_source(company, 'CLASSIFICATION') }} c
+
     {% if is_incremental() %}
     and LASTMODIFIEDDATE > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')

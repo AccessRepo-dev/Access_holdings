@@ -5,6 +5,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'classification',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}
@@ -24,7 +25,6 @@ with source_data as (
 cleaned as (
     select 
         TRY_CAST(ID AS INT) AS ID,
-        TRY_CAST(EXTERNALID AS INT) AS EXTERNALID,
         TRIM(NAME) AS NAME,
         TRIM(FULLNAME) AS FULLNAME,
         TRY_CAST(PARENT AS INT) AS PARENT,

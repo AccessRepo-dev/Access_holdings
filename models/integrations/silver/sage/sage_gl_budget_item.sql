@@ -5,14 +5,14 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
-    alias = 'gl_detail',
+    alias = 'gl_budget_item',
     incremental_strategy = 'merge',
     unique_key = 'RECORDNO'
 ) }}
 
 with source_data as (
     select *
-    from {{ get_raw_source(company, sourcesystem, 'GL_DETAIL') }}
+    from {{ get_raw_source(company, sourcesystem, 'GL_BUDGET_ITEM') }}
     {% if is_incremental() %}
     where cast(WHENMODIFIED as timestamp_ntz) > (
         select coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz)
@@ -23,11 +23,17 @@ with source_data as (
 
 cleaned as (
     select
-        TRIM(RECORDNO) AS RECORDNO,
-        CAST(BATCHKEY AS INT) AS BATCHKEY,
-        TRY_CAST(GLENTRYKEY AS INT) AS GLENTRYKEY,
-        TRY_CAST(LINE_NO AS INT) AS LINE_NO,
-        CAST(WHENMODIFIED AS TIMESTAMP_NTZ) AS WHENMODIFIED,
+        RECORDNO,
+        ACCT_NO,
+        ACCOUNTKEY,
+        AMOUNT,
+        BUDGETKEY,
+        CLASSDIMKEY,
+        DEPTKEY,
+        LOCATIONKEY,
+        PERIODKEY,
+        WHENMODIFIED,
+        _FIVETRAN_DELETED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
     from source_data
 )

@@ -4,6 +4,7 @@
     enabled = var('sourcesystem', 'none') == 'netsuite',
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'dim_date',
     incremental_strategy = 'append',
     unique_key = 'DATE_KEY'
 ) }}

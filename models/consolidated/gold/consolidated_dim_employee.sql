@@ -1,47 +1,20 @@
 {{ config(
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = ['EMPLOYEE_ID','SOURCESYSTEM','COMPANY']
+    unique_key = 'DIM_EMPLOYEE_ID'
 ) }}
 
+{% set companies = [
+    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY'), "source": "NETSUITE"},
+    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY'), "source": "NETSUITE"},
+    {"name": "SPOTLESS", "db": env_var('DBT_SPOTLESS'),"source": "SAGE"},
+    {"name": "AMH",      "db": env_var('DBT_AMH'), "source": "SAGE"}
+] %}
+
+
+{% for c in companies %}
 select
-    EMPLOYEE_ID,
-    TITLE,
-    EMAIL,
-    DEPARTMENT_ID,
-    CLASS_ID,
-    LOCATION_ID,
-    SUBSIDIARY_ID,
-    IS_INACTIVE,
-    DATE_CREATED,
-    LAST_MODIFIED_DATE,
-    'NETSUITE' AS SOURCESYSTEM,
-    'WAGWAY' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_WAGWAY', 'wagway_dev') }}.gold.NETSUITE_DIM_EMPLOYEE
-
-
-union all
-
-select
-    EMPLOYEE_ID,
-    TITLE,
-    EMAIL,
-    DEPARTMENT_ID,
-    CLASS_ID,
-    LOCATION_ID,
-    SUBSIDIARY_ID,
-    IS_INACTIVE,
-    DATE_CREATED,
-    LAST_MODIFIED_DATE,
-    'NETSUITE' AS SOURCESYSTEM,
-    'PLAYFLY' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_PLAYFLY', 'playfly_dev') }}.gold.NETSUITE_DIM_EMPLOYEE
-
-union all
-
-select
+    HASH(DIM_EMPLOYEE_ID, '{{ c.name }}','{{c.source}}') AS DIM_EMPLOYEE_ID,
     DIM_EMPLOYEE_ID AS EMPLOYEE_ID,
     TITLE,
     EMAIL,
@@ -52,26 +25,9 @@ select
     IS_INACTIVE,
     DATE_CREATED,
     LAST_MODIFIED_DATE,
-    'SAGE' AS SOURCESYSTEM,
-    'SPOTLESS' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_SPOTLESS', 'spotless_dev') }}.gold.SAGE_DIM_EMPLOYEE
-
-union all 
-
-select
-    DIM_EMPLOYEE_ID AS EMPLOYEE_ID,
-    TITLE,
-    EMAIL,
-    DEPARTMENT_ID,
-    CLASS_ID,
-    LOCATION_ID,
-    SUBSIDIARY_ID,
-    IS_INACTIVE,
-    DATE_CREATED,
-    LAST_MODIFIED_DATE,
-    'SAGE' AS SOURCESYSTEM,
-    'AMH' AS COMPANY,
-     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-from {{ env_var('DBT_AMH', 'amh_dev') }}.gold.SAGE_DIM_EMPLOYEE
-
+    '{{ c.source }}' AS SOURCESYSTEM,
+    '{{ c.name }}' AS COMPANY,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
+from {{ c.db }}.GOLD.DIM_EMPLOYEE
+{% if not loop.last %} union all {% endif %}
+{% endfor %}

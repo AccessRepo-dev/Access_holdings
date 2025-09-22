@@ -5,6 +5,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'transactionline',
     incremental_strategy = 'merge',
     unique_key = 'UNIQUEKEY'
 ) }}
@@ -36,7 +37,11 @@ cleaned as (
         CAST(ENTITY AS INT) AS ENTITY,
         CAST(CLASS AS INT) AS CLASS,
         CAST(DEPARTMENT AS INT) AS DEPARTMENT,
-        CAST(LOCATION AS INT) AS LOCATION,
+        {% if company == 'wagway' and sourcesystem == 'netsuite' %}
+            CSEG_CP_STORE_LOC AS LOCATION,
+        {% else %}
+            LOCATION,
+        {% endif %}
         CAST(SUBSIDIARY AS INT) AS SUBSIDIARY,
         CAST(ITEM AS INT) AS ITEM,
         TRIM(ITEMTYPE) AS ITEMTYPE,

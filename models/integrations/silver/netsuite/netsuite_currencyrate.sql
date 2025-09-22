@@ -5,6 +5,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'currencyrate',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}

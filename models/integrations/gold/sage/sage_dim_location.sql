@@ -4,6 +4,7 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'dim_location',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'LOCATION_ID'
@@ -11,14 +12,15 @@
 
 with source as (
     SELECT 
-        RECORDNO AS LOCATION_ID,
-        NAME AS LOCATION_NAME,
-        PARENTKEY AS PARENT,
-        ENTITY AS SUBSIDIARY_ID,
-        STATUS AS IS_INACTIVE,
-        WHENMODIFIED AS LAST_MODIFIED_DATE
+        l.RECORDNO AS DIM_LOCATION_ID,
+        l.NAME AS LOCATION_NAME,
+        l.PARENTKEY AS PARENT,
+        le.RECORDNO AS SUBSIDIARY_ID,
+        l.STATUS AS IS_INACTIVE,
+        l.WHENMODIFIED AS LAST_MODIFIED_DATE
 
-    FROM {{ get_silver_source(company, 'sage_location') }}
+    FROM {{ get_silver_source(company, 'LOCATION') }} l
+    LEFT JOIN {{ get_silver_source(company, 'LOCATION_ENTITY') }} le ON l.ENTITY = le.LOCATIONID 
     
     {% if is_incremental() %}
     and WHENMODIFIED > (

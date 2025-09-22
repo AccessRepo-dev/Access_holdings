@@ -4,6 +4,7 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'dim_department',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'DEPARTMENT_ID'
@@ -11,12 +12,12 @@
 
 with source as (
     select
-        RECORDNO AS DEPARTMENT_ID,
+        RECORDNO AS DIM_DEPARTMENT_ID,
         TITLE AS DEPARTMENT_NAME,
         PARENTKEY AS PARENT,
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'sage_department') }}
+    from {{ get_silver_source(company, 'DEPARTMENT') }}
     
     {% if is_incremental() %}
     and WHENMODIFIED > (

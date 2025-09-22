@@ -5,6 +5,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'gl_account',
     incremental_strategy = 'merge',
     unique_key = 'RECORDNO'
 ) }}
@@ -24,7 +25,7 @@ with source_data as (
 cleaned as (
     SELECT
 
-    TRY_CAST(ACCOUNTNO AS INT) AS ACCOUNTNO,
+    CAST(ACCOUNTNO AS INT) AS ACCOUNTNO,
     TRY_CAST(RECORDNO AS INT) AS RECORDNO,
     TRIM(TITLE) AS TITLE,
     TRIM(ACCOUNTTYPE) AS ACCOUNTTYPE,

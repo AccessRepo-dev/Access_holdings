@@ -4,6 +4,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'dim_currencyrate',
     incremental_strategy = 'merge',
     unique_key = 'CURRENCY_RATE_ID'
 ) }}
@@ -11,13 +12,13 @@
 with source as (
 
     select
-        ID as CURRENCY_RATE_ID,
+        ID as DIM_CURRENCY_RATE_ID,
         BASECURRENCY as BASE_CURRENCY,
         TRANSACTIONCURRENCY as TRANSACTION_CURRENCY,
         EFFECTIVEDATE as EFFECTIVE_DATE,
         EXCHANGERATE as EXCHANGE_RATE,
         LASTMODIFIEDDATE as LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'netsuite_currencyrate') }}
+    from {{ get_silver_source(company, 'CURRENCYRATE') }}
     where (_fivetran_deleted is null or _fivetran_deleted = false)
 
     {% if is_incremental() %}

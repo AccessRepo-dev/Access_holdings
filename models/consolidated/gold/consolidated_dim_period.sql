@@ -1,29 +1,32 @@
 {{ config(
     materialized = 'incremental',
-    alias = 'dim_department',
+    alias = 'dim_period',
     incremental_strategy = 'merge',
-    unique_key = 'DIM_DEPARTMENT_ID'
+    unique_key = ['DIM_PERIOD_ID']
 ) }}
 
+
 {% set companies = [
-    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY'),"source": "NETSUITE"},
-    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY'), "source": "NETSUITE"},
+    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY'), "source": "NETSUITE"},
+    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY'),  "source": "NETSUITE"},
     {"name": "SPOTLESS", "db": env_var('DBT_SPOTLESS'), "source": "SAGE"},
     {"name": "AMH",      "db": env_var('DBT_AMH'), "source": "SAGE"}
 ] %}
 
 {% for c in companies %}
     select
-        HASH(DIM_DEPARTMENT_ID, '{{ c.name }}','{{c.source}}') AS DIM_DEPARTMENT_ID,
-        DIM_DEPARTMENT_ID AS DEPARTMENT_ID,
-        DEPARTMENT_NAME,
-        PARENT,
+        HASH(DIM_PERIOD_ID, '{{ c.name }}','{{ c.source }}') AS DIM_PERIOD_ID,
+        DIM_PERIOD_ID AS PERIOD_ID,
+        PERIOD_NAME,
+        START_DATE,
+        END_DATE,
+        CLOSED_ON_DATE,
         IS_INACTIVE,
         LAST_MODIFIED_DATE,
         '{{ c.source }}' AS SOURCESYSTEM,
         '{{ c.name }}' AS COMPANY,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-    from {{ c.db }}.GOLD.DIM_DEPARTMENT
+    from {{ c.db }}.GOLD.DIM_PERIOD
 
     {% if is_incremental() %}
     and LAST_MODIFIED_DATE > (

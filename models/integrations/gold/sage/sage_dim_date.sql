@@ -3,6 +3,7 @@
 {{ config(
     enabled = var('sourcesystem', 'none') == 'sage',
     database = get_target_database(company),
+    alias = 'dim_date',
     materialized = 'incremental',
     incremental_strategy = 'append',
     unique_key = 'DATE_KEY'

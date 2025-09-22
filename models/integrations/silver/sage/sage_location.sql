@@ -5,6 +5,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'location',
     incremental_strategy = 'merge',
     unique_key = 'LOCATIONID'
 ) }}
@@ -45,9 +46,11 @@ cleaned as (
     -- Relationships
 
      {% if company == 'spotless' and sourcesystem == 'sage' %}
+        TRIM(PARENTID) AS PARENTID,
         TRIM(PARENTNAME) AS PARENTNAME,
         TRY_CAST(PARENTKEY AS INT) AS PARENTKEY,
     {% else %}
+        null as PARENTID,
         null AS PARENTNAME,
         null AS PARENTKEY,
     {% endif%}

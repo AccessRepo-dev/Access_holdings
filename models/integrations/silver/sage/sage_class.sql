@@ -5,6 +5,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'class',
     incremental_strategy = 'merge',
     unique_key = 'CLASSID'
 ) }}
@@ -28,7 +29,14 @@ cleaned as (
 
     -- Core Identifiers
     TRIM(NAME) AS NAME,
-    TRIM(STATUS) AS STATUS,
+    CASE WHEN STATUS like 'active%' THEN False 
+    ELSE true
+    END AS STATUS,
+    {% if company == 'spotless'%}
+        PARENTKEY,
+    {% else %}
+        CAST(NULL AS INTEGER) AS PARENTKEY,
+    {% endif%}
     TRY_CAST(RECORDNO AS INT) AS RECORDNO,
 
     -- Dates

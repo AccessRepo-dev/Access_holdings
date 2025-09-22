@@ -5,6 +5,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'location_entity',
     incremental_strategy = 'merge',
     unique_key = 'RECORDNO'
 ) }}
@@ -33,7 +34,10 @@ cleaned as (
     TRIM(LOCATIONID) AS LOCATIONID,
     TRIM(NAME) AS NAME ,
     TRIM(ENTITY) AS ENTITY,
-    TRIM(STATUS) AS STATUS,
+    CASE WHEN STATUS ='active' THEN FALSE 
+        WHEN STATUS = 'incative' THEN TRUE
+        ELSE NULL 
+    END AS STATUS,
 
     -- Accounting & Legal
     TRIM(FEDERALID) AS FEDERALID,
