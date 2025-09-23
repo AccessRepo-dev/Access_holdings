@@ -21,9 +21,11 @@ sources:
       - name: BLS_EMPLOYMENT
       - name: BLS_PPI
 
-      # CENSUS tables
+      # Housing tables
       - name: CENSUS_HOUSING_COMPLETED
       - name: CENSUS_HOUSING_STARTS
+      - name: FHFA_HOUSING
+      - name: NAHB_HOUSING
 
       # BOT tables
       - name: BOT_TRANSPORT_INDEX
