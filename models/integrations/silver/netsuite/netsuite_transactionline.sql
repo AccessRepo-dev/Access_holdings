@@ -39,8 +39,10 @@ cleaned as (
         CAST(DEPARTMENT AS INT) AS DEPARTMENT,
         {% if company == 'wagway' and sourcesystem == 'netsuite' %}
             CSEG_CP_STORE_LOC AS LOCATION,
+            CSEG1 AS ADDBACK_ID,
         {% else %}
             LOCATION,
+            NULL AS ADDBACK_ID,
         {% endif %}
         CAST(SUBSIDIARY AS INT) AS SUBSIDIARY,
         CAST(ITEM AS INT) AS ITEM,
