@@ -17,7 +17,6 @@
         HASH(DIM_SUBSIDIARY_ID, '{{ c.name }}','{{ c.source }}' ) as DIM_SUBSIDIARY_ID,
         DIM_SUBSIDIARY_ID as SUBSIDIARY_ID,
         SUBSIDIARY_NAME,
-        SUBSIDIARY_FULL_NAME,
         CURRENCY_ID,
         IS_INACTIVE,
         PARENT_ID,

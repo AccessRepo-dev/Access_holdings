@@ -1,0 +1,37 @@
+version: 2
+
+sources:
+  - name: macro_raw
+    database: access_raw     
+    schema: macro        
+    tables:
+       # ADP tables
+      - name: ADP_PAYINSIGHTS
+      - name: ADP_EMPLOYMENT
+
+      # BEA tables
+      - name: BEA_GDP_INDUSTRY
+      - name: BEA_GDP_NOMINAL
+      - name: BEA_GDP_REAL
+      - name: BEA_GDP_REGION
+      - name: BEA_INDUSTRY_CODE
+
+      # BLS tables
+      - name: BLS_CPI
+      - name: BLS_EMPLOYMENT
+      - name: BLS_PPI
+
+      # Housing tables
+      - name: CENSUS_HOUSING_COMPLETED
+      - name: CENSUS_HOUSING_STARTS
+      - name: FHFA_HOUSING
+      - name: NAHB_HOUSING
+
+      # BOT tables
+      - name: BOT_TRANSPORT_INDEX
+
+      # UMICH tables
+      - name: UMICH_SENT
+
+      # WEATHER tables
+      - name: WEATHER_DAILY_OBS
