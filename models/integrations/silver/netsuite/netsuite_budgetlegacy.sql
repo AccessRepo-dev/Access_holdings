@@ -29,7 +29,11 @@ with cleaned as (
         TRY_CAST(DEPARTMENT AS INT) AS DEPARTMENT,
         TRY_CAST(ITEM AS INT) AS ITEM,
         LASTMODIFIEDDATE,
-        TRY_CAST(LOCATION AS INT) AS LOCATION,
+        {% if company == 'wagway' and sourcesystem == 'netsuite' %}
+            CSEG_CP_STORE_LOC AS LOCATION,
+        {% else %}
+            LOCATION,
+        {% endif%}
         TRY_CAST(PERIOD AS INT) AS PERIOD,
         TRY_CAST(SUBSIDIARY AS INT) AS SUBSIDIARY,
         _FIVETRAN_DELETED,
