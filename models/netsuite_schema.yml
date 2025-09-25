@@ -25,6 +25,7 @@ sources:
       - name: BUDGETCATEGORY 
       - name: CLASSIFICATIONSUBSIDIARYMAP
       - name: ACCOUNTSUBSIDIARYMAP
+      - name: CUSTOMRECORD_CSEG1
 
   - name: playfly_netsuite_raw
     database: playfly_raw
@@ -76,6 +77,7 @@ sources:
       - name: CLASSIFICATIONSUBSIDIARYMAP
       - name: ACCOUNTSUBSIDIARYMAP
       - name: NETSUITE_COA_MAPPING
+      - name: CUSTOMRECORD_CSEG1
 
   - name: playfly_silver
     database: playfly_dev
