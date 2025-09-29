@@ -1,0 +1,7 @@
+company_sources:
+  wagway:
+    - netsuite
+    - sage
+  playfly:
+    - netsuite
+
