@@ -60,6 +60,12 @@ with source as (
         tl.LOCATION AS DIM_LOCATION_ID,
         tl.SUBSIDIARY AS DIM_SUBSIDIARY_ID,
         
+        {% if company == 'wagway' and sourcesystem == 'netsuite' %}
+            tl.ADDBACK_ID AS DIM_ADDBACK_ID,
+        {% else %}
+            NULL AS DIM_ADDBACK_ID,
+        {% endif %}
+        
         -- Period / currency / consolidation
         t.POSTINGPERIOD AS DIM_PERIOD_ID,
         per.CLOSEDONDATE AS POSTING_PERIOD_DATE,
@@ -137,6 +143,7 @@ derived_metric_rows as (
         NULL AS ACCOUNTING_LINE_TYPE,
         NULL AS DIM_LOCATION_ID,
         NULL AS DIM_SUBSIDIARY_ID,
+        NULL AS DIM_ADDBACK_ID,
         NULL AS DIM_PERIOD_ID,
         NULL AS POSTING_PERIOD_DATE,
         NULL AS CURRENCY,
@@ -172,4 +179,3 @@ final_result as (
 )
 
 SELECT * FROM final_result
- 
