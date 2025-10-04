@@ -37,7 +37,7 @@ cleaned as (
         CAST(ENTITY AS INT) AS ENTITY,
         CAST(CLASS AS INT) AS CLASS,
         CAST(DEPARTMENT AS INT) AS DEPARTMENT,
-        {% if company == 'wagway' and sourcesystem == 'netsuite' %}
+        {% if company == 'wagway' %}
             CSEG_CP_STORE_LOC AS LOCATION,
             CSEG1 AS ADDBACK_ID,
         {% else %}

@@ -20,7 +20,10 @@
     'Field EBITDA Margin',
     'Post Corporate EBITDA',
     'Post Corporate EBITDA Margin',
-    'Net Income'
+    'Net Income',
+    'Adjusted EBIDTA',
+    'Adjustments',
+    'Total Liabilities & Equity'
 ] %}
 
 with source as (
@@ -41,7 +44,11 @@ with source as (
 
         -- Derived Dimension Hashes (for conformed COA / Class across subs)
         ABS(HASH(b.ACCOUNTKEY, b.LOCATIONKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
-
+        {% if company == 'spotless'  %}
+        cast(NULL as INT) AS DIM_PROJECT_ID,
+        {% else %}
+            b.PROJECTDIMKEY AS DIM_PROJECT_ID,
+        {% endif%}
         -- Measure
         b.AMOUNT AS AMOUNT,
         map.METRIC_L1,
@@ -54,8 +61,16 @@ with source as (
         b.WHENMODIFIED AS LAST_MODIFIED_DATE
 
 FROM {{ get_silver_source(company, 'GL_BUDGET_ITEM') }} b
-LEFT JOIN {{ get_silver_source(company, 'SAGE_COA_MAPPING') }} map
-    ON ABS(HASH(b.ACCOUNTKEY, b.LOCATIONKEY)) = ABS(HASH(map.ACCOUNT_ID, map.LOCATION_ID))
+LEFT JOIN {{ get_silver_source(company, company ~ '_COA_MAPPING') }} map
+    ON 
+     {% if company == 'spotless'  %}
+            ABS(HASH(b.ACCOUNTKEY, b.LOCATIONKEY)) = ABS(HASH(map.ACCOUNT_ID, map.LOCATION_ID))
+        {% else %}
+            b.ACCOUNTKEY  = map.ACCOUNT_ID  AND  
+            COALESCE(b.LOCATIONKEY ,0)  = COALESCE(map.LOCATION_ID,0)  AND 
+            COALESCE(b.DEPTKEY  ,0 )= COALESCE(map.DEPARTMENT_ID ,0) AND 
+            COALESCE(b.PROJECTDIMKEY ,0)= COALESCE(map.PROJECT_ID ,0)
+        {% endif%}
 
     {% if is_incremental() %}
     where WHENMODIFIED > (
@@ -83,7 +98,7 @@ derived_metric_rows as (
         NULL AS CSEG1_ID,
         NULL AS CSEG3_ID,
         NULL AS DIM_CHART_OF_ACCOUNT_ID,
-
+        NULL AS DIM_PERIOD_ID,
         NULL AS AMOUNT,
         '{{ metric }}' AS METRIC_L1,  -- Only METRIC_L1 is populated with the derived metric name
         NULL AS METRIC_L2,
