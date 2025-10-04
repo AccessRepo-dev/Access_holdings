@@ -18,7 +18,10 @@
     'Field EBITDA Margin',
     'Post Corporate EBITDA',
     'Post Corporate EBITDA Margin',
-    'Net Income'
+    'Net Income',
+    'Adjusted EBIDTA',
+    'Adjustments',
+    'Total Liabilities & Equity'
 ] %}
 
 with source as (
@@ -78,7 +81,12 @@ with source as (
     NULL AS SHIPPINGADDRESS,
     NULL AS BILLINGSTATUS,
     b.BATCH_TITLE AS MEMO,
- 
+    {% if company == 'spotless'  %}
+        cast(NULL as INT) AS DIM_PROJECT_ID,
+    {% else %}
+        e.PROJECTDIMKEY AS DIM_PROJECT_ID,
+    {% endif%}
+   
     -- Dates
     e.ENTRY_DATE AS TRANDATE,
     CAST(NULL AS DATE) AS STARTDATE,
@@ -94,8 +102,17 @@ LEFT JOIN {{ get_silver_source(company, 'GL_BATCH') }}  b
     ON d.batchkey = b.recordno
 LEFT JOIN {{ get_silver_source(company, 'GL_ACCOUNT') }} acc
     ON e.ACCOUNTKEY  = acc.RECORDNO
-LEFT JOIN {{ get_silver_source(company, 'SAGE_COA_MAPPING') }} map
-    ON ABS(HASH(e.ACCOUNTKEY, e.LOCATIONKEY)) = ABS(HASH(map.ACCOUNT_ID, map.LOCATION_ID))
+LEFT JOIN {{ get_silver_source(company, company ~ '_COA_MAPPING') }} map
+    ON 
+      {% if company == 'spotless'  %}
+            ABS(HASH(e.ACCOUNTKEY, e.LOCATIONKEY)) = ABS(HASH(map.ACCOUNT_ID, map.LOCATION_ID))
+        {% else %}
+            e.ACCOUNTKEY  = map.ACCOUNT_ID  AND  
+            COALESCE(e.LOCATIONKEY ,0)  = COALESCE(map.LOCATION_ID,0)  AND 
+            COALESCE(e.DEPARTMENTKEY ,0 )= COALESCE(map.DEPARTMENT_ID ,0) AND 
+            COALESCE(e.PROJECTDIMKEY ,0)= COALESCE(map.PROJECT_ID ,0)
+        {% endif%}
+    
 LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
     ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
 ),
@@ -148,6 +165,7 @@ derived_metric_rows as (
         NULL AS SHIPPINGADDRESS,
         NULL AS BILLINGSTATUS,
         NULL AS MEMO,
+        NULL AS DIM_PROJECT_ID,
         NULL AS TRANDATE,
         NULL AS STARTDATE,
         NULL AS ENDDATE,

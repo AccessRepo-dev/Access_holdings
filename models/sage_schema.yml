@@ -59,7 +59,7 @@ sources:
       - name: LOCATION_ENTITY
       - name: PROJECT
       - name: REPORTING_PERIOD
-      - name: SAGE_COA_MAPPING
+      - name: spotless_COA_MAPPING
 
 
   - name: amh_sage_raw
@@ -120,7 +120,7 @@ sources:
       - name: LOCATION_ENTITY
       - name: PROJECT
       - name: REPORTING_PERIOD
-      - name: SAGE_COA_MAPPING
+      - name: amh_COA_MAPPING
 
       
       

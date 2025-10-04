@@ -19,7 +19,10 @@
     'Field EBITDA Margin',
     'Post Corporate EBITDA',
     'Post Corporate EBITDA Margin',
-    'Net Income'
+    'Net Income',
+    'Adjusted EBITDA',
+    'Adjustments',
+    'Total Liabilities & Equity'
 ] %}
 
 with source as (
@@ -52,7 +55,7 @@ with source as (
 
 
     from {{ get_silver_source(company, 'BUDGETLEGACY') }} AS BUDGET
-    LEFT JOIN {{ get_silver_source(company, 'NETSUITE_COA_MAPPING') }} map
+    LEFT JOIN {{ get_silver_source(company, company ~ '_COA_MAPPING') }} map
         ON ABS(HASH(BUDGET.ACCOUNT, BUDGET.SUBSIDIARY)) = ABS(HASH(map.ACCOUNT_ID, map.SUBSIDIARY_ID))
     where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}
@@ -104,4 +107,4 @@ final_result as (
 )
 
 select *
-from source
+from final_result

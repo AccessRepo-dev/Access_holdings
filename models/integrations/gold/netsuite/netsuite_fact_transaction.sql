@@ -17,7 +17,10 @@
     'Field EBITDA Margin',
     'Post Corporate EBITDA',
     'Post Corporate EBITDA Margin',
-    'Net Income'
+    'Net Income',
+    'Adjusted EBIDTA',
+    'Adjustments',
+    'Total Liabilities & Equity'
 ] %}
 
 with source as (
@@ -60,7 +63,7 @@ with source as (
         tl.LOCATION AS DIM_LOCATION_ID,
         tl.SUBSIDIARY AS DIM_SUBSIDIARY_ID,
         
-        {% if company == 'wagway' and sourcesystem == 'netsuite' %}
+        {% if company == 'wagway' %}
             tl.ADDBACK_ID AS DIM_ADDBACK_ID,
         {% else %}
             NULL AS DIM_ADDBACK_ID,
@@ -106,7 +109,7 @@ with source as (
         ON per.ID = t.POSTINGPERIOD
     LEFT JOIN {{ get_silver_source(company, 'TRANSACTIONSTATUS') }} txs
         ON txs.ID = t.status and txs.trantype = t.type and t.customtype = txs.trancustomtype
-    LEFT JOIN {{ get_silver_source(company, 'NETSUITE_COA_MAPPING') }} map
+    LEFT JOIN {{ get_silver_source(company, company ~ '_COA_MAPPING') }} map
         ON ABS(HASH(tal.ACCOUNT, tl.SUBSIDIARY)) = ABS(HASH(map.ACCOUNT_ID, map.SUBSIDIARY_ID))
 ),
 
