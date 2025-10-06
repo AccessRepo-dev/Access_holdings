@@ -78,6 +78,7 @@ sources:
       - name: CLASSIFICATIONSUBSIDIARYMAP
       - name: ACCOUNTSUBSIDIARYMAP
       - name: wagway_COA_MAPPING
+      - name: wagway_addbacks 
       - name: CUSTOMRECORD_CSEG1
 
   - name: playfly_silver

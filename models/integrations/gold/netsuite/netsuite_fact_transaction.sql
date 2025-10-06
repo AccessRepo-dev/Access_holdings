@@ -18,8 +18,8 @@
     'Post Corporate EBITDA',
     'Post Corporate EBITDA Margin',
     'Net Income',
-    'Adjusted EBIDTA',
-    'Adjustments',
+    'Adjusted EBITDA',
+    'Addbacks',
     'Total Liabilities & Equity'
 ] %}
 
@@ -93,6 +93,7 @@ with source as (
         -- Dates
         t.TRANDATE,
         t.STARTDATE,
+        per.STARTDATE AS PERIOD_START_DATE , 
         t.ENDDATE,
         t.DUEDATE,
         t.CLOSEDATE,
@@ -111,6 +112,7 @@ with source as (
         ON txs.ID = t.status and txs.trantype = t.type and t.customtype = txs.trancustomtype
     LEFT JOIN {{ get_silver_source(company, company ~ '_COA_MAPPING') }} map
         ON ABS(HASH(tal.ACCOUNT, tl.SUBSIDIARY)) = ABS(HASH(map.ACCOUNT_ID, map.SUBSIDIARY_ID))
+ 
 ),
 
 -- Create derived metric rows
@@ -164,6 +166,7 @@ derived_metric_rows as (
         NULL AS MEMO,
         NULL AS TRANDATE,
         NULL AS STARTDATE,
+        NULL AS PERIOD_START_DATE,
         NULL AS ENDDATE,
         NULL AS DUEDATE,
         NULL AS CLOSEDATE,

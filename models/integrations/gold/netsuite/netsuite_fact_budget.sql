@@ -21,7 +21,7 @@
     'Post Corporate EBITDA Margin',
     'Net Income',
     'Adjusted EBITDA',
-    'Adjustments',
+    'Addbacks',
     'Total Liabilities & Equity'
 ] %}
 
@@ -35,6 +35,7 @@ with source as (
         BUDGET.DEPARTMENT AS DIM_DEPARTMENT_ID,
         BUDGET.LOCATION AS DIM_LOCATION_ID,
         BUDGET.PERIOD AS DIM_PERIOD_ID,
+        per.STARTDATE AS PERIOD_START_DATE,
         BUDGET.CURRENCY AS DIM_CURRENCY_ID,
         BUDGET.CUSTOMER AS CUSTOMER_ID,
         BUDGET.ITEM AS DIM_ITEM_ID,
@@ -57,9 +58,11 @@ with source as (
     from {{ get_silver_source(company, 'BUDGETLEGACY') }} AS BUDGET
     LEFT JOIN {{ get_silver_source(company, company ~ '_COA_MAPPING') }} map
         ON ABS(HASH(BUDGET.ACCOUNT, BUDGET.SUBSIDIARY)) = ABS(HASH(map.ACCOUNT_ID, map.SUBSIDIARY_ID))
-    where (_fivetran_deleted is null or _fivetran_deleted = false)
+    LEFT JOIN {{ get_silver_source(company, 'ACCOUNTINGPERIOD') }} per 
+        ON BUDGET.PERIOD = per.ID
+   
     {% if is_incremental() %}
-      and LASTMODIFIEDDATE > (
+      and BUDGET.LASTMODIFIEDDATE > (
           select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
           from {{ this }}
       )
@@ -76,7 +79,8 @@ derived_metric_rows as (
         NULL AS DIM_CLASS_ID,
         NULL AS DIM_DEPARTMENT_ID,
         NULL AS DIM_LOCATION_ID,
-        NULL AS POSTINGPERIOD,
+        NULL AS DIM_PERIOD_ID,
+        NULL AS PERIOD_START_DATE,
         NULL AS DIM_CURRENCY_ID,
         NULL AS CUSTOMER_ID,
         NULL AS DIM_ITEM_ID,
