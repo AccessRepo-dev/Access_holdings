@@ -21,21 +21,22 @@
     'Post Corporate EBITDA',
     'Post Corporate EBITDA Margin',
     'Net Income',
-    'Adjusted EBIDTA',
-    'Adjustments',
+    'Adjusted EBITDA',
+    'Addbacks',
     'Total Liabilities & Equity'
 ] %}
 
 with source as (
     select
-        RECORDNO AS BUDGET_ID,
-        BUDGETKEY AS DIM_BUDGET_HEADER_ID,
+        b.RECORDNO AS BUDGET_ID,
+        b.BUDGETKEY AS DIM_BUDGET_HEADER_ID,
         b.LOCATIONKEY AS DIM_SUBSIDIARY_ID,       
         b.ACCOUNTKEY AS ACCOUNT_ID,
         b.CLASSDIMKEY AS DIM_CLASS_ID,           
         b.DEPTKEY AS DIM_DEPARTMENT_ID,
         b.LOCATIONKEY AS DIM_LOCATION_ID,
         b.PERIODKEY AS DIM_PERIOD_ID,
+        per.START_DATE AS PERIOD_START_DATE,
         NULL AS DIM_CURRENCY_ID,         
         NULL AS CUSTOMER_ID,
         NULL AS DIM_ITEM_ID,
@@ -71,6 +72,8 @@ LEFT JOIN {{ get_silver_source(company, company ~ '_COA_MAPPING') }} map
             COALESCE(b.DEPTKEY  ,0 )= COALESCE(map.DEPARTMENT_ID ,0) AND 
             COALESCE(b.PROJECTDIMKEY ,0)= COALESCE(map.PROJECT_ID ,0)
         {% endif%}
+LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
+    ON b.PERIODKEY  = per.RECORDNO
 
     {% if is_incremental() %}
     where WHENMODIFIED > (
@@ -91,7 +94,8 @@ derived_metric_rows as (
         NULL AS DIM_CLASS_ID,
         NULL AS DIM_DEPARTMENT_ID,
         NULL AS DIM_LOCATION_ID,
-        NULL AS POSTINGPERIOD,
+        NULL AS DIM_PERIOD_ID,
+        NULL AS PERIOD_START_DATE,
         NULL AS DIM_CURRENCY_ID,
         NULL AS DIM_CUSTOMER_ID,
         NULL AS ITEM_ID,

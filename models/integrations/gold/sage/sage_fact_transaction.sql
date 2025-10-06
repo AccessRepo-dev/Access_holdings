@@ -19,8 +19,8 @@
     'Post Corporate EBITDA',
     'Post Corporate EBITDA Margin',
     'Net Income',
-    'Adjusted EBIDTA',
-    'Adjustments',
+    'Adjusted EBITDA',
+    'Addbacks',
     'Total Liabilities & Equity'
 ] %}
 
@@ -59,6 +59,7 @@ with source as (
     CAST(d.LINE_NO AS VARCHAR) AS ACCOUNTING_LINE_TYPE,
     e.LOCATIONKEY AS DIM_LOCATION_ID,
     e.LOCATIONKEY AS DIM_SUBSIDIARY_ID,
+    NULL AS DIM_ADDBACK_ID,
     TRUE AS IS_POSTING,
  
     -- Period / Currency
@@ -90,6 +91,7 @@ with source as (
     -- Dates
     e.ENTRY_DATE AS TRANDATE,
     CAST(NULL AS DATE) AS STARTDATE,
+    per.START_DATE AS PERIOD_START_DATE,
     CAST(NULL AS DATE) AS ENDDATE,
     CAST(NULL AS DATE) AS DUEDATE,
     CAST(NULL AS DATE) AS CLOSEDATE,
@@ -149,6 +151,7 @@ derived_metric_rows as (
         NULL AS ACCOUNTING_LINE_TYPE,
         NULL AS DIM_LOCATION_ID,
         NULL AS DIM_SUBSIDIARY_ID,
+        NULL AS DIM_ADDBACK_ID,
         NULL AS IS_POSTING,
         NULL AS POSTINGPERIOD,
         NULL AS POSTING_PERIOD_DATE,
@@ -168,6 +171,7 @@ derived_metric_rows as (
         NULL AS DIM_PROJECT_ID,
         NULL AS TRANDATE,
         NULL AS STARTDATE,
+        NULL AS PERIOD_START_DATE,
         NULL AS ENDDATE,
         NULL AS DUEDATE,
         NULL AS CLOSEDATE,
