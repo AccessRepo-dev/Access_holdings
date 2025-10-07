@@ -106,4 +106,5 @@ sources:
       - name: CLASSIFICATIONSUBSIDIARYMAP
       - name: ACCOUNTSUBSIDIARYMAP
       - name: playfly_COA_MAPPING
+      - name: playfly_addbacks 
       - name: CUSTOMRECORD_CSEG1
