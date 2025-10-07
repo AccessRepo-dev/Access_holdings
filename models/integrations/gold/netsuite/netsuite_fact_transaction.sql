@@ -19,8 +19,11 @@
     'Post Corporate EBITDA Margin',
     'Net Income',
     'Adjusted EBITDA',
-    'Addbacks',
-    'Total Liabilities & Equity'
+    'Adjustments',
+    'Total Liabilities & Equity',
+    'Equity',
+    'Total Assets',
+    'Total Liabilities'
 ] %}
 
 with source as (
@@ -47,6 +50,7 @@ with source as (
         a.FULLNAME AS ACCOUNT_NAME,
         HASH(tal.ACCOUNT, tl.SUBSIDIARY) AS DIM_CHART_OF_ACCOUNT_ID,
         tl.CLASS AS DIM_CLASS_ID,
+        NULL AS DIM_PROJECT_ID,
         map.METRIC_L1,
         map.METRIC_L2,
         map.METRIC_L3,
@@ -135,8 +139,8 @@ derived_metric_rows as (
         NULL AS ACCOUNT_NAME,
         NULL AS DIM_CHART_OF_ACCOUNT_ID,
         NULL AS DIM_CLASS_ID,
-        '{{ metric }}' AS METRIC_L1,  -- Only METRIC_L1 is populated with the derived metric name
-        NULL AS METRIC_L2,
+        '{{ metric }}' AS METRIC_L1,
+        CASE WHEN '{{ metric }}' = 'Equity' THEN 'Net Income' ELSE NULL END AS METRIC_L2,
         NULL AS METRIC_L3,
         NULL AS METRIC_L4,
         NULL AS METRIC_L5,
