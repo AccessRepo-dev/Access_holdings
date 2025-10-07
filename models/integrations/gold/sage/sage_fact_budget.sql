@@ -22,8 +22,11 @@
     'Post Corporate EBITDA Margin',
     'Net Income',
     'Adjusted EBITDA',
-    'Addbacks',
-    'Total Liabilities & Equity'
+    'Adjustments',
+    'Total Liabilities & Equity',
+    'Equity',
+    'Total Assets',
+    'Total Liabilities'
 ] %}
 
 with source as (
@@ -104,7 +107,7 @@ derived_metric_rows as (
         NULL AS DIM_CHART_OF_ACCOUNT_ID,
         NULL AS DIM_PROJECT_ID,
         '{{ metric }}' AS METRIC_L1,  -- Only METRIC_L1 is populated with the derived metric name
-        NULL AS METRIC_L2,
+        CASE WHEN '{{ metric }}' = 'Equity' THEN 'Net Income' ELSE NULL END AS METRIC_L2,
         NULL AS METRIC_L3,
         NULL AS METRIC_L4,
         NULL AS METRIC_L5,
