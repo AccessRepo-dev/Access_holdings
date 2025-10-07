@@ -18,7 +18,7 @@ with source_data as (
     {% if is_incremental() %}
     where 
         (
-            NAME ILIKE '%MONTH%' 
+            HEADER_1 ilike '%month%' and START_DATE is not null
             and cast(WHENMODIFIED as timestamp_ntz) > (
                 select coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz)
                 from {{ this }}
@@ -26,7 +26,8 @@ with source_data as (
         )
         or _FIVETRAN_DELETED = true
     {% else %}
-    where NAME ILIKE '%MONTH%'
+    WHERE
+    HEADER_1 ilike '%month%' and START_DATE is not null
     {% endif %}
 
 

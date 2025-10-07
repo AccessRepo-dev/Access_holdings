@@ -28,7 +28,7 @@
 
 with source as (
     select
-        b.RECORDNO AS BUDGET_ID,
+        CAST(b.RECORDNO AS INT) AS BUDGET_ID,
         b.BUDGETKEY AS DIM_BUDGET_HEADER_ID,
         b.LOCATIONKEY AS DIM_SUBSIDIARY_ID,       
         b.ACCOUNTKEY AS ACCOUNT_ID,
@@ -36,12 +36,12 @@ with source as (
         b.DEPTKEY AS DIM_DEPARTMENT_ID,
         b.LOCATIONKEY AS DIM_LOCATION_ID,
         b.PERIODKEY AS DIM_PERIOD_ID,
-        per.START_DATE AS PERIOD_START_DATE,
-        NULL AS DIM_CURRENCY_ID,         
-        NULL AS CUSTOMER_ID,
-        NULL AS DIM_ITEM_ID,
-        NULL AS CSEG1_ID,               
-        NULL AS CSEG3_ID,
+        DATE(per.START_DATE) AS PERIOD_START_DATE,
+        CAST(NULL AS INT) AS DIM_CURRENCY_ID,         
+        CAST(NULL AS INT) AS CUSTOMER_ID,
+        CAST(NULL AS INT) AS DIM_ITEM_ID,
+        CAST(NULL AS INT) AS CSEG1_ID,               
+        CAST(NULL AS INT) AS CSEG3_ID,
 
         -- Derived Dimension Hashes (for conformed COA / Class across subs)
         ABS(HASH(b.ACCOUNTKEY, b.LOCATIONKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
@@ -50,14 +50,14 @@ with source as (
         {% else %}
             b.PROJECTDIMKEY AS DIM_PROJECT_ID,
         {% endif%}
-        -- Measure
-        b.AMOUNT AS AMOUNT,
+        
         map.METRIC_L1,
         map.METRIC_L2,
         map.METRIC_L3,
-        map.METRIC_L4,
-        map.METRIC_L5,
+        CAST(map.METRIC_L4 AS VARCHAR) AS METRIC_L4,
+        CAST(map.METRIC_L5 AS VARCHAR) AS METRIC_L5,
         CAST(map.METRIC_L6 AS VARCHAR) AS METRIC_L6, 
+        b.AMOUNT AS AMOUNT,
         -- Metadata
         b.WHENMODIFIED AS LAST_MODIFIED_DATE
 
@@ -97,21 +97,20 @@ derived_metric_rows as (
         NULL AS DIM_PERIOD_ID,
         NULL AS PERIOD_START_DATE,
         NULL AS DIM_CURRENCY_ID,
-        NULL AS DIM_CUSTOMER_ID,
-        NULL AS ITEM_ID,
+        NULL AS CUSTOMER_ID,
+        NULL AS DIM_ITEM_ID,
         NULL AS CSEG1_ID,
         NULL AS CSEG3_ID,
         NULL AS DIM_CHART_OF_ACCOUNT_ID,
-        NULL AS DIM_PERIOD_ID,
-        NULL AS AMOUNT,
+        NULL AS DIM_PROJECT_ID,
         '{{ metric }}' AS METRIC_L1,  -- Only METRIC_L1 is populated with the derived metric name
         NULL AS METRIC_L2,
         NULL AS METRIC_L3,
         NULL AS METRIC_L4,
         NULL AS METRIC_L5,
         NULL AS METRIC_L6,
-        
-        NULL AS LASTMODIFIEDDATE
+        NULL AS AMOUNT,
+        NULL AS LAST_MODIFIED_DATE
     {% if not loop.last %}
     UNION ALL
     {% endif %}
