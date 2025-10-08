@@ -7,7 +7,7 @@
     alias = 'dim_location',
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'LOCATION_ID'
+    unique_key = 'DIM_LOCATION_ID'
 ) }}
 
 with source as (
@@ -23,7 +23,7 @@ with source as (
     LEFT JOIN {{ get_silver_source(company, 'LOCATION_ENTITY') }} le ON l.ENTITY = le.LOCATIONID 
     
     {% if is_incremental() %}
-    and WHENMODIFIED > (
+    where l.WHENMODIFIED > (
         SELECT coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         FROM {{ this }}
     )

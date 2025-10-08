@@ -50,7 +50,7 @@ with source as (
         a.FULLNAME AS ACCOUNT_NAME,
         HASH(tal.ACCOUNT, tl.SUBSIDIARY) AS DIM_CHART_OF_ACCOUNT_ID,
         tl.CLASS AS DIM_CLASS_ID,
-        NULL AS DIM_PROJECT_ID,
+        CAST(NULL AS INT) AS DIM_PROJECT_ID,
         map.METRIC_L1,
         map.METRIC_L2,
         map.METRIC_L3,
@@ -70,7 +70,7 @@ with source as (
         {% if company == 'wagway' %}
             tl.ADDBACK_ID AS DIM_ADDBACK_ID,
         {% else %}
-            NULL AS DIM_ADDBACK_ID,
+            CAST(NULL AS NUMBER) AS DIM_ADDBACK_ID,
         {% endif %}
         
         -- Period / currency / consolidation
@@ -97,7 +97,7 @@ with source as (
         -- Dates
         t.TRANDATE,
         t.STARTDATE,
-        per.STARTDATE AS PERIOD_START_DATE , 
+        DATE(per.STARTDATE) AS PERIOD_START_DATE , 
         t.ENDDATE,
         t.DUEDATE,
         t.CLOSEDATE,
@@ -139,6 +139,7 @@ derived_metric_rows as (
         NULL AS ACCOUNT_NAME,
         NULL AS DIM_CHART_OF_ACCOUNT_ID,
         NULL AS DIM_CLASS_ID,
+        NULL AS DIM_PROJECT_ID,
         '{{ metric }}' AS METRIC_L1,
         CASE WHEN '{{ metric }}' = 'Equity' THEN 'Net Income' ELSE NULL END AS METRIC_L2,
         NULL AS METRIC_L3,
@@ -157,7 +158,7 @@ derived_metric_rows as (
         NULL AS POSTING_PERIOD_DATE,
         NULL AS CURRENCY,
         NULL AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
-        NULL AS EXCHANGERATE,
+        CAST(NULL AS INT) AS EXCHANGERATE,
         NULL AS NETAMOUNT,
         NULL AS AMOUNT,
         NULL AS CONVERTED_NET_AMOUNT,

@@ -21,7 +21,7 @@ with source as (
     from {{ get_silver_source(company, 'CLASSIFICATION') }} c
 
     {% if is_incremental() %}
-    and LASTMODIFIEDDATE > (
+    where LASTMODIFIEDDATE > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         from {{ this }}
     )

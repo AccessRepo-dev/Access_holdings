@@ -36,13 +36,5 @@
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
     from {{ c.db }}.GOLD.DIM_CHART_OF_ACCOUNT
-
-    {% if is_incremental() %}
-    where LAST_MODIFIED_DATE > (
-        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
-        from {{ this }}
-        where SOURCESYSTEM = '{{ c.source }}' and COMPANY = '{{ c.name }}'
-    )
-    {% endif %}
     {% if not loop.last %} union all {% endif %}
 {% endfor %}

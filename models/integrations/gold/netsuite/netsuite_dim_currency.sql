@@ -6,7 +6,7 @@
     materialized = 'incremental',
     alias = 'dim_currency',
     incremental_strategy = 'merge',
-    unique_key = 'CURRENCY_ID'
+    unique_key = 'DIM_CURRENCY_ID'
 ) }}
 
 with source as (

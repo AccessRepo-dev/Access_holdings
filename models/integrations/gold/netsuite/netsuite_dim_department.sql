@@ -6,7 +6,7 @@
     materialized = 'incremental',
     alias = 'dim_department',
     incremental_strategy = 'merge',
-    unique_key = 'DEPARTMENT_ID'
+    unique_key = 'DIM_DEPARTMENT_ID'
 ) }}
 
 with source as (

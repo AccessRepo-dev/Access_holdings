@@ -6,24 +6,17 @@
     materialized = 'incremental',
     alias = 'dim_period_flag',
     incremental_strategy = 'merge',
-    unique_key = 'DIM_PERIOD_ID'
+    unique_key = ['DIM_PERIOD_ID','FLAG_TYPE']
 ) }}
 
 with source as (
     select
         id as DIM_PERIOD_ID,
-        date(startdate) as START_DATE
+        date(startdate) as START_DATE,
     from {{ get_silver_source(company, 'ACCOUNTINGPERIOD') }}
     where startdate <= current_date
       and lower(split_part(periodname, ' ', 1)) in 
           ('jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec')
-
-    {% if is_incremental() %}
-      and lastmodifieddate > (
-          select coalesce(max(last_modified_date), '1900-01-01')
-          from {{ this }}
-      )
-    {% endif %}
 ),
 
 base as (

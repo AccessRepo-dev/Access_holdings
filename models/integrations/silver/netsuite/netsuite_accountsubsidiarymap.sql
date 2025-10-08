@@ -7,7 +7,7 @@
     materialized = 'incremental',
     alias = 'accountsubsidiarymap',
     incremental_strategy = 'merge',
-    unique_key = '_FIVETRAN_ID'
+    unique_key = ['ACCOUNT', 'SUBSIDIARY']
 ) }}
 
 with source_data as (

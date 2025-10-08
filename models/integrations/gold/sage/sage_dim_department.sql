@@ -7,7 +7,7 @@
     alias = 'dim_department',
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'DEPARTMENT_ID'
+    unique_key = 'DIM_DEPARTMENT_ID'
 ) }}
 
 with source as (
@@ -20,7 +20,7 @@ with source as (
     from {{ get_silver_source(company, 'DEPARTMENT') }}
     
     {% if is_incremental() %}
-    and WHENMODIFIED > (
+    where WHENMODIFIED > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         from {{ this }}
     )

@@ -79,7 +79,7 @@ LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
     ON b.PERIODKEY  = per.RECORDNO
 
     {% if is_incremental() %}
-    where WHENMODIFIED > (
+    where b.WHENMODIFIED > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         from {{ this }}
     )
