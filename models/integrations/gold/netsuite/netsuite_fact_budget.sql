@@ -66,7 +66,7 @@ with source as (
         ON BUDGET.PERIOD = per.ID
    
     {% if is_incremental() %}
-      and BUDGET.LASTMODIFIEDDATE > (
+      where BUDGET.LASTMODIFIEDDATE > (
           select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
           from {{ this }}
       )
