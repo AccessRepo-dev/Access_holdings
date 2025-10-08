@@ -30,8 +30,8 @@
 with source as (
     SELECT
     -- Identifiers
-    CONCAT(CAST(d.RECORDNO AS VARCHAR), '-', CAST(e.RECORDNO AS VARCHAR)) AS TRANSACTIONS_UNIQUE_ID,
-    d.BATCHKEY AS TRANSACTION_ID,
+    CAST(e.RECORDNO AS VARCHAR) AS TRANSACTIONS_UNIQUE_ID,
+    e.BATCHNO AS TRANSACTION_ID,
     e.RECORDNO AS TRANSACTION_LINE_ID,
     e.BATCHNO AS TRANSACTION_NUMBER,
     e.BATCHTITLE AS TRANID,
@@ -65,7 +65,7 @@ with source as (
     e.DEPARTMENTKEY AS DIM_DEPARTMENT_ID,
     CAST(NULL AS INT) AS DIM_ENTITY_ID,
     NULL AS TRANSACTION_LINE_TYPE,
-    CAST(d.LINE_NO AS VARCHAR) AS ACCOUNTING_LINE_TYPE,
+    CAST(NULL AS VARCHAR) AS ACCOUNTING_LINE_TYPE,
     e.LOCATIONKEY AS DIM_LOCATION_ID,
     e.LOCATIONKEY AS DIM_SUBSIDIARY_ID,
     CAST(NULL AS NUMBER) AS DIM_ADDBACK_ID,
@@ -101,10 +101,9 @@ with source as (
     e.WHENMODIFIED AS LASTMODIFIEDDATE
  
 FROM {{ get_silver_source(company, 'GL_ENTRY') }}  e
-LEFT JOIN {{ get_silver_source(company, 'GL_DETAIL') }} d
-    ON d.GLENTRYKEY = e.recordno
+
 LEFT JOIN {{ get_silver_source(company, 'GL_BATCH') }}  b
-    ON d.batchkey = b.recordno
+    ON e.batchno = b.recordno
 LEFT JOIN {{ get_silver_source(company, 'GL_ACCOUNT') }} acc
     ON e.ACCOUNTKEY  = acc.RECORDNO
 LEFT JOIN {{ get_silver_source(company, company ~ '_COA_MAPPING') }} map
