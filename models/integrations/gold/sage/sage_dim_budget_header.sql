@@ -6,7 +6,7 @@
     materialized = 'incremental',
     incremental_strategy = 'merge',
     alias = 'dim_budget_header',
-    unique_key = 'DIM_BUDGET_CATEGORY_ID'
+    unique_key = 'DIM_BUDGET_HEADER_ID'
 ) }}
 
 with source as (

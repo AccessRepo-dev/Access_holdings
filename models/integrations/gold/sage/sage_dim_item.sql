@@ -51,7 +51,7 @@ with source as (
     from {{ get_silver_source(company, 'ITEM') }}
     
     {% if is_incremental() %}
-    and WHENMODIFIED > (
+    where WHENMODIFIED > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         from {{ this }}
     )

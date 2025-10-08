@@ -27,7 +27,7 @@
     from  {{ c.db }}.GOLD.DIM_LOCATION
 
     {% if is_incremental() %}
-        LAST_MODIFIED_DATE > (
+    WHERE LAST_MODIFIED_DATE > (
             select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
             from {{ this }}
             where SOURCESYSTEM = '{{ c.source }}' and COMPANY = '{{ c.name }}'

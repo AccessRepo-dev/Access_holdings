@@ -7,7 +7,7 @@
     materialized = 'incremental',
     alias = 'gl_batch',
     incremental_strategy = 'merge',
-    unique_key = 'BATCHNO'
+    unique_key = 'RECORDNO'
 ) }}
 
 with source_data as (
@@ -24,7 +24,7 @@ with source_data as (
 
 cleaned as (
     SELECT
-    -- Primary Key
+
     TRY_CAST(BATCHNO AS INT) AS BATCHNO,
 
     -- Core Identifiers

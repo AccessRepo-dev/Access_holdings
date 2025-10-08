@@ -6,7 +6,7 @@
     materialized = 'incremental',
     alias = 'dim_currencyrate',
     incremental_strategy = 'merge',
-    unique_key = 'CURRENCY_RATE_ID'
+    unique_key = 'DIM_CURRENCY_RATE_ID'
 ) }}
 
 with source as (

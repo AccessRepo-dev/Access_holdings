@@ -42,28 +42,33 @@ with source as (
  
     -- Accounts
     e.ACCOUNTKEY AS ACCOUNT_ID,
-    acc.ACCOUNTNO AS ACCOUNT_NUMBER,
+    TRUE AS IS_POSTING,
+    CAST(COALESCE(acc.ACCOUNTNO,E.ACCOUNTNO) AS VARCHAR) AS ACCOUNT_NUMBER,
     acc.ACCOUNTTYPE AS ACCOUNT_TYPE,
-    acc.TITLE AS ACCOUNT_NAME,
-    e.ACCOUNTKEY  AS DIM_CHART_OF_ACCOUNT_ID,
+    COALESCE(acc.TITLE,E.ACCOUNTTITLE) AS ACCOUNT_NAME,
+    e.ACCOUNTKEY AS DIM_CHART_OF_ACCOUNT_ID,
     e.CLASSDIMKEY AS DIM_CLASS_ID,
+    {% if company == 'spotless'  %}
+        CAST(NULL AS INT) AS DIM_PROJECT_ID,
+    {% else %}
+        e.PROJECTDIMKEY AS DIM_PROJECT_ID,
+    {% endif%}
     map.METRIC_L1,
     map.METRIC_L2,
     map.METRIC_L3,
-    map.METRIC_L4,
-    map.METRIC_L5,
+    CAST(map.METRIC_L4 AS VARCHAR) AS METRIC_L4,
+    CAST(map.METRIC_L5 AS VARCHAR) AS METRIC_L5,
     CAST(map.METRIC_L6 AS VARCHAR) AS METRIC_L6,    
+    
     -- Transaction Line
     e.ITEMDIMKEY AS DIM_ITEM_ID,
     e.DEPARTMENTKEY AS DIM_DEPARTMENT_ID,
     CAST(NULL AS INT) AS DIM_ENTITY_ID,
-    --NULL AS ITEM_TYPE,
     NULL AS TRANSACTION_LINE_TYPE,
     CAST(d.LINE_NO AS VARCHAR) AS ACCOUNTING_LINE_TYPE,
     e.LOCATIONKEY AS DIM_LOCATION_ID,
     e.LOCATIONKEY AS DIM_SUBSIDIARY_ID,
-    NULL AS DIM_ADDBACK_ID,
-    TRUE AS IS_POSTING,
+    CAST(NULL AS NUMBER) AS DIM_ADDBACK_ID,
  
     -- Period / Currency
     per.RECORDNO AS DIM_PERIOD_ID,
@@ -76,8 +81,8 @@ with source as (
     e.TRX_AMOUNT AS NETAMOUNT,
     e.TR_TYPE * e.AMOUNT AS AMOUNT,
     e.TRX_AMOUNT AS CONVERTED_NET_AMOUNT,
-    CAST(NULL AS INT) AS BOM_QUANTITY,
-    CAST(NULL AS INT) AS QUANTITY,
+    CAST(NULL AS NUMBER(38, 2)) AS BOM_QUANTITY,
+    CAST(NULL AS NUMBER(38, 2)) AS QUANTITY,
  
     -- Employee / Customer / Address
     CAST(NULL AS INT) AS EMPLOYEE,
@@ -85,11 +90,6 @@ with source as (
     NULL AS SHIPPINGADDRESS,
     NULL AS BILLINGSTATUS,
     b.BATCH_TITLE AS MEMO,
-    {% if company == 'spotless'  %}
-        cast(NULL as INT) AS DIM_PROJECT_ID,
-    {% else %}
-        e.PROJECTDIMKEY AS DIM_PROJECT_ID,
-    {% endif%}
    
     -- Dates
     e.ENTRY_DATE AS TRANDATE,
@@ -126,7 +126,7 @@ LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
 derived_metric_rows as (
     {% for metric in derived_metrics %}
     SELECT
-        CAST({{ -loop.index }} AS VARCHAR) AS TRANSACTIONS_UNIQUE_ID,  -- Negative integers for uniqueness
+        CAST({{ -loop.index }} AS VARCHAR) AS TRANSACTIONS_UNIQUE_ID,
         NULL AS TRANSACTION_ID,
         NULL AS TRANSACTION_LINE_ID,
         NULL AS TRANSACTION_NUMBER,
@@ -136,12 +136,14 @@ derived_metric_rows as (
         NULL AS TITLE,
         NULL AS STATUS_NAME,
         NULL AS ACCOUNT_ID,
+        NULL AS IS_POSTING,
         NULL AS ACCOUNT_NUMBER,
         NULL AS ACCOUNT_TYPE,
         NULL AS ACCOUNT_NAME,
         NULL AS DIM_CHART_OF_ACCOUNT_ID,
         NULL AS DIM_CLASS_ID,
-        '{{ metric }}' AS METRIC_L1,  -- Only METRIC_L1 is populated with the derived metric name
+        NULL AS DIM_PROJECT_ID,
+        '{{ metric }}' AS METRIC_L1,
         CASE WHEN '{{ metric }}' = 'Equity' THEN 'Net Income' ELSE NULL END AS METRIC_L2,
         NULL AS METRIC_L3,
         NULL AS METRIC_L4,
@@ -155,8 +157,7 @@ derived_metric_rows as (
         NULL AS DIM_LOCATION_ID,
         NULL AS DIM_SUBSIDIARY_ID,
         NULL AS DIM_ADDBACK_ID,
-        NULL AS IS_POSTING,
-        NULL AS POSTINGPERIOD,
+        NULL AS DIM_PERIOD_ID,
         NULL AS POSTING_PERIOD_DATE,
         NULL AS CURRENCY,
         NULL AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
@@ -171,7 +172,6 @@ derived_metric_rows as (
         NULL AS SHIPPINGADDRESS,
         NULL AS BILLINGSTATUS,
         NULL AS MEMO,
-        NULL AS DIM_PROJECT_ID,
         NULL AS TRANDATE,
         NULL AS STARTDATE,
         NULL AS PERIOD_START_DATE,

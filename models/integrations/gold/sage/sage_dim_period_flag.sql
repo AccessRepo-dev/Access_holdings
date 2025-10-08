@@ -7,26 +7,20 @@
     alias = 'dim_period_flag',
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'DIM_PERIOD_ID'
+    unique_key = ['DIM_PERIOD_ID','FLAG_TYPE']
 ) }}
 
 with source as (
     SELECT 
         RECORDNO AS DIM_PERIOD_ID,
-        START_DATE,
+        START_DATE
     FROM {{ get_silver_source(company, 'REPORTING_PERIOD') }}
-    WHERE LOWER(SPLIT_PART(NAME, ' ', 3)) IN (
+    WHERE LOWER(SPLIT_PART(NAME, ' ', 3)) IN 
+    (
         'january','february','march','april','may','june',
         'july','august','september','october','november','december'
     )
       AND START_DATE <= CURRENT_DATE
-
-    {% if is_incremental() %}
-      AND WHENMODIFIED > (
-          SELECT COALESCE(MAX(LAST_MODIFIED_DATE), '1900-01-01')
-          FROM {{ this }}
-      )
-    {% endif %}
 ),
 
 base AS (

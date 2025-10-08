@@ -2,7 +2,7 @@
     materialized = 'incremental',
     alias = 'dim_period',
     incremental_strategy = 'merge',
-    unique_key = ['DIM_PERIOD_ID']
+    unique_key = 'DIM_PERIOD_ID'
 ) }}
 
 
@@ -29,7 +29,7 @@
     from {{ c.db }}.GOLD.DIM_PERIOD
 
     {% if is_incremental() %}
-    and LAST_MODIFIED_DATE > (
+    WHERE LAST_MODIFIED_DATE > (
         SELECT coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         FROM {{ this }} 
         WHERE SOURCESYSTEM = '{{ c.source }}' AND COMPANY = '{{ c.name }}' 

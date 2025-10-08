@@ -22,7 +22,7 @@ with source as (
     from {{ get_silver_source(company, 'CURRENCY') }}
     
     {% if is_incremental() %}
-    and UPDATED_AT > (
+    where UPDATED_AT > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         from {{ this }}
     )
