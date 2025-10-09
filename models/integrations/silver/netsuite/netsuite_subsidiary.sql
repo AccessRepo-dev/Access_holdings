@@ -27,6 +27,11 @@ cleaned as (
         TRY_CAST(ID AS INT) AS ID,
         TRIM(NAME) AS NAME,
         TRIM(FULLNAME) AS FULLNAME,
+        SPLIT_PART(FULLNAME, ':', 2) AS SUB_NAME2,
+        SPLIT_PART(FULLNAME, ':', 3) AS SUB_NAME3,
+        SPLIT_PART(FULLNAME, ':', 4) AS SUB_NAME4,
+        SPLIT_PART(FULLNAME, ':', 5) AS SUB_NAME5,
+        SPLIT_PART(FULLNAME, ':', 6) AS SUB_NAME6,
         TRY_CAST(PARENT AS INT) AS PARENT,
         TRY_CAST(CURRENCY AS INT) AS CURRENCY,
         CAST(
@@ -41,7 +46,6 @@ cleaned as (
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
     from source_data
 )
-
 select
     *
 from cleaned
