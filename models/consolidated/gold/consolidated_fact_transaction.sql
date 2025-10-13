@@ -2,7 +2,7 @@
     materialized = 'incremental',
     alias = 'fact_transaction',
     incremental_strategy = 'merge',
-    unique_key = ['FACT_TRANSACTION_ID',]
+    unique_key = ['FACT_TRANSACTION_ID']
 ) }}
 
 {% set companies = [
@@ -18,26 +18,22 @@
     select
         HASH(TRANSACTIONS_UNIQUE_ID, '{{ c.name }}','{{ c.source }}') as FACT_TRANSACTION_ID,
         TRANSACTIONS_UNIQUE_ID ,
-        CAST(TRANSACTION_ID AS INT) AS TRANSACTION_ID ,
+        TRANSACTION_ID ,
         TRANSACTION_LINE_ID,
         TRANSACTION_NUMBER,
         TRANID,
-        TRANSACTION_TYPE ,
+        TRANSACTION_TYPE,
         STATUS,
         TITLE,
         STATUS_NAME,
         ACCOUNT_ID,
-        CAST(ACCOUNT_NUMBER AS VARCHAR) AS ACCOUNT_NUMBER ,
+        IS_POSTING,
+        ACCOUNT_NUMBER,
         ACCOUNT_TYPE,
         ACCOUNT_NAME,
         HASH(DIM_CHART_OF_ACCOUNT_ID,'{{ c.name }}','{{ c.source }}') AS  DIM_CHART_OF_ACCOUNT_ID,
         HASH(DIM_CLASS_ID,'{{ c.name }}','{{ c.source }}') AS DIM_CLASS_ID,
-        METRIC_L1,
-        METRIC_L2,
-        METRIC_L3,
-        METRIC_L4,
-        METRIC_L5,
-        METRIC_L6,
+        DIM_PROJECT_ID,
         HASH(DIM_ITEM_ID,'{{ c.name }}','{{ c.source }}') AS  DIM_ITEM_ID,
         HASH(DIM_DEPARTMENT_ID,'{{ c.name }}','{{ c.source }}') AS DIM_DEPARTMENT_ID,
         DIM_ENTITY_ID,
@@ -45,8 +41,8 @@
         ACCOUNTING_LINE_TYPE,
         HASH(DIM_LOCATION_ID,'{{ c.name }}','{{ c.source }}') AS DIM_LOCATION_ID,
         HASH(DIM_SUBSIDIARY_ID,'{{ c.name }}','{{ c.source }}') AS DIM_SUBSIDIARY_ID,
-        IS_POSTING,
-        DIM_PERIOD_ID,
+        DIM_ADDBACK_ID,
+        HASH(DIM_PERIOD_ID, '{{ c.name }}','{{ c.source }}') AS DIM_PERIOD_ID,
         POSTING_PERIOD_DATE,
         CURRENCY,
         CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
@@ -63,6 +59,7 @@
         MEMO,
         TRANDATE,
         STARTDATE,
+        PERIOD_START_DATE,
         ENDDATE,
         DUEDATE,
         CLOSEDATE,
@@ -70,7 +67,7 @@
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
-    from {{ c.db }}.GOLD.FACT_TRANSACTION
+    from {{ c.db }}.GOLD.FACT_TRANSACTION_NEW
 
     {% if is_incremental() %}
     where LASTMODIFIEDDATE > (

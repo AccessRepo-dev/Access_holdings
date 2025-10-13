@@ -4,27 +4,9 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'table',
-    alias = 'fact_transaction'
+    alias = 'fact_transaction_new'
 ) }}
 
--- Define derived metrics as a macro variable for reusability
-{% set derived_metrics = [
-    'Gross Profit',
-    'Gross Margin',
-    'EBITDA',
-    'EBITDA Margin',
-    'Field EBITDA',
-    'Field EBITDA Margin',
-    'Post Corporate EBITDA',
-    'Post Corporate EBITDA Margin',
-    'Net Income',
-    'Adjusted EBITDA',
-    'Adjustments',
-    'Total Liabilities & Equity',
-    'Equity',
-    'Total Assets',
-    'Total Liabilities'
-] %}
 
 with source as (
     SELECT 
@@ -41,7 +23,6 @@ with source as (
         t.STATUS,
         t.TITLE,
         txs.NAME AS STATUS_NAME,
-        
         -- Chart of accounts / account details
         tal.ACCOUNT AS ACCOUNT_ID,
         tal.POSTING AS IS_POSTING,
@@ -51,12 +32,6 @@ with source as (
         HASH(tal.ACCOUNT, tl.SUBSIDIARY) AS DIM_CHART_OF_ACCOUNT_ID,
         tl.CLASS AS DIM_CLASS_ID,
         CAST(NULL AS INT) AS DIM_PROJECT_ID,
-        map.METRIC_L1,
-        map.METRIC_L2,
-        map.METRIC_L3,
-        map.METRIC_L4,
-        map.METRIC_L5,
-        map.METRIC_L6,
         
         -- Transaction line details
         tl.ITEM AS DIM_ITEM_ID,
@@ -114,79 +89,7 @@ with source as (
         ON per.ID = t.POSTINGPERIOD
     LEFT JOIN {{ get_silver_source(company, 'TRANSACTIONSTATUS') }} txs
         ON txs.ID = t.status and txs.trantype = t.type and t.customtype = txs.trancustomtype
-    LEFT JOIN {{ get_silver_source(company, company ~ '_COA_MAPPING') }} map
-        ON ABS(HASH(tal.ACCOUNT, tl.SUBSIDIARY)) = ABS(HASH(map.ACCOUNT_ID, map.SUBSIDIARY_ID))
  
-),
-
--- Create derived metric rows
-derived_metric_rows as (
-    {% for metric in derived_metrics %}
-    SELECT
-        CAST({{ -loop.index }} AS VARCHAR) AS TRANSACTIONS_UNIQUE_ID,  -- Negative integers for uniqueness
-        NULL AS TRANSACTION_ID,
-        NULL AS TRANSACTION_LINE_ID,
-        NULL AS TRANSACTION_NUMBER,
-        NULL AS TRANID,
-        NULL AS TRANSACTION_TYPE,
-        NULL AS STATUS,
-        NULL AS TITLE,
-        NULL AS STATUS_NAME,
-        NULL AS ACCOUNT_ID,
-        NULL AS IS_POSTING,
-        NULL AS ACCOUNT_NUMBER,
-        NULL AS ACCOUNT_TYPE,
-        NULL AS ACCOUNT_NAME,
-        NULL AS DIM_CHART_OF_ACCOUNT_ID,
-        NULL AS DIM_CLASS_ID,
-        NULL AS DIM_PROJECT_ID,
-        '{{ metric }}' AS METRIC_L1,
-        CASE WHEN '{{ metric }}' = 'Equity' THEN 'Net Income' ELSE NULL END AS METRIC_L2,
-        NULL AS METRIC_L3,
-        NULL AS METRIC_L4,
-        NULL AS METRIC_L5,
-        NULL AS METRIC_L6,
-        NULL AS DIM_ITEM_ID,
-        NULL AS DIM_DEPARTMENT_ID,
-        NULL AS DIM_ENTITY_ID,
-        NULL AS TRANSACTION_LINE_TYPE,
-        NULL AS ACCOUNTING_LINE_TYPE,
-        NULL AS DIM_LOCATION_ID,
-        NULL AS DIM_SUBSIDIARY_ID,
-        NULL AS DIM_ADDBACK_ID,
-        NULL AS DIM_PERIOD_ID,
-        NULL AS POSTING_PERIOD_DATE,
-        NULL AS CURRENCY,
-        NULL AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
-        CAST(NULL AS INT) AS EXCHANGERATE,
-        NULL AS NETAMOUNT,
-        NULL AS AMOUNT,
-        NULL AS CONVERTED_NET_AMOUNT,
-        NULL AS BOM_QUANTITY,
-        NULL AS QUANTITY,
-        NULL AS EMPLOYEE,
-        NULL AS BILLINGADDRESS,
-        NULL AS SHIPPINGADDRESS,
-        NULL AS BILLINGSTATUS,
-        NULL AS MEMO,
-        NULL AS TRANDATE,
-        NULL AS STARTDATE,
-        NULL AS PERIOD_START_DATE,
-        NULL AS ENDDATE,
-        NULL AS DUEDATE,
-        NULL AS CLOSEDATE,
-        NULL AS LASTMODIFIEDDATE
-    {% if not loop.last %}
-    UNION ALL
-    {% endif %}
-    {% endfor %}
-),
-
--- Final union of actual data and derived metrics
-final_result as (
-    SELECT * FROM source
-    UNION ALL
-    SELECT * FROM derived_metric_rows
 )
 
-SELECT * FROM final_result
+SELECT * FROM source
