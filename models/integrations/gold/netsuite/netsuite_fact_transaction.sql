@@ -4,7 +4,7 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'table',
-    alias = 'fact_transaction_new'
+    alias = 'fact_transaction'
 ) }}
 
 
