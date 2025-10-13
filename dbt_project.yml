@@ -74,7 +74,7 @@ models:
         +materialized: table
       reporting:
         +database:  "{{ env_var('DBT_CONSOLIDATED', 'consolidated_dev') }}"
-        +schema: REPORTING
+        +schema: GOLD
         +materialized: table
     
     integrations:

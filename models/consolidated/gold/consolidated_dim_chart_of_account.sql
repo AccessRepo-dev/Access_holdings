@@ -27,14 +27,20 @@
         ACCOUNT_TYPE,
         DISPLAY_NAME,
         DISPLAY_NAME_WITH_HIERARCHY,
-        SUBSIDIARY_ID,
-        SUBSIDIARY_PARENT_ID,
-        SUBSIDIARY_NAME,
-        SUBSIDIARY_FULL_NAME,
+        DIM_SUBSIDIARY_ID,
         DIM_CURRENCY_ID,
+        DIM_LOCATION_ID,
+        DIM_DEPARTMENT_ID,
+        DIM_PROJECT_ID,
+        METRIC_L1,
+        METRIC_L2,
+        METRIC_L3,
+        METRIC_L4,
+        METRIC_L5,
+        METRIC_L6,
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
-    from {{ c.db }}.GOLD.DIM_CHART_OF_ACCOUNT
+    from {{ c.db }}.GOLD.DIM_CHART_OF_ACCOUNT_NEW
     {% if not loop.last %} union all {% endif %}
 {% endfor %}

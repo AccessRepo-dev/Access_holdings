@@ -1,4 +1,5 @@
 {{ config(
+    alias = 'dim_employee',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'DIM_EMPLOYEE_ID'
