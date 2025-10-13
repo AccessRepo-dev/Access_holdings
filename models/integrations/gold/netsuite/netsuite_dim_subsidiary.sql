@@ -13,11 +13,11 @@ with source as (
     select
         ID AS DIM_SUBSIDIARY_ID,
         FULLNAME AS SUBSIDIARY_NAME,
+        SUB_NAME1,
         SUB_NAME2,
         SUB_NAME3,
         SUB_NAME4,
         SUB_NAME5,
-        SUB_NAME6,
         CURRENCY AS CURRENCY_ID,
         ISINACTIVE AS IS_INACTIVE,
         PARENT AS PARENT_ID,

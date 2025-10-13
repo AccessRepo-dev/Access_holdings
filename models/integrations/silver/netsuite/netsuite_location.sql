@@ -27,8 +27,14 @@ cleaned as (
         TRY_CAST(ID AS INT) AS ID,
         TRIM(NAME) AS NAME,
         TRIM(FULLNAME) AS FULLNAME,
+        SPLIT_PART(FULLNAME,':',1) AS PARENT_NAME,
         TRIM(LOCATIONTYPE) AS LOCATIONTYPE,
-        TRY_CAST(PARENT AS INT) AS PARENT,
+        {% if company == 'wagway'  %}
+            COALESCE(PARENT,-1) AS PARENT,
+        {% else %}
+            TRY_CAST(PARENT AS INT) AS PARENT,
+        {% endif %}
+
         TRY_CAST(SUBSIDIARY AS INT) AS SUBSIDIARY,
         CAST(
             CASE 
