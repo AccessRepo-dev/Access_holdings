@@ -15,14 +15,26 @@
 
 WITH source AS (
     SELECT
-        (HASH(ACCOUNT_ID,LOCATION_ID,DEPARTMENT_ID,PROJECT_ID)) AS DIM_CHART_OF_ACCOUNT_ID,
+        {% if company == 'amh' %}
+            (HASH(ACCOUNT_ID,LOCATION_ID,DEPARTMENT_ID,PROJECT_ID)) AS DIM_CHART_OF_ACCOUNT_ID,
+        {% else %}
+            (HASH(ACCOUNT_ID,LOCATION_ID,DEPARTMENT_ID,PROJECT_ID,CLASS_ID)) AS DIM_CHART_OF_ACCOUNT_ID,
+        {% endif %}        
         ACCOUNT_ID,
         ACCOUNT_NAME,
         ACCOUNT_NUMBER,
         CAST(NULL AS INT ) SUBSIDIARY_ID,
-        NULL AS SUBSIDIARY_NAME,
-        CAST(NULL AS INT ) CLASS_ID,
-        NULL AS CLASS_NAME,
+        CAST(NULL AS INT ) AS SUBSIDIARY_NAME,
+        {% if company == 'amh' %}
+            CAST(NULL AS INT) AS CLASS_ID,
+        {% else %}
+            CLASS_ID,
+        {% endif %}
+         {% if company == 'amh' %}
+            NULL AS CLASS_NAME,
+        {% else %}
+            CLASS_NAME,
+        {% endif %}
         PROJECT_ID,
         PROJECT_NAME,
         DEPARTMENT_ID,
