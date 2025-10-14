@@ -10,27 +10,7 @@
     unique_key = 'DIM_CHART_OF_ACCOUNT_ID'
 ) }}
 
-{% set derived_metrics = [
-    'Gross Profit',
-    'Gross Margin',
-    'EBITDA',
-    'EBITDA Margin',
-    'Field EBITDA',
-    'Field EBITDA Margin',
-    'Post Corporate EBITDA',
-    'Post Corporate EBITDA Margin',
-    'Net Income',
-    'Adjusted EBITDA',
-    'Adjustments',
-    'Total Liabilities & Equity',
-    'Equity',
-    'Total Assets',
-    'Total Liabilities',
-    'Lender EBITDA',
-    'Pro-Forma EBITDA',
-    'Lender Adjustments',
-    'Pro-Forma Adjustments'
-] %}
+{% set derived_metrics = var('derived_metrics') %}
 
 WITH ACCOUNTDETAILS AS 
 (
