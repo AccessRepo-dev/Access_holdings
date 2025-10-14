@@ -28,12 +28,9 @@ with source as (
     CAST(COALESCE(acc.ACCOUNTNO,E.ACCOUNTNO) AS VARCHAR) AS ACCOUNT_NUMBER,
     acc.ACCOUNTTYPE AS ACCOUNT_TYPE,
     COALESCE(acc.TITLE,E.ACCOUNTTITLE) AS ACCOUNT_NAME,
-    ----
-    {% if company == 'spotless'  %}
-        (HASH(e.ACCOUNTKEY, e.LOCATIONKEY,e.DEPARTMENTKEY,e.PROJECTDIMKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
-    {% else %}
-        (HASH(e.ACCOUNTKEY, e.LOCATIONKEY,e.DEPARTMENTKEY,e.PROJECTDIMKEY))  AS DIM_CHART_OF_ACCOUNT_ID,
-    {% endif%}
+
+    (HASH(e.ACCOUNTKEY, e.LOCATIONKEY,e.DEPARTMENTKEY,e.PROJECTDIMKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
+   
     -----
     e.CLASSDIMKEY AS DIM_CLASS_ID,
     e.PROJECTDIMKEY AS DIM_PROJECT_ID,
@@ -86,6 +83,11 @@ LEFT JOIN {{ get_silver_source(company, 'GL_ACCOUNT') }} acc
     
 LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
     ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
+ {% if company == 'spotless' %}
+    WHERE e.BATCHTITLE = 'VIE Depreciation & Amortization'
+{% endif %}
+        
+
 )
 
-SELECT * FROM source
+SELECT * FROM source 
