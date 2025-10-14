@@ -12,92 +12,49 @@
 
 {% set derived_metrics = var('derived_metrics') %}
 
-WITH ACCOUNTDETAILS AS 
-(
-    (SELECT 
-        DISTINCT 
-        RECORDNO AS ACCOUNT_ID,
-        ACCOUNTNO AS ACCOUNT_NUMBER,
-        TITLE AS ACCOUNT_TITLE,
-        CAST(NULL AS INT) AS DIM_LOCATION_ID,
-        CAST(NULL AS INT) AS DIM_DEPARTMENT_ID
-    FROM {{ get_silver_source(company, 'GL_ACCOUNT') }} 
-    WHERE RECORDNO NOT IN (SELECT DISTINCT ACCOUNTKEY FROM {{ get_silver_source(company, 'GL_ENTRY') }})
-    )
-    UNION
 
-    SELECT 
-        DISTINCT
-        ACCOUNTKEY AS ACCOUNT_ID,
-        ACCOUNTNO AS ACCOUNT_NUMBER,
-        ACCOUNTTITLE AS ACCOUNT_TITLE,
-        LOCATIONKEY AS DIM_LOCATION_ID,
-        DEPARTMENTKEY AS DIM_DEPARTMENT_ID
-    FROM {{ get_silver_source(company, 'GL_ENTRY') }} 
-  
-),
-mapped as (
+WITH source AS (
     SELECT
-    {% if company == 'spotless'  %}
-        (HASH(A.ACCOUNT_ID, A.DIM_LOCATION_ID,A.DIM_DEPARTMENT_ID)) AS DIM_CHART_OF_ACCOUNT_ID,
-    {% else %}
-        (HASH(A.ACCOUNT_ID, A.DIM_LOCATION_ID,A.DIM_DEPARTMENT_ID))  AS DIM_CHART_OF_ACCOUNT_ID,
-    {% endif%}
-    -- Core Identifiers
-    A.ACCOUNT_ID AS ACCOUNT_ID,
-    CAST(A.ACCOUNT_NUMBER AS VARCHAR) AS ACCOUNT_NUMBER,
-    A.ACCOUNT_TITLE AS ACCOUNT_NAME,
-    null AS MAIN_ACCOUNT_NAME,
-    null AS ACCOUNT_NAME_SUBCATEGORY_1,
-    null AS ACCOUNT_NAME_SUBCATEGORY_2,
-    null AS ACCOUNT_NAME_SUBCATEGORY_3,
-    null AS ACCOUNT_DESCRIPTION,
-    CAST(null AS INT) AS ACCOUNT_PARENT_ID,
-    NULL AS ACCOUNT_TYPE,
-    null AS DISPLAY_NAME,
-    null  AS DISPLAY_NAME_WITH_HIERARCHY,
-    CAST(null AS INT) AS DIM_SUBSIDIARY_ID,
-    CAST(null AS INT) AS DIM_CURRENCY_ID,
-    A.DIM_LOCATION_ID,
-    A.DIM_DEPARTMENT_ID,
-    map.METRIC_L1,
-    map.METRIC_L2,
-    map.METRIC_L3,
-    CAST(map.METRIC_L4 AS STRING) AS METRIC_L4,
-    CAST(map.METRIC_L4 AS STRING) AS METRIC_L5,
-    CAST(map.METRIC_L4 AS STRING) AS METRIC_L6
-FROM ACCOUNTDETAILS AS A 
-LEFT JOIN {{ get_silver_source(company, company ~ '_COA_MAPPING') }} map
-    ON
-    {% if company == 'spotless'  %}
-            ABS(HASH(A.ACCOUNT_ID, A.DIM_LOCATION_ID)) = ABS(HASH(map.ACCOUNT_ID, map.LOCATION_ID))
-
-    {% else %}
-            ABS(HASH(A.ACCOUNT_ID, A.DIM_LOCATION_ID,A.DIM_DEPARTMENT_ID)) = ABS(HASH(map.ACCOUNT_ID, map.SUBSIDIARY_ID,map.DIM_DEPARTMENT_ID))
-    {% endif%}  
-
+        (HASH(ACCOUNT_ID,LOCATION_ID,DEPARTMENT_ID,PROJECT_ID)) AS DIM_CHART_OF_ACCOUNT_ID,
+        ACCOUNT_ID,
+        ACCOUNT_NAME,
+        ACCOUNT_NUMBER,
+        CAST(NULL AS INT ) SUBSIDIARY_ID,
+        NULL AS SUBSIDIARY_NAME,
+        CAST(NULL AS INT ) CLASS_ID,
+        NULL AS CLASS_NAME,
+        PROJECT_ID,
+        PROJECT_NAME,
+        DEPARTMENT_ID,
+        DEPARTMENT_NAME,
+        LOCATION_ID,
+        LOCATION_NAME,
+        METRIC_L1,
+        METRIC_L2,
+        METRIC_L3,
+        METRIC_L4,
+        METRIC_L5,
+        METRIC_L6
+    FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }}
 ),
 
-derived_metric_rows as (
+derived_metric_rows AS (
     {% for metric in derived_metrics %}
     SELECT
-        CAST({{ -loop.index }} AS VARCHAR) AS DIM_CHART_OF_ACCOUNT_ID,  -- Negative integers for uniqueness
-        CAST(NULL AS NUMBER) AS ACCOUNT_ID,
-        NULL AS ACCOUNT_NUMBER,
+        CAST({{ -loop.index }} AS VARCHAR) AS DIM_CHART_OF_ACCOUNT_ID,
+        NULL AS ACCOUNT_ID,
         NULL AS ACCOUNT_NAME,
-        NULL AS MAIN_ACCOUNT_NAME,
-        NULL AS ACCOUNT_NAME_SUBCATEGORY_1,
-        NULL AS ACCOUNT_NAME_SUBCATEGORY_2,
-        NULL AS ACCOUNT_NAME_SUBCATEGORY_3,
-        NULL AS ACCOUNT_DESCRIPTION,
-        CAST(NULL AS NUMBER) AS ACCOUNT_PARENT_ID,
-        NULL AS ACCOUNT_TYPE,
-        NULL AS DISPLAY_NAME,
-        NULL AS DISPLAY_NAME_WITH_HIERARCHY,
-        CAST(NULL AS NUMBER) AS DIM_SUBSIDIARY_ID,
-        CAST(NULL AS NUMBER) AS DIM_CURRENCY_ID,
-        CAST(NULL AS INT) AS DIM_LOCATION_ID,
-        CAST(NULL AS INT) AS DIM_DEPARTMENT_ID,
+        NULL AS ACCOUNT_NUMBER,
+        NULL AS SUBSIDIARY_ID,
+        NULL AS SUBSIDIARY_NAME,
+        NULL AS CLASS_ID,
+        NULL AS CLASS_NAME,
+        NULL AS PROJECT_ID,
+        NULL AS PROJECT_NAME,
+        NULL AS DEPARTMENT_ID,
+        NULL AS DEPARTMENT_NAME,
+        NULL AS LOCATION_ID,
+        NULL AS LOCATION_NAME,
         '{{ metric }}' AS METRIC_L1,
         CASE WHEN '{{ metric }}' = 'Equity' THEN 'Net Income' ELSE NULL END AS METRIC_L2,
         NULL AS METRIC_L3,
@@ -110,14 +67,14 @@ derived_metric_rows as (
     {% endfor %}
 ),
 
--- Final union of actual data and derived metrics
-final_result as (
-    SELECT * FROM mapped
+final_result AS (
+    SELECT * FROM source
     UNION ALL
     SELECT * FROM derived_metric_rows
 )
 
 SELECT * FROM final_result
+
 
 
 

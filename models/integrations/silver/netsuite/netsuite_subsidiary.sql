@@ -27,11 +27,18 @@ cleaned as (
         TRY_CAST(ID AS INT) AS ID,
         TRIM(NAME) AS NAME,
         TRIM(FULLNAME) AS FULLNAME,
-        SPLIT_PART(FULLNAME, ':', 2) AS SUB_NAME1,
-        SPLIT_PART(FULLNAME, ':', 3) AS SUB_NAME2,
-        SPLIT_PART(FULLNAME, ':', 4) AS SUB_NAME3,
-        SPLIT_PART(FULLNAME, ':', 5) AS SUB_NAME4,
-        SPLIT_PART(FULLNAME, ':', 6) AS SUB_NAME5,
+        {% if company == 'playfly'  %}
+            SPLIT_PART(FULLNAME, ':', 2) AS PARENT_NAME,
+            SPLIT_PART(FULLNAME, ':', 3) AS CHILD_NAME,
+        {% else %}
+            COALESCE(
+                NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 3)), ''),
+                NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 2)), ''),
+                NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 1)), '')
+            ) AS PARENT_NAME,
+            TRIM(SPLIT_PART(FULLNAME, ':', -1)) AS CHILD_NAME,
+        {% endif%}
+        
         TRY_CAST(PARENT AS INT) AS PARENT,
         TRY_CAST(CURRENCY AS INT) AS CURRENCY,
         CAST(
