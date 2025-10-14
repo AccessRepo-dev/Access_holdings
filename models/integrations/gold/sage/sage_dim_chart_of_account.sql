@@ -25,7 +25,11 @@
     'Total Liabilities & Equity',
     'Equity',
     'Total Assets',
-    'Total Liabilities'
+    'Total Liabilities',
+    'Lender EBITDA',
+    'Pro-Forma EBITDA',
+    'Lender Adjustments',
+    'Pro-Forma Adjustments'
 ] %}
 
 WITH ACCOUNTDETAILS AS 
@@ -36,8 +40,7 @@ WITH ACCOUNTDETAILS AS
         ACCOUNTNO AS ACCOUNT_NUMBER,
         TITLE AS ACCOUNT_TITLE,
         CAST(NULL AS INT) AS DIM_LOCATION_ID,
-        CAST(NULL AS INT) AS DIM_DEPARTMENT_ID,
-        CAST(NULL AS INT) AS DIM_PROJECT_ID
+        CAST(NULL AS INT) AS DIM_DEPARTMENT_ID
     FROM {{ get_silver_source(company, 'GL_ACCOUNT') }} 
     WHERE RECORDNO NOT IN (SELECT DISTINCT ACCOUNTKEY FROM {{ get_silver_source(company, 'GL_ENTRY') }})
     )
@@ -49,17 +52,16 @@ WITH ACCOUNTDETAILS AS
         ACCOUNTNO AS ACCOUNT_NUMBER,
         ACCOUNTTITLE AS ACCOUNT_TITLE,
         LOCATIONKEY AS DIM_LOCATION_ID,
-        DEPARTMENTKEY AS DIM_DEPARTMENT_ID,
-        PROJECTDIMKEY AS DIM_PROJECT_ID
+        DEPARTMENTKEY AS DIM_DEPARTMENT_ID
     FROM {{ get_silver_source(company, 'GL_ENTRY') }} 
   
 ),
 mapped as (
     SELECT
     {% if company == 'spotless'  %}
-        ABS(HASH(A.ACCOUNT_ID, A.DIM_LOCATION_ID,A.DIM_DEPARTMENT_ID,A.DIM_PROJECT_ID)) AS DIM_CHART_OF_ACCOUNT_ID,
+        (HASH(A.ACCOUNT_ID, A.DIM_LOCATION_ID,A.DIM_DEPARTMENT_ID)) AS DIM_CHART_OF_ACCOUNT_ID,
     {% else %}
-        ABS(HASH(A.ACCOUNT_ID, A.DIM_LOCATION_ID,A.DIM_DEPARTMENT_ID,A.DIM_PROJECT_ID))  AS DIM_CHART_OF_ACCOUNT_ID,
+        (HASH(A.ACCOUNT_ID, A.DIM_LOCATION_ID,A.DIM_DEPARTMENT_ID))  AS DIM_CHART_OF_ACCOUNT_ID,
     {% endif%}
     -- Core Identifiers
     A.ACCOUNT_ID AS ACCOUNT_ID,
@@ -78,11 +80,10 @@ mapped as (
     CAST(null AS INT) AS DIM_CURRENCY_ID,
     A.DIM_LOCATION_ID,
     A.DIM_DEPARTMENT_ID,
-    A.DIM_PROJECT_ID,
     map.METRIC_L1,
     map.METRIC_L2,
     map.METRIC_L3,
-     CAST(map.METRIC_L4 AS STRING) AS METRIC_L4,
+    CAST(map.METRIC_L4 AS STRING) AS METRIC_L4,
     CAST(map.METRIC_L4 AS STRING) AS METRIC_L5,
     CAST(map.METRIC_L4 AS STRING) AS METRIC_L6
 FROM ACCOUNTDETAILS AS A 
@@ -92,10 +93,7 @@ LEFT JOIN {{ get_silver_source(company, company ~ '_COA_MAPPING') }} map
             ABS(HASH(A.ACCOUNT_ID, A.DIM_LOCATION_ID)) = ABS(HASH(map.ACCOUNT_ID, map.LOCATION_ID))
 
     {% else %}
-            A.ACCOUNT_ID  = map.ACCOUNT_ID  AND  
-            COALESCE(A.DIM_LOCATION_ID ,0)  = COALESCE(map.LOCATION_ID,0)  AND 
-            COALESCE(A.DIM_DEPARTMENT_ID ,0 )= COALESCE(map.DEPARTMENT_ID ,0) AND 
-            COALESCE(A.DIM_PROJECT_ID ,0)= COALESCE(map.PROJECT_ID ,0)
+            ABS(HASH(A.ACCOUNT_ID, A.DIM_LOCATION_ID,A.DIM_DEPARTMENT_ID)) = ABS(HASH(map.ACCOUNT_ID, map.SUBSIDIARY_ID,map.DIM_DEPARTMENT_ID))
     {% endif%}  
 
 ),
@@ -120,7 +118,6 @@ derived_metric_rows as (
         CAST(NULL AS NUMBER) AS DIM_CURRENCY_ID,
         CAST(NULL AS INT) AS DIM_LOCATION_ID,
         CAST(NULL AS INT) AS DIM_DEPARTMENT_ID,
-        CAST(NULL AS INT) AS DIM_PROJECT_ID,
         '{{ metric }}' AS METRIC_L1,
         CASE WHEN '{{ metric }}' = 'Equity' THEN 'Net Income' ELSE NULL END AS METRIC_L2,
         NULL AS METRIC_L3,
