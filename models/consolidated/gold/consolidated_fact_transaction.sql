@@ -67,7 +67,7 @@
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
-    from {{ c.db }}.GOLD.FACT_TRANSACTION_NEW
+    from {{ c.db }}.GOLD.FACT_TRANSACTION
 
     {% if is_incremental() %}
     where LASTMODIFIEDDATE > (
