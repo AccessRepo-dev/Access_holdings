@@ -14,7 +14,7 @@
 
 {% for c in companies %}
     select
-        ABS(HASH(DIM_CHART_OF_ACCOUNT_ID, '{{ c.name }}','{{c.source}}')) as DIM_CHART_OF_ACCOUNT_ID,
+        (HASH(DIM_CHART_OF_ACCOUNT_ID, '{{ c.name }}','{{c.source}}')) as DIM_CHART_OF_ACCOUNT_ID,
         DIM_CHART_OF_ACCOUNT_ID AS ACCOUNT_ID,
         ACCOUNT_NUMBER,
         ACCOUNT_NAME,
@@ -41,6 +41,6 @@
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
-    from {{ c.db }}.GOLD.DIM_CHART_OF_ACCOUNT_NEW
+    from {{ c.db }}.GOLD.DIM_CHART_OF_ACCOUNT
     {% if not loop.last %} union all {% endif %}
 {% endfor %}
