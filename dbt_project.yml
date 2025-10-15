@@ -10,6 +10,20 @@ config-version: 2
 profile: 'default'
 
 vars:
+  companies:
+    - name: 'WAGWAY'
+      db: "{{ env_var('DBT_WAGWAY') }}"
+      source: 'NETSUITE'
+    - name: 'PLAYFLY'
+      db: "{{ env_var('DBT_PLAYFLY') }}"
+      source: 'NETSUITE'
+    - name: 'SPOTLESS'
+      db: "{{ env_var('DBT_SPOTLESS') }}"
+      source: 'SAGE'
+    - name: 'AMH'
+      db: "{{ env_var('DBT_AMH') }}"
+      source: 'SAGE'
+
   derived_metrics:
     - 'Gross Profit'
     - 'Gross Margin'

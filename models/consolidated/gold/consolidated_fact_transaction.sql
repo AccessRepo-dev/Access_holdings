@@ -5,14 +5,7 @@
     unique_key = 'FACT_TRANSACTION_ID'
 ) }}
 
-{% set companies = [
-    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY'), "source": "NETSUITE"},
-    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY'),  "source": "NETSUITE"},
-    {"name": "SPOTLESS", "db": env_var('DBT_SPOTLESS'), "source": "SAGE"},
-    {"name": "AMH",      "db": env_var('DBT_AMH'),   "source": "SAGE"}
-
- 
-] %}
+{% set companies = var('companies') %}
 
 {% for c in companies %}
     select
@@ -67,7 +60,7 @@
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
-    from {{ c.db }}.GOLD.FACT_TRANSACTION
+    from {{ render(c.db) }}.GOLD.FACT_TRANSACTION
 
     {% if is_incremental() %}
     where LASTMODIFIEDDATE > (

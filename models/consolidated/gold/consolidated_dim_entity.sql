@@ -5,10 +5,10 @@
     unique_key = 'DIM_ENTITY_ID'
 ) }}
 
-{% set companies = [
-    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY'), "source": "NETSUITE"},
-    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY'), "source": "NETSUITE"}
-] %}
+{% set companies = var('companies') %}
+
+-- Filter to include only NETSUITE companies
+{% set companies = companies | selectattr('source', 'equalto', 'NETSUITE') | list %}
 
 {% for c in companies %}
     select
@@ -34,7 +34,7 @@
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
-    from {{ c.db }}.GOLD.DIM_ENTITY
+    from {{ render(c.db) }}.GOLD.DIM_ENTITY
 
     {% if is_incremental() %}
     where LAST_MODIFIED_DATE > (

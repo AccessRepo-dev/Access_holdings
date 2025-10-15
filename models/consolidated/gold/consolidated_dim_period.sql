@@ -6,12 +6,7 @@
 ) }}
 
 
-{% set companies = [
-    {"name": "WAGWAY",   "db": env_var('DBT_WAGWAY'), "source": "NETSUITE"},
-    {"name": "PLAYFLY",  "db": env_var('DBT_PLAYFLY'),  "source": "NETSUITE"},
-    {"name": "SPOTLESS", "db": env_var('DBT_SPOTLESS'), "source": "SAGE"},
-    {"name": "AMH",      "db": env_var('DBT_AMH'), "source": "SAGE"}
-] %}
+{% set companies = var('companies') %}
 
 {% for c in companies %}
     select
@@ -26,7 +21,7 @@
         '{{ c.source }}' AS SOURCESYSTEM,
         '{{ c.name }}' AS COMPANY,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS CONSOLIDATED_GOLD_LOAD_DATE
-    from {{ c.db }}.GOLD.DIM_PERIOD
+    from {{ render(c.db) }}.GOLD.DIM_PERIOD
 
     {% if is_incremental() %}
     WHERE LAST_MODIFIED_DATE > (
