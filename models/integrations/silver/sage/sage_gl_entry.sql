@@ -14,9 +14,9 @@ with source_data as (
 
     select *
     from {{ get_raw_source(company, sourcesystem, 'GL_ENTRY') }}
-
+    where lower(STATE) = 'posted' 
     {% if is_incremental() %}
-        where WHENMODIFIED > (
+        and WHENMODIFIED > (
             select coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz)
             from {{ this }}
         )

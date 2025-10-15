@@ -2,7 +2,7 @@
     materialized = 'incremental',
     alias = 'fact_transaction',
     incremental_strategy = 'merge',
-    unique_key = ['FACT_TRANSACTION_ID']
+    unique_key = 'FACT_TRANSACTION_ID'
 ) }}
 
 {% set companies = [

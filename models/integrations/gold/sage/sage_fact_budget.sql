@@ -29,7 +29,7 @@ with source as (
         CAST(NULL AS INT) AS CSEG3_ID,
 
         -- Derived Dimension Hashes (for conformed COA / Class across subs)
-        ABS(HASH(b.ACCOUNTKEY, b.LOCATIONKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
+        ABS(HASH(b.ACCOUNTKEY, b.LOCATIONKEY,b.DEPTKEY,b.PERIODKEY,b.CLASSDIMKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
         {% if company == 'spotless'  %}
         cast(NULL as INT) AS DIM_PROJECT_ID,
         {% else %}
