@@ -86,7 +86,7 @@ LEFT JOIN {{ get_silver_source(company, 'GL_ACCOUNT') }} acc
 LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
     ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
  {% if company == 'spotless' %}
-    WHERE e.BATCHTITLE = 'VIE Depreciation & Amortization'
+    WHERE e.BATCHTITLE <> 'VIE Depreciation & Amortization'
 {% endif %}
         
 

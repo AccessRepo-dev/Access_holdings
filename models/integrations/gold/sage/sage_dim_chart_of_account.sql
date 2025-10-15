@@ -15,38 +15,26 @@
 
 WITH source AS (
     SELECT
-        {% if company == 'amh' %}
-            (HASH(ACCOUNT_ID,LOCATION_ID,DEPARTMENT_ID,PROJECT_ID,CLASS_ID)) AS DIM_CHART_OF_ACCOUNT_ID,
-        {% else %}
-            (HASH(ACCOUNT_ID,LOCATION_ID,DEPARTMENT_ID,PROJECT_ID,CLASS_ID)) AS DIM_CHART_OF_ACCOUNT_ID,
-        {% endif %}        
+        (HASH(ACCOUNT_ID,LOCATION_ID,DEPARTMENT_ID,PROJECT_ID,CLASS_ID)) AS DIM_CHART_OF_ACCOUNT_ID,        
         ACCOUNT_ID,
         ACCOUNT_NAME,
-        ACCOUNT_NUMBER,
+        CAST(ACCOUNT_NUMBER AS VARCHAR) AS ACCOUNT_NUMBER,
         CAST(NULL AS INT ) SUBSIDIARY_ID,
-        CAST(NULL AS INT ) AS SUBSIDIARY_NAME,
-        {% if company == 'amh' %}
-            CAST(NULL AS INT) AS CLASS_ID,
-        {% else %}
-            CLASS_ID,
-        {% endif %}
-         {% if company == 'amh' %}
-            NULL AS CLASS_NAME,
-        {% else %}
-            CLASS_NAME,
-        {% endif %}
+        CAST(NULL AS VARCHAR ) AS SUBSIDIARY_NAME,
+        CLASS_ID,
+        CAST(CLASS_NAME AS VARCHAR) AS CLASS_NAME,
         PROJECT_ID,
         PROJECT_NAME,
         DEPARTMENT_ID,
         DEPARTMENT_NAME,
         LOCATION_ID,
         LOCATION_NAME,
-        METRIC_L1,
-        METRIC_L2,
-        METRIC_L3,
-        METRIC_L4,
-        METRIC_L5,
-        METRIC_L6
+        CAST(METRIC_L1 AS VARCHAR) AS METRIC_L1,
+        CAST(METRIC_L2 AS VARCHAR) AS METRIC_L2,
+        CAST(METRIC_L3 AS VARCHAR) AS METRIC_L3,
+        CAST(METRIC_L4 AS VARCHAR) AS METRIC_L4,
+        CAST(METRIC_L5 AS VARCHAR) AS METRIC_L5,
+        CAST(METRIC_L6 AS VARCHAR) AS METRIC_L6
     FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }}
 ),
 
