@@ -13,7 +13,7 @@
         DIM_BUDGET_HEADER_ID AS BUDGET_HEADER_ID,
         BUDGET_TYPE,
         NAME,
-        IS_INACTIVE
+        IS_INACTIVE,
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
