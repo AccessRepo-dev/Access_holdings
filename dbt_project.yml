@@ -133,6 +133,13 @@ models:
         sage:
           +schema: GOLD
           +materialized: table
+      reporting:
+        netsuite:
+          +schema: GOLD
+          +materialized: table 
+        sage:
+          +schema: GOLD
+          +materialized: table
 
 seeds:
   Access_Holdings:

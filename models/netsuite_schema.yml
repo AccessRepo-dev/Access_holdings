@@ -54,7 +54,7 @@ sources:
       - name: CUSTOMRECORD_CSEG1
 
   - name: wagway_silver
-    database: wagway_dev
+    database: "{{ env_var('DBT_WAGWAY') }}"
     schema: silver
     tables:
       - name: ACCOUNT
@@ -82,7 +82,7 @@ sources:
       - name: CUSTOMRECORD_CSEG1
 
   - name: playfly_silver
-    database: playfly_dev
+    database: "{{ env_var('DBT_PLAYFLY') }}"
     schema: silver
     tables:
       - name: ACCOUNT
@@ -108,3 +108,15 @@ sources:
       - name: playfly_COA_MAPPING
       - name: playfly_addbacks 
       - name: CUSTOMRECORD_CSEG1
+  
+  - name: wagway_gold
+    database: "{{ env_var('DBT_WAGWAY') }}"
+    schema: gold
+    tables:
+      - name: FACT_TRANSACTION
+
+  - name: playfly_gold
+    database: "{{ env_var('DBT_PLAYFLY') }}"
+    schema: gold
+    tables:
+      - name: FACT_TRANSACTION
