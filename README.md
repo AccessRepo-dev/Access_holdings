@@ -67,64 +67,13 @@ The project supports multiple companies and source systems through runtime varia
 
 ```bash
 dbt run --select models/integrations/gold/netsuite/netsuite_fact_transaction.sql \
-  --vars '{"company": "wagway", "sourcesystem": "netsuite"}' \
-  --full-refresh
+  --vars '{"company": "wagway", "sourcesystem": "netsuite"}'
 ```
 
 ### Available Variables
 
 - `company` - Target company identifier (e.g., `wagway`)
 - `sourcesystem` - Source system name (e.g., `netsuite`, `sage`)
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Python 3.8+
-- dbt Core or dbt Cloud account
-- Access to data warehouse (Snowflake/BigQuery/Redshift/etc.)
-
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd Access_holdings
-   ```
-
-2. Install dbt dependencies:
-   ```bash
-   dbt deps
-   ```
-
-3. Configure your `profiles.yml` with appropriate database credentials
-
-4. Test your connection:
-   ```bash
-   dbt debug
-   ```
-
-### Running the Project
-
-```bash
-# Run all models
-dbt run
-
-# Run specific layer
-dbt run --select integrations.gold.*
-
-# Run for specific company
-dbt run --vars '{"company": "wagway"}'
-
-# Run tests
-dbt test
-
-# Generate documentation
-dbt docs generate
-dbt docs serve
-```
 
 ---
 
@@ -137,8 +86,8 @@ dbt docs serve
 - **AMH**
 
 ### Financial Systems
-- **NetSuite** - ERP and financial data
-- **Sage Intacct** - Accounting and financial management
+- **NetSuite**
+- **Sage Intacct**
 
 ### Macroeconomic Data
 - **ADP** - Employment and payroll data
@@ -154,36 +103,11 @@ dbt docs serve
 Cleansed and standardized data with basic transformations applied. Data quality checks and type casting occur here.
 
 ### Gold Layer
-Business-ready dimensional models organized by source system. Includes fact tables and dimension tables following Kimball methodology.
+Business-ready dimensional models organized by source system. Includes fact tables and dimension tables.
 
 ### Reporting Layer
-Pre-aggregated views and metrics optimized for BI tool consumption. Organized by source system first, then by business area.
+Pre-aggregated tables optimized for BI tool consumption.
 
 ### Consolidated Layer
-Cross-system unified models that combine data from multiple sources (NetSuite + Sage) into single analytical tables.
+Cross-system unified models that combine data from all companies into single analytical tables.
 
----
-
-## 🤝 Contributing
-
-1. Create a feature branch from `main`
-2. Make your changes following project conventions
-3. Test thoroughly using `dbt test`
-4. Submit a pull request with clear description
-
----
-
-## 📝 Documentation
-
-Generate and view project documentation:
-
-```bash
-dbt docs generate
-dbt docs serve
-```
-
----
-
-## 📧 Contact
-
-For questions or support, please contact the data engineering team.
