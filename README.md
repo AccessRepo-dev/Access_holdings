@@ -13,8 +13,8 @@ The project follows a **multi-layered architecture**:
 | **Raw**           | Ingested source data (external to dbt)                            |
 | **Silver**        | Cleansed and standardized data models                             |
 | **Gold**          | Business-ready fact and dimension tables for each source system   |
-| **Reporting**     | Aggregated and summarized views for analytics                     |
-| **Consolidated**  | Unified cross-system models combining multiple sources            |
+| **Reporting**     | Aggregated and summarized tables for analytics                    |
+| **Consolidated**  | Unified cross-system models combining multiple comapines          |
 
 Each layer ensures data is transformed progressively toward reliable, governed analytics.
 
@@ -27,15 +27,12 @@ Access_holdings/
 ├── dbt_project.yml
 ├── packages.yml
 ├── README.md
-├── .gitignore
 │
 ├── macros/
 │   ├── get_schema.sql
 │   ├── get_target_db.sql
 │   ├── model_status.sql
 │   ├── generate_alias_name.sql
-│   └── config/
-│       └── company_sources.yml
 │
 ├── models/
 │   ├── integrations/
@@ -44,17 +41,15 @@ Access_holdings/
 │   │   ├── gold/
 │   │   │   ├── netsuite/           # NetSuite fact & dimension models
 │   │   │   └── sage/               # Sage Intacct fact & dimension models
-│   │   └── reporting/              # Source-specific reporting models
+│   │   └── reporting/              # Aggregated reporting models
 │   │
 │   ├── consolidated/
-│   │   ├── gold/                   # Unified fact & dimension models across systems
-│   │   └── reporting/              # Consolidated analytics views
+│   │   ├── gold/                   # Unified fact & dimension models across comapanies
+│   │   └── reporting/              # Consolidated analytics tables
 │   │
 │   ├── netsuite_schema.yml
 │   ├── sage_schema.yml
 │   └── macro_schema.yml
-│
-└── analyses/                        # Analytical SQL or ad-hoc investigations
 ```
 
 ---
@@ -94,6 +89,7 @@ dbt run --select models/integrations/gold/netsuite/netsuite_fact_transaction.sql
 - **BEA** - Bureau of Economic Analysis data
 - **BLS** - Bureau of Labor Statistics data
 - **Census** - US Census Bureau data
+- **etc**
 
 ---
 
