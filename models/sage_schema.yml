@@ -32,7 +32,7 @@ sources:
 
 
   - name: spotless_silver
-    database: spotless_dev
+    database: "{{ env_var('DBT_SPOTLESS') }}"
     schema: silver
     tables:
       - name: ASSET
@@ -94,7 +94,7 @@ sources:
 
 
   - name: amh_silver
-    database: amh_dev
+    database: "{{ env_var('DBT_AMH') }}"
     schema: silver
     tables:
       - name: ASSET
@@ -124,6 +124,17 @@ sources:
       - name: amh_COA_MAPPING
       - name: amh_addbacks 
 
+  - name: spotless_gold
+    database: "{{ env_var('DBT_SPOTLESS') }}"
+    schema: gold
+    tables:
+      - name: FACT_TRANSACTION
+
+  - name: amh_gold
+    database: "{{ env_var('DBT_AMH') }}"
+    schema: gold
+    tables:
+      - name: FACT_TRANSACTION
       
       
       
