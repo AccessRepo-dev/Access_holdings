@@ -34,7 +34,11 @@ WITH source AS (
         CAST(METRIC_L3 AS VARCHAR) AS METRIC_L3,
         CAST(METRIC_L4 AS VARCHAR) AS METRIC_L4,
         CAST(METRIC_L5 AS VARCHAR) AS METRIC_L5,
-        CAST(METRIC_L6 AS VARCHAR) AS METRIC_L6
+        CAST(METRIC_L6 AS VARCHAR) AS METRIC_L6,
+        CAST(CASH_FLOW_L1 AS VARCHAR) AS CASH_FLOW_L1,
+        CAST(CASH_FLOW_L2 AS VARCHAR) AS CASH_FLOW_L2,
+        CAST(CASH_FLOW_L3 AS VARCHAR) AS CASH_FLOW_L3,
+        CAST(IS_BS AS VARCHAR) AS IS_BS
     FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }}
 ),
 
@@ -60,7 +64,11 @@ derived_metric_rows AS (
         NULL AS METRIC_L3,
         NULL AS METRIC_L4,
         NULL AS METRIC_L5,
-        NULL AS METRIC_L6
+        NULL AS METRIC_L6,
+        NULL AS CASH_FLOW_L1,
+        NULL AS CASH_FLOW_L2,
+        NULL AS CASH_FLOW_L3,
+        CASE WHEN '{{ metric }}' IN ('Total Liabilities & Equity','Equity','Total Assets','Total Liabilities') THEN 'BS' ELSE 'IS' END AS  IS_BS
     {% if not loop.last %}
     UNION ALL
     {% endif %}
