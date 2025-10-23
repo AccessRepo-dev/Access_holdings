@@ -13,9 +13,14 @@
 with source as (
     SELECT 
         LE.RECORDNO  AS DIM_SUBSIDIARY_ID,
+        
+    {% if company == 'spotless'%}
         LE.LOCATIONID AS SUBSIDIARY_NAME,
+    {% else %}
+        LE.NAME AS SUBSIDIARY_NAME,
+    {% endif%}
         LE.NAME AS SUBSIDIARY_FULL_NAME,
-        LE.NAME AS PARENT_NAME,
+        NULL AS PARENT_NAME,
         NULL AS CHILD_NAME,
         
         CAST(NULL AS NUMBER) AS CURRENCY_ID,
