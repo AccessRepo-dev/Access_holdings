@@ -29,6 +29,10 @@
         METRIC_L4,
         METRIC_L5,
         METRIC_L6,
+        CASH_FLOW_L1,
+        CASH_FLOW_L2,
+        CASH_FLOW_L3,
+        IS_BS,
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
