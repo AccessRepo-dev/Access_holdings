@@ -7,6 +7,7 @@ select
     TRIM("series_id") as SERIES_ID,
     CAST("year" AS NUMBER) as YEAR,
     TRIM("period") as PERIOD,
+    CAST(CONCAT("year",SUBSTRING("period", 2, 2)) AS INT) AS DATEKEY,
     "value" as VALUE,
     TRIM("footnote_codes_x") as FOOTNOTE_CODES_X,
     TRIM("area_code") as AREA_CODE,
