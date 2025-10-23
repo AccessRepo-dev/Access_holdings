@@ -13,22 +13,16 @@
 with source as (
     SELECT 
         LE.RECORDNO  AS DIM_SUBSIDIARY_ID,
-        
-    {% if company == 'spotless'%}
-        LE.LOCATIONID AS SUBSIDIARY_NAME,
-    {% else %}
         LE.NAME AS SUBSIDIARY_NAME,
-    {% endif%}
-        LE.NAME AS SUBSIDIARY_FULL_NAME,
-        NULL AS PARENT_NAME,
-        NULL AS CHILD_NAME,
-        
+        CASE WHEN LE.PARENTNAME IS NULL OR LE.PARENTNAME = '' THEN LE.NAME ELSE CONCAT(LE.PARENTNAME,' : ',LE.NAME) END AS SUBSIDIARY_FULL_NAME,
+        LE.PARENTNAME AS PARENT_NAME,
+        LE.NAME AS CHILD_NAME,
         CAST(NULL AS NUMBER) AS CURRENCY_ID,
         STATUS AS IS_INACTIVE,
-        NULL AS PARENT_ID,
+        PARENTKEY AS PARENT_ID,
         LE.WHENMODIFIED AS LAST_MODIFIED_DATE
 
-    FROM {{ get_silver_source(company, 'LOCATION_ENTITY') }} AS LE
+    FROM {{ get_silver_source(company, 'LOCATION') }} AS LE
     
     {% if is_incremental() %}
     WHERE WHENMODIFIED > (
