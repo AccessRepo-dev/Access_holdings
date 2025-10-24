@@ -47,12 +47,14 @@ cleaned as (
 
      {% if company == 'spotless' and sourcesystem == 'sage' %}
         TRIM(PARENTID) AS PARENTID,
-        TRIM(PARENTNAME) AS PARENTNAME,
+        CASE WHEN TRIM(PARENTNAME)='' THEN NULL ELSE TRIM(PARENTNAME) END AS PARENTNAME,
         TRY_CAST(PARENTKEY AS INT) AS PARENTKEY,
+        CASE WHEN TRIM(SITE_STATUS)='' THEN NULL ELSE TRIM(SITE_STATUS) END AS SITE_STATUS,
     {% else %}
         null as PARENTID,
         null AS PARENTNAME,
         null AS PARENTKEY,
+        null AS SITE_STATUS,
     {% endif%}
    
     

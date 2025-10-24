@@ -14,6 +14,7 @@
         CLASS_ID,
         NAME,
         FULLNAME,
+        PARENT_CLASS,
         PARENT_ID,
         IS_INACTIVE,
         LAST_MODIFIED_DATE,

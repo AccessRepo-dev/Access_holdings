@@ -13,6 +13,7 @@
         DIM_LOCATION_ID AS LOCATION_ID,
         LOCATION_NAME,
         PARENT,
+        SITE_STATUS,
         SUBSIDIARY_ID,
         IS_INACTIVE,
         LAST_MODIFIED_DATE,

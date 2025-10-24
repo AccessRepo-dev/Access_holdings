@@ -15,6 +15,7 @@ with source as (
         cast(NULL AS INT) AS CLASS_ID,
         NAME AS NAME,
         null AS FULLNAME,
+        PARENT_CLASS,
         PARENTKEY AS PARENT_ID,
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE

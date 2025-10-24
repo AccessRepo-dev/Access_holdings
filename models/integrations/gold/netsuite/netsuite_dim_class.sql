@@ -15,6 +15,7 @@ with source as (
         ID AS CLASS_ID,
         NAME,
         FULLNAME,
+        PARENT_CLASS,
         PARENT AS PARENT_ID,
         ISINACTIVE AS IS_INACTIVE,
         LASTMODIFIEDDATE AS LAST_MODIFIED_DATE
