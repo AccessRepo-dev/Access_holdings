@@ -31,11 +31,12 @@ cleaned as (
             SPLIT_PART(FULLNAME, ':', 2) AS PARENT_NAME,
             SPLIT_PART(FULLNAME, ':', 3) AS CHILD_NAME,
         {% else %}
-            COALESCE(
-                NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 3)), ''),
-                NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 2)), ''),
-                NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 1)), '')
-            ) AS PARENT_NAME,
+            CASE
+                WHEN lower(COALESCE(NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 3)), ''),NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 2)), ''),NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 1)), ''))) LIKE '%wagway%' THEN 'WagWay Group LLC'
+                WHEN lower(COALESCE(NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 3)), ''),NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 2)), ''),NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 1)), ''))) LIKE '%pups%' THEN 'PUPS Holdings LLC'
+                WHEN lower(COALESCE(NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 3)), ''),NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 2)), ''),NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 1)), ''))) LIKE '%pawville%' THEN 'Pawville Holdings LLC'
+                ELSE COALESCE(NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 3)), ''),NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 2)), ''),NULLIF(TRIM(SPLIT_PART(FULLNAME, ':', 1)), ''))
+            END AS PARENT_NAME,
             TRIM(SPLIT_PART(FULLNAME, ':', -1)) AS CHILD_NAME,
         {% endif%}
         

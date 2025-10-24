@@ -13,6 +13,7 @@ with source as (
     select
         ID AS DIM_SUBSIDIARY_ID,
         FULLNAME AS SUBSIDIARY_NAME,
+        FULLNAME AS SUBSIDIARY_FULL_NAME,
         PARENT_NAME,
         CHILD_NAME,
         CURRENCY AS CURRENCY_ID,
