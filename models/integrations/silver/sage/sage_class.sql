@@ -29,6 +29,7 @@ cleaned as (
 
     -- Core Identifiers
     TRIM(NAME) AS NAME,
+    CAST(NULL AS VARCHAR) AS PARENT_CLASS,
     CASE WHEN STATUS like 'active%' THEN False 
     ELSE true
     END AS STATUS,

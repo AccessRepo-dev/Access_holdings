@@ -53,12 +53,12 @@ with source as (
         per.CLOSEDONDATE AS POSTING_PERIOD_DATE,
         CAST(t.CURRENCY AS VARCHAR ) AS CURRENCY,
         CONCAT(tl.SUBSIDIARY, '-', t.POSTINGPERIOD, '-', t.CURRENCY) AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
-        t.EXCHANGERATE,
-        
+        CASE WHEN t.CURRENCY=1 THEN 1 ELSE cer.CURRENTRATE  END AS EXCHANGERATE,
         -- Amounts
         tal.NETAMOUNT,
-        tal.AMOUNT,
-        ROUND(tal.NETAMOUNT * t.EXCHANGERATE, 2) AS CONVERTED_NET_AMOUNT,
+        tal.AMOUNT AS AMOUNT_UNCONVERTED,
+        CASE WHEN t.CURRENCY=1 THEN tal.AMOUNT ELSE ROUND(tal.AMOUNT * cer.CURRENTRATE, 2)  END AS AMOUNT,
+        CASE WHEN t.CURRENCY=1 THEN tal.NETAMOUNT ELSE ROUND(tal.NETAMOUNT * cer.CURRENTRATE, 2) END AS CONVERTED_NET_AMOUNT,
         ROUND(tal.NETAMOUNT * CAST(tl.QUANTITY AS NUMBER), 2) AS BOM_QUANTITY,
         tl.QUANTITY,
         
@@ -89,7 +89,18 @@ with source as (
         ON per.ID = t.POSTINGPERIOD
     LEFT JOIN {{ get_silver_source(company, 'TRANSACTIONSTATUS') }} txs
         ON txs.ID = t.status and txs.trantype = t.type and t.customtype = txs.trancustomtype
+    LEFT JOIN {{ get_silver_source(company, 'CONSOLIDATEDEXCHANGERATE') }} cer
+        ON cer.POSTINGPERIOD = t.POSTINGPERIOD 
+        AND cer.FROMCURRENCY = t.CURRENCY
+        AND cer.TOCURRENCY=1
+        AND cer.FROMSUBSIDIARY=tl.SUBSIDIARY
+        AND cer.TOSUBSIDIARY=1
+
  
 )
 
 SELECT * FROM source
+{% if company == 'playfly' %}
+        WHERE 
+            COALESCE(lower(STATUS_NAME), '') <> 'rejected'
+{% endif %}

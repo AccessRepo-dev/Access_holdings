@@ -27,6 +27,7 @@ cleaned as (
         TRY_CAST(ID AS INT) AS ID,
         TRIM(NAME) AS NAME,
         TRIM(FULLNAME) AS FULLNAME,
+        TRIM(SPLIT_PART(FULLNAME,':',1)) AS PARENT_CLASS,
         TRY_CAST(PARENT AS INT) AS PARENT,
         CAST(
             CASE 
