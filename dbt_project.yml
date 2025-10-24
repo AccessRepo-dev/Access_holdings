@@ -133,6 +133,11 @@ models:
         sage:
           +schema: GOLD
           +materialized: table
+        macro:
+          +database: "{{env_var('DBT_ACCESS')}}"
+          +schema: GOLD
+          +materialized: table
+
       reporting:
         netsuite:
           +schema: GOLD

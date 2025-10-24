@@ -35,3 +35,4 @@ sources:
 
       # WEATHER tables
       - name: WEATHER_DAILY_OBS
+
