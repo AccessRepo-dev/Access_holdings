@@ -5,7 +5,7 @@ WITH fhfa_housing_cte AS (
         measure_value,
         hash(place_id, hpi_flavor, hpi_type, frequency, DateKey) AS unique_id,
         'HOUSING' AS DATASET,
-        'National Association of Home Builders' AS DATASOURCE
+        'FHFA' AS DATASOURCE
     FROM {{ ref('fhfa_housing') }}
     UNPIVOT (
         measure_value FOR measure_name IN (index_nsa, index_sa)
@@ -48,16 +48,24 @@ nahb_housing_cte AS (
 --     FROM {{ ref('bls_cpi') }}
 -- ),
 
--- bot_transport_cte AS (
---     SELECT 
---         DateKey,
---         SERIES_TITLE AS measure_name,
---         Value AS measure_value,
---         hash(series_id, DateKey) AS unique_id,
---         'Transport' AS DATASET,
---         'BOT' AS DATASOURCE
---     FROM {{ ref('bot_transport_index') }}
--- ),
+bot_transport_cte AS (
+    SELECT 
+        DateKey,
+        SERIES_TITLE AS measure_name,
+        Value AS measure_value,
+        hash(series_id, DateKey) AS unique_id,
+        'Transport' AS DATASET,
+        'BOT' AS DATASOURCE
+    FROM {{ ref('bot_transport_index') }}
+    WHERE ('Air Revenue Passenger Miles (Transportation Services Index)','Air Revenue Ton Miles of Freight and Mail',
+    'Airline Load Factor (RPM/ASM)','Available Seat Miles','Enplanements (Boardings)','Indexed Rail Freight Carloads',
+    'Indexed Rail Freight Intermodal','Industrial Production Index','International Airline Load Factor',
+    'International Enplanements','Inventory to Sales Ratio','Manufacturing Output Index','Natural Gas Transport Volume',
+    'Petroleum Transport Volume','Public Transit Ridership','Rail Freight Carloads','Rail Passenger Miles',
+    'Revenue Passenger Miles','Transportation Services Index - Freight','Transportation Services Index - Passenger',
+    'Transportation Services Index - Total','Vehicle Miles Traveled','Waterborne Freight Volume')
+                 
+),
 
 -- bls_employment_cte AS (
 --     SELECT 
