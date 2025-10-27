@@ -12,6 +12,6 @@ from source
 )
 SELECT 
 *,
-YEAR * 100 + EXTRACT(MONTH FROM TO_DATE(month_name, 'MMMM')) AS DateKey
+CAST(CONCAT(CAST(YEAR * 100 + EXTRACT(MONTH FROM TO_DATE(month_name, 'MMMM')), VARCHAR),  '01') AS INT) AS DateKey
 FROM transformed
 

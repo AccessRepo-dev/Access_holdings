@@ -5,6 +5,7 @@ with source as (
 
     select
         cast("date" as date) as DATE,
+        REPLACE(Date,'-','') AS DATEKEY,
         TRIM("timestep")       as TIMESTEP,
         TRIM("category")       as CATEGORY,
         TRIM("agg_RIS")        as AGG_RIS,
