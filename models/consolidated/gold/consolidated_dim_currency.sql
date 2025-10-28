@@ -7,7 +7,7 @@
 
 {% set companies = var('companies') %}
 
-{% for c in companies %}
+{% for c in companies if c.name | lower != 'zeus' %}
     select
         ABS(HASH(DIM_CURRENCY_ID, '{{ c.name }}','{{c.source}}')) as DIM_CURRENCY_ID,
         DIM_CURRENCY_ID AS CURRNECY_ID,
