@@ -13,13 +13,23 @@
 
 WITH source AS (
     SELECT
-        HASH(ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID) AS DIM_CHART_OF_ACCOUNT_ID,
+         {% if company == 'wagway'%}
+            HASH(ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID,ADJUSTMENT_ID) AS DIM_CHART_OF_ACCOUNT_ID,
+        {%else%}
+            HASH(ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID) AS DIM_CHART_OF_ACCOUNT_ID,
+        {%endif%}
+       
         ACCOUNT_ID,
         ACCOUNT_NAME,
         CAST(ACCOUNT_NUMBER AS VARCHAR) AS ACCOUNT_NUMBER,
         SUBSIDIARY_ID,
         SUBSIDIARY_NAME,
         CLASS_ID,
+        {% if company == 'wagway'%}
+            ADJUSTMENT_ID,
+        {%else%}
+            CAST(NULL AS INT) ADJUSTMENT_ID,
+        {%endif%}
         CAST(CLASS_NAME AS VARCHAR) AS CLASS_NAME,
         CAST(NULL AS INT) AS PROJECT_ID,
         CAST(NULL AS VARCHAR) AS PROJECT_NAME,
@@ -36,7 +46,15 @@ WITH source AS (
         CAST(CASH_FLOW_L1 AS VARCHAR) AS CASH_FLOW_L1,
         CAST(CASH_FLOW_L2 AS VARCHAR) AS CASH_FLOW_L2,
         CAST(CASH_FLOW_L3 AS VARCHAR) AS CASH_FLOW_L3,
-        CAST(IS_BS AS VARCHAR) AS IS_BS
+        CAST(IS_BS AS VARCHAR) AS IS_BS, 
+        {% if company == 'wagway'%}
+            CASE WHEN ADJUSTMENT_ID IS NOT NULL THEN 1 
+        ELSE 0
+        END AS IS_ADJ
+        {%else%}
+            CAST(NULL AS INT) IS_ADJ
+        {%endif%}
+
 
     FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }}
 ),
@@ -51,6 +69,7 @@ derived_metric_rows AS (
         NULL AS SUBSIDIARY_ID,
         NULL AS SUBSIDIARY_NAME,
         NULL AS CLASS_ID,
+        NULL AS ADJUSTMENT_ID,
         NULL AS PROJECT_ID,
         NULL AS PROJECT_NAME,
         NULL AS CLASS_NAME,
@@ -67,7 +86,8 @@ derived_metric_rows AS (
         NULL AS CASH_FLOW_L1,
         NULL AS CASH_FLOW_L2,
         NULL AS CASH_FLOW_L3,
-        CASE WHEN '{{ metric }}' IN ('Total Liabilities & Equity','Equity','Total Assets','Total Liabilities') THEN 'BS' ELSE 'IS' END AS  IS_BS
+        CASE WHEN '{{ metric }}' IN ('Total Liabilities & Equity','Equity','Total Assets','Total Liabilities') THEN 'BS' ELSE 'IS' END AS  IS_BS,
+        NULL AS IS_ADJ
     {% if not loop.last %}
     UNION ALL
     {% endif %}
