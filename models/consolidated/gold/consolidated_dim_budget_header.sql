@@ -7,7 +7,7 @@
 
 {% set companies = var('companies') %}
 
-{% for c in companies %}
+{% for c in companies if c.name | lower != 'zeus' %}
     select
         HASH(DIM_BUDGET_HEADER_ID, '{{ c.name }}','{{c.source}}') as DIM_BUDGET_HEADER_ID,
         DIM_BUDGET_HEADER_ID AS BUDGET_HEADER_ID,
@@ -18,6 +18,6 @@
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
     from {{ render(c.db) }}.GOLD.DIM_BUDGET_HEADER
-
+    
     {% if not loop.last %} union all {% endif %}
 {% endfor %}
