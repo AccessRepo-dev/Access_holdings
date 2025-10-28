@@ -9,7 +9,7 @@ WITH months AS (
 )
 SELECT
     first_day AS FULL_DATE,
-    CAST(TO_VARCHAR(first_day, 'YYYYMM') AS INT) AS DATEKEY,     -- e.g. 202410
+    CAST(TO_VARCHAR(first_day, 'YYYYMMDD') AS INT) AS DATEKEY,     -- e.g. 202410
     TO_VARCHAR(first_day, 'YYYY-MM') AS YEAR_MONTH,              -- e.g. 2024-10
     YEAR(first_day) AS YEAR,
     MONTH(first_day) AS MONTH,

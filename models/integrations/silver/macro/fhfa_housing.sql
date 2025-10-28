@@ -6,7 +6,7 @@ with source as (
 select
     CAST("yr" AS NUMBER) AS YEAR,
     CAST("period" AS NUMBER) AS PERIOD,
-    ("yr" * 100 + "period") AS DATEKEY,
+    CONCAT(CAST("yr" * 100 + "period" AS Varchar),'01') AS DATEKEY,
     TRIM("hpi_type") AS HPI_TYPE,
     TRIM("hpi_flavor") AS HPI_FLAVOR,
     TRIM("frequency") AS FREQUENCY,

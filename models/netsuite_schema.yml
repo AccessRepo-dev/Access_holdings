@@ -26,6 +26,7 @@ sources:
       - name: CLASSIFICATIONSUBSIDIARYMAP
       - name: ACCOUNTSUBSIDIARYMAP
       - name: CUSTOMRECORD_CSEG1
+      - name: CUSTOMRECORD_CSEG_CP_STORE_LOC
 
   - name: playfly_netsuite_raw
     database: playfly_raw

@@ -12,7 +12,12 @@
 
 with source_data as (
     select *
+    {% if company == 'wagway'%}
+    from {{ get_raw_source(company, sourcesystem, 'CUSTOMRECORD_CSEG_CP_STORE_LOC') }}
+    {% else %}
     from {{ get_raw_source(company, sourcesystem, 'LOCATION') }}
+    {% endif %}
+
     {% if is_incremental() %}
     where LASTMODIFIEDDATE > (
         select coalesce(max(LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
@@ -24,29 +29,37 @@ with source_data as (
 
 cleaned as (
     select
-        TRY_CAST(ID AS INT) AS ID,
-        TRIM(NAME) AS NAME,
-        TRIM(FULLNAME) AS FULLNAME,
-        SPLIT_PART(FULLNAME,':',1) AS PARENT_NAME,
-        TRIM(LOCATIONTYPE) AS LOCATIONTYPE,
+        TRY_CAST(s.ID AS INT) AS ID,
+        TRIM(s.NAME) AS NAME,
+        
+        a.NAME AS PARENT_NAME,
         {% if company == 'wagway'  %}
-            COALESCE(PARENT,-1) AS PARENT,
+            TRIM(s.NAME) AS FULLNAME,
+            COALESCE(s.PARENT,-1) AS PARENT,
+            null AS LOCATIONTYPE,
+            CAST(null AS INT) AS SUBSIDIARY,
+            CAST(s.LASTMODIFIED AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
         {% else %}
-            TRY_CAST(PARENT AS INT) AS PARENT,
+            TRIM(s.FULLNAME) AS FULLNAME,
+            TRY_CAST(s.PARENT AS INT) AS PARENT,
+            TRIM(s.LOCATIONTYPE) AS LOCATIONTYPE,
+            TRY_CAST(s.SUBSIDIARY AS INT) AS SUBSIDIARY,
+            CAST(s.LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
         {% endif %}
-
-        TRY_CAST(SUBSIDIARY AS INT) AS SUBSIDIARY,
         CAST(
             CASE 
-                WHEN ISINACTIVE = 'T' THEN TRUE
-                WHEN ISINACTIVE = 'F' THEN FALSE
+                WHEN s.ISINACTIVE = 'T' THEN TRUE
+                WHEN s.ISINACTIVE = 'F' THEN FALSE
                 ELSE NULL
             END AS BOOLEAN
         ) AS ISINACTIVE,
-        CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
-        _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+        s._FIVETRAN_DELETED AS _FIVETRAN_DELETED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
-    from source_data
+    from source_data s
+    {% if company == 'wagway'%}
+    LEFT JOIN {{ get_raw_source(company, sourcesystem, 'CUSTOMRECORD_CSEG_CP_STORE_LOC') }} a
+    ON s.PARENT = a.ID
+    {% endif %}
 )
 
 select
