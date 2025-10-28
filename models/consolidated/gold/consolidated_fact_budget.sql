@@ -7,7 +7,7 @@
 
 {% set companies = var('companies') %}
 
-{% for c in companies %}
+{% for c in companies if c.name | lower != 'zeus' %}
     select
         HASH(BUDGET_ID, '{{ c.name }}',  '{{ c.source }}') as FACT_BUDGET_ID,
         BUDGET_ID,

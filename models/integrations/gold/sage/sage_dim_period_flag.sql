@@ -7,7 +7,7 @@
     alias = 'dim_period_flag',
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = ['DIM_PERIOD_ID','FLAG_TYPE']
+    unique_key = ['DIM_PERIOD_ID','START_DATE','FLAG_TYPE']
 ) }}
 
 with source as (

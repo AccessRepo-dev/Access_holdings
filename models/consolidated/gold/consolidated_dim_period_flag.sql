@@ -8,9 +8,9 @@
 
 {% set companies = var('companies') %}
 
-{% for c in companies %}
+{% for c in companies if c.name | lower != 'zeus' %}
     select
-        HASH(DIM_PERIOD_ID,FLAG_TYPE, '{{ c.name }}','{{ c.source }}') AS DIM_PERIOD_ID,
+        HASH(DIM_PERIOD_ID,FLAG_TYPE,START_DATE ,'{{ c.name }}','{{ c.source }}') AS DIM_PERIOD_ID,
         DIM_PERIOD_ID AS PERIOD_ID,
         START_DATE,
         FLAG_TYPE,

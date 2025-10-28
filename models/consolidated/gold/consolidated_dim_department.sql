@@ -7,7 +7,7 @@
 
 {% set companies = var('companies') %}
 
-{% for c in companies %}
+{% for c in companies if c.name | lower != 'zeus' %}
     select
         HASH(DIM_DEPARTMENT_ID, '{{ c.name }}','{{c.source}}') AS DIM_DEPARTMENT_ID,
         DIM_DEPARTMENT_ID AS DEPARTMENT_ID,

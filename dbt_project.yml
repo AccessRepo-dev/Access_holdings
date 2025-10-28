@@ -23,6 +23,9 @@ vars:
     - name: 'AMH'
       db: "{{ env_var('DBT_AMH') }}"
       source: 'SAGE'
+    - name: 'ZEUS'
+      db: "{{ env_var('DBT_ZEUS') }}"
+      source: 'SEDONA'
 
   derived_metrics:
     - 'Gross Profit'

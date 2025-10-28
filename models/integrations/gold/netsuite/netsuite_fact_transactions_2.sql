@@ -22,16 +22,15 @@ with source as (
         t.STATUS,
         t.TITLE,
         txs.NAME AS STATUS_NAME,
-        
         -- Chart of accounts / account details
         tal.ACCOUNT AS ACCOUNT_ID,
         tal.POSTING AS IS_POSTING,
         a.ACCTNUMBER AS ACCOUNT_NUMBER,
         a.ACCTTYPE AS ACCOUNT_TYPE,
         a.FULLNAME AS ACCOUNT_NAME,
-        HASH(tal.ACCOUNT, tl.SUBSIDIARY, tl.CLASS, tl.LOCATION, tl.DEPARTMENT) AS DIM_CHART_OF_ACCOUNT_ID,
+        HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT) AS DIM_CHART_OF_ACCOUNT_ID,
         tl.CLASS AS DIM_CLASS_ID,
-        CAST(NULL AS NUMBER) AS DIM_PROJECT_ID,
+        CAST(NULL AS INT) AS DIM_PROJECT_ID,
         
         -- Transaction line details
         tl.ITEM AS DIM_ITEM_ID,
@@ -51,14 +50,13 @@ with source as (
         -- Period / currency / consolidation
         t.POSTINGPERIOD AS DIM_PERIOD_ID,
         per.CLOSEDONDATE AS POSTING_PERIOD_DATE,
-        CAST(t.CURRENCY AS VARCHAR) AS CURRENCY,
+        CAST(t.CURRENCY AS VARCHAR ) AS CURRENCY,
         CONCAT(tl.SUBSIDIARY, '-', t.POSTINGPERIOD, '-', t.CURRENCY) AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
-        t.EXCHANGERATE,
-        
+        CASE WHEN t.CURRENCY=1 OR t.CURRENCY IS NULL THEN 1 ELSE cer.EXCHANGERATE  END AS EXCHANGERATE,
         -- Amounts
         tal.NETAMOUNT,
-        tal.AMOUNT,
-        ROUND(tal.NETAMOUNT * t.EXCHANGERATE, 2) AS CONVERTED_NET_AMOUNT,
+        CASE WHEN t.CURRENCY=1 OR t.CURRENCY IS NULL THEN tal.AMOUNT ELSE ROUND(tal.AMOUNT * cer.EXCHANGERATE, 2)  END AS AMOUNT,
+        CASE WHEN t.CURRENCY=1 OR t.CURRENCY IS NULL THEN tal.NETAMOUNT ELSE ROUND(tal.NETAMOUNT * cer.EXCHANGERATE, 2) END AS CONVERTED_NET_AMOUNT,
         ROUND(tal.NETAMOUNT * CAST(tl.QUANTITY AS NUMBER), 2) AS BOM_QUANTITY,
         tl.QUANTITY,
         
@@ -72,7 +70,7 @@ with source as (
         -- Dates
         t.TRANDATE,
         t.STARTDATE,
-        DATE(per.STARTDATE) AS PERIOD_START_DATE,
+        DATE(per.STARTDATE) AS PERIOD_START_DATE , 
         t.ENDDATE,
         t.DUEDATE,
         t.CLOSEDATE,
@@ -82,13 +80,15 @@ with source as (
     LEFT JOIN {{ get_silver_source(company, 'TRANSACTION') }} t
         ON t.ID = tl.TRANSACTION
     LEFT JOIN {{ get_silver_source(company, 'TRANSACTIONACCOUNTINGLINE') }} tal
-        ON tl.transaction = tal.transaction AND tl.id = tal.transactionline
+        ON tl.transaction = tal.transaction and tl.id = tal.transactionline
     LEFT JOIN {{ get_silver_source(company, 'ACCOUNT') }} a
         ON a.ID = tal.ACCOUNT
     LEFT JOIN {{ get_silver_source(company, 'ACCOUNTINGPERIOD') }} per
         ON per.ID = t.POSTINGPERIOD
     LEFT JOIN {{ get_silver_source(company, 'TRANSACTIONSTATUS') }} txs
-        ON txs.ID = t.status AND txs.trantype = t.type AND t.customtype = txs.trancustomtype
+        ON txs.ID = t.status and txs.trantype = t.type and t.customtype = txs.trancustomtype
+    LEFT JOIN {{ get_silver_source(company, 'CURRENCY') }} cer
+        ON cer.ID = t.CURRENCY
 ),
 
 -- Transactions within the current year (detailed level)
@@ -96,6 +96,10 @@ current_year_transactions as (
     SELECT *
     FROM source
     WHERE PERIOD_START_DATE >= DATE_TRUNC('MONTH', DATEADD('MONTH', -12, CURRENT_DATE))
+    {% if company == 'playfly' %}
+        AND 
+            COALESCE(lower(STATUS_NAME), '') <> 'rejected'
+    {% endif %}
 ),
 
 -- Transactions older than a year (aggregated level)
