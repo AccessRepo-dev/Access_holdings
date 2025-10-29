@@ -13,7 +13,7 @@ WITH fhfa_housing_cte AS (
 ),
 
 nahb_housing_cte AS (
-    SELECT 
+    SELECT DISTINCT  
         DateKey,
         measure_name,
         measure_value,
@@ -55,9 +55,9 @@ bot_transport_cte AS (
         Value AS measure_value,
         hash(series_id, DateKey) AS unique_id,
         'Transport' AS DATASET,
-        'BOT' AS DATASOURCE
+        'Bureau of Transportation' AS DATASOURCE
     FROM {{ ref('bot_transport_index') }}
-    WHERE ('Air Revenue Passenger Miles (Transportation Services Index)','Air Revenue Ton Miles of Freight and Mail',
+    WHERE Value in ('Air Revenue Passenger Miles (Transportation Services Index)','Air Revenue Ton Miles of Freight and Mail',
     'Airline Load Factor (RPM/ASM)','Available Seat Miles','Enplanements (Boardings)','Indexed Rail Freight Carloads',
     'Indexed Rail Freight Intermodal','Industrial Production Index','International Airline Load Factor',
     'International Enplanements','Inventory to Sales Ratio','Manufacturing Output Index','Natural Gas Transport Volume',
