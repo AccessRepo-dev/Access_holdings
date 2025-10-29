@@ -16,6 +16,7 @@
         SUBSIDIARY_ID,
         SUBSIDIARY_NAME,
         CLASS_ID,
+        ADJUSTMENT_ID,
         CLASS_NAME,
         PROJECT_ID,
         PROJECT_NAME,
@@ -33,6 +34,8 @@
         CASH_FLOW_L2,
         CASH_FLOW_L3,
         IS_BS,
+        IS_ADJ,
+        
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE

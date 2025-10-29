@@ -29,7 +29,12 @@ with source as (
         a.ACCTNUMBER AS ACCOUNT_NUMBER,
         a.ACCTTYPE AS ACCOUNT_TYPE,
         a.FULLNAME AS ACCOUNT_NAME,
-        HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT) AS DIM_CHART_OF_ACCOUNT_ID,
+       
+         {% if company == 'wagway' %}
+             HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT,tl.ADDBACK_ID) AS DIM_CHART_OF_ACCOUNT_ID,
+        {% else %}
+             HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT) AS DIM_CHART_OF_ACCOUNT_ID,
+        {% endif %}
         tl.CLASS AS DIM_CLASS_ID,
         CAST(NULL AS INT) AS DIM_PROJECT_ID,
         

@@ -22,6 +22,7 @@ WITH source AS (
         CAST(NULL AS INT ) SUBSIDIARY_ID,
         CAST(NULL AS VARCHAR ) AS SUBSIDIARY_NAME,
         CLASS_ID,
+        CAST(NULL AS INT) AS ADJUSTMENT_ID,
         CAST(CLASS_NAME AS VARCHAR) AS CLASS_NAME,
         PROJECT_ID,
         PROJECT_NAME,
@@ -38,7 +39,16 @@ WITH source AS (
         CAST(CASH_FLOW_L1 AS VARCHAR) AS CASH_FLOW_L1,
         CAST(CASH_FLOW_L2 AS VARCHAR) AS CASH_FLOW_L2,
         CAST(CASH_FLOW_L3 AS VARCHAR) AS CASH_FLOW_L3,
-        CAST(IS_BS AS VARCHAR) AS IS_BS
+        CAST(IS_BS AS VARCHAR) AS IS_BS,
+        CASE WHEN CLASS_ID IN 
+        {% if company == 'spotless' %}
+        (22,23,24,25,26,29,30,33,34,35,36,38,39,40,42) 
+        {% elif company == 'amh'%}
+        (1)
+        {% endif %}
+        THEN 1
+        ELSE 0 
+        END AS IS_ADJ ,
     FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }}
 ),
 
@@ -52,6 +62,7 @@ derived_metric_rows AS (
         NULL AS SUBSIDIARY_ID,
         NULL AS SUBSIDIARY_NAME,
         NULL AS CLASS_ID,
+        NULL AS ADJUSTMENT_ID,
         NULL AS CLASS_NAME,
         NULL AS PROJECT_ID,
         NULL AS PROJECT_NAME,
@@ -68,7 +79,8 @@ derived_metric_rows AS (
         NULL AS CASH_FLOW_L1,
         NULL AS CASH_FLOW_L2,
         NULL AS CASH_FLOW_L3,
-        CASE WHEN '{{ metric }}' IN ('Total Liabilities & Equity','Equity','Total Assets','Total Liabilities') THEN 'BS' ELSE 'IS' END AS  IS_BS
+        CASE WHEN '{{ metric }}' IN ('Total Liabilities & Equity','Equity','Total Assets','Total Liabilities') THEN 'BS' ELSE 'IS' END AS  IS_BS,
+        NULL AS IS_ADJ
     {% if not loop.last %}
     UNION ALL
     {% endif %}
