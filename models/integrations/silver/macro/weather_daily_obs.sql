@@ -5,6 +5,7 @@ with source as (
 
 select
     cast("Date" as date) as DATE,
+    CAST(REPLACE(DATE_TRUNC('MONTH',cast("Date" as date)),'-','') AS NUMBER) AS DATEKEY,
     TRIM(SPLIT_PART("City",',',1)) as CITY,
     TRIM(SPLIT_PART("City",',',2)) AS STATE,
     round("Temp_Max_9_18_F", 2)  as TEMP_MAX_DAY_F,
