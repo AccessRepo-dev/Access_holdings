@@ -12,7 +12,7 @@
         (HASH(DIM_CHART_OF_ACCOUNT_ID, '{{ c.name }}','{{c.source}}')) as DIM_CHART_OF_ACCOUNT_ID,
         DIM_CHART_OF_ACCOUNT_ID AS ACCOUNT_ID,
         ACCOUNT_NAME,
-        ACCOUNT_NUMBER,
+        CASE WHEN '{{ c.name }}'='ZEUS' THEN CAST(ACCOUNT_NUMBER AS VARCHAR) ELSE ACCOUNT_NUMBER END AS ACCOUNT_NUMBER,
         SUBSIDIARY_ID,
         SUBSIDIARY_NAME,
         CLASS_ID,
@@ -24,7 +24,6 @@
         DEPARTMENT_NAME,
         LOCATION_ID,
         LOCATION_NAME,
-        DIM_ADDBACK_ID,
         METRIC_L1,
         METRIC_L2,
         METRIC_L3,
@@ -36,7 +35,6 @@
         CASH_FLOW_L3,
         IS_BS,
         IS_ADJ,
-        
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
         current_timestamp()::timestamp_ntz as CONSOLIDATED_GOLD_LOAD_DATE
