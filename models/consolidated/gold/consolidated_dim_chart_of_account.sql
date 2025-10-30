@@ -24,6 +24,7 @@
         DEPARTMENT_NAME,
         LOCATION_ID,
         LOCATION_NAME,
+        DIM_ADDBACK_ID,
         METRIC_L1,
         METRIC_L2,
         METRIC_L3,
