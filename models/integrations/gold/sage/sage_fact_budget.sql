@@ -25,7 +25,7 @@ with source as (
         CAST(NULL AS INT) AS DIM_CURRENCY_ID,         
         CAST(NULL AS INT) AS CUSTOMER_ID,
         CAST(NULL AS INT) AS DIM_ITEM_ID,
-        CAST(NULL AS INT) AS DIM_ADDBACK_ID,               
+        CAST(NULL AS INT) AS ADJUSTMENT_ID,               
         CAST(NULL AS INT) AS CSEG3_ID,
 
         -- Derived Dimension Hashes (for conformed COA / Class across subs)
