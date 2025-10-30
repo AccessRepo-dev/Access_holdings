@@ -12,7 +12,7 @@
 with source as (
     select
         RECORDNO AS DIM_CLASS_ID,
-        cast(NULL AS INT) AS CLASS_ID,
+        CLASSID AS CLASS_ID,
         NAME AS NAME,
         null AS FULLNAME,
         PARENT_CLASS,

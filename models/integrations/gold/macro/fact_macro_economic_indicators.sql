@@ -26,27 +26,30 @@ nahb_housing_cte AS (
     )
 ),
 
--- bls_ppi_cte AS (
---     SELECT 
---         DateKey,
---         'PPI'AS measure_name,
---         Value AS measure_value,
---         hash(series_id, DateKey) AS unique_id,
---         'Producer Price Index' AS DATASET,
---         'Bureau of Labor Statistics' AS DATASOURCE
---     FROM {{ ref('bls_ppi') }}
--- ),
+bls_ppi_cte AS (
+    SELECT 
+        DateKey,
+        'PPI'AS measure_name,
+        Value AS measure_value,
+        hash(series_id, DateKey) AS unique_id,
+        'Producer Price Index' AS DATASET,
+        'Bureau of Labor Statistics' AS DATASOURCE
+    FROM {{ ref('bls_ppi') }}
+    WHERE series_id IN  ('WPUFD4','WPUFD4L1T15','WPUFD4131','WPUFD41302','WPUFD41303','WPU05','WPU02','WPU301')
+),
 
--- bls_cpi_cte AS (
---     SELECT 
---         DateKey,
---         SERIES_TITLE AS measure_name,
---         Value AS measure_value,
---         hash(series_id, DateKey) AS unique_id,
---         'Consumer Price Index' AS DATASET,
---         'Bureau of Labor Statistics' AS DATASOURCE
---     FROM {{ ref('bls_cpi') }}
--- ),
+bls_cpi_cte AS (
+    SELECT 
+        DateKey,
+        SERIES_TITLE AS measure_name,
+        Value AS measure_value,
+        hash(series_id, DateKey) AS unique_id,
+        'Consumer Price Index' AS DATASET,
+        'Bureau of Labor Statistics' AS DATASOURCE
+    FROM {{ ref('bls_cpi') }}
+    WHERE SERIES_ID IN  ('CUUR0000SA0','CUUR0000SA0L1E','CUUR0000SAF1','CUUR0000SAF11','CUUR0000SEFV','CUUR0000SA0E',
+    'CUUR0000SEHA','CUUR0000SETA01','CUUR0000SETA02','CUUR0000SAM','CUUR0000SAF','CUUR0000SETB01')
+),
 
 bot_transport_cte AS (
     SELECT 
@@ -115,6 +118,7 @@ bea_gdp_nominal_cte AS (
     LEFT JOIN {{ ref('dim_date_monthly') }} D
         ON LEFT(B.TIMEPERIOD, 4) = D.YEAR
        AND RIGHT(B.TIMEPERIOD, 2) = D.QUARTER_NAME
+    WHERE SERIESCODE = 'A191RC'
 ),
 
 bea_gdp_real_cte AS (
@@ -129,6 +133,7 @@ bea_gdp_real_cte AS (
     LEFT JOIN {{ ref('dim_date_monthly') }} D
         ON LEFT(B.TIMEPERIOD, 4) = D.YEAR
        AND RIGHT(B.TIMEPERIOD, 2) = D.QUARTER_NAME
+    WHERE SERIESCODE = 'A191RX'
 ),
 
 bea_gdp_region_cte AS (
@@ -143,7 +148,8 @@ bea_gdp_region_cte AS (
     LEFT JOIN {{ ref('dim_date_monthly') }} D 
         ON B.TIMEPERIOD = D.YEAR
 ),
-adp_employment_cte AS (SELECT 
+adp_employment_cte AS (
+    SELECT 
         datekey,
         measure_name,
         measure_value,
@@ -155,17 +161,76 @@ adp_employment_cte AS (SELECT
         measure_value FOR measure_name IN (ner, ner_sa)
     ) 
     WHERE TIMESTEP = 'M'
+),
+adp_payinsights_cte AS (
+    SELECT 
+        datekey,
+        measure_name,
+        measure_value,
+        hash(category,datekey) AS unique_id ,
+        'PAYINSIGHTS' AS DATASET,
+        'ADP' AS DATASOURCE
+    FROM {{ ref('adp_payinsights') }}
+    UNPIVOT (
+        measure_value FOR measure_name IN (median_pay_change, median_annual_pay)
+    ) 
+    WHERE TIMESTEP = 'M'
+),
+aggregated_weather_data AS (
+    SELECT 
+        DATEKEY,
+        CITY,
+        STATE,
+        'WEATHER_DAILY_OBS' AS DATASET,
+        'WEATHER' AS DATASOURCE,
+        ROUND(MAX(TEMP_MAX_DAY_F),2) AS TEMP_MAX_DAY_F,
+        ROUND(MIN(TEMP_MIN_DAY_F),2) AS TEMP_MIN_DAY_F,
+        ROUND(AVG(TEMP_AVG_DAY_F),2) AS TEMP_AVG_DAY_F,
+        ROUND(MAX(TEMP_MAX_24H_F),2) AS TEMP_MAX_24H_F,
+        ROUND(MIN(TEMP_MIN_24H_F),2) AS TEMP_MIN_24H_F,
+        ROUND(AVG(PRECIP_TOTAL_IN),2) AS PRECIP_TOTAL_IN,
+        ROUND(AVG(PRECIP_DAY_IN),2) AS PRECIP_DAY_IN,
+        ROUND(AVG(SNOW_TOTAL_IN),2) AS SNOW_TOTAL_IN,
+        ROUND(AVG(SNOW_DAY_IN),2) AS SNOW_DAY_IN,
+        ROUND(AVG(CLOUD_AVG_24H_PCT),2) AS CLOUD_AVG_24H_PCT,
+        ROUND(AVG(CLOUD_AVG_DAY_PCT),2) AS CLOUD_AVG_DAY_PCT,
+        ROUND(AVG(WIND_AVG_24H_MPH),2) AS WIND_AVG_24H_MPH,
+        ROUND(AVG(WIND_AVG_DAY_MPH),2) AS WIND_AVG_DAY_MPH,
+        ROUND(AVG(HUMIDITY_AVG_24H_PCT),2) AS HUMIDITY_AVG_24H_PCT,
+        ROUND(AVG(HUMIDITY_AVG_DAY_PCT),2) AS HUMIDITY_AVG_DAY_PCT
+    FROM {{ ref('weather_daily_obs') }}
+    GROUP BY 
+        DATEKEY, CITY, STATE
+),
+weather_cte as (SELECT
+    datekey,
+    measure_name,
+    measure_value,
+    HASH(DATEKEY,CITY) AS UNIQUE_ID,
+    DATASET,
+    DATASOURCE
+FROM aggregated_weather_data a1
+UNPIVOT( 
+measure_value FOR measure_name IN 
+    (TEMP_MAX_DAY_F, TEMP_MIN_DAY_F, TEMP_AVG_DAY_F,
+    TEMP_MAX_24H_F, TEMP_MIN_24H_F,
+    PRECIP_TOTAL_IN, PRECIP_DAY_IN, SNOW_TOTAL_IN, SNOW_DAY_IN,
+    CLOUD_AVG_24H_PCT, CLOUD_AVG_DAY_PCT,
+    WIND_AVG_24H_MPH, WIND_AVG_DAY_MPH,
+    HUMIDITY_AVG_24H_PCT, HUMIDITY_AVG_DAY_PCT
+    )
+    )
 )
 SELECT * FROM fhfa_housing_cte
 UNION ALL
 SELECT * FROM nahb_housing_cte
 UNION ALL
--- SELECT * FROM bls_ppi_cte
--- UNION ALL
--- SELECT * FROM bls_cpi_cte
--- UNION ALL
--- SELECT * FROM bot_transport_cte
--- UNION ALL
+SELECT * FROM bls_ppi_cte
+UNION ALL
+SELECT * FROM bls_cpi_cte
+UNION ALL
+SELECT * FROM bot_transport_cte
+UNION ALL
 -- SELECT * FROM bls_employment_cte
 -- UNION ALL
 SELECT * FROM umich_sent_cte
@@ -179,3 +244,5 @@ UNION ALL
 SELECT * FROM bea_gdp_region_cte
 UNION ALL 
 SELECT * FROM adp_employment_cte
+UNION ALL 
+SELECT * FROM weather_cte
