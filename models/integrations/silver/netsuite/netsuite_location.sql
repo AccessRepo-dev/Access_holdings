@@ -24,14 +24,16 @@ cleaned as (
         TRY_CAST(s.ID AS INT) AS ID,
         TRIM(s.NAME) AS NAME,
         
-        a.NAME AS PARENT_NAME,
+        
         {% if company == 'wagway'  %}
+            a.NAME AS PARENT_NAME,
             TRIM(s.NAME) AS FULLNAME,
             COALESCE(s.PARENT,-1) AS PARENT,
             null AS LOCATIONTYPE,
             CAST(null AS INT) AS SUBSIDIARY,
             CAST(s.LASTMODIFIED AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
         {% else %}
+            SPLIT_PART(FULLNAME,':',1) AS PARENT_NAME,
             TRIM(s.FULLNAME) AS FULLNAME,
             TRY_CAST(s.PARENT AS INT) AS PARENT,
             TRIM(s.LOCATIONTYPE) AS LOCATIONTYPE,

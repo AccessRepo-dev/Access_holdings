@@ -22,7 +22,7 @@
         HASH(DIM_CURRENCY_ID, '{{ c.name }}',  '{{ c.source }}') as DIM_CURRENCY_ID,
         CUSTOMER_ID,
         HASH(DIM_ITEM_ID, '{{ c.name }}',  '{{ c.source }}') as DIM_ITEM_ID,
-        CSEG1_ID,
+        DIM_ADDBACK_ID,
         CSEG3_ID,
         HASH(DIM_CHART_OF_ACCOUNT_ID, '{{ c.name }}',  '{{ c.source }}') as DIM_CHART_OF_ACCOUNT_ID,
         HASH(DIM_PROJECT_ID, '{{ c.name }}',  '{{ c.source }}') as DIM_PROJECT_ID,
