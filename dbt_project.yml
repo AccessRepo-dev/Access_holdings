@@ -156,13 +156,10 @@ seeds:
     sage:
       +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
       +schema: SILVER
-<<<<<<< HEAD
+
     macro_economic:
       +database: "{{env_var('DBT_ACCESS')}}"
       +schema: SILVER
-=======
 
->>>>>>> d3c71be4d06600c0625ee381f9165c5319374927
-       
 on-run-end:
   - "{{ audit_failures(results) }}"
