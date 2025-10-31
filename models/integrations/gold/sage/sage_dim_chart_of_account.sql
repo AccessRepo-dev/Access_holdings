@@ -21,9 +21,9 @@ WITH source AS (
         CAST(ACCOUNT_NUMBER AS VARCHAR) AS ACCOUNT_NUMBER,
         CAST(NULL AS INT ) SUBSIDIARY_ID,
         CAST(NULL AS VARCHAR ) AS SUBSIDIARY_NAME,
-        CLASS_ID,
+        coa.CLASS_ID,
         CAST(NULL AS INT) AS ADJUSTMENT_ID,
-        CAST(CLASS_NAME AS VARCHAR) AS CLASS_NAME,
+        CAST(coa.CLASS_NAME AS VARCHAR) AS CLASS_NAME,
         PROJECT_ID,
         PROJECT_NAME,
         DEPARTMENT_ID,
@@ -40,16 +40,20 @@ WITH source AS (
         CAST(CASH_FLOW_L2 AS VARCHAR) AS CASH_FLOW_L2,
         CAST(CASH_FLOW_L3 AS VARCHAR) AS CASH_FLOW_L3,
         CAST(IS_BS AS VARCHAR) AS IS_BS,
-        CASE WHEN CLASS_ID IN 
+        CASE WHEN 
         {% if company == 'spotless' %}
-        (22,23,24,25,26,29,30,33,34,35,36,38,39,40,42) 
+        c.PARENTKEY IN (18,28) 
         {% elif company == 'amh'%}
-        (1)
+        CLASS_ID IN (1)
         {% endif %}
         THEN 1
         ELSE 0 
         END AS IS_ADJ ,
-    FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }}
+    FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }} coa
+     {% if company == 'spotless' %}
+        LEFT JOIN {{ get_silver_source(company, 'CLASS') }} c ON c.RECORDNO =  coa.CLASS_ID
+        {% endif %}
+    
 ),
 
 derived_metric_rows AS (

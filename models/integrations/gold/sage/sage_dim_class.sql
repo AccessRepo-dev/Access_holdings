@@ -12,14 +12,20 @@
 with source as (
     select
         RECORDNO AS DIM_CLASS_ID,
-        cast(NULL AS INT) AS CLASS_ID,
-        NAME AS NAME,
-        null AS FULLNAME,
+        RECORDNO AS CLASS_ID,
+        CLASSID AS NAME,
+        NAME AS FULLNAME,
         PARENT_CLASS,
         PARENTKEY AS PARENT_ID,
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
     from {{ get_silver_source(company, 'CLASS') }}
+
+    {%if company == 'spotless' %}
+    WHERE PARENTKEY IN (18,28)
+    AND STATUS = False
+    {%endif%}
+
     
     {% if is_incremental() %}
     where WHENMODIFIED > (
