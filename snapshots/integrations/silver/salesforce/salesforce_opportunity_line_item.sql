@@ -1,9 +1,9 @@
-{% snapshot hubspot_company %}
+{% snapshot salesforce_opportunity_line_item %}
 
 
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
+{{ config(enabled = var('sourcesystem', 'none') == 'salesforce') }}
 
 {{
     config(
@@ -11,13 +11,13 @@
         target_schema= target_snapshot_schema(sourcesystem),
         unique_key='id',
         strategy='timestamp',
-        updated_at='PROPERTY_HS_LASTMODIFIEDDATE',
+        updated_at='LAST_MODIFIED_DATE',
         invalidate_hard_deletes=True
     )
 }}
 
 select
     *
-from {{ get_raw_source(company, sourcesystem, 'COMPANY') }}
+from {{ get_raw_source(company, sourcesystem, 'OPPORTUNITY_LINE_ITEM') }}
 
 {% endsnapshot %}

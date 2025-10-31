@@ -1,4 +1,4 @@
-{% snapshot hubspot_company %}
+{% snapshot hubspot_deal_pipeline %}
 
 
 {% set company = var('company') %}
@@ -9,15 +9,15 @@
     config(
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
-        unique_key='id',
+        unique_key='PIPELINE_ID',
         strategy='timestamp',
-        updated_at='PROPERTY_HS_LASTMODIFIEDDATE',
+        updated_at='UPDATED_AT',
         invalidate_hard_deletes=True
     )
 }}
 
 select
     *
-from {{ get_raw_source(company, sourcesystem, 'COMPANY') }}
+from {{ get_raw_source(company, sourcesystem, 'DEAL_PIPELINE') }}
 
 {% endsnapshot %}

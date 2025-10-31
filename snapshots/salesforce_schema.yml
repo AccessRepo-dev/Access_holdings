@@ -6,3 +6,6 @@ sources:
     schema: salesforce        
     tables:
       - name: ACCOUNT
+      - name: OPPORTUNITY
+      - name: USER
+      - name: OPPORTUNITY_LINE_ITEM
