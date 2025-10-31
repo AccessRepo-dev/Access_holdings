@@ -56,14 +56,14 @@ with source as (
         -- Period / currency / consolidation
         t.POSTINGPERIOD AS DIM_PERIOD_ID,
         per.CLOSEDONDATE AS POSTING_PERIOD_DATE,
-        CAST(t.CURRENCY AS VARCHAR ) AS CURRENCY,
+        CAST(sub.CURRENCY AS VARCHAR ) AS CURRENCY,
         CONCAT(tl.SUBSIDIARY, '-', t.POSTINGPERIOD, '-', t.CURRENCY) AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
-        CASE WHEN t.CURRENCY=1 OR t.CURRENCY IS NULL THEN 1 ELSE cer.EXCHANGERATE  END AS EXCHANGERATE,
+        CASE WHEN sub.CURRENCY=1 OR sub.CURRENCY IS NULL THEN 1 ELSE cer.EXCHANGERATE  END AS EXCHANGERATE,
         -- Amounts
         tal.NETAMOUNT,
         tal.AMOUNT AS AMOUNT_UNCONVERTED,
-        CASE WHEN t.CURRENCY=1 OR t.CURRENCY IS NULL THEN tal.AMOUNT ELSE ROUND(tal.AMOUNT * cer.EXCHANGERATE, 2)  END AS AMOUNT,
-        CASE WHEN t.CURRENCY=1 OR t.CURRENCY IS NULL THEN tal.NETAMOUNT ELSE ROUND(tal.NETAMOUNT * cer.EXCHANGERATE, 2) END AS CONVERTED_NET_AMOUNT,
+        CASE WHEN sub.CURRENCY=1 OR t.CURRENCY IS NULL THEN tal.AMOUNT ELSE ROUND(tal.AMOUNT * cer.EXCHANGERATE, 2)  END AS AMOUNT,
+        CASE WHEN sub.CURRENCY=1 OR t.CURRENCY IS NULL THEN tal.NETAMOUNT ELSE ROUND(tal.NETAMOUNT * cer.EXCHANGERATE, 2) END AS CONVERTED_NET_AMOUNT,
         ROUND(tal.NETAMOUNT * CAST(tl.QUANTITY AS NUMBER), 2) AS BOM_QUANTITY,
         tl.QUANTITY,
         
@@ -94,8 +94,13 @@ with source as (
         ON per.ID = t.POSTINGPERIOD
     LEFT JOIN {{ get_silver_source(company, 'TRANSACTIONSTATUS') }} txs
         ON txs.ID = t.status and txs.trantype = t.type and t.customtype = txs.trancustomtype
-    LEFT JOIN {{ get_silver_source(company, 'CURRENCY') }} cer
-        ON cer.ID = t.CURRENCY
+    LEFT JOIN {{ get_silver_source(company, 'SUBSIDIARY') }} sub 
+        ON sub.ID=tl.SUBSIDIARY
+    LEFT JOIN {{ get_silver_source(company, 'CURRENCYRATE') }} cer
+        ON DATE(cer.EFFECTIVEDATE) = DATE(t.TRANDATE)
+        AND cer.TRANSACTIONCURRENCY = sub.CURRENCY
+        AND cer.BASECURRENCY=1
+    
 
  
 )
