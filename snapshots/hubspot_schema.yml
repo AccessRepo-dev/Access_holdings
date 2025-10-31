@@ -1,0 +1,39 @@
+version: 2
+
+sources:
+  - name: wagway_hubspot_raw
+    database: wagway_raw     
+    schema: hubspot        
+    tables:
+      - name: COMPANY
+      - name: USERS
+      - name: DEAL
+      - name: DEAL_PIPELINE
+      
+  - name: wagway_hubspot_pawville_raw
+    database: wagway_raw     
+    schema: hubspot_pawville       
+    tables:
+      - name: COMPANY
+      - name: USERS
+      - name: DEAL
+      - name: DEAL_PIPELINE
+
+  - name: playfly_hubspot_raw
+    database: playfly_raw     
+    schema: hubspot       
+    tables:
+      - name: COMPANY
+      - name: USERS
+      - name: DEAL
+      - name: DEAL_PIPELINE
+
+
+  - name: amh_hubspot_raw
+    database: amh_raw     
+    schema: hubspot       
+    tables:
+      - name: COMPANY
+      - name: USERS
+      - name: DEAL
+      - name: DEAL_PIPELINE

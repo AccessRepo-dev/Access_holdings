@@ -30,8 +30,8 @@ vars:
   derived_metrics:
     - 'Gross Profit'
     - 'Gross Margin'
-    - 'EBITDA'
-    - 'EBITDA Margin'
+    - 'Store EBITDA'
+    - 'Store EBITDA Margin'
     - 'Field EBITDA'
     - 'Field EBITDA Margin'
     - 'Post Corporate EBITDA'
@@ -73,7 +73,6 @@ clean-targets:         # directories to be removed by `dbt clean`
 # instead be materialized as tables. Any models you add to the root of the models folder will 
 # continue to be built as views. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
-
 models:
   +materialized: table
   +transient: false
@@ -157,9 +156,13 @@ seeds:
     sage:
       +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
       +schema: SILVER
+<<<<<<< HEAD
     macro_economic:
       +database: "{{env_var('DBT_ACCESS')}}"
       +schema: SILVER
+=======
+
+>>>>>>> d3c71be4d06600c0625ee381f9165c5319374927
        
 on-run-end:
   - "{{ audit_failures(results) }}"
