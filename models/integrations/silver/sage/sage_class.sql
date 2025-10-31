@@ -30,8 +30,8 @@ cleaned as (
     -- Core Identifiers
     TRIM(NAME) AS NAME,
     CAST(NULL AS VARCHAR) AS PARENT_CLASS,
-    CASE WHEN STATUS like 'active%' THEN False 
-    ELSE true
+    CASE WHEN STATUS = 'active' THEN False 
+    ELSE True
     END AS STATUS,
     {% if company == 'spotless'%}
         PARENTKEY,

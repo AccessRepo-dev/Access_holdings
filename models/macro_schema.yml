@@ -35,4 +35,9 @@ sources:
 
       # WEATHER tables
       - name: WEATHER_DAILY_OBS
+  - name: macro_silver
+    database: access_dev    
+    schema: silver        
+    tables:
+      - name: location
 
