@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: wagway_hubspot_raw
+    database: wagway_raw     
+    schema: hubspot        
+    tables:
+      - name: COMPANY
+      
+  - name: wagway_hubspot_pawville_raw
+    database: wagway_raw     
+    schema: hubspot_pawville       
+    tables:
+      - name: COMPANY
