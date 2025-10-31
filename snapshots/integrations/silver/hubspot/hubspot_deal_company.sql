@@ -1,0 +1,23 @@
+{% snapshot hubspot_deal_company %}
+
+
+{% set company = var('company') %}
+{% set sourcesystem = var('sourcesystem') %}
+{{ config(enabled = var('sourcesystem', 'none') in ['hubspot']) }}
+
+{{
+    config(
+        database = get_target_database(company),
+        target_schema= target_snapshot_schema(sourcesystem),
+        unique_key='DEAL_ID',
+        strategy='timestamp',
+        updated_at='_FIVETRAN_SYNCED',
+        invalidate_hard_deletes=True
+    )
+}}
+
+select
+    *
+from {{ get_raw_source(company, sourcesystem, 'DEAL_COMPANY') }}
+
+{% endsnapshot %}

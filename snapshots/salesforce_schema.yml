@@ -9,3 +9,6 @@ sources:
       - name: OPPORTUNITY
       - name: USER
       - name: OPPORTUNITY_LINE_ITEM
+      - name: PRODUCT_2
+      - name: USER_ROLE
+      - name: RECORD_TYPE
