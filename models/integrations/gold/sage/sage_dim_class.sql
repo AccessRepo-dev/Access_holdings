@@ -1,4 +1,5 @@
 {% set company = var('company', 'Unknown company') | lower %}
+
 {{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
 
 {{ config(
@@ -20,18 +21,19 @@ with source as (
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
     from {{ get_silver_source(company, 'CLASS') }}
-
-    {%if company == 'spotless' %}
-    WHERE PARENTKEY IN (18,28)
-    AND STATUS = False
-    {%endif%}
-
     
+    where 1=1
+
     {% if is_incremental() %}
-    where WHENMODIFIED > (
-        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
-        from {{ this }}
-    )
+        and WHENMODIFIED > (
+            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
+            from {{ this }}
+        )
+    {% endif %}
+
+    {% if company == 'spotless' %}
+        and PARENTKEY IN (18,28)
+        and STATUS = False
     {% endif %}
 )
 select *
