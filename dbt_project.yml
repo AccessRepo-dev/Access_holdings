@@ -127,6 +127,12 @@ models:
         +database: "{{env_var('DBT_ACCESS')}}"
         +schema: SILVER
         +materialized: table
+        hubspot:
+            +schema: SILVER
+            +materialized: table
+        salesforce:
+            +schema: SILVER
+            +materialized: table
 
       gold:
         netsuite:

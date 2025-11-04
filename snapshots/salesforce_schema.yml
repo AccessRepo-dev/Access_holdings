@@ -12,3 +12,10 @@ sources:
       - name: PRODUCT_2
       - name: USER_ROLE
       - name: RECORD_TYPE
+      - name: CAMPAIGN
+      - name: CASE
+      - name: CONTACTS
+      - name: LEAD
+      - name: QUOTES
+      - name: QUOTE_LINE_ITEM
+      - name: TASK
