@@ -17,8 +17,7 @@ WITH fhfa_housing_cte AS (
     )
     WHERE level = 'State'
 ),
-
-WITH nahb_housing_cte AS (
+nahb_housing_cte AS (
     SELECT DISTINCT  
         DateKey,
         measure_name,
@@ -244,56 +243,6 @@ adp_payinsights_cte AS (
     ) 
     WHERE TIMESTEP = 'M'
 ),
-aggregated_weather_data AS (
-    SELECT 
-        DATEKEY,
-        CITY,
-        STATE,
-        'WEATHER_DAILY_OBS' AS DATASET,
-        'WEATHER' AS DATASOURCE,
-        ROUND(MAX(TEMP_MAX_DAY_F),2) AS TEMP_MAX_DAY_F,
-        ROUND(MIN(TEMP_MIN_DAY_F),2) AS TEMP_MIN_DAY_F,
-        ROUND(AVG(TEMP_AVG_DAY_F),2) AS TEMP_AVG_DAY_F,
-        ROUND(MAX(TEMP_MAX_24H_F),2) AS TEMP_MAX_24H_F,
-        ROUND(MIN(TEMP_MIN_24H_F),2) AS TEMP_MIN_24H_F,
-        ROUND(AVG(PRECIP_TOTAL_IN),2) AS PRECIP_TOTAL_IN,
-        ROUND(AVG(PRECIP_DAY_IN),2) AS PRECIP_DAY_IN,
-        ROUND(AVG(SNOW_TOTAL_IN),2) AS SNOW_TOTAL_IN,
-        ROUND(AVG(SNOW_DAY_IN),2) AS SNOW_DAY_IN,
-        ROUND(AVG(CLOUD_AVG_24H_PCT),2) AS CLOUD_AVG_24H_PCT,
-        ROUND(AVG(CLOUD_AVG_DAY_PCT),2) AS CLOUD_AVG_DAY_PCT,
-        ROUND(AVG(WIND_AVG_24H_MPH),2) AS WIND_AVG_24H_MPH,
-        ROUND(AVG(WIND_AVG_DAY_MPH),2) AS WIND_AVG_DAY_MPH,
-        ROUND(AVG(HUMIDITY_AVG_24H_PCT),2) AS HUMIDITY_AVG_24H_PCT,
-        ROUND(AVG(HUMIDITY_AVG_DAY_PCT),2) AS HUMIDITY_AVG_DAY_PCT
-    FROM {{ ref('weather_daily_obs') }}
-    GROUP BY 
-        DATEKEY, CITY, STATE
-),
-weather_cte as (SELECT
-    datekey,
-    measure_name,
-    measure_value,
-    HASH(DATEKEY,CITY,STATE) AS UNIQUE_ID,
-    HASH(CITY,STATE ) AS dim_granularity_id,
-    HASH(CITY,STATE ) AS key1,
-    NULL AS key2,
-    NULL AS key3,
-    NULL AS key4, 
-    DATASET,
-    DATASOURCE
-FROM aggregated_weather_data a1
-UNPIVOT( 
-measure_value FOR measure_name IN 
-    (TEMP_MAX_DAY_F, TEMP_MIN_DAY_F, TEMP_AVG_DAY_F,
-    TEMP_MAX_24H_F, TEMP_MIN_24H_F,
-    PRECIP_TOTAL_IN, PRECIP_DAY_IN, SNOW_TOTAL_IN, SNOW_DAY_IN,
-    CLOUD_AVG_24H_PCT, CLOUD_AVG_DAY_PCT,
-    WIND_AVG_24H_MPH, WIND_AVG_DAY_MPH,
-    HUMIDITY_AVG_24H_PCT, HUMIDITY_AVG_DAY_PCT
-    )
-    )
-),
 census_housing_starts_cte AS (
     SELECT   
         DateKey,
@@ -346,8 +295,6 @@ UNION ALL
 SELECT * FROM bea_gdp_region_cte
 UNION ALL 
 SELECT * FROM adp_employment_cte
-UNION ALL 
-SELECT * FROM weather_cte
 UNION ALL 
 SELECT * FROM census_housing_completed_cte
 UNION ALL 
