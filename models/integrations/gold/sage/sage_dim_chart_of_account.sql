@@ -87,6 +87,39 @@ derived_metric_rows AS (
         CASE WHEN '{{ metric }}' IN ('Total Liabilities & Equity','Equity','Total Assets','Total Liabilities') THEN 'BS' ELSE 'IS' END AS  IS_BS,
         NULL AS IS_ADJ,
         NULL AS DEBT_MAPPING
+    
+    {% if metric == 'Equity' %}
+        UNION ALL
+        SELECT
+            CAST({{ -loop.index }} * 100 - 2 AS NUMBER) AS DIM_CHART_OF_ACCOUNT_ID,
+            NULL AS ACCOUNT_ID,
+            NULL AS ACCOUNT_NAME,
+            NULL AS ACCOUNT_NUMBER,
+            NULL AS SUBSIDIARY_ID,
+            NULL AS SUBSIDIARY_NAME,
+            NULL AS CLASS_ID,
+            NULL AS ADJUSTMENT_ID,
+            NULL AS PROJECT_ID,
+            NULL AS PROJECT_NAME,
+            NULL AS CLASS_NAME,
+            NULL AS DEPARTMENT_ID,
+            NULL AS DEPARTMENT_NAME,
+            NULL AS LOCATION_ID,
+            NULL AS LOCATION_NAME,
+            '{{ metric }}' AS METRIC_L1,
+            'Retained Earnings' AS METRIC_L2,
+            NULL AS METRIC_L3,
+            NULL AS METRIC_L4,
+            NULL AS METRIC_L5,
+            NULL AS METRIC_L6,
+            NULL AS CASH_FLOW_L1,
+            NULL AS CASH_FLOW_L2,
+            NULL AS CASH_FLOW_L3,
+            'BS' AS IS_BS,
+            NULL AS IS_ADJ,
+            NULL AS DEBT_MAPPING
+        {% endif %}
+
     {% if not loop.last %}
     UNION ALL
     {% endif %}
