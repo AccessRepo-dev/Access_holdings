@@ -12,6 +12,12 @@ sources:
       - name: LINE_ITEM
       - name: DEAL_COMPANY
       - name: PUPS_PRODUCTS
+      - name: CONTACT
+      - name: DEAL_PIPELINE_STAGE
+      - name: ENGAGEMENT
+      - name: LEAD
+      - name: OWNER
+      - name: TICKET
       
   - name: wagway_hubspot_pawville_raw
     database: wagway_raw     
@@ -23,6 +29,12 @@ sources:
       - name: DEAL_PIPELINE
       - name: LINE_ITEM
       - name: DEAL_COMPANY
+      - name: CONTACT
+      - name: DEAL_PIPELINE_STAGE
+      - name: ENGAGEMENT
+      - name: LEAD
+      - name: OWNER
+      - name: TICKET
       
 
   - name: playfly_hubspot_raw
@@ -36,6 +48,12 @@ sources:
       - name: LINE_ITEM
       - name: DEAL_COMPANY
       - name: PRODUCT
+      - name: CONTACT
+      - name: DEAL_PIPELINE_STAGE
+      - name: ENGAGEMENT
+      - name: LEAD
+      - name: OWNER
+      - name: TICKET
 
 
   - name: amh_hubspot_raw
@@ -49,3 +67,10 @@ sources:
       - name: LINE_ITEM
       - name: DEAL_COMPANY
       - name: PRODUCT
+      - name: CONTACT
+      - name: DEAL_PIPELINE_STAGE
+      - name: ENGAGEMENT
+      - name: LEAD
+      - name: OWNER
+      - name: TICKET
+      - name: QUOTES
