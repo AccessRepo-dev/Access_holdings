@@ -9,7 +9,7 @@
     config(
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
-        unique_key='DEAL_ID',
+        unique_key=['DEAL_ID','COMPANY_ID','TYPE_ID'],
         strategy='timestamp',
         updated_at='_FIVETRAN_SYNCED',
         invalidate_hard_deletes=True

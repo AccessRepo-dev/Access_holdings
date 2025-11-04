@@ -14,7 +14,6 @@ SELECT
     YEAR(first_day) AS YEAR,
     MONTH(first_day) AS MONTH,
     TO_VARCHAR(first_day, 'Mon') AS MONTH_SHORT_NAME,            -- Jan, Feb, ...
-    TO_VARCHAR(first_day, 'Month') AS MONTH_FULL_NAME,           -- January, February, ...
     QUARTER(first_day) AS QUARTER,
     'Q' || QUARTER(first_day) AS QUARTER_NAME,
     LAST_DAY(first_day) AS MONTH_END_DATE

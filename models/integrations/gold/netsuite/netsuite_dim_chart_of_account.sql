@@ -53,6 +53,11 @@ WITH source AS (
         END AS IS_ADJ
         {%else%}
             CAST(NULL AS INT) IS_ADJ
+        {%endif%}, 
+        {% if company == 'playfly'%}
+            DEBT_MAPPING
+        {%else%}
+            CAST(NULL AS VARCHAR) AS DEBT_MAPPING
         {%endif%}
 
 
@@ -87,7 +92,8 @@ derived_metric_rows AS (
         NULL AS CASH_FLOW_L2,
         NULL AS CASH_FLOW_L3,
         CASE WHEN '{{ metric }}' IN ('Total Liabilities & Equity','Equity','Total Assets','Total Liabilities') THEN 'BS' ELSE 'IS' END AS  IS_BS,
-        NULL AS IS_ADJ
+        NULL AS IS_ADJ,
+        NULL AS DEBT_MAPPING
     {% if not loop.last %}
     UNION ALL
     {% endif %}
