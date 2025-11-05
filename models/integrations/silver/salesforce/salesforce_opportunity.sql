@@ -14,7 +14,7 @@ with raw as
 (
 select *
 
-from {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}
+from {{ source_snapshot_schema(company, 'SALESFORCE_OPPORTUNITY') }}
 {% if is_incremental() %}
     where 
         LAST_MODIFIED_DATE > (

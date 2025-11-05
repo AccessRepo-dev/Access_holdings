@@ -28,3 +28,10 @@
     {{ source(schema_name, table_name) }}
 {% endmacro %}
 
+--Snapshots
+{% macro source_snapshot_schema(company, table_name) %}
+    {% set company_lower = company | lower %}
+    {% set schema_name   = company_lower ~ '_snapshots' %}
+
+    {{ source(schema_name, table_name) }}
+{% endmacro %}
