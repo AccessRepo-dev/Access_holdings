@@ -6,7 +6,7 @@
     
     database=get_target_database(var('company')),
     materialized = 'incremental',
-    alias = 'DEAL_PIPELINE_STAGE',
+    alias = sourcesystem ~ '_DEAL_PIPELINE_STAGE',
     incremental_strategy = 'merge',
     unique_key = 'STAGE_ID'
 ) }}

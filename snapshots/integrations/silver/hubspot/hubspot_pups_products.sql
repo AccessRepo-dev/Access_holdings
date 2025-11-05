@@ -6,10 +6,7 @@
 {{ config(enabled = var('sourcesystem', 'none') in ['hubspot']) }}
 
 {% if company == 'wagway' and sourcesystem == 'hubspot' %}
-  {{ config(
-      alias='PUPS_PRODUCTS'
-      
-  ) }}
+
 
 {% endif %}
 
@@ -26,10 +23,6 @@
 
 select
     *
-from {% if company == 'wagway' and sourcesystem == 'hubspot' %} 
-
 {{ get_raw_source(company, sourcesystem, 'PUPS_PRODUCTS') }}
-{% else %}
-{{ get_raw_source(company, sourcesystem, 'PRODUCT') }}
-{% endif %}
+
 {% endsnapshot %}
