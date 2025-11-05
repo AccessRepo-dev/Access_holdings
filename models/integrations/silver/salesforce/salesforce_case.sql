@@ -20,9 +20,6 @@ from {{ get_raw_source(company, sourcesystem, 'CASE') }}
             select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
             from {{ this }})
         or _FIVETRAN_DELETED = true
-    {% else %}
-    where 
-        _FIVETRAN_DELETED = true
     {% endif %}
 ),
 

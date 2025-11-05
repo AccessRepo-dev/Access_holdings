@@ -6,10 +6,25 @@
     database = get_target_database(company),
     schema = 'silver',
     unique_key = 'id',
-    strategy = 'timestamp',
-    updated_at = 'LAST_MODIFIED_DATE',
-    invalidate_hard_deletes = True
+    materialized = 'incremental',
+    incremental_strategy = 'merge'
 ) }}
+
+with raw as 
+(
+select *
+
+from {{ get_silver_source(company, 'SALESFORCE_USER_ROLE') }}
+{% if is_incremental() %}
+    where 
+        LAST_MODIFIED_DATE > (
+            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
+            from {{ this }})
+        and DBT_VALID_TO is null
+{% else %}
+    where DBT_VALID_TO is null
+{% endif %}
+)
 
 select
     TRIM(ID) AS ID,
@@ -19,5 +34,4 @@ select
     ROLLUP_DESCRIPTION,
     TRIM(FORECAST_USER_ID) AS FORECAST_USER_ID,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE
-from {{ get_silver_source(company, 'SALESFORCE_USER_ROLE') }}
-where DBT_VALID_TO is null
+from raw
