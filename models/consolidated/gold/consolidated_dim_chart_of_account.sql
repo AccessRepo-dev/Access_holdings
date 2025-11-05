@@ -34,6 +34,7 @@
         CASH_FLOW_L2,
         CASH_FLOW_L3,
         IS_BS,
+        DEBT_MAPPING,
         {% if c.name == 'ZEUS' %} CAST(NULL AS NUMBER) AS IS_ADJ, {% else %} IS_ADJ AS IS_ADJ, {% endif %}
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
