@@ -23,7 +23,7 @@ sources:
    
 
 
-  - name: zeus_silver
+  - name: zeus_snapshots
     database: "{{ env_var('DBT_ZEUS') }}"     
     schema: SALESFORCE_SNAPSHOTS        
     tables:
@@ -34,3 +34,22 @@ sources:
       - name: SALESFORCE_RECORD_TYPE
       - name: SALESFORCE_USER
       - name: SALESFORCE_USER_ROLE
+
+  - name: zeus_silver
+    database: "{{ env_var('DBT_ZEUS') }}"     
+    schema: SILVER        
+    tables:
+    - name: SALESFORCE_CASE
+    - name: SALESFORCE_PRODUCT
+    - name: SALESFORCE_ACCOUNT
+    - name: SALESFORCE_USER
+    - name: SALESFORCE_CONTACT
+    - name: SALESFORCE_LEAD
+    - name: SALESFORCE_OPPORTUNITY_LINE_ITEM
+    - name: SALESFORCE_USER_ROLE
+    - name: SALESFORCE_OPPORTUNITY
+    - name: SALESFORCE_QUOTE
+    - name: SALESFORCE_RECORD_TYPE
+    - name: SALESFORCE_TASK
+    - name: SALESFORCE_CAMPAIGN
+    - name: SALESFORCE_QUOTE_LINE_ITEM

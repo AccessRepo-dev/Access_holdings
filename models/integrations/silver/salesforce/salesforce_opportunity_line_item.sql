@@ -13,7 +13,7 @@
 select 
     *,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
-from {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY_LINE_ITEM') }}
+from {{ source_snapshot_schema(company, 'SALESFORCE_OPPORTUNITY_LINE_ITEM') }}
 {% if is_incremental() %}
     where 
         LAST_MODIFIED_DATE > (

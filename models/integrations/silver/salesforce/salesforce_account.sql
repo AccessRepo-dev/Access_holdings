@@ -15,7 +15,7 @@ with raw as
 (
 select *
 
-from {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}
+from {{ source_snapshot_schema(company, 'SALESFORCE_ACCOUNT') }}
 
     {% if is_incremental() %}
     where 
