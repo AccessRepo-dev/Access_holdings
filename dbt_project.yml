@@ -145,6 +145,9 @@ models:
           +database: "{{env_var('DBT_ACCESS')}}"
           +schema: GOLD
           +materialized: table
+        salesforce:
+          +schema: GOLD
+          +materialized: table 
 
       reporting:
         netsuite:
