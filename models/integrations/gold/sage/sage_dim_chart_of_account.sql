@@ -48,8 +48,8 @@ WITH source AS (
         {% endif %}
         THEN 1
         ELSE 0 
-        END AS IS_ADJ ,
-        CAST(NULL AS VARCHAR) AS DEBT_MAPPING
+        END AS IS_ADJ,
+        DEBT_MAPPING
     FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }} coa
      {% if company == 'spotless' %}
         LEFT JOIN {{ get_silver_source(company, 'CLASS') }} c ON c.RECORDNO =  coa.CLASS_ID

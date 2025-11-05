@@ -6,7 +6,6 @@
     
     database=get_target_database(var('company')),
     materialized = 'incremental',
-    alias = 'QUOTE',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}
@@ -34,7 +33,9 @@ select
     CREATED_DATE,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
     TRIM(OWNER_ID) AS OWNER_ID,
-    TRIM(PRICEBOOK_2_ID) AS PRICEBOOK_2_ID
+    TRIM(PRICEBOOK_2_ID) AS PRICEBOOK_2_ID,
+    _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
 from {{ get_raw_source(company, sourcesystem, 'QUOTE') }}
     {% if is_incremental() %}
     where LAST_MODIFIED_DATE > (
