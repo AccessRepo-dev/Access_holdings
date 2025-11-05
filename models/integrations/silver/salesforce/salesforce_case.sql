@@ -6,7 +6,6 @@
     
     database=get_target_database(var('company')),
     materialized = 'incremental',
-    alias = 'CASE',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}
@@ -15,16 +14,15 @@ with raw as
 (
 select *
 from {{ get_raw_source(company, sourcesystem, 'CASE') }}
-{% if is_incremental() and adapter.get_relation(
-      database=target.database,
-      schema=target.schema,
-      identifier=this.name
-) is not none %}
-where LAST_MODIFIED_DATE > (
-    select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
-    from {{ this }}
-)
-     or _FIVETRAN_DELETED = true
+    {% if is_incremental()%}
+    where
+        LAST_MODIFIED_DATE > (
+            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
+            from {{ this }})
+        or _FIVETRAN_DELETED = true
+    {% else %}
+    where 
+        _FIVETRAN_DELETED = true
     {% endif %}
 ),
 
