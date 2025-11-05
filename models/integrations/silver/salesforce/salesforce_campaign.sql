@@ -6,7 +6,6 @@
     
     database=get_target_database(var('company')),
     materialized = 'incremental',
-    alias = 'CAMPAIGN',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}
@@ -15,13 +14,14 @@ with raw as
 (
 select *
 from {{ get_raw_source(company, sourcesystem, 'CAMPAIGN') }}
-    {% if is_incremental() %}
+{% if is_incremental() %}
     where LAST_MODIFIED_DATE > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
         from {{ this }}
     )
     or _FIVETRAN_DELETED = true
-    {% endif %}
+
+{% endif %}
 
 ),
 
