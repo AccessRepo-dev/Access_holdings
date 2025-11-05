@@ -12,9 +12,10 @@
 ) }}
 
 select
-    STAGE_ID,
-    LABEL,
-    PIPELINE_ID
+    CAST(STAGE_ID AS varchar) AS STAGE_ID,
+    TRIM(LABEL) AS LABEL,
+    CAST(PIPELINE_ID AS varchar) AS PIPELINE_ID,
+    _FIVETRAN_SYNCED
 from {{ get_raw_source(company, sourcesystem, 'DEAL_PIPELINE_STAGE') }}
     {% if is_incremental() %}
     where _FIVETRAN_SYNCED > (
