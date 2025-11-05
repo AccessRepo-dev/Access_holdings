@@ -14,10 +14,11 @@
 ) }}
 
 SELECT
-    OWNER_ID,
-    FIRST_NAME,
-    LAST_NAME,
-    EMAIL
+    TRY_TO_NUMBER(TRIM(OWNER_ID)) AS OWNER_ID,
+    INITCAP(TRIM(FIRST_NAME)) AS FIRST_NAME,
+    INITCAP(TRIM(LAST_NAME)) AS LAST_NAME,
+    LOWER(TRIM(EMAIL)) AS EMAIL,
+    _FIVETRAN_SYNCED
 
 from {{ get_raw_source(company, sourcesystem, 'OWNER') }}
     {% if is_incremental() %}

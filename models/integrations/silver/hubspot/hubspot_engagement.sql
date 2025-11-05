@@ -12,8 +12,9 @@
 ) }}
 
 select
-    ID,
-    TYPE
+    CAST(ID AS INT) AS ID,
+    CAST(TYPE AS VARCHAR) AS TYPE,
+    _FIVETRAN_SYNCED
 from {{ get_raw_source(company, sourcesystem, 'ENGAGEMENT') }}
     {% if is_incremental() %}
     where _FIVETRAN_SYNCED > (
