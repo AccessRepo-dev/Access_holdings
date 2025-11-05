@@ -11,20 +11,9 @@
     unique_key = 'ID'
 ) }}
 
-select
-    ID,
-    NAME,
-    STATUS,
-    START_DATE,
-    END_DATE,
-    EXPECTED_REVENUE,
-    BUDGETED_COST,
-    ACTUAL_COST,
-    NUMBER_SENT,
-    OWNER_ID,
-    DESCRIPTION,
-    CREATED_DATE,
-    LAST_MODIFIED_DATE
+with raw as 
+(
+select *
 from {{ get_raw_source(company, sourcesystem, 'CAMPAIGN') }}
     {% if is_incremental() %}
     where LAST_MODIFIED_DATE > (
@@ -33,3 +22,26 @@ from {{ get_raw_source(company, sourcesystem, 'CAMPAIGN') }}
     )
     or _FIVETRAN_DELETED = true
     {% endif %}
+
+),
+
+cleaned as 
+(
+    select
+    TRIM(ID) AS ID,
+    TRIM(NAME) AS NAME,
+    TRIM(STATUS) AS STATUS,
+    CAST(START_DATE AS TIMESTAMP_NTZ) AS START_DATE,
+    CAST(END_DATE AS TIMESTAMP_NTZ) AS END_DATE,
+    EXPECTED_REVENUE,
+    BUDGETED_COST,
+    ACTUAL_COST,
+    NUMBER_SENT,
+    TRIM(OWNER_ID) AS OWNER_ID,
+    TRIM(DESCRIPTION) AS DESCRIPTION,
+    CAST(CREATED_DATE AS TIMESTAMP_NTZ) AS CREATED_DATE,
+    CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS  LAST_MODIFIED_DATE
+    from raw
+)
+
+select * from cleaned

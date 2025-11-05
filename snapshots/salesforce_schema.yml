@@ -14,8 +14,23 @@ sources:
       - name: RECORD_TYPE
       - name: CAMPAIGN
       - name: CASE
-      - name: CONTACTS
+      - name: CONTACT
       - name: LEAD
-      - name: QUOTES
+      - name: QUOTE
       - name: QUOTE_LINE_ITEM
       - name: TASK
+
+   
+
+
+  - name: zeus_silver
+    database: "{{ env_var('DBT_ZEUS') }}"     
+    schema: SALESFORCE_SNAPSHOTS        
+    tables:
+      - name: SALESFORCE_ACCOUNT
+      - name: SALESFORCE_OPPORTUNITY
+      - name: SALESFORCE_OPPORTUNITY_LINE_ITEM
+      - name: SALESFORCE_PRODUCT_2
+      - name: SALESFORCE_RECORD_TYPE
+      - name: SALESFORCE_USER
+      - name: SALESFORCE_USER_ROLE
