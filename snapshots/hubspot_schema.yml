@@ -73,4 +73,4 @@ sources:
       - name: LEAD
       - name: OWNER
       - name: TICKET
-      - name: QUOTES
+      - name: QUOTE
