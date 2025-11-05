@@ -69,7 +69,7 @@ bls_cpi_cte AS (
 
 bot_transport_cte AS (
     SELECT 
-         hash(series_id, DateKey) AS unique_id,
+        hash(series_id, DateKey) AS unique_id,
         DateKey,
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
