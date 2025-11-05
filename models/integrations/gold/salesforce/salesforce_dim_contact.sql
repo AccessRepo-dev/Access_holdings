@@ -12,19 +12,16 @@
 with source as (
 
     select
+        CONTACT_ID,
         ACCOUNT_ID,
-        NAME,
-        TYPE,
-        INDUSTRY,
-        ANNUAL_REVENUE,
-        NUMBER_OF_EMPLOYEES,
-        OWNER_ID,
-        BILLING_CITY,
-        SHIPPING_CITY,
+        FIRST_NAME,
+        LAST_NAME,
+        EMAIL,
+        PHONE,
         CREATED_DATE,
         LAST_MODIFIED_DATE,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    from {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}
+    from {{ get_silver_source(company, 'SALESFORCE_CONTACT') }}
 
     {% if is_incremental() %}
         WHERE LAST_MODIFIED_DATE > (
