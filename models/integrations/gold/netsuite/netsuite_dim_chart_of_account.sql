@@ -20,7 +20,11 @@ WITH source AS (
         {%endif%}
        
         ACCOUNT_ID,
-        ACCOUNT_NAME,
+        {% if company == 'playfly'%}
+            NULL AS ACCOUNT_NAME,
+        {%else%}
+            ACCOUNT_NAME,
+        {%endif%}
         CAST(ACCOUNT_NUMBER AS VARCHAR) AS ACCOUNT_NUMBER,
         SUBSIDIARY_ID,
         SUBSIDIARY_NAME,

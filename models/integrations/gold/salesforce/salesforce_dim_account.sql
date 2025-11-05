@@ -1,0 +1,31 @@
+{% set company = var('company', 'Unknown company') | lower %}
+{{ config(enabled = var('sourcesystem', 'none') == 'salesforce') }}
+{{ config(enabled = var('company', 'none') == 'zeus') }}
+
+{{ config(
+    database = get_target_database(company),
+    materialized = 'incremental',
+    alias = 'dim_addback',
+    incremental_strategy = 'merge',
+    unique_key = 'ID'
+) }}
+
+with source as (
+
+    select
+        ID as DIM_ADDBACK_ID,
+        NAME,
+        ISINACTIVE AS IS_INACTIVE,
+        LASTMODIFIED as LAST_MODIFIED_DATE
+    from {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}
+    where (_fivetran_deleted is null or _fivetran_deleted = false)
+
+    {% if is_incremental() %}
+        and LASTMODIFIED > (
+            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
+            from {{ this }}
+        )
+    {% endif %}
+)
+select *
+from source
