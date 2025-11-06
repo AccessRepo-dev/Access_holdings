@@ -6,7 +6,6 @@
     
     database=get_target_database(var('company')),
     materialized = 'incremental',
-    alias = 'QUOTE_LINE_ITEM',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}
@@ -20,7 +19,9 @@ select
     DISCOUNT,
     TOTAL_PRICE,
     CREATED_DATE,
-    CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE
+    CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
+    _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
 from {{ get_raw_source(company, sourcesystem, 'QUOTE_LINE_ITEM') }}
     {% if is_incremental() %}
     where LAST_MODIFIED_DATE > (

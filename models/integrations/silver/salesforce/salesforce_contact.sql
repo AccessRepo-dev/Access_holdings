@@ -6,14 +6,14 @@
     
     database=get_target_database(var('company')),
     materialized = 'incremental',
-    alias = 'CONTACT',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}
 
 select
-    TRIM(ID) AS ID,
-    TRIM(ACCOUNT_ID) AS ACCOUNT_ID,
+    TRIM(ID) AS CONTACT_ID,
+    ACCOUNT_ID,
+    TRIM(NAME) AS NAME,
     TRIM(FIRST_NAME) AS FIRST_NAME,
     TRIM(LAST_NAME) AS LAST_NAME,
     TRIM(SALUTATION) AS SALUTATION,
@@ -33,7 +33,9 @@ select
     TRIM(CREATED_BY_ID) AS CREATED_BY_ID,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
     TRIM(LAST_MODIFIED_BY_ID) AS LAST_MODIFIED_BY_ID,
-    TRIM(DESCRIPTION) AS DESCRIPTION
+    TRIM(DESCRIPTION) AS DESCRIPTION,
+    _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
 from {{ get_raw_source(company, sourcesystem, 'CONTACT') }}
     {% if is_incremental() %}
     where LAST_MODIFIED_DATE > (

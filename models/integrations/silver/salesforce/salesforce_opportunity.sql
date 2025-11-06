@@ -6,10 +6,26 @@
     database = get_target_database(company),
     schema = 'silver',
     unique_key = 'id',
-    strategy = 'timestamp',
-    updated_at = 'LAST_MODIFIED_DATE',
-    invalidate_hard_deletes = True
+    materialized = 'incremental',
+    incremental_strategy = 'merge'
 ) }}
+
+with raw as 
+(
+select *
+
+from {{ source_snapshot_schema(company, 'SALESFORCE_OPPORTUNITY') }}
+{% if is_incremental() %}
+    where 
+        LAST_MODIFIED_DATE > (
+            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
+            from {{ this }})
+        and DBT_VALID_TO is null
+{% else %}
+    where DBT_VALID_TO is null
+{% endif %}
+    
+)
 
 select
     TRIM(ID) AS ID,
@@ -23,11 +39,11 @@ select
     TRIM(LEAD_SOURCE) AS LEAD_SOURCE,
     TRIM(CAMPAIGN_ID) AS CAMPAIGN_ID,
     TRIM(FORECAST_CATEGORY_NAME) AS FORECAST_CATEGORY_NAME,
-    TRIM(IS_CLOSED) AS IS_CLOSED,
-    TRIM(IS_WON) AS IS_WON,
+    IS_CLOSED,
+    IS_WON,
     NEXT_STEP,
     CREATED_DATE,
+    TRIM(DESCRIPTION) AS DESCRIPTION,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
-    TRIM(DESCRIPTION) AS DESCRIPTION
-from {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}
-where DBT_VALID_TO is null
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
+from raw

@@ -20,9 +20,6 @@ from {{ get_raw_source(company, sourcesystem, 'CASE') }}
             select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
             from {{ this }})
         or _FIVETRAN_DELETED = true
-    {% else %}
-    where 
-        _FIVETRAN_DELETED = true
     {% endif %}
 ),
 
@@ -30,11 +27,20 @@ from {{ get_raw_source(company, sourcesystem, 'CASE') }}
 cleaned as 
 (
     select
-    TRIM(ID) AS ID,
-    TRIM(ACCOUNT_ID) AS ACCOUNT_ID,
-    TRIM(CONTACT_ID) AS CONTACT_ID,
+    TRIM(ID) AS CASE_ID,
+    ACCOUNT_ID,
+    CONTACT_ID,
+    OWNER_ID,
+    STATUS,
+    ORIGIN,
+    REASON,
+    SUBJECT,
+    DESCRIPTION,
+    IS_CLOSED,
     CAST(CLOSED_DATE AS TIMESTAMP_NTZ) AS CLOSED_DATE,
-    CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE
+    CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
+    _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
     from raw
 )
 

@@ -6,7 +6,6 @@
     
     database=get_target_database(var('company')),
     materialized = 'incremental',
-    alias = 'LEAD',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}
@@ -42,7 +41,9 @@ select
     TRIM(CREATED_BY_ID) AS CREATED_BY_ID,
     LAST_MODIFIED_DATE,
     TRIM(LAST_MODIFIED_BY_ID) AS LAST_MODIFIED_BY_ID,
-    TRIM(DESCRIPTION) AS DESCRIPTION
+    TRIM(DESCRIPTION) AS DESCRIPTION,
+    _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
 from {{ get_raw_source(company, sourcesystem, 'LEAD') }}
     {% if is_incremental() %}
     where LAST_MODIFIED_DATE > (
