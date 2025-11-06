@@ -12,14 +12,15 @@
 
 with source as (
     select
-        RECORDNO AS DIM_CLASS_ID,
-        RECORDNO AS CLASS_ID,
-        CLASSID AS NAME,
-        NAME AS FULLNAME,
-        --PARENT_CLASS,
-        PARENTKEY AS PARENT_ID,
+        RECORDNO AS DIM_VENDOR_ID,
+        ENTITY_ID,
+        NAME,
+        PARENTID AS PARENT_ID,
         STATUS AS IS_INACTIVE,
-        WHENMODIFIED AS LAST_MODIFIED_DATE
+        IS_PERSON,
+        WHENMODIFIED AS LAST_MODIFIED_DATE,
+        WHENCREATED AS DATE_CREATED,
+        VENDORID AS VENDOR_ID
     from {{ get_silver_source(company, 'VENDOR') }}
     
     where 1=1
@@ -38,3 +39,12 @@ with source as (
 )
 select *
 from source
+
+
+
+
+       
+   
+        
+       
+        
