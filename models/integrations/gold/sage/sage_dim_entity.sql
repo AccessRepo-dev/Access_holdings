@@ -7,12 +7,12 @@
     alias = 'dim_entity',
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'DIM_VENDOR_ID'
+    unique_key = 'DIM_ENTITY_ID'
 ) }}
 
 with source as (
     select
-        RECORDNO AS DIM_VENDOR_ID,
+        RECORDNO AS DIM_ENTITY_ID,
         ENTITY_ID,
         NAME,
         PARENTID AS PARENT_ID,
