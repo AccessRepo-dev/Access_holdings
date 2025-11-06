@@ -7,11 +7,11 @@
     database=get_target_database(var('company')),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'ID'
+    unique_key = 'LEAD_ID'
 ) }}
 
 select
-    TRIM(ID) AS ID,
+    TRIM(ID) AS LEAD_ID,
     TRIM(OWNER_ID) AS OWNER_ID,
     TRIM(COMPANY) AS COMPANY,
     TRIM(FIRST_NAME) AS FIRST_NAME,
