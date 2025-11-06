@@ -8,13 +8,13 @@
     
     database=get_target_database(var('company')),
     materialized = 'incremental',
-    alias = 'OWNER',
+    alias =  sourcesystem ~ '_OWNER',
     incremental_strategy = 'merge',
     unique_key = 'OWNER_ID'
 ) }}
 
 SELECT
-    TRY_TO_NUMBER(TRIM(OWNER_ID)) AS OWNER_ID,
+    CAST(TRIM(OWNER_ID) AS INT) AS OWNER_ID,
     INITCAP(TRIM(FIRST_NAME)) AS FIRST_NAME,
     INITCAP(TRIM(LAST_NAME)) AS LAST_NAME,
     LOWER(TRIM(EMAIL)) AS EMAIL,

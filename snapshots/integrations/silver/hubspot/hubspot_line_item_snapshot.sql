@@ -1,4 +1,4 @@
-{% snapshot hubspot_users %}
+{% snapshot hubspot_line_item %}
 
 
 {% set company = var('company') %}
@@ -9,15 +9,16 @@
     config(
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
-        unique_key='ID',
+        alias = sourcesystem ~ '_LINE_ITEM',
+        unique_key='id',
         strategy='timestamp',
-        updated_at='_FIVETRAN_SYNCED',
+        updated_at='PROPERTY_HS_LASTMODIFIEDDATE',
         invalidate_hard_deletes=True
     )
 }}
 
 select
     *
-from {{ get_raw_source(company, sourcesystem, 'USERS') }}
+from {{ get_raw_source(company, sourcesystem, 'LINE_ITEM') }}
 
 {% endsnapshot %}
