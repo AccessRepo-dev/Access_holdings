@@ -4,27 +4,16 @@
 
 {{ config(
     database = get_target_database(company),
-    materialized = 'incremental',
-    incremental_strategy = 'merge',
-    unique_key = 'ACCOUNT_ID'
+    materialized = 'table'
 ) }}
 
 with source as (
 
     select
-        ACCOUNT_ID,
-        NAME,
-        TYPE,
-        INDUSTRY,
-        ANNUAL_REVENUE,
-        NUMBER_OF_EMPLOYEES,
-        OWNER_ID,
-        BILLING_CITY,
-        SHIPPING_CITY,
-        CREATED_DATE,
-        LAST_MODIFIED_DATE,
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    from {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}
+        DISTINCT    
+        STATUS,
+        IS_CLOSED
+    from {{ get_silver_source(company, 'SALESFORCE_CASE') }}
 
     {% if is_incremental() %}
         WHERE LAST_MODIFIED_DATE > (
