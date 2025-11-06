@@ -29,6 +29,7 @@ sources:
       - name: LOCATION_ENTITY
       - name: PROJECT
       - name: REPORTING_PERIOD
+      - name: VENDOR
 
 
   - name: spotless_silver
@@ -91,6 +92,7 @@ sources:
       - name: LOCATION_ENTITY
       - name: PROJECT
       - name: REPORTING_PERIOD
+      - name: VENDOR
 
 
   - name: amh_silver
