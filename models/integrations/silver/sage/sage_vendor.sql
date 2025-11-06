@@ -24,6 +24,7 @@ with source_data as (
 
 cleaned as (
     SELECT
+
     -- Primary Key
     UPPER(TRIM(VENDORID)) AS VENDORID,
     TRIM(ENTITY) AS ENTITY_ID,
