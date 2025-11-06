@@ -9,7 +9,7 @@
     config(
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
-        alias= sourcesystem ~ '_DEAL_PIPELINE' 
+        alias= sourcesystem ~ '_DEAL_PIPELINE', 
         unique_key='PIPELINE_ID',
         strategy='timestamp',
         updated_at='UPDATED_AT',

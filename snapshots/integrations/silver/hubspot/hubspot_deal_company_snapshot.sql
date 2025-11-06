@@ -9,7 +9,7 @@
     config(
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
-        alias= sourcesystem ~ '_DEAL_COMPANY' 
+        alias= sourcesystem ~ '_DEAL_COMPANY', 
         unique_key=['DEAL_ID','COMPANY_ID','TYPE_ID'],
         strategy='timestamp',
         updated_at='_FIVETRAN_SYNCED',
