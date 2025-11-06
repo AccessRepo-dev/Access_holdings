@@ -6,13 +6,13 @@
     
     database=get_target_database(var('company')),
     materialized = 'incremental',
-    alias = 'LEAD',
+    alias =  sourcesystem ~ '_LEAD',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}
 
 select
-    TRY_TO_NUMBER(TRIM(PROPERTY_HUBSPOT_OWNER_ID)) AS PROPERTY_HUBSPOT_OWNER_ID,
+    CAST(TRIM(PROPERTY_HUBSPOT_OWNER_ID) AS INT) AS PROPERTY_HUBSPOT_OWNER_ID,
     
     INITCAP(TRIM(PROPERTY_HS_ASSOCIATED_CONTACT_FIRSTNAME)) AS PROPERTY_HS_ASSOCIATED_CONTACT_FIRSTNAME,
     INITCAP(TRIM(PROPERTY_HS_ASSOCIATED_CONTACT_LASTNAME)) AS PROPERTY_HS_ASSOCIATED_CONTACT_LASTNAME,
