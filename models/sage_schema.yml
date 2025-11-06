@@ -29,6 +29,7 @@ sources:
       - name: LOCATION_ENTITY
       - name: PROJECT
       - name: REPORTING_PERIOD
+      - name: VENDOR
 
 
   - name: spotless_silver
@@ -61,6 +62,7 @@ sources:
       - name: REPORTING_PERIOD
       - name: spotless_COA_MAPPING
       - name: spotless_addbacks 
+      - name: VENDOR
 
 
   - name: amh_sage_raw
@@ -91,6 +93,7 @@ sources:
       - name: LOCATION_ENTITY
       - name: PROJECT
       - name: REPORTING_PERIOD
+      - name: VENDOR
 
 
   - name: amh_silver
@@ -123,6 +126,7 @@ sources:
       - name: REPORTING_PERIOD
       - name: amh_COA_MAPPING
       - name: amh_addbacks 
+      - name: VENDOR
 
   - name: spotless_gold
     database: "{{ env_var('DBT_SPOTLESS') }}"

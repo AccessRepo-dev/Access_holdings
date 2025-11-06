@@ -7,11 +7,11 @@
     database=get_target_database(var('company')),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'ID'
+    unique_key = 'QUOTE_ID'
 ) }}
 
 select
-    TRIM(ID) AS ID,
+    TRIM(ID) AS QUOTE_ID,
     TRIM(OPPORTUNITY_ID) AS OPPORTUNITY_ID,
     TRIM(ACCOUNT_ID) AS ACCOUNT_ID,
     TRIM(STATUS) AS STATUS,
@@ -29,7 +29,7 @@ select
     TRY_CAST(SHIPPING_POSTAL_CODE AS INT) AS SHIPPING_POSTAL_CODE,
     TRIM(SHIPPING_COUNTRY) AS SHIPPING_COUNTRY,
     DISCOUNT,
-    GRAND_TOTAL,
+    CAST(GRAND_TOTAL AS NUMBER) AS GRAND_TOTAL,
     CREATED_DATE,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
     TRIM(OWNER_ID) AS OWNER_ID,
