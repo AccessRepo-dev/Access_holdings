@@ -47,6 +47,7 @@ vars:
     - 'Pro Forma EBITDA'
     - 'Lender Adjustments'
     - 'Pro Forma Adjustments'
+    - 'Gross Revenue'
 
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
