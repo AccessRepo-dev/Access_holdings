@@ -1,34 +1,29 @@
 WITH fhfa_housing_cte AS (
     SELECT 
-        D.DateKey,
-        measure_name,
-        measure_value / 3 AS measure_value,
-        hash(place_id, hpi_flavor, hpi_type,level, D.DateKey,frequency) AS unique_id,
-        hash('fhfa',place_id, hpi_flavor, hpi_type,level, D.DateKey) AS dim_granularity_id,
-        place_id AS key1,
-        level AS key2,
-        hpi_flavor AS key3,
-        hpi_type AS key4,  
-        'HOUSING' AS DATASET,
-        'FHFA' AS DATASOURCE
-    FROM {{ ref('fhfa_housing') }} A
-    UNPIVOT (
-        measure_value FOR measure_name IN (index_nsa, index_sa)
-    )
-    LEFT JOIN {{ ref('dim_date_monthly') }} D 
-        ON A.YEAR = D.YEAR
-        AND  A.PERIOD = D.QUARTER
-    
-    WHERE level = 'State' AND  HPI_TYPE = 'traditional' AND
-    HPI_FLAVOR = 'purchase-only' AND A.YEAR >=2000
-),
-nahb_housing_cte AS (
-    SELECT DISTINCT  
+        hash(place_id, hpi_flavor, hpi_type,level, DateKey,frequency) AS unique_id,
         DateKey,
         measure_name,
         measure_value,
-        hash(DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        CONCAT('place_id', '|', 'level', '|', 'hpi_flavor', '|', 'hpi_type') AS keys_list,
+        CAST(place_id AS VARCHAR) AS key1,
+        CAST(level AS VARCHAR) AS key2,
+        CAST(hpi_flavor AS VARCHAR) AS key3,
+        CAST(hpi_type AS VARCHAR) AS key4,
+        --frequency AS key5  
+        'HOUSING' AS DATASET,
+        'FHFA' AS DATASOURCE
+    FROM {{ ref('fhfa_housing') }}
+    UNPIVOT (
+        measure_value FOR measure_name IN (index_nsa, index_sa)
+    )
+),
+nahb_housing_cte AS (
+    SELECT DISTINCT 
+        hash(DateKey) AS unique_id, 
+        DateKey,
+        'HMI' AS measure_name,
+        HMI AS measure_value,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -36,18 +31,16 @@ nahb_housing_cte AS (
         'Housing' AS DATASET,
         'National Association of Home Builders' AS DATASOURCE
     FROM {{ ref('nahb_housing') }}
-    UNPIVOT (
-        measure_value FOR measure_name IN (HMI)
-    )
+   
 ),
 
 bls_ppi_cte AS (
     SELECT 
+        hash(series_id, DateKey) AS unique_id,
         DateKey,
         series_id AS measure_name,
         Value AS measure_value,
-        hash(series_id, DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -55,59 +48,49 @@ bls_ppi_cte AS (
         'Producer Price Index' AS DATASET,
         'Bureau of Labor Statistics' AS DATASOURCE
     FROM {{ ref('bls_ppi') }}
-    WHERE series_id IN  ('WPUFD4','WPUFD4L1T15','WPUFD4131','WPUFD41302','WPUFD41303','WPU05','WPU02','WPU301')
+   
 ),
 
 bls_cpi_cte AS (
     SELECT 
+        hash(series_id, DateKey) AS unique_id,
         DateKey,
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
-        hash(series_id, DateKey) AS unique_id,
-        NULL AS dim_granularity_id, 
-        NULL AS key1,
-        NULL AS key2,
-        NULL AS key3,
-        NULL AS key4, 
+        CONCAT('Area_Code', '|', 'Item_Code', '|', 'Seasonal', '|', 'Base_Period') AS keys_list,
+        CAST(Area_code AS VARCHAR) AS key1,
+        CAST(Item_Code AS VARCHAR) AS key2,
+        SEASONAL AS key3,
+        BASE_PERIOD AS key4, 
         'Consumer Price Index' AS DATASET,
-        'Bureau of Labor Statistics' AS DATASOURCE,
-
+        'Bureau of Labor Statistics' AS DATASOURCE
     FROM {{ ref('bls_cpi') }}
-    WHERE SERIES_ID IN  ('CUUR0000SA0','CUUR0000SA0L1E','CUUR0000SAF1','CUUR0000SAF11','CUUR0000SEFV','CUUR0000SA0E',
-    'CUUR0000SEHA','CUUR0000SETA01','CUUR0000SETA02','CUUR0000SAM','CUUR0000SAF','CUUR0000SETB01')
 ),
 
 bot_transport_cte AS (
     SELECT 
+        hash(series_id, DateKey) AS unique_id,
         DateKey,
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
-        hash(series_id, DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
-        NULL AS key1,
+        'units' AS keys_list,
+        units AS key1,
         NULL AS key2,
         NULL AS key3,
         NULL AS key4, 
         'Transport' AS DATASET,
         'Bureau of Transportation' AS DATASOURCE
     FROM {{ ref('bot_transport_index') }}
-    WHERE SERIES_TITLE in ('Air Revenue Passenger Miles (Transportation Services Index)','Air Revenue Ton Miles of Freight and Mail',
-    'Airline Load Factor (RPM/ASM)','Available Seat Miles','Enplanements (Boardings)','Indexed Rail Freight Carloads',
-    'Indexed Rail Freight Intermodal','Industrial Production Index','International Airline Load Factor',
-    'International Enplanements','Inventory to Sales Ratio','Manufacturing Output Index','Natural Gas Transport Volume',
-    'Petroleum Transport Volume','Public Transit Ridership','Rail Freight Carloads','Rail Passenger Miles',
-    'Revenue Passenger Miles','Transportation Services Index - Freight','Transportation Services Index - Passenger',
-    'Transportation Services Index - Total','Vehicle Miles Traveled','Waterborne Freight Volume')
                  
 ),
 
 bls_employment_cte AS (
     SELECT 
+        hash(series_id, DateKey) AS unique_id,
         DateKey,
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
-        hash(series_id, DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -115,16 +98,16 @@ bls_employment_cte AS (
         'Employment' AS DATASET,
         'Bureau of Labor Statistics' AS DATASOURCE
     FROM {{ ref('bls_employment') }}
-    WHERE SERIES_ID IN ('CES0000000001','CES0500000001','CES9000000001')
+   
 ),
 
 umich_sent_cte AS (
     SELECT 
+        hash(series_id, DateKey) AS unique_id,
         DateKey,
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
-        hash(series_id, DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -137,14 +120,14 @@ umich_sent_cte AS (
 
 bea_gdp_industry_cte AS (
     SELECT 
+        hash(Industry, TableID, IndustryDescription, D.DATEKEY) AS unique_id,
         D.DATEKEY, 
         'Value Added by Industry' AS measure_name,
         DataValue / 12 AS measure_value,
-        hash(Industry, TableID, IndustryDescription, D.DATEKEY) AS unique_id,
-        NULL AS dim_granularity_id,
-        NULL AS key1,
-        NULL AS key2,
-        NULL AS key3,
+        CONCAT('Industry', '|', 'IndustryDescription', '|', 'TableID') AS keys_list,
+        Industry AS key1,
+        IndustryDescription AS key2,
+        CAST(TableID AS VARCHAR) AS key3,
         NULL AS key4, 
         'GDP' AS DATASET,
         'Bureau of Economic Analysis' AS DATASOURCE
@@ -155,12 +138,12 @@ bea_gdp_industry_cte AS (
 
 bea_gdp_nominal_cte AS (
     SELECT 
+        hash(B.SERIESCODE, D.DATEKEY) AS unique_id,
         D.DATEKEY,
         'GDP (Nominal)' AS measure_name,
         (B.DATAVALUE / 3) AS measure_value,  -- Quarterly to monthly
-        hash(B.SERIESCODE, D.DATEKEY) AS unique_id,
-        hash(LINENUMBER) AS dim_granularity_id,
-        LINENUMBER AS key1,
+         CONCAT( 'LineDescription') AS keys_list,
+        LINEDESCRIPTION AS key1,
         NULL AS key2,
         NULL AS key3,
         NULL AS key4, 
@@ -170,20 +153,19 @@ bea_gdp_nominal_cte AS (
     LEFT JOIN {{ ref('dim_date_monthly') }} D
         ON LEFT(B.TIMEPERIOD, 4) = D.YEAR
        AND RIGHT(B.TIMEPERIOD, 2) = D.QUARTER_NAME
-    WHERE SERIESCODE = 'A191RC'
 ),
 
 bea_gdp_real_cte AS (
     SELECT 
+        hash(B.TABLENAME, B.SERIESCODE, B.LINEDESCRIPTION, D.DATEKEY) AS unique_id,
         D.DATEKEY,
         'GDP (Real)' AS measure_name,
         (B.DATAVALUE / 3) AS measure_value,  -- Quarterly to monthly
-        hash(B.TABLENAME, B.SERIESCODE, B.LINEDESCRIPTION, D.DATEKEY) AS unique_id,
-        NULL AS dim_granularity_id,
-        NULL AS key1,
+        CONCAT( 'LineDescription') AS keys_list,
+        LINEDESCRIPTION AS key1,
         NULL AS key2,
         NULL AS key3,
-        NULL AS key4, 
+        NULL AS key4,  
         'GDP' AS DATASET,
         'Bureau of Economic Analysis' AS DATASOURCE
     FROM {{ ref('bea_gdp_real') }} B
@@ -195,14 +177,14 @@ bea_gdp_real_cte AS (
 
 bea_gdp_region_cte AS (
     SELECT 
+        hash(B.GEONAME, D.DATEKEY) AS unique_id,
         D.DATEKEY,
         'GDP by County' AS measure_name,
         DATAVALUE AS measure_value,  -- Annual repeated monthly
-        hash(B.GEONAME, D.DATEKEY) AS unique_id,
-        NULL AS dim_granularity_id,
-        HASH(GEONAME_REGION,GEONAME_STATE) AS key1,
-        NULL AS key2,
-        NULL AS key3,
+       CONCAT('Geoname', '|', 'Geoname_region','|','Geoname_state') AS keys_list,
+        GEONAME AS key1,
+        GEONAME_REGION AS key2,
+        GEONAME_STATE AS key3,
         NULL AS key4, 
         'GDP' AS DATASET,
         'Bureau of Economic Analysis' AS DATASOURCE
@@ -212,14 +194,14 @@ bea_gdp_region_cte AS (
 ),
 adp_employment_cte AS (
     SELECT 
+        hash(agg_ris, category,Date) AS unique_id ,
         datekey,
         measure_name,
         measure_value,
-        hash(agg_ris, category,Date) AS unique_id ,
-        NULL AS dim_granularity_id,
-        NULL AS key1,
-        NULL AS key2,
-        NULL AS key3,
+        CONCAT('Category', '|', 'AGG_RIS','|','TIMESTEP') AS keys_list,
+        Category AS key1,
+        AGG_RIS AS key2,
+        TIMESTEP AS key3,
         NULL AS key4, 
         'EMPLOYEMENT' AS DATASET,
         'ADP' AS DATASOURCE
@@ -227,18 +209,18 @@ adp_employment_cte AS (
     UNPIVOT (
         measure_value FOR measure_name IN (ner, ner_sa)
     ) 
-    WHERE TIMESTEP = 'M'
+   
 ),
 adp_payinsights_cte AS (
     SELECT 
+        hash(category,datekey) AS unique_id ,
         datekey,
         measure_name,
         measure_value,
-        hash(category,datekey) AS unique_id ,
-        NULL AS dim_granularity_id,
-        NULL AS key1,
-        NULL AS key2,
-        NULL AS key3,
+        CONCAT('Category', '|', 'AGG','|','TIMESTEP') AS keys_list,
+        Category AS key1,
+        AGG AS key2,
+        TIMESTEP AS key3,
         NULL AS key4, 
         'PAYINSIGHTS' AS DATASET,
         'ADP' AS DATASOURCE
@@ -246,33 +228,33 @@ adp_payinsights_cte AS (
     UNPIVOT (
         measure_value FOR measure_name IN (median_pay_change, median_annual_pay)
     ) 
-    WHERE TIMESTEP = 'M'
+   
 ),
 census_housing_starts_cte AS (
     SELECT   
+        hash(DateKey) AS unique_id,
         DateKey,
         'housing_starts_total_units' as measure_name,
         Total as measure_value,
-        hash(DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
-        NULL AS key1,
-        NULL AS key2,
-        NULL AS key3,
+        CONCAT('Unit_1', '|', 'Unit_2_to_4','|','Unit_5_or_more') AS keys_list,
+        CAST(Unit_1 AS VARCHAR) AS key1,
+        CAST(Unit_2_to_4 AS VARCHAR) AS key2,
+        CAST(Unit_5_or_more AS VARCHAR) AS key3,
         NULL AS key4, 
         'Housing_starts' AS DATASET,
         'Census' AS DATASOURCE
     FROM {{ ref('census_housing_starts') }}
 ),
 census_housing_completed_cte AS (
-    SELECT   
+    SELECT
+        hash(DateKey) AS unique_id,   
         DateKey,
         'housing_completed_total_units' as measure_name,
         Total as measure_value,
-        hash(DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
-        NULL AS key1,
-        NULL AS key2,
-        NULL AS key3,
+        CONCAT('Unit_1', '|', 'Unit_2_to_4','|','Unit_5_or_more') AS keys_list,
+        CAST(Unit_1 AS VARCHAR) AS key1,
+        CAST(Unit_2_to_4 AS VARCHAR) AS key2,
+        CAST(Unit_5_or_more AS VARCHAR) AS key3,
         NULL AS key4, 
         'Housing_completed' AS DATASET,
         'Census' AS DATASOURCE

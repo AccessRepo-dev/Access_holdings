@@ -1,0 +1,99 @@
+version: 2
+
+sources:
+  - name: wagway_hubspot_raw
+    database: wagway_raw     
+    schema: hubspot        
+    tables:
+      - name: COMPANY
+      - name: USERS
+      - name: DEAL
+      - name: DEAL_PIPELINE
+      - name: LINE_ITEM
+      - name: DEAL_COMPANY
+      - name: PUPS_PRODUCTS
+      - name: CONTACT
+      - name: DEAL_PIPELINE_STAGE
+      - name: ENGAGEMENT
+      - name: LEAD
+      - name: OWNER
+      - name: TICKET
+      
+  - name: wagway_hubspot_pawville_raw
+    database: wagway_raw     
+    schema: hubspot_pawville       
+    tables:
+      - name: COMPANY
+      - name: USERS
+      - name: DEAL
+      - name: DEAL_PIPELINE
+      - name: LINE_ITEM
+      - name: DEAL_COMPANY
+      - name: CONTACT
+      - name: DEAL_PIPELINE_STAGE
+      - name: ENGAGEMENT
+      - name: LEAD
+      - name: OWNER
+      - name: TICKET
+
+  - name: wagway_snapshots
+    database: "{{ env_var('DBT_WAGWAY') }}"     
+    schema: HUBSPOT_SNAPSHOTS        
+    tables: 
+      - name: HUBSPOT_COMPANY
+      - name: HUBSPOT_DEAL
+      - name: HUBSPOT_DEAL_PIPELINE
+      - name: HUBSPOT_DEAL_COMPANY
+      - name: HUBSPOT_LINE_ITEM
+      - name: HUBSPOT_PRODUCTS
+      - name: HUBSPOT_USERS
+  
+  - name: wagway_snapshots
+    database: "{{ env_var('DBT_WAGWAY') }}"     
+    schema: HUBSPOT_PAWVILLE_SNAPSHOTS        
+    tables: 
+      - name: HUBSPOT_PAWVILLE_COMPANY
+      - name: HUBSPOT_PAWVILLE_DEAL
+      - name: HUBSPOT_PAWVILLE_DEAL_PIPELINE
+      - name: HUBSPOT_PAWVILLE_DEAL_COMPANY
+      - name: HUBSPOT_PAWVILLE_LINE_ITEM
+      - name: HUBSPOT_PAWVILLE_PRODUCTS
+      - name: HUBSPOT_PAWVILLE_USERS
+
+  - name: wagway_silver
+    database: "{{ env_var('DBT_ZEUS') }}"     
+    schema: SILVER        
+    tables:
+      - name: HUBSPOT_COMPANY
+      - name: HUBSPOT_USERS
+      - name: HUBSPOT_DEAL
+      - name: HUBSPOT_DEAL_PIPELINE
+      - name: HUBSPOT_LINE_ITEM
+      - name: HUBSPOT_DEAL_COMPANY
+      - name: HUBSPOT_CONTACT
+      - name: HUBSPOT_DEAL_PIPELINE_STAGE
+      - name: HUBSPOT_ENGAGEMENT
+      - name: HUBSPOT_LEAD
+      - name: HUBSPOT_OWNER
+      - name: HUBSPOT_TICKET
+      - name: HUBSPOT_PAWVILLE_COMPANY
+      - name: HUBSPOT_PAWVILLE_USERS
+      - name: HUBSPOT_PAWVILLE_DEAL
+      - name: HUBSPOT_PAWVILLE_DEAL_PIPELINE
+      - name: HUBSPOT_PAWVILLE_LINE_ITEM
+      - name: HUBSPOT_PAWVILLE_DEAL_COMPANY
+      - name: HUBSPOT_PAWVILLE_CONTACT
+      - name: HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE
+      - name: HUBSPOT_PAWVILLE_ENGAGEMENT
+      - name: HUBSPOT_PAWVILLE_LEAD
+      - name: HUBSPOT_PAWVILLE_OWNER
+      - name: HUBSPOT_PAWVILLE_TICKET
+
+
+
+
+
+
+      
+
+  

@@ -6,14 +6,14 @@
     
     database=get_target_database(var('company')),
     materialized = 'incremental',
-    alias = 'CONTACT',
+    alias = sourcesystem ~'_CONTACT',
     incremental_strategy = 'merge',
     unique_key = 'ID'
 ) }}
 
 
 SELECT
-    TRY_TO_NUMBER(TRIM(ID)) AS ID,
+    CAST(TRIM(ID) AS INT) AS ID,
     INITCAP(TRIM(PROPERTY_FIRSTNAME)) AS PROPERTY_FIRSTNAME,
     INITCAP(TRIM(PROPERTY_LASTNAME)) AS PROPERTY_LASTNAME,
     LOWER(TRIM(PROPERTY_EMAIL)) AS PROPERTY_EMAIL,
@@ -25,7 +25,7 @@ SELECT
     -- Lifecycle stage normalized to lowercase
     LOWER(TRIM(PROPERTY_LIFECYCLESTAGE)) AS PROPERTY_LIFECYCLESTAGE,
     
-    TRY_TO_NUMBER(TRIM(PROPERTY_HUBSPOT_OWNER_ID)) AS PROPERTY_HUBSPOT_OWNER_ID,
+    CAST(TRIM(PROPERTY_HUBSPOT_OWNER_ID) AS INT) AS PROPERTY_HUBSPOT_OWNER_ID,
     
     --  job title properly cased
 
