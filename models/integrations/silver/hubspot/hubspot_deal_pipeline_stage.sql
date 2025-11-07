@@ -15,6 +15,7 @@ select
     CAST(STAGE_ID AS varchar) AS STAGE_ID,
     TRIM(LABEL) AS LABEL,
     CAST(PIPELINE_ID AS varchar) AS PIPELINE_ID,
+    CAST(PROBABILITY AS FLOAT) AS PROBABILITY, 
     _FIVETRAN_SYNCED
 from {{ get_raw_source(company, sourcesystem, 'DEAL_PIPELINE_STAGE') }}
     {% if is_incremental() %}

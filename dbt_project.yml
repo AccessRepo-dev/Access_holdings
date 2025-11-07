@@ -125,9 +125,9 @@ models:
           +schema: SILVER
           +materialized: table
         macro: 
-        +database: "{{env_var('DBT_ACCESS')}}"
-        +schema: SILVER
-        +materialized: table
+          +database: "{{env_var('DBT_ACCESS')}}"
+          +schema: SILVER
+          +materialized: table
         hubspot:
             +schema: SILVER
             +materialized: table
@@ -148,7 +148,10 @@ models:
           +materialized: table
         salesforce:
           +schema: GOLD
-          +materialized: table 
+          +materialized: table
+        hubspot:
+          +schema: GOLD
+          +materialized: table  
 
       reporting:
         netsuite:

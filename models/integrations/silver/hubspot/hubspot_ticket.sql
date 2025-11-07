@@ -1,7 +1,7 @@
-{% set company = var('company') %} --wagway , playfly
+{% set company = var('company') %} 
 {% set sourcesystem = var('sourcesystem') %}
 {{ config(enabled = var('sourcesystem', 'none') in ['hubspot']) }}
-{{ config(enabled = var('company', 'none') in ['wagway','playfly']) }}
+
 
 
 {{ config(
