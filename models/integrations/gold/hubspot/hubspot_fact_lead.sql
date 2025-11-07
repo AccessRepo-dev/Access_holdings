@@ -1,3 +1,4 @@
+{{ config(enabled = var('sourcesystem', 'none') == 'hubspot') }}
 SELECT
         sl.HS_LEAD_ID,
         o.owner_key,

@@ -14,7 +14,8 @@ with source as (
     select
         RECORDNO AS DIM_ENTITY_ID,
         ENTITY_ID,
-        NAME,
+        NULL AS ENTITYNUMBER,
+        NAME AS ENTITY_TITLE,
         PARENTID AS PARENT_ID,
         STATUS AS IS_INACTIVE,
         IS_PERSON,
@@ -32,10 +33,6 @@ with source as (
         )
     {% endif %}
 
-    {% if company == 'spotless' %}
-        and PARENTKEY IN (18,28)
-        and STATUS = False
-    {% endif %}
 )
 select *
 from source
