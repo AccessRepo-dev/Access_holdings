@@ -19,6 +19,7 @@ sources:
       - name: OWNER
       - name: TICKET
       - name: ROLE
+      - name: DEAL_CONTACT
       
   - name: wagway_hubspot_pawville_raw
     database: wagway_raw     
@@ -36,6 +37,7 @@ sources:
       - name: LEAD
       - name: OWNER
       - name: ROLE
+      - name: DEAL_CONTACT
 
   - name: wagway_snapshots
     database: "{{ env_var('DBT_WAGWAY') }}"     
@@ -78,6 +80,7 @@ sources:
       - name: HUBSPOT_OWNER
       - name: HUBSPOT_TICKET
       - name: HUBSPOT_ROLE
+      - name: HUBSPOT_DEAL_CONTACT
       - name: HUBSPOT_PAWVILLE_COMPANY
       - name: HUBSPOT_PAWVILLE_USERS
       - name: HUBSPOT_PAWVILLE_DEAL
@@ -91,6 +94,7 @@ sources:
       - name: HUBSPOT_PAWVILLE_OWNER
       - name: HUBSPOT_PAWVILLE_TICKET
       - name: HUBSPOT_PAWVILLE_ROLE
+      - name: HUBSPOT_PAWVILLE_DEAL_CONTACT
 
 
 
