@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: wagway_ringcentral_raw
+    database: wagway_raw     
+    schema: ringcentral        
+    tables:
+      - name: ACCOUNT_CALL_LOG
+      - name: SMS
+      - name: SMS_TO
+      - name: COMPANY_DIRECTORY_PHONE_NUMBER
+      - name: COMPANY_DIRECTORY
