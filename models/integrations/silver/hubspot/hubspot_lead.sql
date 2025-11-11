@@ -8,10 +8,11 @@
     materialized = 'incremental',
     alias =  sourcesystem ~ '_LEAD',
     incremental_strategy = 'merge',
-    unique_key = 'ID'
+    unique_key = 'HS_LEAD_ID'
 ) }}
 
 select
+    ID AS HS_LEAD_ID,
     CAST(TRIM(PROPERTY_HUBSPOT_OWNER_ID) AS INT) AS PROPERTY_HUBSPOT_OWNER_ID,
     
     INITCAP(TRIM(PROPERTY_HS_ASSOCIATED_CONTACT_FIRSTNAME)) AS PROPERTY_HS_ASSOCIATED_CONTACT_FIRSTNAME,
@@ -28,9 +29,9 @@ select
     
 from {{ get_raw_source(company, sourcesystem, 'LEAD') }}
     {% if is_incremental() %}
-    where _FIVETRAN_SYNCED > (
-        select coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
+    where PROPERTY_HS_LASTMODIFIEDDATE > (
+        select coalesce(max(PROPERTY_HS_LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
         from {{ this }}
     )
-    or _FIVETRAN_DELETED = true
+ 
     {% endif %}
