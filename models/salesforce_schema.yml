@@ -34,6 +34,9 @@ sources:
       - name: SALESFORCE_RECORD_TYPE
       - name: SALESFORCE_USER
       - name: SALESFORCE_USER_ROLE
+      - name: SALESFORCE_QUOTE
+      - name: SALESFORCE_CAMPAIGN
+      - name: SALESFORCE_CASE
 
   - name: zeus_silver
     database: "{{ env_var('DBT_ZEUS') }}"     

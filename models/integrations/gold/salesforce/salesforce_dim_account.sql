@@ -6,12 +6,13 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'ACCOUNT_ID'
+    unique_key = 'ID_DATE_KEY'
 ) }}
 
 with source as (
 
     select
+        ID_DATE_KEY,
         ACCOUNT_ID,
         NAME,
         TYPE,
@@ -23,6 +24,9 @@ with source as (
         SHIPPING_CITY,
         CREATED_DATE,
         LAST_MODIFIED_DATE,
+        DBT_VALID_FROM,
+        DBT_VALID_TO,
+        CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}
 
