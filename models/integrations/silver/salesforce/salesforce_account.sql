@@ -33,7 +33,7 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_ACCOUNT') }}
 
 cleaned as (
     select
-    concat(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
+    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     ID AS ACCOUNT_ID,
     EXTERNAL_ACCOUNT_ID_C AS EXTERNAL_ACCOUNT_ID,
     TRIM(NAME) AS NAME,
