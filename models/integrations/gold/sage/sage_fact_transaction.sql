@@ -90,4 +90,12 @@ LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
 
 )
 
-SELECT * FROM source 
+SELECT * FROM source
+ {% if company == 'AMH' %}
+    WHERE TRANSACTION_LINE_ID NOT IN 
+        (select distinct GLENTRYKEY 
+        from {{ get_silver_source(company, 'GL_DETAIL') }}
+        WHERE SYMBOL = 'HGJ' and 
+            batch_date between '2022-01-01' and '2022-08-31'
+        )
+{% endif %}
