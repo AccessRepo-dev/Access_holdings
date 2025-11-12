@@ -27,9 +27,9 @@ from {{ get_raw_source(company, sourcesystem, 'COMPANY_DIRECTORY') }}
 cleaned as 
 (
     select
-    CAST(TRIM(ID) AS BIGINT),
-    TRIM(FIRST_NAME),
-    TRIM(LAST_NAME),
+    CAST(TRIM(ID) AS BIGINT) AS ID,
+    TRIM(FIRST_NAME) AS FIRST_NAME,
+    TRIM(LAST_NAME) AS LAST_NAME,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
     from raw
 )
