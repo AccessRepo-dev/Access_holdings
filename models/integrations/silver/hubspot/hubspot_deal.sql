@@ -8,7 +8,7 @@
     database = get_target_database(company),
     alias = sourcesystem ~ '_DEAL',
     incremental_strategy = 'merge',
-    unique_key = 'DEAL_ID'
+    unique_key = 'ID_DATE_KEY'
 ) }}
  
 with source as (
@@ -21,14 +21,17 @@ with source as (
                 select coalesce(max(PROPERTY_HS_LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
                 from {{ this }}
             )
-            and DBT_VALID_TO is null
+            and 1=1
+            --DBT_VALID_TO is null
     {% else %}
-        where DBT_VALID_TO is null
+        where 1=1
+        --DBT_VALID_TO is null
     {% endif %}
 ),
 
 cleaned as (
     select
+        CONCAT(DEAL_ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,  
         CAST(DEAL_ID AS NUMBER) AS DEAL_ID,
         TRIM(PROPERTY_DEALNAME) AS PROPERTY_DEALNAME,
         CAST(TRIM(PROPERTY_AMOUNT) AS FLOAT) AS PROPERTY_AMOUNT,
@@ -62,7 +65,10 @@ cleaned as (
         {% if company | lower != 'amh' %}
         , CAST(PROPERTY_INVOICE_ID AS NUMBER) AS PROPERTY_INVOICE_ID
         {% endif %}
-
+        ,CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
+        ,CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM
+        ,CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
+        ,CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active
     from source
 )
 select * from cleaned
