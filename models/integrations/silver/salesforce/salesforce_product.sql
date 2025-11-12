@@ -14,7 +14,6 @@
 with raw as 
 (
 select *
-
 from {{ source_snapshot_schema(company, 'SALESFORCE_PRODUCT_2') }}
 {% if is_incremental() %}
     where 
@@ -28,8 +27,11 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_PRODUCT_2') }}
     --DBT_VALID_TO is null
 {% endif %}
     
-)
+),
 
+
+cleaned as 
+(
 select
     CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     ID AS PRODUCT_ID,
@@ -37,11 +39,15 @@ select
     TRIM(PRODUCT_CODE) AS PRODUCT_CODE,
     TRIM(DESCRIPTION) AS DESCRIPTION,
     FAMILY,
-    IS_ACTIVE,
+    IS_ACTIVE AS PRODUCT_IS_ACTIVE,
     CREATED_DATE,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
     QUANTITY_UNIT_OF_MEASURE,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
-    CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
+    CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
+    CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active
 from raw
+)
+
+select * from cleaned

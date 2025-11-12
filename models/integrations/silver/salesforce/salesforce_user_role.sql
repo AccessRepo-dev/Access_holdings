@@ -25,8 +25,9 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_USER_ROLE') }}
     where 1=1
     --DBT_VALID_TO is null
 {% endif %}
-)
+),
 
+cleaned as (
 select
     CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     TRIM(ID) AS USER_ROLE_ID,
@@ -39,5 +40,9 @@ select
     _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
-    CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
+    CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
+    CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active
 from raw
+)
+
+select * from cleaned

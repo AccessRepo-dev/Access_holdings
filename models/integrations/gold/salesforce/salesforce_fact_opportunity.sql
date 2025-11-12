@@ -6,24 +6,25 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'OPPORTUNITY_ID'
+    unique_key = 'ID_DATE_KEY'
 ) }}
 
 with source as (
 
     select
+        op.ID_DATE_KEY,
         op.id as OPPORTUNITY_ID,
         ac.ACCOUNT_ID,
         u.ID AS USER_ID,
         op.STAGE_NAME,
         CAST(op.AMOUNT AS NUMBER) AS AMOUNT,
+        op.IS_ACTIVE,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     FROM {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}  as op
     LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }} as ac
-        ON op.account_id=ac.account_id
+        ON op.account_id=ac.account_id AND ac.IS_ACTIVE = 1
     LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_USER') }} u 
-        ON op.owner_id = u.id
-
+        ON op.owner_id = u.id AND u.IS_ACTIVE = 1
 
 )
 select *
