@@ -3,11 +3,10 @@
 
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('company', 'none') in ['Wagway','Playfly']) }}
-{{ config(enabled = var('sourcesystem', 'none') == 'hubspot') }}
 
 {{
     config(
+        enabled = (var('company') in ['Wagway','Playfly']) and (var('sourcesystem') == 'hubspot'),
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_TICKET', 
