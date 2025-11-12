@@ -91,7 +91,7 @@ LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
 )
 
 SELECT * FROM source
- {% if company == 'AMH' %}
+ {% if company | lower  == 'amh' %}
     WHERE TRANSACTION_LINE_ID NOT IN 
         (select distinct GLENTRYKEY 
         from {{ get_silver_source(company, 'GL_DETAIL') }}
