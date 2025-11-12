@@ -5,7 +5,7 @@
     enabled = var('sourcesystem', 'none') == 'salesforce',
     database = get_target_database(company),
     schema = 'silver',
-    unique_key = 'id',
+    unique_key = 'ID_DATE_KEY',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     on_schema_change='sync_all_columns'
@@ -27,8 +27,9 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_RECORD_TYPE') }}
     where 1=1
     --DBT_VALID_TO is null
 {% endif %}
-)
+),
 
+cleaned as (
 select 
     CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     ID,
@@ -38,8 +39,8 @@ select
     DESCRIPTION,
     BUSINESS_PROCESS_ID,
     SOBJECT_TYPE,
-    IS_ACTIVE
-    ,CREATED_BY_ID,
+    IS_ACTIVE AS RECORD_TYPE_IS_ACTIVE,
+    CREATED_BY_ID,
     CREATED_DATE,
     LAST_MODIFIED_BY_ID,
     LAST_MODIFIED_DATE,
@@ -47,5 +48,9 @@ select
     IS_PERSON_TYPE,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
-    CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
+    CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
+    CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active
 from raw
+)
+
+select * from cleaned

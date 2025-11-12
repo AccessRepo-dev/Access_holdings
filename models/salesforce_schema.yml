@@ -37,6 +37,10 @@ sources:
       - name: SALESFORCE_QUOTE
       - name: SALESFORCE_CAMPAIGN
       - name: SALESFORCE_CASE
+      - name: SALESFORCE_LEAD
+      - name: SALESFORCE_TASK
+      - name: SALESFORCE_CONTACT
+      - name: SALESFORCE_QUOTE_LINE_ITEM
 
   - name: zeus_silver
     database: "{{ env_var('DBT_ZEUS') }}"     

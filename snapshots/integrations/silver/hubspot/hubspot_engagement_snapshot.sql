@@ -1,26 +1,24 @@
-{% snapshot hubspot_company %}
+{% snapshot hubspot_engagement %}
+
 
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('company', 'none') in ['Wagway', 'Playfly']) }}
 {{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
- 
-      
 
 {{
     config(
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
-        alias= sourcesystem ~ '_COMPANY', 
-        unique_key='id',
+        alias= sourcesystem ~ '_ENAGAGEMENT', 
+        unique_key='ID',
         strategy='timestamp',
-        updated_at='PROPERTY_HS_LASTMODIFIEDDATE',
+        updated_at='_FIVETRAN_SYNCED',
         invalidate_hard_deletes=True
     )
 }}
 
 select
     *
-from {{ get_raw_source(company, sourcesystem, 'COMPANY') }}
+from {{ get_raw_source(company, sourcesystem, 'ENGAGEMENT') }}
 
 {% endsnapshot %}
