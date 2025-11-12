@@ -21,5 +21,5 @@ from {{ get_raw_source(company, sourcesystem, 'ENGAGEMENT') }}
         select coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
         from {{ this }}
     )
-    or _FIVETRAN_DELETED = true
+    --or _FIVETRAN_DELETED = true
     {% endif %}

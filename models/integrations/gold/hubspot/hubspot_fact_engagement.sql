@@ -1,5 +1,5 @@
 {% set company = var('company') %}
-{{ config(enabled = var('sourcesystem', 'none') == 'hubspot') }}
+{{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
 {{ config(
     database = get_target_database(company),
     alias = 'dim_engagement',

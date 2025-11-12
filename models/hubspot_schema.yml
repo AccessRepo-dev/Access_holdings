@@ -20,6 +20,7 @@ sources:
       - name: TICKET
       - name: ROLE
       
+      
   - name: wagway_hubspot_pawville_raw
     database: wagway_raw     
     schema: hubspot_pawville       
@@ -112,6 +113,7 @@ sources:
       - name: OWNER
       - name: TICKET
       - name: ROLE
+      - name: QUOTE
 
 
   - name: amh_snapshots

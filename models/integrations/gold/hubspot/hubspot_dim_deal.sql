@@ -1,12 +1,12 @@
 {% set company = var('company') %}
-{{ config(enabled = var('sourcesystem', 'none') == 'hubspot') }}
+{{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
 
 {{ config(
     database = get_target_database(company),
     alias = 'dim_deal',
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = ['DBT_SCD_ID','SOURCE_SCHEMA']
+    unique_key = ['DIM_DEAL_ID','SOURCE_SCHEMA']
 ) }}
 
 SELECT
