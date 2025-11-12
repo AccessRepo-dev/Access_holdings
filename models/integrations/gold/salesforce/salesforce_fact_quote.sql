@@ -6,22 +6,24 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'QUOTE_ID'
+    unique_key = 'ID_DATE_KEY'
 ) }}
 
 with source as (
 
     select
+        sq.ID_DATE_KEY,
         sq.QUOTE_ID,
         fo.ID AS opportunity_id,
         da.ACCOUNT_ID,
         sq.grand_total as TOTAL_AMOUNT,
         SQ.CREATED_DATE,
+        sq.IS_ACTIVE
     FROM {{ get_silver_source(company, 'SALESFORCE_QUOTE') }} sq
     LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }} fo 
-           ON sq.opportunity_id = fo.ID
+           ON sq.opportunity_id = fo.ID AND fo.IS_ACTIVE = 1
     LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }} da 
-           ON sq.account_id = da.account_id
+           ON sq.account_id = da.account_id AND da.IS_ACTIVE = 1
 
 
 )

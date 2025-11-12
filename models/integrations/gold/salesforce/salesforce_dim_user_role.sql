@@ -6,16 +6,17 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'USER_ROLE_ID'
+    unique_key = 'ID_DATE_KEY'
 ) }}
 
 with source as (
 
     select
-        USER_ROLE_ID,
+        ID_DATE_KEY,
         ROLE_NAME,
         PARENT_ROLE_ID,
-        LAST_MODIFIED_DATE,
+        LAST_MODIFIED_DATE,        
+        CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, 'SALESFORCE_USER_ROLE') }}
 
