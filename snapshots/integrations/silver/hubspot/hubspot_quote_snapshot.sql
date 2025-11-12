@@ -3,10 +3,10 @@
 
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('company', 'none') == 'AMH') }}
 
 {{
     config(
+        enabled =  var('company', 'none') == 'AMH' and var('sourcesystem')=='hubspot' ,
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_QUOTE', 
