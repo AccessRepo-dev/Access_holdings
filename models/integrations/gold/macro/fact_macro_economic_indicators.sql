@@ -133,6 +133,7 @@ bls_unemployment_cte AS (
         'Bureau of Labor Statistics' AS DATASOURCE
     FROM {{ ref('bls_unemployment') }}
     WHERE SERIES_ID IN ('LNS14000000')
+    AND  YEAR >=2000
 ),
 
 umich_sent_cte AS (
