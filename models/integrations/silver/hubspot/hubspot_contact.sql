@@ -45,6 +45,12 @@ SELECT
     REGEXP_REPLACE(TRIM(PROPERTY_FAX), '[^0-9]', '') AS PROPERTY_FAX,
     
     TRIM(PROPERTY_HS_TIMEZONE) AS PROPERTY_HS_TIMEZONE,
+
+    {% if company | lower == 'amh' %}
+        -- This column exists only for AMH
+        TRIM(PROPERTY_MIDDLE_NAME) AS PROPERTY_MIDDLE_NAME,
+    {% endif %}
+
     _FIVETRAN_SYNCED
 from {{ get_raw_source(company, sourcesystem, 'CONTACT') }}
     {% if is_incremental() %}
