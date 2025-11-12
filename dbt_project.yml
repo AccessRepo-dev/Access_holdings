@@ -134,6 +134,9 @@ models:
         salesforce:
             +schema: SILVER
             +materialized: table
+        ringcentral:
+            +schema: SILVER
+            +materialized: table
 
       gold:
         netsuite:
@@ -151,7 +154,11 @@ models:
           +materialized: table
         hubspot:
           +schema: GOLD
-          +materialized: table  
+          +materialized: table 
+        ringcentral:
+          +schema: GOLD
+          +materialized: table 
+        
 
       reporting:
         netsuite:
