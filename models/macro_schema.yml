@@ -19,6 +19,8 @@ sources:
       # BLS tables
       - name: BLS_CPI
       - name: BLS_EMPLOYMENT
+      - name: BLS_UNEMPLOYMENT
+
       - name: BLS_PPI
 
       # Housing tables

@@ -5,15 +5,15 @@
     enabled = var('sourcesystem', 'none') == 'salesforce',
     database = get_target_database(company),
     schema = 'silver',
-    unique_key = 'id',
+    unique_key = 'ID_DATE_KEY',
     materialized = 'incremental',
-    incremental_strategy = 'merge'
+    incremental_strategy = 'merge',
+    on_schema_change='sync_all_columns'
 ) }}
 
 with raw as 
 (
 select *
-
 from {{ source_snapshot_schema(company, 'SALESFORCE_USER') }}
 {% if is_incremental() %}
     where 
@@ -22,12 +22,14 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_USER') }}
             from {{ this }})
         and DBT_VALID_TO is null
 {% else %}
-    where DBT_VALID_TO is null
+    where 1=1
+    --DBT_VALID_TO is null
 {% endif %}
     
 )
 
 select
+    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     TRIM(ID) AS ID,
     TRIM(USERNAME) AS USERNAME,
     TRIM(EMAIL) AS EMAIL,
@@ -46,5 +48,7 @@ select
     TIME_ZONE_SID_KEY,
     LOCALE_SID_KEY,
     TRIM(LANGUAGE_LOCALE_KEY) AS LANGUAGE_LOCALE_KEY,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+    CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
+    CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
 from raw

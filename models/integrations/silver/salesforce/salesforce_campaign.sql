@@ -1,19 +1,21 @@
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('sourcesystem', 'none') in ['salesforce']) }}
 
 {{ config(
-    
-    database=get_target_database(var('company')),
+    enabled = var('sourcesystem', 'none') == 'salesforce',
+    database = get_target_database(company),
+    schema = 'silver',
+    unique_key = 'ID_DATE_KEY',
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'ID'
+    on_schema_change='sync_all_columns'
 ) }}
+
 
 with raw as 
 (
 select *
-from {{ get_raw_source(company, sourcesystem, 'CAMPAIGN') }}
+from {{ source_snapshot_schema(company, 'SALESFORCE_CAMPAIGN') }}
 {% if is_incremental() %}
     where LAST_MODIFIED_DATE > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
@@ -28,6 +30,7 @@ from {{ get_raw_source(company, sourcesystem, 'CAMPAIGN') }}
 cleaned as 
 (
     select
+    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     TRIM(ID) AS CAMPAIGN_ID,
     TRIM(NAME) AS NAME,
     TRIM(TYPE) AS TYPE,
@@ -43,7 +46,9 @@ cleaned as
     CAST(CREATED_DATE AS TIMESTAMP_NTZ) AS CREATED_DATE,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS  LAST_MODIFIED_DATE,
     _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+    CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
+    CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
     from raw
 )
 

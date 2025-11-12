@@ -9,7 +9,7 @@
 
 {% for c in companies %}
     select
-        {% if c.name == 'ZEUS' %}  HASH(TRANSACTION_UNIQUE_ID, '{{ c.name }}','{{ c.source }}') AS FACT_TRANSACTION_ID, {% else %}  HASH(TRANSACTIONS_UNIQUE_ID, '{{ c.name }}','{{ c.source }}') AS FACT_TRANSACTION_ID, {% endif %}
+        HASH(TRANSACTIONS_UNIQUE_ID, '{{ c.name }}','{{ c.source }}') AS FACT_TRANSACTION_ID, 
         TRANSACTIONS_UNIQUE_ID ,
         TRANSACTION_ID ,
         TRANSACTION_LINE_ID,

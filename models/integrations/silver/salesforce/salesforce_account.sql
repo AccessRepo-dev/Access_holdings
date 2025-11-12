@@ -5,9 +5,10 @@
     enabled = var('sourcesystem', 'none') == 'salesforce',
     database = get_target_database(company),
     schema = 'silver',
-    unique_key = 'id',
+    unique_key = 'ID_DATE_KEY',
     materialized = 'incremental',
-    incremental_strategy = 'merge'
+    incremental_strategy = 'merge',
+    on_schema_change='sync_all_columns'
 ) }}
 
 
@@ -22,14 +23,17 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_ACCOUNT') }}
         LAST_MODIFIED_DATE > (
             select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
             from {{ this }})
-        and DBT_VALID_TO is null
+        and 1=1
+        --DBT_VALID_TO is null
     {% else %}
-    where DBT_VALID_TO is null
+    where 1=1
+    --DBT_VALID_TO is null
     {% endif %}
 ),
 
 cleaned as (
     select
+    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     ID AS ACCOUNT_ID,
     EXTERNAL_ACCOUNT_ID_C AS EXTERNAL_ACCOUNT_ID,
     TRIM(NAME) AS NAME,
@@ -56,7 +60,9 @@ cleaned as (
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
     TRIM(LAST_MODIFIED_BY_ID) AS LAST_MODIFIED_BY_ID,
     TRIM(DESCRIPTION) AS DESCRIPTION,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+    CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
+    CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
     from raw
 )
 

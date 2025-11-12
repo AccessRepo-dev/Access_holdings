@@ -118,6 +118,23 @@ bls_employment_cte AS (
     WHERE SERIES_ID IN ('CES0000000001','CES0500000001','CES9000000001')
 ),
 
+bls_unemployment_cte AS (
+    SELECT 
+        DateKey,
+        SERIES_TITLE AS measure_name,
+        Value AS measure_value,
+        hash(series_id, DateKey) AS unique_id,
+        NULL AS dim_granularity_id,
+        NULL AS key1,
+        NULL AS key2,
+        NULL AS key3,
+        NULL AS key4, 
+        'Unemployment' AS DATASET,
+        'Bureau of Labor Statistics' AS DATASOURCE
+    FROM {{ ref('bls_unemployment') }}
+    WHERE SERIES_ID IN ('LNS14000000')
+),
+
 umich_sent_cte AS (
     SELECT 
         DateKey,
@@ -304,3 +321,5 @@ UNION ALL
 SELECT * FROM census_housing_completed_cte
 UNION ALL 
 SELECT * FROM census_housing_starts_cte
+UNION ALL
+SELECT * FROM bls_unemployment_cte
