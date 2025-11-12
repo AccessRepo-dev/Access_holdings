@@ -7,7 +7,7 @@
     database = get_target_database(company),
     alias = sourcesystem ~ '_COMPANY',
     incremental_strategy = 'merge',
-    unique_key = 'ID'
+    unique_key = 'ID_DATE_KEY'
 ) }}
 
 with source as (
@@ -20,14 +20,17 @@ with source as (
                 select coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
                 from {{ this }}
             )
-            and DBT_VALID_TO is null
+            and 1=1
+            --DBT_VALID_TO is null
     {% else %}
-        where DBT_VALID_TO is null
+        where 1=1
+        --DBT_VALID_TO is null
     {% endif %}
 ),
 
 cleaned as (
     select
+        CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,        
         CAST(ID AS NUMBER) AS ID,
         TRIM(PROPERTY_NAME) AS PROPERTY_NAME,
         {%if sourcesystem == 'HUBSPOT'%}
@@ -51,7 +54,10 @@ cleaned as (
         CAST(TRIM(PROPERTY_ANNUALREVENUE) AS FLOAT) AS PROPERTY_ANNUALREVENUE,
         CAST(TRIM(PROPERTY_NUMBEROFEMPLOYEES) AS NUMBER) AS PROPERTY_NUMBEROFEMPLOYEES,
         _FIVETRAN_SYNCED,
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
+        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+        CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
+        CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
+        CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active
     from source
 )
 
