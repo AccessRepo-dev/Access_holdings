@@ -101,6 +101,23 @@ bls_employment_cte AS (
    
 ),
 
+bls_unemployment_cte AS (
+    SELECT 
+        hash(series_id, DateKey) AS unique_id,
+        DateKey,
+        SERIES_TITLE AS measure_name,
+        Value AS measure_value,
+        'periodicity_code' AS keys_list,
+        periodicity_code AS key1,
+        NULL AS key2,
+        NULL AS key3,
+        NULL AS key4, 
+        'Employment' AS DATASET,
+        'Bureau of Labor Statistics' AS DATASOURCE
+    FROM {{ ref('bls_unemployment') }}
+   
+),
+
 umich_sent_cte AS (
     SELECT 
         hash(series_id, DateKey) AS unique_id,
@@ -286,3 +303,5 @@ UNION ALL
 SELECT * FROM census_housing_completed_cte
 UNION ALL 
 SELECT * FROM census_housing_starts_cte
+UNION ALL 
+SELECT * FROM bls_unemployment_cte
