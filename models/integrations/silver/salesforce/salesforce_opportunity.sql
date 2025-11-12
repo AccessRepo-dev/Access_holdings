@@ -27,8 +27,11 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_OPPORTUNITY') }}
     --DBT_VALID_TO is null
 {% endif %}
     
-)
+),
 
+
+cleaned as 
+(
 select
     CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     TRIM(ID) AS ID,
@@ -52,3 +55,6 @@ select
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
     CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
 from raw
+)
+
+SELECT * FROM cleaned

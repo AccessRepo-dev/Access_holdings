@@ -11,6 +11,23 @@
     on_schema_change='sync_all_columns'
 ) }}
 
+
+with raw as 
+(
+select *
+from {{ source_snapshot_schema(company, 'SALESFORCE_OPPORTUNITY_LINE_ITEM') }}
+    {% if is_incremental()%}
+    where
+        LAST_MODIFIED_DATE > (
+            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
+            from {{ this }})
+        or _FIVETRAN_DELETED = true
+    {% endif %}
+),
+
+
+cleaned as 
+(
 select CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     ID,
     OPPORTUNITY_ID,
@@ -37,15 +54,7 @@ select CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
     CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
-from {{ source_snapshot_schema(company, 'SALESFORCE_OPPORTUNITY_LINE_ITEM') }}
-{% if is_incremental() %}
-    where 
-        LAST_MODIFIED_DATE > (
-            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
-            from {{ this }})
-        and 1=1
-        --DBT_VALID_TO is null
-{% else %}
-    where 1=1
-    --DBT_VALID_TO is null
-{% endif %}
+from raw
+)
+
+select * from cleaned

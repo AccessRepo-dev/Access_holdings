@@ -6,11 +6,30 @@
     
     database=get_target_database(var('company')),
     materialized = 'incremental',
+    schema = 'silver',
     incremental_strategy = 'merge',
-    unique_key = 'ID'
+    unique_key = 'ID_DATE_KEY',
+    on_schema_change='sync_all_columns'
 ) }}
 
+with raw as 
+(
+select *
+from {{ source_snapshot_schema(company, 'SALESFORCE_CONTACT') }}
+    {% if is_incremental()%}
+    where
+        LAST_MODIFIED_DATE > (
+            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
+            from {{ this }})
+        or _FIVETRAN_DELETED = true
+    {% endif %}
+),
+
+
+cleaned as 
+(
 select
+    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     TRIM(ID) AS CONTACT_ID,
     ACCOUNT_ID,
     TRIM(NAME) AS NAME,
@@ -35,12 +54,10 @@ select
     TRIM(LAST_MODIFIED_BY_ID) AS LAST_MODIFIED_BY_ID,
     TRIM(DESCRIPTION) AS DESCRIPTION,
     _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
-from {{ get_raw_source(company, sourcesystem, 'CONTACT') }}
-    {% if is_incremental() %}
-    where LAST_MODIFIED_DATE > (
-        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
-    )
-    or _FIVETRAN_DELETED = true
-    {% endif %}
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+    CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
+    CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
+from raw
+)
+
+select * from cleaned

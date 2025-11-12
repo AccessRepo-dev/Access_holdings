@@ -14,7 +14,6 @@
 with raw as 
 (
 select *
-
 from {{ source_snapshot_schema(company, 'SALESFORCE_PRODUCT_2') }}
 {% if is_incremental() %}
     where 
@@ -28,8 +27,11 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_PRODUCT_2') }}
     --DBT_VALID_TO is null
 {% endif %}
     
-)
+),
 
+
+cleaned as 
+(
 select
     CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     ID AS PRODUCT_ID,
@@ -45,3 +47,6 @@ select
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
     CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
 from raw
+)
+
+select * from cleaned

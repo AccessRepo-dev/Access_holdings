@@ -1,16 +1,39 @@
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('sourcesystem', 'none') in ['salesforce']) }}
 
 {{ config(
-    
-    database=get_target_database(var('company')),
+    enabled = var('sourcesystem', 'none') == 'salesforce',
+    database = get_target_database(company),
+    schema = 'silver',
+    unique_key = 'ID_DATE_KEY',
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'QUOTE_ID'
+    on_schema_change='sync_all_columns'
 ) }}
 
-select
+
+with raw as 
+(
+select *
+
+from {{ source_snapshot_schema(company, 'SALESFORCE_QUOTE') }}
+
+    {% if is_incremental() %}
+    where 
+        LAST_MODIFIED_DATE > (
+            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
+            from {{ this }})
+        and 1=1
+        --DBT_VALID_TO is null
+    {% else %}
+    where 1=1
+    --DBT_VALID_TO is null
+    {% endif %}
+),
+
+cleaned as (
+    select
+    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     TRIM(ID) AS QUOTE_ID,
     TRIM(OPPORTUNITY_ID) AS OPPORTUNITY_ID,
     TRIM(ACCOUNT_ID) AS ACCOUNT_ID,
@@ -35,12 +58,10 @@ select
     TRIM(OWNER_ID) AS OWNER_ID,
     TRIM(PRICEBOOK_2_ID) AS PRICEBOOK_2_ID,
     _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
-from {{ get_raw_source(company, sourcesystem, 'QUOTE') }}
-    {% if is_incremental() %}
-    where LAST_MODIFIED_DATE > (
-        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
-    )
-    or _FIVETRAN_DELETED = true
-    {% endif %}
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+    CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
+    CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
+from raw
+)
+
+select * from cleaned

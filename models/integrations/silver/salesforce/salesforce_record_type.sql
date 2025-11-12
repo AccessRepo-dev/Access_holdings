@@ -5,7 +5,7 @@
     enabled = var('sourcesystem', 'none') == 'salesforce',
     database = get_target_database(company),
     schema = 'silver',
-    unique_key = 'id',
+    unique_key = 'ID_DATE_KEY',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     on_schema_change='sync_all_columns'
@@ -27,8 +27,9 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_RECORD_TYPE') }}
     where 1=1
     --DBT_VALID_TO is null
 {% endif %}
-)
+),
 
+cleaned as (
 select 
     CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
     ID,
@@ -49,3 +50,6 @@ select
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
     CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO
 from raw
+)
+
+select * from cleaned
