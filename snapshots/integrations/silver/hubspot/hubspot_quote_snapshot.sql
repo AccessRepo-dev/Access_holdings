@@ -1,18 +1,16 @@
-{% snapshot hubspot_pups_products %}
+{% snapshot hubspot_quote %}
+
 
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('company', 'none') in ['Wagway']) }}
-{{ config(enabled = var('sourcesystem', 'none') in ['hubspot']) }}
- 
-      
+{{ config(enabled = var('company', 'none') == 'AMH') }}
 
 {{
     config(
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
-        alias= sourcesystem ~ '_PUPS_PRODUCTS', 
-        unique_key='id',
+        alias= sourcesystem ~ '_QUOTE', 
+        unique_key='ID',
         strategy='timestamp',
         updated_at='PROPERTY_HS_LASTMODIFIEDDATE',
         invalidate_hard_deletes=True
@@ -21,6 +19,6 @@
 
 select
     *
-from {{ get_raw_source(company, sourcesystem, 'PUPS_PRODUCTS') }}
+from {{ get_raw_source(company, sourcesystem, 'QUOTE') }}
 
 {% endsnapshot %}

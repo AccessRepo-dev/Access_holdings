@@ -17,7 +17,7 @@ SELECT
     CAST(CONTACT_ID AS BIGINT) AS CONTACT_ID,
     _FIVETRAN_SYNCED,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
-from {{ get_raw_source(company, sourcesystem, 'DEAL_CONTACT') }}
+from {{ get_raw_source(company, sourcesystem, 'CONTACT') }}
     {% if is_incremental() %}
     where _FIVETRAN_SYNCED > (
         select coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
