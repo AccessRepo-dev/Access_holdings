@@ -26,7 +26,7 @@ with source as (
         LAST_MODIFIED_DATE,
         DBT_VALID_FROM,
         DBT_VALID_TO,
-        CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active,
+        CASE WHEN DBT_VALID_TO IS NULL THEN 1 ELSE 0 END AS Is_Active,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}
 
