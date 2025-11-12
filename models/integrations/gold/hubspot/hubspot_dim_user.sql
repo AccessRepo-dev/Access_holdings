@@ -1,5 +1,5 @@
 {% set company = var('company') %}
-{{ config(enabled = var('sourcesystem', 'none') == 'hubspot') }}
+{{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
 {{ config(
     database = get_target_database(company),
     alias = 'dim_user',
@@ -23,7 +23,7 @@ SELECT
      ID,
     CONCAT(FIRST_NAME,LAST_NAME) AS NAME ,
     ROLE_ID,
-    'HUBSPOT' AS SOURCE_SCHEMA
+    'HUBSPOT_PAWVILLE' AS SOURCE_SCHEMA
 FROM {{ get_silver_source(company, 'HUBSPOT_PAWVILLE_USERS') }} u
 {% endif %}
 
