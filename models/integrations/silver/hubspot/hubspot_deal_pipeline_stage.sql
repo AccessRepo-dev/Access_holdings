@@ -1,3 +1,5 @@
+{% if false %}
+
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') %}
 {{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
@@ -46,3 +48,6 @@ from raw
 )
 
 select * from cleaned
+
+
+{% endif %}

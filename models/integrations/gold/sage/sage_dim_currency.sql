@@ -10,23 +10,29 @@
     unique_key = 'DIM_CURRENCY_ID'
 ) }}
 
-with source as (
-    select
-        ID AS DIM_CURRENCY_ID,
-        NAME AS CURRENCY_NAME,
-        SYMBOL AS DISPLAY_SYMBOL,
-        null AS IS_INACTIVE,
-        NULL AS IS_BASE_CURRENCY,
-        UPDATED_AT AS LAST_MODIFIED_DATE   
 
-    from {{ get_silver_source(company, 'CURRENCY') }}
-    
-    {% if is_incremental() %}
-    where UPDATED_AT > (
-        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
-        from {{ this }}
-    )
-    {% endif %}
+ 
+
+with source as (
+    SELECT
+    DISTINCT
+    per.RECORDNO AS DIM_PERIOD_ID,
+    e.LOCATIONKEY AS FROM_SUBSIDIARY_ID,
+    e.LOCATIONKEY AS TO_SUBSIDIARY_ID,
+
+ 
+FROM {{ get_silver_source(company, 'GL_ENTRY') }}  e
+LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
+    ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
+
+        
+
 )
-select *
-from source
+
+SELECT *,    
+    1 AS FROM_CURRENCY_ID,
+    1 AS TO_CURRENCY_ID,
+    1 AS HISTORICALRATE,
+    1 AS AVERAGERATE,
+    1 AS CURRENTRATE 
+FROM source
