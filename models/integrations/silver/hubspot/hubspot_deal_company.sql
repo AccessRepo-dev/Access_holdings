@@ -13,7 +13,7 @@
 WITH source AS (
 
     SELECT *
-    FROM {{ source_snapshot_schema(company, 'HUBSPOT_DEAL_COMPANY') }}
+    from {{ source_snapshot_schema(company, sourcesystem ~ '_DEAL_COMPANY') }}
 
     {% if is_incremental() %}
         WHERE _FIVETRAN_SYNCED > (

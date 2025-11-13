@@ -12,7 +12,7 @@
 
 with source as (
     select *
-    from {{ source_snapshot_schema(company, 'HUBSPOT_QUOTE') }}
+    from {{ source_snapshot_schema(company, sourcesystem ~ '_QUOTE') }}
     
     {% if is_incremental() %}
         where 
