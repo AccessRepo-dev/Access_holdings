@@ -6,7 +6,7 @@
 
 {{
     config(
-        enabled =  var('company') == 'AMH' and var('sourcesystem')=='hubspot' ,
+        enabled =  var('company') | lower == 'amh' and var('sourcesystem') |lower == 'hubspot' ,
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_QUOTE', 

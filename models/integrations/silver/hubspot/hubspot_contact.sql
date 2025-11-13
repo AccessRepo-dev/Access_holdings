@@ -1,8 +1,8 @@
 {% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') %}
+{% set sourcesystem  = var('sourcesystem') | upper %}
 
 {{ config(
-    enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville'],
+    enabled = var('sourcesystem') | lower in ['hubspot', 'hubspot_pawville'],
     database = get_target_database(var('company')),
     materialized = 'incremental',
     alias = sourcesystem ~ '_CONTACT',
@@ -13,7 +13,7 @@
 WITH raw AS (
 
     SELECT *
-    FROM {{ source_snapshot_schema(company,'HUBSPOT_CONTACT') }}
+    from {{ source_snapshot_schema(company, sourcesystem ~ '_CONTACT') }}
 
     {% if is_incremental() %}
         WHERE _FIVETRAN_SYNCED > (

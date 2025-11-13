@@ -1,4 +1,3 @@
-{%if false%}
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') | upper %}
 
@@ -13,7 +12,7 @@
 
 with source as (
     select *
-    from {{ source_snapshot_schema(company, 'HUBSPOT_COMPANY') }}
+    from {{ source_snapshot_schema(company, sourcesystem ~ '_COMPANY') }}
     
     {% if is_incremental() %}
         where 
@@ -63,5 +62,3 @@ cleaned as (
 )
 
 select * from cleaned
-
-{%endif%}
