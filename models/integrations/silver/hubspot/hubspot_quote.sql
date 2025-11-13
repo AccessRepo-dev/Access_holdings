@@ -1,10 +1,8 @@
-{% if false %}
-
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') | upper %}
 
 {{ config(
-    enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville'],
+    enabled = var('sourcesystem') | lower in ['hubspot'] and var('company') | lower in ['amh'],
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_QUOTE',
@@ -14,7 +12,7 @@
 
 with source as (
     select *
-    from {{ source_snapshot_schema(company, sourcesystem ~ '_QUOTE') }}
+    from {{ source_snapshot_schema(company, 'HUBSPOT_QUOTE') }}
     
     {% if is_incremental() %}
         where 
@@ -23,28 +21,21 @@ with source as (
                 from {{ this }}
             )
             and 1=1
-            --DBT_VALID_TO is null
+
     {% else %}
         where 1=1
-        --DBT_VALID_TO is null
     {% endif %}
 ),
 
 cleaned as (
     select
         CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,   
-    ID AS HS_LEAD_ID,
-    CAST(TRIM(PROPERTY_HUBSPOT_OWNER_ID) AS INT) AS PROPERTY_HUBSPOT_OWNER_ID,
-    
-    INITCAP(TRIM(PROPERTY_HS_ASSOCIATED_CONTACT_FIRSTNAME)) AS PROPERTY_HS_ASSOCIATED_CONTACT_FIRSTNAME,
-    INITCAP(TRIM(PROPERTY_HS_ASSOCIATED_CONTACT_LASTNAME)) AS PROPERTY_HS_ASSOCIATED_CONTACT_LASTNAME,
-    
-    LOWER(TRIM(PROPERTY_HS_ASSOCIATED_CONTACT_EMAIL)) AS PROPERTY_HS_ASSOCIATED_CONTACT_EMAIL,
-    
-    UPPER(TRIM(PROPERTY_HS_LEAD_SOURCE)) AS PROPERTY_HS_LEAD_SOURCE,
-    
-    TRY_TO_TIMESTAMP_NTZ(TRIM(PROPERTY_HS_CREATEDATE)) AS PROPERTY_HS_CREATEDATE,
-    TRY_TO_TIMESTAMP_NTZ(TRIM(PROPERTY_HS_LASTMODIFIEDDATE)) AS PROPERTY_HS_LASTMODIFIEDDATE,
+        ID,
+        PROPERTY_HS_TITLE,
+        PROPERTY_HS_QUOTE_AMOUNT,
+        PROPERTY_HS_STATUS,
+        PROPERTY_HS_PAYMENT_STATUS,
+        CAST(PROPERTY_HS_LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS PROPERTY_HS_LASTMODIFIEDDATE,
         _FIVETRAN_SYNCED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
         CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
@@ -54,6 +45,3 @@ cleaned as (
 )
 
 select * from cleaned
-
-
-{% endif %}

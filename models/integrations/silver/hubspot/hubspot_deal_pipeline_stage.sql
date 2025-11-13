@@ -1,11 +1,9 @@
-{% if false %}
 
 {% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
+{% set sourcesystem = var('sourcesystem') | upper %}
 
 {{ config(
-    
+    enabled = var('sourcesystem') | lower in ['hubspot','hubspot_pawville'] and var('company') | lower in ['wagway', 'playfly','amh'],
     database=get_target_database(var('company')),
     materialized = 'incremental',
     alias = sourcesystem ~ '_DEAL_PIPELINE_STAGE',
@@ -25,29 +23,25 @@ with source as (
                 from {{ this }}
             )
             and 1=1
-            --DBT_VALID_TO is null
     {% else %}
         where 1=1
-        --DBT_VALID_TO is null
     {% endif %}
 ),
 
 cleaned as (
     select
         CONCAT(STAGE_ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,   
-    CAST(STAGE_ID AS varchar) AS STAGE_ID,
-    TRIM(LABEL) AS LABEL,
-    CAST(PIPELINE_ID AS varchar) AS PIPELINE_ID,
-    CAST(PROBABILITY AS FLOAT) AS PROBABILITY, 
-    _FIVETRAN_SYNCED,
+        CAST(STAGE_ID AS varchar) AS STAGE_ID,
+        TRIM(LABEL) AS LABEL,
+        CAST(PIPELINE_ID AS varchar) AS PIPELINE_ID,
+        CAST(PROBABILITY AS FLOAT) AS PROBABILITY, 
+        _FIVETRAN_SYNCED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
         CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
         CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
         CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active
-from raw
+from source
 )
 
 select * from cleaned
 
-
-{% endif %}
