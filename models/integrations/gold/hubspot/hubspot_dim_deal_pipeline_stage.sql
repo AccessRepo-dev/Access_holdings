@@ -1,3 +1,5 @@
+{% if false %}
+
 {% set company = var('company') %}
 {{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
 {{ config(
@@ -31,3 +33,5 @@ FROM {{ get_silver_source(company, 'HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE') }}
 
 
 
+
+{% endif %}

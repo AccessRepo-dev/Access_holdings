@@ -1,3 +1,4 @@
+{% if false %}
 {% set company = var('company') %}
 {{ config(enabled = var('sourcesystem', 'none') == 'hubspot') }}
 {{ config(
@@ -31,6 +32,5 @@ SELECT
     PROPERTY_NUMBEROFEMPLOYEES AS NUMBER_OF_EMPLOYEES
 FROM {{ get_silver_source(company , 'HUBSPOT_COMPANY') }} 
 
-
-
+{% endif %}
 

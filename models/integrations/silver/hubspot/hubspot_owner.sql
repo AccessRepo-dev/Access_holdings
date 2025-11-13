@@ -1,3 +1,5 @@
+{% if false %}
+
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') | upper %}
 
@@ -44,3 +46,6 @@ cleaned as (
 )
 
 select * from cleaned
+
+
+{% endif %}

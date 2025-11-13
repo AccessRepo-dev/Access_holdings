@@ -45,25 +45,35 @@ sources:
     database: "{{ env_var('DBT_WAGWAY') }}"     
     schema: HUBSPOT_SNAPSHOTS        
     tables: 
-      - name: HUBSPOT_COMPANY
-      - name: HUBSPOT_DEAL
-      - name: HUBSPOT_DEAL_PIPELINE
-      - name: HUBSPOT_DEAL_COMPANY
-      - name: HUBSPOT_LINE_ITEM
-      - name: HUBSPOT_PRODUCTS
-      - name: HUBSPOT_USERS
+    - name : HUBSPOT_COMPANY
+    - name : HUBSPOT_CONTACT
+    - name : HUBSPOT_DEAL_COMPANY
+    - name : HUBSPOT_DEAL_PIPELINE
+    - name : HUBSPOT_DEAL_PIPELINE_STAGE
+    - name : HUBSPOT_DEAL
+    - name : HUBSPOT_ENGAGEMENT
+    - name : HUBSPOT_LEAD
+    - name : HUBSPOT_LINE_ITEM
+    - name : HUBSPOT_OWNER
+    - name : HUBSPOT_PUPS_PRODUCTS
+    - name : HUBSPOT_TICKET
+    - name : HUBSPOT_USERS
+
   
   - name: wagway_snapshots
     database: "{{ env_var('DBT_WAGWAY') }}"     
     schema: HUBSPOT_PAWVILLE_SNAPSHOTS        
     tables: 
-      - name: HUBSPOT_PAWVILLE_COMPANY
-      - name: HUBSPOT_PAWVILLE_DEAL
-      - name: HUBSPOT_PAWVILLE_DEAL_PIPELINE
-      - name: HUBSPOT_PAWVILLE_DEAL_COMPANY
-      - name: HUBSPOT_PAWVILLE_LINE_ITEM
-      - name: HUBSPOT_PAWVILLE_PRODUCTS
-      - name: HUBSPOT_PAWVILLE_USERS
+    - name : HUBSPOT_PAWVILLE_COMPANY
+    - name : HUBSPOT_PAWVILLE_CONTACT
+    - name : HUBSPOT_PAWVILLE_DEAL_PIPELINE
+    - name : HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE
+    - name : HUBSPOT_PAWVILLE_DEAL
+    - name : HUBSPOT_PAWVILLE_ENGAGEMENT
+    - name : HUBSPOT_PAWVILLE_LINE_ITEM
+    - name : HUBSPOT_PAWVILLE_OWNER
+    - name : HUBSPOT_PAWVILLE_USERS
+
 
   - name: wagway_silver
     database: "{{ env_var('DBT_WAGWAY') }}"     
@@ -125,13 +135,17 @@ sources:
     database: "{{ env_var('DBT_AMH') }}"     
     schema: HUBSPOT_SNAPSHOTS        
     tables: 
-      - name: HUBSPOT_COMPANY
-      - name: HUBSPOT_DEAL
-      - name: HUBSPOT_DEAL_PIPELINE
-      - name: HUBSPOT_DEAL_COMPANY
-      - name: HUBSPOT_LINE_ITEM
-      - name: HUBSPOT_PRODUCTS
-      - name: HUBSPOT_USERS
+    - name : HUBSPOT_CONTACT
+    - name : HUBSPOT_DEAL_COMPANY
+    - name : HUBSPOT_DEAL_PIPELINE
+    - name : HUBSPOT_DEAL_PIPELINE_STAGE
+    - name : HUBSPOT_DEAL
+    - name : HUBSPOT_ENGAGEMENT
+    - name : HUBSPOT_LINE_ITEM
+    - name : HUBSPOT_OWNER
+    - name : HUBSPOT_QUOTE
+    - name : HUBSPOT_USERS
+
 
   - name: amh_silver
     database: "{{ env_var('DBT_AMH') }}"     
@@ -176,13 +190,19 @@ sources:
     database: "{{ env_var('DBT_PLAYFLY') }}"     
     schema: HUBSPOT_SNAPSHOTS        
     tables: 
-      - name: HUBSPOT_COMPANY
-      - name: HUBSPOT_DEAL
-      - name: HUBSPOT_DEAL_PIPELINE
-      - name: HUBSPOT_DEAL_COMPANY
-      - name: HUBSPOT_LINE_ITEM
-      - name: HUBSPOT_PRODUCTS
-      - name: HUBSPOT_USERS
+    - name : HUBSPOT_COMPANY
+    - name : HUBSPOT_CONTACT
+    - name : HUBSPOT_DEAL_COMPANY
+    - name : HUBSPOT_DEAL_PIPELINE
+    - name : HUBSPOT_DEAL_PIPELINE_STAGE
+    - name : HUBSPOT_DEAL
+    - name : HUBSPOT_ENGAGEMENT
+    - name : HUBSPOT_LEAD
+    - name : HUBSPOT_LINE_ITEM
+    - name : HUBSPOT_OWNER
+    - name : HUBSPOT_TICKET
+    - name : HUBSPOT_USERS
+
 
   - name: playfly_silver
     database: "{{ env_var('DBT_PLAYFLY') }}"     

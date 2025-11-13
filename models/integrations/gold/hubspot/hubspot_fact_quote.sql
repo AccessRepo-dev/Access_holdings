@@ -1,3 +1,5 @@
+{% if false %}
+
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') %}
 
@@ -44,4 +46,7 @@ from source
 
 {% if is_incremental() %}
     where HS_QUOTE_ID not in (select HS_QUOTE_ID from {{ this }})
+{% endif %}
+
+
 {% endif %}
