@@ -39,6 +39,7 @@ sources:
       - name: OWNER
       - name: ROLE
       - name: DEAL_CONTACT
+      - name: PUPS_PRODUCTS
 
   - name: wagway_snapshots
     database: "{{ env_var('DBT_WAGWAY') }}"     
