@@ -137,6 +137,9 @@ models:
         ringcentral:
             +schema: SILVER
             +materialized: table
+        gingr:
+            +schema: SILVER
+            +materialized: table
 
       gold:
         netsuite:
@@ -157,7 +160,13 @@ models:
           +materialized: table 
         ringcentral:
           +schema: GOLD
-          +materialized: table 
+          +materialized: table
+        gingr:
+            +schema: GOLD
+            +materialized: table
+        wagway_cdc:
+            +schema: GOLD
+            +materialized: table 
         
 
       reporting:
