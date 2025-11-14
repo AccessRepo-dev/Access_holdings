@@ -163,7 +163,7 @@ models:
         gingr:
             +schema: GOLD
             +materialized: table
-        wagway_cdc:
+        cdm:
             +schema: GOLD
             +materialized: table 
 
