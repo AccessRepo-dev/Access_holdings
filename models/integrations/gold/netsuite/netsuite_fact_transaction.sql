@@ -62,7 +62,11 @@ with source as (
         -- Amounts
         tal.NETAMOUNT,
         tal.AMOUNT AS AMOUNT_UNCONVERTED,
-        tal.AMOUNT AS AMOUNT,
+        CASE 
+            WHEN coa.IS_BS = 'IS' AND NOT (t.CURRENCY IS NULL or sub.currency=1) THEN ROUND(tal.AMOUNT * cer.AVERAGERATE, 2)
+            WHEN coa.METRIC_L1 = 'Equity' AND NOT (t.CURRENCY IS NULL or sub.currency=1) THEN ROUND(tal.AMOUNT * cer.HISTORICALRATE, 2)
+            ELSE tal.AMOUNT
+        END AS AMOUNT,
         CASE WHEN sub.CURRENCY=1 OR t.CURRENCY IS NULL THEN tal.NETAMOUNT ELSE ROUND(tal.NETAMOUNT * cer.CURRENTRATE, 2) END AS CONVERTED_NET_AMOUNT,
         cer.AVERAGERATE,
         cer.CURRENTRATE,
@@ -102,6 +106,13 @@ with source as (
         ON txs.ID = t.status and txs.trantype = t.type and t.customtype = txs.trancustomtype
     LEFT JOIN {{ get_silver_source(company, 'SUBSIDIARY') }} sub 
         ON sub.ID=tl.SUBSIDIARY
+    LEFT JOIN {{ get_gold_source(company, 'DIM_CHART_OF_ACCOUNT') }} coa 
+        ON 
+            {% if company == 'wagway' %}
+             HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT,tl.ADDBACK_ID) = coa.DIM_CHART_OF_ACCOUNT_ID
+            {% else %}
+                HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT) = coa.DIM_CHART_OF_ACCOUNT_ID
+            {% endif %}
     LEFT JOIN {{ get_silver_source(company, 'CONSOLIDATEDEXCHANGERATE') }} cer
         ON cer.POSTINGPERIOD = t.POSTINGPERIOD 
         AND cer.FROMSUBSIDIARY=tl.SUBSIDIARY

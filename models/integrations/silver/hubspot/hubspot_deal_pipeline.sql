@@ -1,8 +1,9 @@
+
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') | upper %}
 
 {{ config(
-    enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville'],
+    enabled = var('sourcesystem') | lower in ['hubspot','hubspot_pawville'] and var('company') | lower in ['wagway', 'playfly','amh'],
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_DEAL_PIPELINE',
@@ -22,10 +23,8 @@ with source as (
                 from {{ this }}
             )
             and 1=1
-            --DBT_VALID_TO is null
     {% else %}
         where 1=1
-        --DBT_VALID_TO is null
     {% endif %}
 ),
 
@@ -43,3 +42,4 @@ cleaned as (
 )
 
 select * from cleaned
+

@@ -6,7 +6,7 @@
 
 {{
     config(
-        enabled = (var('company') in ['Wagway','Playfly']) and (var('sourcesystem') == 'hubspot'),
+        enabled = (var('company') | lower in ['wagway','playfly']) and var('sourcesystem') | lower == 'hubspot',
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_LEAD', 

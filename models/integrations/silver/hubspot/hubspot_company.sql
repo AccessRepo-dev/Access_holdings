@@ -2,7 +2,7 @@
 {% set sourcesystem = var('sourcesystem') | upper %}
 
 {{ config(
-    enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville'],
+    enabled = var('sourcesystem') | lower in ['hubspot'] and var('company') | lower in ['wagway', 'playfly'],
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_COMPANY',
@@ -21,10 +21,10 @@ with source as (
                 from {{ this }}
             )
             and 1=1
-            --DBT_VALID_TO is null
+
     {% else %}
         where 1=1
-        --DBT_VALID_TO is null
+
     {% endif %}
 ),
 
@@ -37,8 +37,7 @@ cleaned as (
             TRIM(PROPERTY_DOMAIN) AS PROPERTY_DOMAIN,
              TRIM(PROPERTY_PHONE) AS PROPERTY_PHONE,
         {%endif%}
-       
-        TRIM(PROPERTY_INDUSTRY) AS PROPERTY_INDUSTRY,
+    
         TRIM(PROPERTY_ADDRESS) AS PROPERTY_ADDRESS,
         TRIM(PROPERTY_CITY) AS PROPERTY_CITY,
         TRIM(PROPERTY_STATE) AS PROPERTY_STATE,
@@ -47,7 +46,7 @@ cleaned as (
         CAST(TRIM(PROPERTY_CREATEDATE) AS TIMESTAMP_NTZ) AS PROPERTY_CREATEDATE,
         CAST(TRIM(PROPERTY_HS_LASTMODIFIEDDATE) AS TIMESTAMP_NTZ) AS PROPERTY_HS_LASTMODIFIEDDATE,
 
-        {% if company | lower not in ['amh', 'playfly'] %}
+        {% if company | lower not in ['playfly'] %}
             TRIM(PROPERTY_COMPANY_TYPE) AS PROPERTY_COMPANY_TYPE,
         {% endif %}
 

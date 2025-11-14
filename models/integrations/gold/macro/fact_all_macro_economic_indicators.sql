@@ -11,7 +11,7 @@ WITH fhfa_housing_cte AS (
         CAST(hpi_type AS VARCHAR) AS key4,
         --frequency AS key5  
         'HOUSING' AS DATASET,
-        'FHFA' AS DATASOURCE
+        'Federal Housing Finance Agency' AS DATASOURCE
     FROM {{ ref('fhfa_housing') }}
     UNPIVOT (
         measure_value FOR measure_name IN (index_nsa, index_sa)
@@ -113,7 +113,7 @@ bls_unemployment_cte AS (
         NULL AS key2,
         NULL AS key3,
         NULL AS key4, 
-        'Employment' AS DATASET,
+        'Unemployment' AS DATASET,
         'Bureau of Labor Statistics' AS DATASOURCE
     FROM {{ ref('bls_unemployment') }}
    
@@ -147,7 +147,7 @@ bea_gdp_industry_cte AS (
         IndustryDescription AS key2,
         CAST(TableID AS VARCHAR) AS key3,
         NULL AS key4, 
-        'GDP' AS DATASET,
+        'GDP Industry' AS DATASET,
         'Bureau of Economic Analysis' AS DATASOURCE
     FROM {{ ref('bea_gdp_industry') }} B
     LEFT JOIN {{ ref('dim_date_monthly') }} D 
@@ -165,7 +165,7 @@ bea_gdp_nominal_cte AS (
         NULL AS key2,
         NULL AS key3,
         NULL AS key4, 
-        'GDP' AS DATASET,
+        'GDP Nominal' AS DATASET,
         'Bureau of Economic Analysis' AS DATASOURCE
     FROM {{ ref('bea_gdp_nominal') }} B
     LEFT JOIN {{ ref('dim_date_monthly') }} D
@@ -184,7 +184,7 @@ bea_gdp_real_cte AS (
         NULL AS key2,
         NULL AS key3,
         NULL AS key4,  
-        'GDP' AS DATASET,
+        'GDP Real' AS DATASET,
         'Bureau of Economic Analysis' AS DATASOURCE
     FROM {{ ref('bea_gdp_real') }} B
     LEFT JOIN {{ ref('dim_date_monthly') }} D
@@ -204,7 +204,7 @@ bea_gdp_region_cte AS (
         GEONAME_REGION AS key2,
         GEONAME_STATE AS key3,
         NULL AS key4, 
-        'GDP' AS DATASET,
+        'GDP Region' AS DATASET,
         'Bureau of Economic Analysis' AS DATASOURCE
     FROM {{ ref('bea_gdp_region') }} B
     LEFT JOIN {{ ref('dim_date_monthly') }} D 

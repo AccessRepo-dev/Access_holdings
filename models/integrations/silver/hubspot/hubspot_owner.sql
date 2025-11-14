@@ -2,7 +2,7 @@
 {% set sourcesystem = var('sourcesystem') | upper %}
 
 {{ config(
-    enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville'],
+    enabled = var('sourcesystem') | lower in ['hubspot','hubspot_pawville'] and var('company') | lower in ['wagway', 'playfly','amh'],
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_OWNER',
@@ -21,21 +21,19 @@ with source as (
                 from {{ this }}
             )
             and 1=1
-            --DBT_VALID_TO is null
     {% else %}
         where 1=1
-        --DBT_VALID_TO is null
     {% endif %}
 ),
 
 cleaned as (
     select
-    CONCAT(OWNER_ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,    
-    CAST(TRIM(OWNER_ID) AS INT) AS OWNER_ID,
-    INITCAP(TRIM(FIRST_NAME)) AS FIRST_NAME,
-    INITCAP(TRIM(LAST_NAME)) AS LAST_NAME,
-    LOWER(TRIM(EMAIL)) AS EMAIL,
-    _FIVETRAN_SYNCED,
+        CONCAT(OWNER_ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,    
+        CAST(TRIM(OWNER_ID) AS INT) AS OWNER_ID,
+        INITCAP(TRIM(FIRST_NAME)) AS FIRST_NAME,
+        INITCAP(TRIM(LAST_NAME)) AS LAST_NAME,
+        LOWER(TRIM(EMAIL)) AS EMAIL,
+        _FIVETRAN_SYNCED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
         CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
         CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,

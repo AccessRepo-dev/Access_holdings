@@ -157,6 +157,7 @@ models:
           +materialized: table
         hubspot:
           +schema: GOLD
+<<<<<<< HEAD
           +materialized: table 
         ringcentral:
           +schema: GOLD
@@ -167,6 +168,9 @@ models:
         wagway_cdc:
             +schema: GOLD
             +materialized: table 
+=======
+          +materialized: table
+>>>>>>> b4e3b0ef3f7405783b6307e8a7a406762764a678
         
 
       reporting:

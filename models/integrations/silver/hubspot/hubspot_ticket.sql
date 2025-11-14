@@ -1,8 +1,9 @@
+
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') | upper %}
 
 {{ config(
-    enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville'],
+    enabled = var('sourcesystem') | lower in ['hubspot'] and var('company') | lower in ['wagway', 'playfly'],
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_TICKET',
@@ -33,14 +34,11 @@ cleaned as (
         CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,  
         CAST(TRIM(ID) AS INT) AS TICKET_ID,
         TRIM(PROPERTY_HS_TICKET_ID) AS PROPERTY_HS_TICKET_ID,
-        --TRIM(PROPERTY_DESCRIPTION) AS DESCRIPTION,
         TRY_TO_TIMESTAMP_NTZ(TRIM(PROPERTY_CREATEDATE)) AS CREATED_DATE,
-        --TRY_TO_TIMESTAMP_NTZ(NULLIF(TRIM(PROPERTY_CLOSEDDATE), '')) AS CLOSED_DATE,
         TRIM(PROPERTY_HS_PIPELINE) AS PIPELINE_ID,
         TRIM(PROPERTY_HS_PIPELINE_STAGE) AS PIPELINE_STAGE_ID,
-        --UPPER(TRIM(PROPERTY_HS_TICKET_PRIORITY)) AS TICKET_PRIORITY,
         UPPER(TRIM(PROPERTY_HS_OBJECT_SOURCE)) AS OBJECT_SOURCE,
-        TRY_TO_TIMESTAMP_NTZ(TRIM(PROPERTY_HS_LASTMODIFIEDDATE)) AS PROPERTY_HS_LASTMODIFIEDDATE
+        TRY_TO_TIMESTAMP_NTZ(TRIM(PROPERTY_HS_LASTMODIFIEDDATE)) AS PROPERTY_HS_LASTMODIFIEDDATE,
           _FIVETRAN_SYNCED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
         CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
@@ -50,3 +48,4 @@ cleaned as (
 )
 
 select * from cleaned
+

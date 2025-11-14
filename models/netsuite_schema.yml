@@ -131,9 +131,11 @@ sources:
     schema: gold
     tables:
       - name: FACT_TRANSACTION
+      - name: DIM_CHART_OF_ACCOUNT
 
   - name: playfly_gold
     database: "{{ env_var('DBT_PLAYFLY') }}"
     schema: gold
     tables:
       - name: FACT_TRANSACTION
+      - name: DIM_CHART_OF_ACCOUNT
