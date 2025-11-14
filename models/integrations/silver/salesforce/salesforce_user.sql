@@ -16,10 +16,11 @@ with raw as
 select *
 from {{ source_snapshot_schema(company, 'SALESFORCE_USER') }}
 {% if is_incremental() %}
-    where 
-        LAST_MODIFIED_DATE > (
-            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
-            from {{ this }})
+    where (
+        cast(LAST_MODIFIED_DATE as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
+        )
         and DBT_VALID_TO is null
 {% else %}
     where 1=1

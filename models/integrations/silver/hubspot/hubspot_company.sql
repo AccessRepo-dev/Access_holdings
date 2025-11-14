@@ -15,11 +15,11 @@ with source as (
     from {{ source_snapshot_schema(company, sourcesystem ~ '_COMPANY') }}
     
     {% if is_incremental() %}
-        where 
-            _FIVETRAN_SYNCED > (
-                select coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
-                from {{ this }}
-            )
+where (
+    _FIVETRAN_SYNCED  > (
+        select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'))
+        from {{ this }}
+    )
             and 1=1
 
     {% else %}

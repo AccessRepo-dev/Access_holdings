@@ -17,10 +17,11 @@ select
     *
 from {{ source_snapshot_schema(company, 'SALESFORCE_RECORD_TYPE') }}
 {% if is_incremental() %}
-    where 
-        LAST_MODIFIED_DATE > (
-            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
-            from {{ this }})
+    where (
+        cast(LAST_MODIFIED_DATE as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
+        )
         and 1=1
         --DBT_VALID_TO is null
 {% else %}
@@ -43,7 +44,7 @@ select
     CREATED_BY_ID,
     CREATED_DATE,
     LAST_MODIFIED_BY_ID,
-    LAST_MODIFIED_DATE,
+    CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
     SYSTEM_MODSTAMP,
     IS_PERSON_TYPE,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,

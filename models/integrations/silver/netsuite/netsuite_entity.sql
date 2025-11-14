@@ -14,10 +14,11 @@ with source_data as (
     select *
     from {{ get_raw_source(company, sourcesystem, 'ENTITY') }}
     {% if is_incremental() %}
-    where LASTMODIFIEDDATE > (
-        select coalesce(max(LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
-    )
+    where 
+        cast(LASTMODIFIEDDATE as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
+        )
     or _FIVETRAN_DELETED = true
     {% endif %}
 ),
