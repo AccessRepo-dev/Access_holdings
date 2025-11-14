@@ -14,10 +14,11 @@ with source_data as (
     select *
     from {{ get_raw_source(company, sourcesystem, 'CURRENCY') }}
     {% if is_incremental() %}
-    where CAST(UPDATED_AT AS TIMESTAMP_NTZ) > (
-        select coalesce(max(UPDATED_AT), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
-    )
+    where 
+        cast(UPDATED_AT as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(UPDATED_AT), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
+        )
     or _FIVETRAN_DELETED = true
     {% endif %}
 ),

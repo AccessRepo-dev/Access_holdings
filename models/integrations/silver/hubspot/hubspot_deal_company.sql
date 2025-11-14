@@ -17,7 +17,7 @@ WITH source AS (
 
     {% if is_incremental() %}
         WHERE _FIVETRAN_SYNCED > (
-            SELECT COALESCE(MAX(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
+            SELECT dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED)), '1900-01-01')
             FROM {{ this }}
         )
         AND 1 = 1

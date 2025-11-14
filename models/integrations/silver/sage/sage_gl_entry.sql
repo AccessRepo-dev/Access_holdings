@@ -16,8 +16,9 @@ with source_data as (
     from {{ get_raw_source(company, sourcesystem, 'GL_ENTRY') }}
     where lower(STATE) = 'posted' 
     {% if is_incremental() %}
-        and WHENMODIFIED > (
-            select coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz)
+        and  
+        cast(WHENMODIFIED as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz))
             from {{ this }}
         )
     {% endif %}

@@ -17,9 +17,10 @@ WITH source AS (
 
 
     {% if is_incremental() %}
-        WHERE PROPERTY_HS_LASTMODIFIEDDATE > (
-            SELECT COALESCE(MAX(PROPERTY_HS_LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
-            FROM {{ this }}
+    where (
+        cast(PROPERTY_HS_LASTMODIFIEDDATE as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(PROPERTY_HS_LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
         )
         AND 1 = 1
     {% else %}
