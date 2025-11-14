@@ -13,7 +13,7 @@
 
 with source as (
     select *
-    from {{ source_snapshot_schema(company, 'HUBSPOT_TICKET') }}
+    from {{ source_snapshot_schema(company, sourcesystem ~ '_TICKET') }}
     
     {% if is_incremental() %}
         where 

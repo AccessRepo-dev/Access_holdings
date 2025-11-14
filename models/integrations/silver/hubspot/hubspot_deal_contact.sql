@@ -1,22 +1,20 @@
-{% if false %}
 
 {% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
+{% set sourcesystem = var('sourcesystem') | upper %}
 
 {{ config(
-    
+    enabled = var('sourcesystem') | lower in ['hubspot','hubspot_pawville'] and var('company') | lower in ['wagway', 'playfly','amh'],
     database=get_target_database(var('company')),
     materialized = 'incremental',
     alias = sourcesystem ~'_DEAL_CONTACT',
     incremental_strategy = 'merge',
-    unique_key = 'ID_DATE_KEY'
+    unique_key = 'UNIQUE_ID'
 ) }}
 
 
 with raw as (
     select *
-    from {{ source_snapshot_schema(company, sourcesystem ~ '_CONTACT') }}
+    from {{ source_snapshot_schema(company, sourcesystem ~ '_DEAL_CONTACT') }}
     
     {% if is_incremental() %}
         where 
@@ -25,24 +23,24 @@ with raw as (
                 from {{ this }}
             )
             and 1=1
-            --DBT_VALID_TO is null
     {% else %}
         where 1=1
-        --DBT_VALID_TO is null
     {% endif %}
 ),
 
 cleaned as (
-SELECT
-
-        CONCAT(DEAL_ID,'_','CONTACT_ID','_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,   
-    CAST(DEAL_ID AS BIGINT) AS DEAL_ID, 
-    CAST(CONTACT_ID AS BIGINT) AS CONTACT_ID,
-    _FIVETRAN_SYNCED,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
-from raw
+    SELECT
+        HASH(DEAL_ID,'_',CONTACT_ID,'_',TYPE_ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) AS UNIQUE_ID,
+        DEAL_ID,
+        CATEGORY,
+        CONTACT_ID,
+        TYPE_ID,
+        _FIVETRAN_SYNCED,
+        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+        CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
+        CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
+        CASE WHEN DBT_VALID_TO IS NULL THEN 1 ELSE 0 END AS IS_ACTIVE
+    from raw
 )
 
 select * from cleaned
-
-{% endif %}

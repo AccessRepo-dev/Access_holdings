@@ -13,7 +13,7 @@ FROM {{ ref('weather_daily_obs') }}
     measure_name,
     measure_value,
     HASH(DATEKEY,CITY,STATE,measure_name) AS UNIQUE_ID,
-    HASH(CITY,STATE) AS dim_granularity_id,
+    CONCAT(CITY,STATE) AS keys_list,
     HASH(CITY,STATE) AS key1,
     NULL AS key2,
     NULL AS key3,

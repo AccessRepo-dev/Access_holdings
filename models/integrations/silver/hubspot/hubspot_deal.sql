@@ -2,7 +2,7 @@
 {% set sourcesystem = var('sourcesystem') | upper %}
 
 {{ config(
-    enabled = var('sourcesystem') in ['hubspot', 'hubspot_pawville'],
+    enabled = var('sourcesystem') | lower in ['hubspot', 'hubspot_pawville'],
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_DEAL',
@@ -13,7 +13,8 @@
 WITH source AS (
 
     SELECT *
-    FROM {{ source_snapshot_schema(company, 'HUBSPOT_DEAL') }}
+    from {{ source_snapshot_schema(company, sourcesystem ~ '_DEAL') }}
+
 
     {% if is_incremental() %}
         WHERE PROPERTY_HS_LASTMODIFIEDDATE > (

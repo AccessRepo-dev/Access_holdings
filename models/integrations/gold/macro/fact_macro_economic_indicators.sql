@@ -4,13 +4,13 @@ WITH fhfa_housing_cte AS (
         measure_name,
         measure_value / 3 AS measure_value,
         hash(place_id, hpi_flavor, hpi_type,level, D.DateKey,frequency) AS unique_id,
-        hash('fhfa',place_id, hpi_flavor, hpi_type,level, D.DateKey) AS dim_granularity_id,
+        CONCAT('fhfa',place_id, hpi_flavor, hpi_type,level, D.DateKey) AS keys_list,
         place_id AS key1,
         level AS key2,
         hpi_flavor AS key3,
         hpi_type AS key4,  
         'HOUSING' AS DATASET,
-        'FHFA' AS DATASOURCE
+        'Federal Housing Finance Agency' AS DATASOURCE
     FROM {{ ref('fhfa_housing') }} A
     UNPIVOT (
         measure_value FOR measure_name IN (index_nsa, index_sa)
@@ -28,7 +28,7 @@ nahb_housing_cte AS (
         measure_name,
         measure_value,
         hash(DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -47,7 +47,7 @@ bls_ppi_cte AS (
         series_id AS measure_name,
         Value AS measure_value,
         hash(series_id, DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -64,7 +64,7 @@ bls_cpi_cte AS (
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
         hash(series_id, DateKey) AS unique_id,
-        NULL AS dim_granularity_id, 
+        NULL AS keys_list, 
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -83,7 +83,7 @@ bot_transport_cte AS (
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
         hash(series_id, DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -107,7 +107,7 @@ bls_employment_cte AS (
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
         hash(series_id, DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -124,7 +124,7 @@ bls_unemployment_cte AS (
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
         hash(series_id, DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -142,7 +142,7 @@ umich_sent_cte AS (
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
         hash(series_id, DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -159,12 +159,12 @@ bea_gdp_industry_cte AS (
         'Value Added by Industry' AS measure_name,
         DataValue / 12 AS measure_value,
         hash(Industry, TableID, IndustryDescription, D.DATEKEY) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
         NULL AS key4, 
-        'GDP' AS DATASET,
+        'GDP Industry' AS DATASET,
         'Bureau of Economic Analysis' AS DATASOURCE
     FROM {{ ref('bea_gdp_industry') }} B
     LEFT JOIN {{ ref('dim_date_monthly') }} D 
@@ -177,12 +177,12 @@ bea_gdp_nominal_cte AS (
         'GDP (Nominal)' AS measure_name,
         (B.DATAVALUE / 3) AS measure_value,  -- Quarterly to monthly
         hash(B.SERIESCODE, D.DATEKEY) AS unique_id,
-        hash(LINENUMBER) AS dim_granularity_id,
+        (LINENUMBER) AS keys_list,
         LINENUMBER AS key1,
         NULL AS key2,
         NULL AS key3,
         NULL AS key4, 
-        'GDP' AS DATASET,
+        'GDP Nominal' AS DATASET,
         'Bureau of Economic Analysis' AS DATASOURCE
     FROM {{ ref('bea_gdp_nominal') }} B
     LEFT JOIN {{ ref('dim_date_monthly') }} D
@@ -197,12 +197,12 @@ bea_gdp_real_cte AS (
         'GDP (Real)' AS measure_name,
         (B.DATAVALUE / 3) AS measure_value,  -- Quarterly to monthly
         hash(B.TABLENAME, B.SERIESCODE, B.LINEDESCRIPTION, D.DATEKEY) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
         NULL AS key4, 
-        'GDP' AS DATASET,
+        'GDP Real' AS DATASET,
         'Bureau of Economic Analysis' AS DATASOURCE
     FROM {{ ref('bea_gdp_real') }} B
     LEFT JOIN {{ ref('dim_date_monthly') }} D
@@ -217,12 +217,12 @@ bea_gdp_region_cte AS (
         'GDP by County' AS measure_name,
         DATAVALUE AS measure_value,  -- Annual repeated monthly
         hash(B.GEONAME, D.DATEKEY) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         HASH(GEONAME_REGION,GEONAME_STATE) AS key1,
         NULL AS key2,
         NULL AS key3,
         NULL AS key4, 
-        'GDP' AS DATASET,
+        'GDP Region' AS DATASET,
         'Bureau of Economic Analysis' AS DATASOURCE
     FROM {{ ref('bea_gdp_region') }} B
     LEFT JOIN {{ ref('dim_date_monthly') }} D 
@@ -234,7 +234,7 @@ adp_employment_cte AS (
         measure_name,
         measure_value,
         hash(agg_ris, category,Date) AS unique_id ,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -253,7 +253,7 @@ adp_payinsights_cte AS (
         measure_name,
         measure_value,
         hash(category,datekey) AS unique_id ,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -272,7 +272,7 @@ census_housing_starts_cte AS (
         'housing_starts_total_units' as measure_name,
         Total as measure_value,
         hash(DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
@@ -287,7 +287,7 @@ census_housing_completed_cte AS (
         'housing_completed_total_units' as measure_name,
         Total as measure_value,
         hash(DateKey) AS unique_id,
-        NULL AS dim_granularity_id,
+        NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,

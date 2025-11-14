@@ -154,10 +154,7 @@ models:
           +materialized: table
         hubspot:
           +schema: GOLD
-          +materialized: table 
-        ringcentral:
-          +schema: GOLD
-          +materialized: table 
+          +materialized: table
         
 
       reporting:

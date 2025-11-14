@@ -1,9 +1,8 @@
-
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') | upper %}
 
 {{ config(
-    enabled = var('sourcesystem') | lower in ['hubspot', 'hubspot_pawville'] and var('company') | lower in ['wagway', 'playfly'],
+    enabled = var('sourcesystem') | lower in ['hubspot'] and var('company') | lower in ['wagway', 'playfly'],
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_COMPANY',
@@ -13,7 +12,7 @@
 
 with source as (
     select *
-    from {{ source_snapshot_schema(company, 'HUBSPOT_COMPANY') }}
+    from {{ source_snapshot_schema(company, sourcesystem ~ '_COMPANY') }}
     
     {% if is_incremental() %}
         where 
@@ -38,8 +37,7 @@ cleaned as (
             TRIM(PROPERTY_DOMAIN) AS PROPERTY_DOMAIN,
              TRIM(PROPERTY_PHONE) AS PROPERTY_PHONE,
         {%endif%}
-       
-        TRIM(PROPERTY_INDUSTRY) AS PROPERTY_INDUSTRY,
+    
         TRIM(PROPERTY_ADDRESS) AS PROPERTY_ADDRESS,
         TRIM(PROPERTY_CITY) AS PROPERTY_CITY,
         TRIM(PROPERTY_STATE) AS PROPERTY_STATE,
