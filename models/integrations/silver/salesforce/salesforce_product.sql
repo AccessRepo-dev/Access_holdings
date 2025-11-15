@@ -16,7 +16,7 @@ with raw as
 select *
 from {{ source_snapshot_schema(company, 'SALESFORCE_PRODUCT_2') }}
 {% if is_incremental() %}
-    where (
+    where 
         cast(LAST_MODIFIED_DATE as timestamp_ntz) > (
             select dateadd(day, -1, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz))
             from {{ this }}
@@ -34,7 +34,7 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_PRODUCT_2') }}
 cleaned as 
 (
 select
-    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
+    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
     ID AS PRODUCT_ID,
     TRIM(NAME) AS NAME,
     TRIM(PRODUCT_CODE) AS PRODUCT_CODE,

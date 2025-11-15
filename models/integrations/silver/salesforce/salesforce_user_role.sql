@@ -16,7 +16,7 @@ with raw as
 select *
 from {{ source_snapshot_schema(company, 'SALESFORCE_USER_ROLE') }}
 {% if is_incremental() %}
-    where (
+    where 
         cast(LAST_MODIFIED_DATE as timestamp_ntz) > (
             select dateadd(day, -1, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz))
             from {{ this }}
@@ -30,7 +30,7 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_USER_ROLE') }}
 
 cleaned as (
 select
-    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
+    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
     TRIM(ID) AS USER_ROLE_ID,
     TRIM(NAME) AS ROLE_NAME,
     TRIM(DEVELOPER_NAME) AS DEVELOPER_NAME,
