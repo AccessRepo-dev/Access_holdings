@@ -17,10 +17,10 @@ WITH raw AS (
 
     {% if is_incremental() %}
         WHERE _FIVETRAN_SYNCED > (
-            select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01')
+            select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'))
             FROM {{ this }}
         )
-        AND 1 = 1
+       -- AND 1 = 1
     {% else %}
         WHERE 1 = 1
     {% endif %}
@@ -30,7 +30,7 @@ WITH raw AS (
 cleaned AS (
 
     SELECT
-        CONCAT(ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) AS ID_DATE_KEY,
+        CONCAT(ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) AS ID_DATE_KEY,
         CAST(TRIM(ID) AS INT) AS ID,
         INITCAP(TRIM(PROPERTY_FIRSTNAME)) AS PROPERTY_FIRSTNAME,
         INITCAP(TRIM(PROPERTY_LASTNAME)) AS PROPERTY_LASTNAME,

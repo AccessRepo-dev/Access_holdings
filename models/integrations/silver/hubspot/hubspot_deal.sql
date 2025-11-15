@@ -1,88 +1,96 @@
-{% set company = var('company') | upper %}
-{% set sourcesystem = var('sourcesystem') | upper %}
+{% set company = var("company") | upper %}
+{% set sourcesystem = var("sourcesystem") | upper %}
 
-{{ config(
-    enabled = var('sourcesystem') | lower in ['hubspot', 'hubspot_pawville'],
-    materialized = 'incremental',
-    database = get_target_database(company),
-    alias = sourcesystem ~ '_DEAL',
-    incremental_strategy = 'merge',
-    unique_key = 'ID_DATE_KEY'
-) }}
-
-WITH source AS (
-
-    SELECT *
-    from {{ source_snapshot_schema(company, sourcesystem ~ '_DEAL') }}
+{{
+    config(
+        enabled=var("sourcesystem") | lower in ["hubspot", "hubspot_pawville"],
+        materialized="incremental",
+        database=get_target_database(company),
+        alias=sourcesystem ~ "_DEAL",
+        incremental_strategy="merge",
+        unique_key="ID_DATE_KEY",
+    )
+}}
 
 
-    {% if is_incremental() %}
-    where (
-        cast(PROPERTY_HS_LASTMODIFIEDDATE as timestamp_ntz) > (
-            select dateadd(day, -1, coalesce(max(PROPERTY_HS_LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz))
-            from {{ this }}
-        )
-        AND 1 = 1
-    {% else %}
-        WHERE 1 = 1
-    {% endif %}
-
-),
-
-cleaned AS (
-
-    SELECT
-        CONCAT(DEAL_ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) AS ID_DATE_KEY,
-        CAST(DEAL_ID AS NUMBER) AS DEAL_ID,
-        TRIM(PROPERTY_DEALNAME) AS PROPERTY_DEALNAME,
-
-        {% if company | lower != 'playfly' %}
-            CAST(PROPERTY_LOCATION_ID AS INT) AS PROPERTY_LOCATION_ID,
-        {% else %}
-            CAST(NULL AS INT) AS PROPERTY_LOCATION_ID,
+with
+    source as (
+        select *
+        from {{ source_snapshot_schema(company, sourcesystem ~ "_DEAL") }}
+        {% if is_incremental() %}
+            where
+                _fivetran_synced > (
+                    select
+                        dateadd(day, -1, coalesce(max(_fivetran_synced), '1900-01-01'))
+                    from {{ this }}
+                )
+        {% else %} where 1 = 1
         {% endif %}
+    ),
 
-        PROPERTY_AMOUNT,
-        TRIM(DEAL_PIPELINE_ID) AS DEAL_PIPELINE_ID,
-        TRIM(DEAL_PIPELINE_STAGE_ID) AS DEAL_PIPELINE_STAGE_ID,
-        CAST(TRIM(PROPERTY_CLOSEDATE) AS TIMESTAMP_NTZ) AS PROPERTY_CLOSEDATE,
-        CAST(TRIM(PROPERTY_CREATEDATE) AS TIMESTAMP_NTZ) AS PROPERTY_CREATEDATE,
-        CAST(TRIM(PROPERTY_HS_CREATEDATE) AS TIMESTAMP_NTZ) AS PROPERTY_HS_CREATEDATE,
-        CAST(TRIM(PROPERTY_HS_LASTMODIFIEDDATE) AS TIMESTAMP_NTZ) AS PROPERTY_HS_LASTMODIFIEDDATE,
-        CAST(TRIM(OWNER_ID) AS NUMBER) AS OWNER_ID,
-        TRIM(PROPERTY_HS_ALL_OWNER_IDS) AS PROPERTY_HS_ALL_OWNER_IDS,
-        TRIM(PROPERTY_DEALTYPE) AS PROPERTY_DEALTYPE,
-        CAST(TRIM(PROPERTY_HS_FORECAST_AMOUNT) AS FLOAT) AS PROPERTY_HS_FORECAST_AMOUNT,
-        CAST(TRIM(PROPERTY_HS_DEAL_STAGE_PROBABILITY) AS FLOAT) AS PROPERTY_HS_DEAL_STAGE_PROBABILITY,
+    cleaned as (
 
-        {% if company | lower != 'amh' %}
-            TRIM(PROPERTY_DESCRIPTION) AS PROPERTY_DESCRIPTION,
-        {% endif %}
+        select
+            concat(
+                deal_id, '_', to_varchar(dbt_valid_from, 'YYYYMMDDHH24MISSFF3')
+            ) as id_date_key,
+            cast(deal_id as number) as deal_id,
+            trim(property_dealname) as property_dealname,
 
-        {% if sourcesystem == 'HUBSPOT_PAWVILLE' %}
-            NULL AS PROPERTY_CLUB_C,
-            NULL AS PROPERTY_SERVICE_TYPE,
-        {% elif company | lower == 'wagway' and sourcesystem == 'HUBSPOT' %}
-            TRIM(PROPERTY_CLUB_C) AS PROPERTY_CLUB_C,
-            TRIM(PROPERTY_SERVICE_TYPE) AS PROPERTY_SERVICE_TYPE,
-        {% endif %}
+            {% if company | lower != "playfly" %}
+                cast(property_location_id as int) as property_location_id,
+            {% else %} cast(null as int) as property_location_id,
+            {% endif %}
 
-        TRIM(PROPERTY_HS_ANALYTICS_SOURCE) AS PROPERTY_HS_ANALYTICS_SOURCE,
-        CAST(TRIM(PROPERTY_HS_PROJECTED_AMOUNT) AS FLOAT) AS PROPERTY_HS_PROJECTED_AMOUNT,
+            property_amount,
+            trim(deal_pipeline_id) as deal_pipeline_id,
+            trim(deal_pipeline_stage_id) as deal_pipeline_stage_id,
+            cast(trim(property_closedate) as timestamp_ntz) as property_closedate,
+            cast(trim(property_createdate) as timestamp_ntz) as property_createdate,
+            cast(
+                trim(property_hs_createdate) as timestamp_ntz
+            ) as property_hs_createdate,
+            cast(
+                trim(property_hs_lastmodifieddate) as timestamp_ntz
+            ) as property_hs_lastmodifieddate,
+            cast(trim(owner_id) as number) as owner_id,
+            trim(property_hs_all_owner_ids) as property_hs_all_owner_ids,
+            trim(property_dealtype) as property_dealtype,
+            cast(
+                trim(property_hs_forecast_amount) as float
+            ) as property_hs_forecast_amount,
+            cast(
+                trim(property_hs_deal_stage_probability) as float
+            ) as property_hs_deal_stage_probability,
 
-        {% if company | lower not in ['amh', 'playfly'] %}
-            CAST(PROPERTY_INVOICE_ID AS NUMBER) AS PROPERTY_INVOICE_ID,
-        {% else %}
-            CAST(NULL AS NUMBER) AS PROPERTY_INVOICE_ID,
-        {% endif %}
+            {% if company | lower != "amh" %}
+                trim(property_description) as property_description,
+            {% endif %}
 
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
-        CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
-        CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
-        CASE WHEN DBT_VALID_TO IS NULL THEN 1 ELSE 0 END AS IS_ACTIVE
+            {% if sourcesystem == "HUBSPOT_PAWVILLE" %}
+                null as property_club_c, null as property_service_type,
+            {% elif company | lower == "wagway" and sourcesystem == "HUBSPOT" %}
+                trim(property_club_c) as property_club_c,
+                trim(property_service_type) as property_service_type,
+            {% endif %}
 
-    FROM source
-)
+            trim(property_hs_analytics_source) as property_hs_analytics_source,
+            cast(
+                trim(property_hs_projected_amount) as float
+            ) as property_hs_projected_amount,
 
-SELECT *
-FROM cleaned
+            {% if company | lower not in ["amh", "playfly"] %}
+                cast(property_invoice_id as number) as property_invoice_id,
+            {% else %} cast(null as number) as property_invoice_id,
+            {% endif %}
+
+            current_timestamp()::timestamp_ntz as silver_load_date,
+            cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
+            cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,
+            case when dbt_valid_to is null then 1 else 0 end as is_active
+
+        from source
+    )
+
+select *
+from cleaned

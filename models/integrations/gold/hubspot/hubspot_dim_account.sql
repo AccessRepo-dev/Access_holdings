@@ -3,7 +3,7 @@
 {{ config(enabled = var('sourcesystem', 'none') == 'hubspot') }}
 {{ config(
     database = get_target_database(company),
-    alias = 'dim_company',
+    alias = 'dim_account',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = ['ID']
