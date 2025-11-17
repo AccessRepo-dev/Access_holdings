@@ -20,8 +20,7 @@ with source as (
         b.CLASSDIMKEY AS DIM_CLASS_ID,           
         b.DEPTKEY AS DIM_DEPARTMENT_ID,
         b.LOCATIONKEY AS DIM_LOCATION_ID,
-        b.PERIODKEY AS DIM_PERIOD_ID,
-        DATE(per.START_DATE) AS PERIOD_START_DATE,
+        DATE(PSTARTDATE) AS PERIOD_START_DATE,
         CAST(NULL AS INT) AS DIM_CURRENCY_ID,         
         CAST(NULL AS INT) AS CUSTOMER_ID,
         CAST(NULL AS INT) AS DIM_ITEM_ID,
@@ -41,8 +40,6 @@ with source as (
 
 FROM {{ get_silver_source(company, 'GL_BUDGET_ITEM') }} b
 
-LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
-    ON b.PERIODKEY  = per.RECORDNO
 
     {% if is_incremental() %}
     where b.WHENMODIFIED > (
@@ -53,3 +50,4 @@ LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
 )
 
 SELECT * FROM source
+
