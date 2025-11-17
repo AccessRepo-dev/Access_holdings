@@ -125,4 +125,5 @@ SELECT * FROM source
 {% if company == 'playfly' %}
         WHERE 
             COALESCE(lower(STATUS_NAME), '') <> 'rejected'
+            AND IS_POSTING = TRUE
 {% endif %}
