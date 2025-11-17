@@ -91,11 +91,17 @@ LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
 )
 
 SELECT * FROM source
- {% if company | lower  == 'amh' %}
+{% if company | lower  == 'amh' %}
     WHERE TRANSACTION_LINE_ID NOT IN 
         (select distinct GLENTRYKEY 
         from {{ get_silver_source(company, 'GL_DETAIL') }}
         WHERE SYMBOL = 'QB_HISTORY' and 
             batch_date between '2022-01-01' and '2022-08-31'
+            
         )
+ {% elif company | lower  == 'spotless' %}
+    WHERE TRANSACTION_LINE_ID NOT IN 
+        (select distinct GLENTRYKEY 
+        from {{ get_silver_source(company, 'GL_DETAIL') }}
+        WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','GAAP YE ELIMS','MAT','PROAJ','PAJ'))
 {% endif %}
