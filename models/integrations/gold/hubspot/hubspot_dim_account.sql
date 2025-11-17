@@ -6,10 +6,11 @@
     alias = 'dim_account',
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = ['ID']
+    unique_key = ID_DATE_KEY
 ) }}
 
 SELECT
+    ID_DATE_KEY,
     ID,
     PROPERTY_NAME AS NAME,
     PROPERTY_DOMAIN AS DOMAIN,
