@@ -32,6 +32,7 @@ cleaned as (
         DEPTKEY,
         LOCATIONKEY,
         PERIODKEY,
+        PSTARTDATE,
         PROJECTDIMKEY,
         WHENMODIFIED,
         _FIVETRAN_DELETED,
