@@ -14,10 +14,11 @@ with source_data as (
     select *
     from {{ get_raw_source(company, sourcesystem, 'TRANSACTIONLINE') }}
     {% if is_incremental() %}
-    where CAST(LINELASTMODIFIEDDATE AS TIMESTAMP_NTZ) > (
-        select coalesce(max(LINELASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
-    )
+    where 
+        cast(LINELASTMODIFIEDDATE as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(LINELASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
+        )
     or _FIVETRAN_DELETED = true
     {% endif %}
 ),

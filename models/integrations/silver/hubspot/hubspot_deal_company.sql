@@ -7,7 +7,7 @@
     database = get_target_database(company),
     alias = sourcesystem ~ '_DEAL_COMPANY',
     incremental_strategy = 'merge',
-    unique_key = 'UNIQUE_ID'
+    unique_key = 'ID_DATE_KEY'
 ) }}
 
 WITH source AS (
@@ -17,7 +17,7 @@ WITH source AS (
 
     {% if is_incremental() %}
         WHERE _FIVETRAN_SYNCED > (
-            SELECT COALESCE(MAX(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
+            select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'))
             FROM {{ this }}
         )
         AND 1 = 1
@@ -30,7 +30,7 @@ WITH source AS (
 cleaned AS (
 
     SELECT
-        HASH(DEAL_ID,'_',COMPANY_ID,'_',TYPE_ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) AS UNIQUE_ID,
+        CONCAT(DEAL_ID,'_',COMPANY_ID,'_',TYPE_ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) AS ID_DATE_KEY,
         DEAL_ID,
         CATEGORY,
         COMPANY_ID,

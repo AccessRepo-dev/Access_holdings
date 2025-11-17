@@ -18,7 +18,7 @@ with source as (
     {% if is_incremental() %}
         where 
             _FIVETRAN_SYNCED > (
-                select coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
+                select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'))
                 from {{ this }}
             )
             and 1=1
@@ -31,7 +31,7 @@ with source as (
 
 cleaned as (
     select
-        CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,  
+        CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,  
         CAST(ID AS NUMBER) AS ID,
         TRIM(EMAIL) AS EMAIL,
         TRIM(FIRST_NAME) AS FIRST_NAME,

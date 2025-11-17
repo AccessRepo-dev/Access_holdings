@@ -5,7 +5,7 @@
     enabled = var('sourcesystem', 'none') == 'salesforce',
     database = get_target_database(company),
     schema = 'silver',
-    unique_key = 'id',
+    unique_key = 'ID_DATE_KEY',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     on_schema_change='sync_all_columns'
@@ -18,9 +18,10 @@ select
 from {{ source_snapshot_schema(company, 'SALESFORCE_TASK') }}
 {% if is_incremental() %}
     where 
-        LAST_MODIFIED_DATE > (
-            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
-            from {{ this }})
+        cast(LAST_MODIFIED_DATE as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
+        )
         and 1=1
         --DBT_VALID_TO is null
 {% else %}
@@ -31,7 +32,7 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_TASK') }}
 
 cleaned as (
 select 
-    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
+    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
     TRIM(ID) AS ACTIVITY_ID,
     TRIM(OWNER_ID) AS OWNER_ID,
     TRIM(WHO_ID) AS WHO_ID,

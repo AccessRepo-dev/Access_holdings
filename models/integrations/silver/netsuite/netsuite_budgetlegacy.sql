@@ -28,7 +28,7 @@ with cleaned as (
         TRY_CAST(CUSTOMER AS INT) AS CUSTOMER,
         TRY_CAST(DEPARTMENT AS INT) AS DEPARTMENT,
         TRY_CAST(ITEM AS INT) AS ITEM,
-        LASTMODIFIEDDATE,
+        CAST(LASTMODIFIEDDATE AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
         {% if company == 'wagway' and sourcesystem == 'netsuite' %}
             CSEG_CP_STORE_LOC AS LOCATION,
         {% else %}
@@ -42,10 +42,11 @@ with cleaned as (
 
     from {{ get_raw_source(company, sourcesystem, 'BUDGETLEGACY') }}
     {% if is_incremental() %}
-    where LASTMODIFIEDDATE > (
-        select coalesce(max(LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
-    )
+    where 
+        cast(LASTMODIFIEDDATE as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
+        )
     or _FIVETRAN_DELETED = true
     {% endif %}
 )

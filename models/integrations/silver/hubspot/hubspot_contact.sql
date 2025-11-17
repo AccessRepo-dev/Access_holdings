@@ -17,10 +17,10 @@ WITH raw AS (
 
     {% if is_incremental() %}
         WHERE _FIVETRAN_SYNCED > (
-            SELECT COALESCE(MAX(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
+            select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'))
             FROM {{ this }}
         )
-        AND 1 = 1
+       -- AND 1 = 1
     {% else %}
         WHERE 1 = 1
     {% endif %}
@@ -30,8 +30,8 @@ WITH raw AS (
 cleaned AS (
 
     SELECT
-        CONCAT(ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) AS ID_DATE_KEY,
-        CAST(TRIM(ID) AS INT) AS ID,
+        CONCAT(ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) AS ID_DATE_KEY,
+        CAST(TRIM(ID) AS INT) AS CONTACT_ID,
         INITCAP(TRIM(PROPERTY_FIRSTNAME)) AS PROPERTY_FIRSTNAME,
         INITCAP(TRIM(PROPERTY_LASTNAME)) AS PROPERTY_LASTNAME,
         LOWER(TRIM(PROPERTY_EMAIL)) AS PROPERTY_EMAIL,
@@ -61,10 +61,17 @@ cleaned AS (
         INITCAP(TRIM(PROPERTY_JOBTITLE)) AS PROPERTY_JOBTITLE,
 
         -- Cast and standardize dates
-        TRY_TO_TIMESTAMP_NTZ(TRIM(PROPERTY_CREATEDATE)) AS PROPERTY_CREATEDATE,
+        PROPERTY_CREATEDATE,
+        PROPERTY_FIRST_DEAL_CREATED_DATE,
 
         LOWER(TRIM(PROPERTY_HS_LEAD_STATUS)) AS PROPERTY_HS_LEAD_STATUS,
-
+        {%if company | lower == 'wagway' and sourcesystem | lower == 'hubspot'%}
+        LOWER(TRIM(PROPERTY_LEADSTATUS)) AS PROPERTY_LEADSTATUS,
+        {%else%}
+        CAST(NULL AS VARCHAR) AS PROPERTY_LEADSTATUS,
+        {%endif%}
+        PROPERTY_HS_IS_UNWORKED,
+        PROPERTY_ASSOCIATEDCOMPANYID,
         -- Address cleanup
         INITCAP(TRIM(PROPERTY_ADDRESS)) AS PROPERTY_ADDRESS,
         INITCAP(TRIM(PROPERTY_CITY)) AS PROPERTY_CITY,
