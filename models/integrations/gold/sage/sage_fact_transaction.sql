@@ -53,6 +53,7 @@ with source as (
     -- Amounts
     e.TRX_AMOUNT AS NETAMOUNT,
     e.TR_TYPE * e.AMOUNT AS AMOUNT,
+    e.TR_TYPE * e.AMOUNT AS AMOUNT_UNCONVERTED,
     e.TRX_AMOUNT AS CONVERTED_NET_AMOUNT,
     CAST(NULL AS FLOAT) AS BOM_QUANTITY,
     CAST(NULL AS FLOAT) AS QUANTITY,
@@ -85,23 +86,14 @@ LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
  {% if company == 'spotless' %}
     WHERE e.BATCHTITLE not in ('VIE Depreciation & Amortization','record VIE transactions')
     AND LOCATIONKEY <> 492
-{% endif %}
-        
-
-)
-
+{% endif %})
 SELECT * FROM source
 {% if company | lower  == 'amh' %}
     WHERE TRANSACTION_LINE_ID NOT IN 
         (select distinct GLENTRYKEY 
         from {{ get_silver_source(company, 'GL_DETAIL') }}
         WHERE SYMBOL = 'QB_HISTORY' and 
-            batch_date between '2022-01-01' and '2022-08-31'
-            
-        )
- {% elif company | lower  == 'spotless' %}
-    WHERE TRANSACTION_LINE_ID NOT IN 
-        (select distinct GLENTRYKEY 
-        from {{ get_silver_source(company, 'GL_DETAIL') }}
-        WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','GAAP YE ELIMS','MAT','PROAJ','PAJ'))
+            batch_date between '2022-01-01' and '2022-08-31')
+{% else%}
+    WHERE 1=1
 {% endif %}
