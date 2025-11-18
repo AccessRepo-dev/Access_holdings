@@ -48,6 +48,9 @@ vars:
     - 'Lender Adjustments'
     - 'Pro Forma Adjustments'
     - 'Gross Revenue'
+    - 'Cash EBITDA'
+    - 'Signing Bonus Amortization'
+    - 'Cash EBITDA Margin'
 
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
@@ -164,6 +167,10 @@ models:
         sage:
           +schema: GOLD
           +materialized: table
+      streamlit_staging:
+        +database: STREAMLIT_APPS
+        +schema: FINMAP_DEV
+        +materialized: table
 
 seeds:
   Access_Holdings:

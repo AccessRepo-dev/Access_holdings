@@ -35,6 +35,11 @@ cleaned as (
     TRIM(LOCATIONID) AS LOCATIONID,
     TRIM(NAME) AS NAME ,
     TRIM(ENTITY) AS ENTITY,
+    {%if company | lower == 'amh'%}
+    TRIM(DIVISION_MAPPING) AS DIVISION_MAPPING,
+    {%else%}
+    CAST(NULL AS VARCHAR) AS DIVISION_MAPPING,
+    {%endif%}
     CASE WHEN STATUS ='active' THEN FALSE 
         WHEN STATUS = 'incative' THEN TRUE
         ELSE NULL 
