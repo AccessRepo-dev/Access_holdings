@@ -1,0 +1,7 @@
+sources:
+  - name: streamlit
+    database: STREAMLIT_APPS     
+    schema: FINMAP_DEV        
+    tables:
+      - name: wagway_coa_mapping
+      - name: wagway_adjustments

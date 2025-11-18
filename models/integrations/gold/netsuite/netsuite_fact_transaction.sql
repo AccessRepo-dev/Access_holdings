@@ -119,11 +119,88 @@ with source as (
         AND cer.TOSUBSIDIARY=COALESCE(sub.PARENT,1)
 
  
+),
+adjustments AS (
+    SELECT
+        HASH(COA_ID , ADJ_TYPE) AS TRANSACTIONS_UNIQUE_ID,
+        NULL AS TRANSACTION_ID,
+        NULL AS TRANSACTION_LINE_ID,
+        NULL AS TRANSACTION_NUMBER,
+        NULL AS  TRANID,
+        NULL AS TRANSACTION_TYPE,
+        NULL AS STATUS,
+        NULL AS TITLE,
+        NULL AS STATUS_NAME,
+        
+        -- Chart of accounts
+        ACCOUNT_ID,
+        TRUE AS IS_POSTING,
+        NULL AS ACCOUNT_NUMBER,
+        NULL AS ACCOUNT_TYPE,
+        ACCOUNT_NAME,
+        CASE WHEN ADJ_TYPE = 'Lender Adjustment' THEN -18
+        WHEN ADJ_TYPE = 'Proforma Adjustment' THEN -19 
+        ELSE COA_ID 
+        END AS DIM_CHART_OF_ACCOUNT_ID,
+        
+        CLASS_ID AS DIM_CLASS_ID,
+        CAST(NULL AS INT) AS DIM_PROJECT_ID,
+        
+        -- Transaction line details
+        CAST(NULL AS INT) AS DIM_ITEM_ID,
+        DEPARTMENT_ID AS DIM_DEPARTMENT_ID,
+        CAST(NULL AS INT) AS DIM_ENTITY_ID,
+        NULL AS TRANSACTION_LINE_TYPE,
+        NULL AS ACCOUNTING_LINE_TYPE,
+        LOCATION_ID AS DIM_LOCATION_ID,
+        SUBSIDIARY_ID AS DIM_SUBSIDIARY_ID,
+        ADJUSTMENT_ID AS DIM_ADDBACK_ID,
+        
+        -- Period / currency
+        NULL AS DIM_PERIOD_ID,
+        NULL AS POSTING_PERIOD_DATE,
+        NULL AS CURRENCY,  -- Assuming USD or base currency
+        CONCAT(SUBSIDIARY_ID, '-', PERIOD, '-1') AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
+        1 AS EXCHANGERATE,
+        
+        -- Amounts
+        AMOUNT AS NETAMOUNT,
+        AMOUNT AS AMOUNT_UNCONVERTED,
+        AMOUNT AS AMOUNT,
+        AMOUNT AS CONVERTED_NET_AMOUNT,
+        1 AS AVERAGERATE,
+        1 AS CURRENTRATE,
+        1 AS HISTORICALRATE,
+        AMOUNT AS AMOUNT_AR,
+        AMOUNT AS AMOUNT_CR,
+        AMOUNT AS AMOUNT_HR,
+        NULL AS BOM_QUANTITY,
+        NULL AS QUANTITY,
+        
+        -- Employee / address / customer
+        NULL AS EMPLOYEE,
+        NULL AS BILLINGADDRESS,
+        NULL AS SHIPPINGADDRESS,
+        NULL AS BILLINGSTATUS,
+        NULL AS MEMO,
+        
+        -- Dates
+        NULL AS TRANDATE,
+        NULL AS STARTDATE,
+        TO_DATE(PERIOD || '-01', 'MON-YY-DD') AS PERIOD_START_DATE,
+        NULL AS ENDDATE,
+        NULL AS DUEDATE,
+        NULL AS CLOSEDATE,
+        CURRENT_TIMESTAMP AS LASTMODIFIEDDATE
+        
+    FROM {{ source('streamlit', company ~ '_adjustments') }}
+    WHERE dbt_valid_to IS NULL  
 )
-
 SELECT * FROM source
 {% if company == 'playfly' %}
         WHERE 
             COALESCE(lower(STATUS_NAME), '') <> 'rejected'
             AND IS_POSTING = TRUE
 {% endif %}
+UNION 
+SELECT * FROM adjustments
