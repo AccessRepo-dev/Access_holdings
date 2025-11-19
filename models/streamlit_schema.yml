@@ -5,3 +5,14 @@ sources:
     tables:
       - name: wagway_coa_mapping
       - name: wagway_adjustments
+      - name: playfly_coa_mapping
+      - name: playfly_adjustments
+
+      - name: spotless_coa_mapping
+      - name: spotless_adjustments
+
+      - name: amh_coa_mapping
+      - name: amh_adjustments
+
+      - name: zeus_coa_mapping
+      - name: zeus_adjustments

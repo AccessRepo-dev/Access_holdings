@@ -8,7 +8,7 @@
 
 {{
     config(
-        enabled = var('sourcesystem') == 'netsuite' and var('company') | lower =='wagway',
+        enabled = var('sourcesystem') == 'netsuite',
         database = get_target_database(company),
         target_schema = 'silver',
         alias = sourcesystem ~ '_COA', 
@@ -27,13 +27,18 @@ SELECT
     CLASS_ID,
     LOCATION_ID,
     DEPARTMENT_ID,
-    ADJUSTMENT_ID,
+    
+    {%if company == 'wagway' %}
+        ADJUSTMENT_ID,
+    {%endif%}
     LOCATION_NAME,
     SUBSIDIARY_NAME,
     ACCOUNT_NAME,
     CLASS_NAME,
     DEPARTMENT_NAME,
-    ADJUSTMENT_NAME,
+    {%if company == 'wagway' %}
+        ADJUSTMENT_NAME,
+    {%endif%}
     METRIC_L1,
     METRIC_L2,
     METRIC_L3,

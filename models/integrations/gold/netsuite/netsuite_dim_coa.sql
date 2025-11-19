@@ -1,7 +1,7 @@
 {% set company = var('company', 'Unknown company') | lower %}
 {% set sourcesystem = var('sourcesystem') %}
 {{ config(
-    enabled = var('sourcesystem') |lower == 'netsuite' and var('company') | lower =='wagway',
+    enabled = var('sourcesystem') |lower == 'netsuite' ,
     database = get_target_database(company),
     alias = 'dim_chart_of_account_BKP',
     unique_key = 'DIM_CHART_OF_ACCOUNT_ID',
@@ -15,13 +15,21 @@ WITH source AS (
         CLASS_ID,
         LOCATION_ID,
         DEPARTMENT_ID,
-        ADJUSTMENT_ID,
+        {%if company == 'wagway'%}
+            ADJUSTMENT_ID,
+        {%else%}
+            0 AS ADJUSTMENT_ID
+        {%endif%}
         LOCATION_NAME,
         SUBSIDIARY_NAME,
         ACCOUNT_NAME,
         CLASS_NAME,
         DEPARTMENT_NAME,
-        ADJUSTMENT_NAME,
+        {%if company == 'wagway'%}
+            ADJUSTMENT_NAME,
+        {%else%}
+            'Unknown' AS ADJUSTMENT_ID
+        {%endif%}
         METRIC_L1,
         METRIC_L2,
         METRIC_L3,
