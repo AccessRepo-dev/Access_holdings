@@ -13,11 +13,11 @@
 
 WITH source AS (
     SELECT
-         {% if company == 'wagway'%}
-            HASH(ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID,ADJUSTMENT_ID) AS DIM_CHART_OF_ACCOUNT_ID,
-        {%else%}
+        {% if company == 'wagway' %}
+            HASH(COALESCE(ACCOUNT_ID, 0),COALESCE(SUBSIDIARY_ID, 0),COALESCE(CLASS_ID, 0),COALESCE(LOCATION_ID, 0),COALESCE(DEPARTMENT_ID, 0),COALESCE(ADJUSTMENT_ID, 0)) AS DIM_CHART_OF_ACCOUNT_ID,
+        {% else %}
             HASH(ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID) AS DIM_CHART_OF_ACCOUNT_ID,
-        {%endif%}
+        {% endif %}
        
         ACCOUNT_ID,
         {% if company == 'playfly'%}
@@ -129,7 +129,8 @@ derived_metric_rows AS (
                 'BS' AS IS_BS,
                 NULL AS IS_ADJ,
                 NULL AS DEBT_MAPPING
-
+            
+            {% if var('company') | lower == 'playfly' %}
             UNION ALL
             SELECT
                 CAST({{ -loop.index }} * 100 - 3 AS NUMBER(19,0)) AS DIM_CHART_OF_ACCOUNT_ID,
@@ -159,6 +160,7 @@ derived_metric_rows AS (
                 'BS' AS IS_BS,
                 NULL AS IS_ADJ,
                 NULL AS DEBT_MAPPING
+            {% endif %}
         {% endif %}
 
     {% if not loop.last %}
