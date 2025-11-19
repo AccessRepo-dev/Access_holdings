@@ -54,10 +54,10 @@ WITH source AS (
         {% if company == 'wagway'%}
             CASE WHEN ADJUSTMENT_ID IS NOT NULL THEN 1 
         ELSE 0
-        END AS IS_ADJ
+        END AS IS_ADJ,
         {%else%}
-            CAST(NULL AS INT) IS_ADJ
-        {%endif%}, 
+            CAST(NULL AS INT) IS_ADJ,
+        {%endif%}
         {% if company == 'playfly'%}
             DEBT_MAPPING
         {%else%}
