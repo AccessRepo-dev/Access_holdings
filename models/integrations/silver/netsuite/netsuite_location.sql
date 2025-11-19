@@ -12,7 +12,7 @@
 
 with source_data as (
     select *
-    {% if company == 'wagway'%}
+    {% if company | lower == 'wagway'%}
     from {{ get_raw_source(company, sourcesystem, 'CUSTOMRECORD_CSEG_CP_STORE_LOC') }}
     {% else %}
     from {{ get_raw_source(company, sourcesystem, 'LOCATION') }}
@@ -29,7 +29,7 @@ cleaned as (
             a.NAME AS PARENT_NAME,
             TRIM(s.NAME) AS FULLNAME,
             COALESCE(s.PARENT,-1) AS PARENT,
-            null AS LOCATIONTYPE,
+            TRIM(b.NAME) AS LOCATIONTYPE,
             CAST(null AS INT) AS SUBSIDIARY,
             CAST(s.LASTMODIFIED AS TIMESTAMP_NTZ) AS LASTMODIFIEDDATE,
         {% else %}
@@ -50,10 +50,11 @@ cleaned as (
         s._FIVETRAN_DELETED AS _FIVETRAN_DELETED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
     from source_data s
-    {% if company == 'wagway'%}
-    LEFT JOIN {{ get_raw_source(company, sourcesystem, 'CUSTOMRECORD_CSEG_CP_STORE_LOC') }} a
-    ON s.PARENT = a.ID
+    {% if company | lower == 'wagway'%}
+    LEFT JOIN {{ get_raw_source(company, sourcesystem, 'CUSTOMRECORD_CSEG_CP_STORE_LOC') }} a ON s.PARENT = a.ID
+    LEFT JOIN {{ get_raw_source(company, sourcesystem, 'CUSTOMLIST_STORE_LOC_CATEGORY') }} b ON s.CUSTRECORD_SN_STORE_CATEGORY=b.ID
     {% endif %}
+
 )
 
 select
