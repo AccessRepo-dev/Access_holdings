@@ -94,6 +94,9 @@ SELECT * FROM source
         from {{ get_silver_source(company, 'GL_DETAIL') }}
         WHERE SYMBOL = 'QB_HISTORY' and 
             batch_date between '2022-01-01' and '2022-08-31')
-{% else%}
-    WHERE 1=1
+{% elif company | lower  == 'spotless' %}
+    WHERE TRANSACTION_LINE_ID NOT IN 
+        (select distinct GLENTRYKEY 
+        from {{ get_silver_source(company, 'GL_DETAIL') }}
+        WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ'))
 {% endif %}
