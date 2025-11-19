@@ -277,6 +277,23 @@ census_housing_completed_cte AS (
         'Housing_completed' AS DATASET,
         'Census' AS DATASOURCE
     FROM {{ ref('census_housing_completed') }}
+),
+fred_cte AS (
+    SELECT 
+        DateKey,
+        SERIES_TITLE AS measure_name,
+        Value AS measure_value,
+        hash(series_id, DateKey) AS unique_id,
+        NULL AS keys_list, 
+        NULL AS key1,
+        NULL AS key2,
+        NULL AS key3,
+        NULL AS key4, 
+        'FRED' AS DATASET,
+        'Federal Reserve Economic Data' AS DATASOURCE,
+
+    FROM {{ ref('fred') }}
+
 )
 
 SELECT * FROM nahb_housing_cte
@@ -304,5 +321,7 @@ UNION ALL
 SELECT * FROM census_housing_completed_cte
 UNION ALL 
 SELECT * FROM census_housing_starts_cte
-UNION ALL 
+UNION ALL
 SELECT * FROM bls_unemployment_cte
+UNION ALL
+SELECT * FROM fred_cte
