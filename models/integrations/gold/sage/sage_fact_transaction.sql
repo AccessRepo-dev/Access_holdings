@@ -44,7 +44,7 @@ with source as (
     CAST(NULL AS NUMBER) AS DIM_ADDBACK_ID,
  
     -- Period / Currency
-    per.RECORDNO AS DIM_PERIOD_ID,
+    NULL AS DIM_PERIOD_ID,
     e.BATCH_DATE AS POSTING_PERIOD_DATE,
     e.CURRENCY AS CURRENCY,
     CONCAT(e.LOCATIONKEY, '-', b.BATCH_DATE, '-', e.CURRENCY) AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
@@ -68,7 +68,7 @@ with source as (
     -- Dates
     e.ENTRY_DATE AS TRANDATE,
     CAST(NULL AS DATE) AS STARTDATE,
-    per.START_DATE AS PERIOD_START_DATE,
+    TRUNC(e.BATCH_DATE, 'MONTH') AS PERIOD_START_DATE,
     CAST(NULL AS DATE) AS ENDDATE,
     CAST(NULL AS DATE) AS DUEDATE,
     CAST(NULL AS DATE) AS CLOSEDATE,
@@ -81,8 +81,7 @@ LEFT JOIN {{ get_silver_source(company, 'GL_BATCH') }}  b
 LEFT JOIN {{ get_silver_source(company, 'GL_ACCOUNT') }} acc
     ON e.ACCOUNTKEY  = acc.RECORDNO
     
-LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
-    ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
+
  {% if company == 'spotless' %}
     WHERE e.BATCHTITLE not in ('VIE Depreciation & Amortization','record VIE transactions')
     AND LOCATIONKEY <> 492

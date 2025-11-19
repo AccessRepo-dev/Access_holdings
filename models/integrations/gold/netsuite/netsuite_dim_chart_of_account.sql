@@ -4,7 +4,7 @@
     enabled = var('sourcesystem', 'none') == 'netsuite',
     database = get_target_database(company),
     materialized = 'incremental',
-    alias = 'dim_chart_of_account',
+    alias = 'dim_chart_of_account_bkp',
     unique_key = 'DIM_CHART_OF_ACCOUNT_ID',
     incremental_strategy = 'merge'
 ) }}
