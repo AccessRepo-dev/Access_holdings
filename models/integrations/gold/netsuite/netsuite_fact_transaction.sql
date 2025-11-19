@@ -120,7 +120,9 @@ with source as (
         AND cer.TOSUBSIDIARY=COALESCE(sub.PARENT,1)
 
  
-),
+)
+{%if company | lower == 'wagway'%}
+,
 adjustments AS (
     SELECT
         CONCAT('ADJ-', CAST(COA_ID AS VARCHAR), '-', CAST(PERIOD AS VARCHAR))  AS  TRANSACTIONS_UNIQUE_ID,
@@ -203,11 +205,16 @@ adjustments AS (
 {% endif %}
     WHERE dbt_valid_to IS NULL  
 )
+{%endif%}
 SELECT * FROM source
 {% if company == 'playfly' %}
         WHERE 
             COALESCE(lower(STATUS_NAME), '') <> 'rejected'
             AND IS_POSTING = TRUE
 {% endif %}
+
+{%if company | lower == 'wagway'%}
+
 UNION 
 SELECT * FROM adjustments
+{% endif %}

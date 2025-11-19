@@ -6,6 +6,7 @@
 
 
 {{ config(
+    enabled = var('sourcesystem') == 'netsuite' and var('company') | lower =='wagway',
     materialized = 'incremental',
     alias = company ~ '_COA_MAPPING',
     incremental_strategy = 'merge',
