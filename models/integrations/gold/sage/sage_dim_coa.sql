@@ -1,7 +1,7 @@
 {% set company = var('company', 'Unknown company') | lower %}
 {% set sourcesystem = var('sourcesystem') %}
 {{ config(
-    enabled = var('sourcesystem') |lower == 'netsuite' ,
+    enabled = var('sourcesystem') |lower == 'sage' ,
     database = get_target_database(company),
     alias = 'dim_chart_of_account',
     unique_key = 'DIM_CHART_OF_ACCOUNT_ID',
@@ -11,25 +11,15 @@ WITH source AS (
     SELECT
         COA_ID AS DIM_CHART_OF_ACCOUNT_ID,
         ACCOUNT_ID,
-        SUBSIDIARY_ID,
+        PROJECT_ID,
         CLASS_ID,
         LOCATION_ID,
         DEPARTMENT_ID,
-        {%if company == 'wagway'%}
-            ADJUSTMENT_ID,
-        {%else%}
-            0 AS ADJUSTMENT_ID,
-        {%endif%}
         LOCATION_NAME,
-        SUBSIDIARY_NAME,
+        PROJECT_NAME,
         ACCOUNT_NAME,
         CLASS_NAME,
         DEPARTMENT_NAME,
-        {%if company == 'wagway'%}
-            ADJUSTMENT_NAME,
-        {%else%}
-            'Unknown' AS ADJUSTMENT_NAME,
-        {%endif%}
         METRIC_L1,
         METRIC_L2,
         METRIC_L3,
@@ -40,17 +30,23 @@ WITH source AS (
         CASHFLOW_L2 AS CASH_FLOW_L2,
         CASHFLOW_L3 AS CASH_FLOW_L3,
         IS_BS,
-        DEBT_MAPPING,
-        
-        {% if company == 'wagway'%}
-        CASE WHEN ADJUSTMENT_ID <> 0 THEN 1 
-            ELSE 0
-        END AS IS_ADJ
-        {% else %}
-        CAST(NULL AS INT) AS IS_ADJ
+        CASE WHEN 
+        {% if company == 'spotless' %}
+        c.PARENTKEY IN (18,28) 
+        {% elif company == 'amh'%}
+        CLASS_ID IN (1)
         {% endif %}
+        THEN 1
+        ELSE 0 
+        END AS IS_ADJ,
+        DEBT_MAPPING
+    
+   
 
-    FROM {{ get_silver_source(company, sourcesystem ~ '_coa') }}
+    FROM {{ get_silver_source(company, sourcesystem ~ '_coa') }} coa
+    {% if company == 'spotless' %}
+    LEFT JOIN {{ get_silver_source(company, 'CLASS') }} c ON c.RECORDNO =  coa.CLASS_ID
+    {% endif %}
     WHERE dbt_valid_to IS NULL  -- Only get active records from snapshot
 )
 
