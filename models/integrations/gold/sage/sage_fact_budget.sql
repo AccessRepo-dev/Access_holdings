@@ -26,14 +26,9 @@ with source as (
         CAST(NULL AS INT) AS DIM_ITEM_ID,
         CAST(NULL AS INT) AS ADJUSTMENT_ID,               
         CAST(NULL AS INT) AS CSEG3_ID,
-
         -- Derived Dimension Hashes (for conformed COA / Class across subs)
-        (HASH(b.ACCOUNTKEY, b.LOCATIONKEY,b.DEPTKEY,b.PERIODKEY,b.CLASSDIMKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
-        {% if company == 'spotless'  %}
-        cast(NULL as INT) AS DIM_PROJECT_ID,
-        {% else %}
-            b.PROJECTDIMKEY AS DIM_PROJECT_ID,
-        {% endif%}
+        (HASH(b.ACCOUNTKEY, b.LOCATIONKEY,b.DEPTKEY,b.PROJECTDIMKEY,b.CLASSDIMKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
+        b.PROJECTDIMKEY AS DIM_PROJECT_ID,
         b.AMOUNT AS AMOUNT,
         -- Metadata
         b.WHENMODIFIED AS LAST_MODIFIED_DATE
