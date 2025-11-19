@@ -28,9 +28,9 @@ WITH source AS (
         METRIC_L4,
         METRIC_L5,
         METRIC_L6,
-        CASHFLOW_L1,
-        CASHFLOW_L2,
-        CASHFLOW_L3,
+        CASHFLOW_L1 AS CASH_FLOW_L1,
+        CASHFLOW_L2 AS CASH_FLOW_L2,
+        CASHFLOW_L3 AS CASH_FLOW_L3,
         IS_BS,
         DEBT_MAPPING,
         

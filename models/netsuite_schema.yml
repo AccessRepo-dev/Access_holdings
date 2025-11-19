@@ -82,6 +82,7 @@ sources:
       - name: wagway_addbacks 
       - name: CUSTOMRECORD_CSEG1
       - name: netsuite_coa
+      - name: netsuite_adjustments
 
   - name: playfly_silver
     database: "{{ env_var('DBT_PLAYFLY') }}"

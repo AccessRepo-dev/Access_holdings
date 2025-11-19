@@ -4,7 +4,7 @@
 {% set sourcesystem = var('sourcesystem') %}
 {% set src = 'streamlit'%}
 {% set src_table = company ~ '_coa_mapping' %}
-
+{{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
 
 {{
     config(
