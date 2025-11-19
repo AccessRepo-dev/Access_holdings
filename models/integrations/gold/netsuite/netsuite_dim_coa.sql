@@ -1,9 +1,9 @@
 {% set company = var('company', 'Unknown company') | lower %}
 {% set sourcesystem = var('sourcesystem') %}
 {{ config(
-    enabled = var('sourcesystem', 'none') == 'netsuite',
+    enabled = var('sourcesystem') |lower == 'netsuite' and var('company') | lower =='wagway',
     database = get_target_database(company),
-    alias = 'dim_chart_of_account',
+    alias = 'dim_chart_of_account_BKP',
     unique_key = 'DIM_CHART_OF_ACCOUNT_ID',
 ) }}
 

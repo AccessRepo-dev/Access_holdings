@@ -4,10 +4,11 @@
 {% set sourcesystem = var('sourcesystem') %}
 {% set src = 'streamlit'%}
 {% set src_table = company ~ '_adjustments' %}
-{{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
+
 
 {{
     config(
+        enabled = var('sourcesystem') == 'netsuite' and var('company') | lower =='wagway',
         database = get_target_database(company),
         target_schema = 'silver',
         alias = sourcesystem ~ '_Adjustments', 

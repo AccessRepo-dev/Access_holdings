@@ -84,7 +84,7 @@ derived_metric_rows AS (
         NULL AS CASH_FLOW_L1,
         NULL AS CASH_FLOW_L2,
         NULL AS CASH_FLOW_L3,
-        CASE WHEN '{{ metric }}' IN ('Total Liabilities & Equity','Equity','Total Assets','Total Liabilities','Signing Bonus Amortization') THEN 'BS' ELSE 'IS' END AS  IS_BS,
+        CASE WHEN '{{ metric }}' IN ('Total Liabilities & Equity','Equity','Total Assets','Total Liabilities') THEN 'BS' ELSE 'IS' END AS  IS_BS,
         NULL AS IS_ADJ,
         NULL AS DEBT_MAPPING
     
