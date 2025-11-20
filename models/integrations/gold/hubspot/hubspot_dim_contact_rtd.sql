@@ -1,38 +1,31 @@
+{% if false %}
+
 {% set company = var('company') %}
-{{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville'])}}
-{{ config(enabled = var('company', 'none') in ['wagway', 'playfly', 'amh']) }}
+{{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
 {{ config(
     database = get_target_database(company),
     alias = 'dim_contact',
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'ID_DATE_KEY'
+    unique_key = ['ID','SOURCE_SCHEMA']
 ) }}
 
 SELECT
-    ID_DATE_KEY,
-    {% if company | lower == 'wagway' %}
-        ID AS CONTACT_ID,
-    {% else %}
-        CONTACT_ID,
-    {% endif %}
-    CAST (NULL AS VARCHAR) AS ACCOUNT_ID,
+    ID,
     PROPERTY_FIRSTNAME AS FIRST_NAME,
-    PROPERTY_LASTNAME AS LAST_NAME,
-    PROPERTY_EMAIL AS EMAIL,
-    PROPERTY_PHONE AS PHONE,
-    PROPERTY_CREATEDATE AS CREATED_DATE ,
-    CAST(NULL as TIMESTAMP_NTZ(9)) AS LAST_MODIFIED_DATE,
-    IS_ACTIVE,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE,
 
     {% if company | lower == 'amh' %}
         PROPERTY_MIDDLE_NAME AS MIDDLE_NAME,
     {% endif %}
+
+    PROPERTY_LASTNAME AS LAST_NAME,
+    PROPERTY_EMAIL AS EMAIL,
+    PROPERTY_PHONE AS PHONE,
     PROPERTY_MOBILEPHONE AS MOBILE_PHONE,
     PROPERTY_LIFECYCLESTAGE AS LIFECYCLE_STAGE,
     PROPERTY_HUBSPOT_OWNER_ID AS OWNER_ID,
     PROPERTY_JOBTITLE AS JOBTITLE,
+    PROPERTY_CREATEDATE AS CREATE_DATE ,
     PROPERTY_HS_LEAD_STATUS AS LEAD_STATUS,
     PROPERTY_ADDRESS AS ADDRESS,
     PROPERTY_CITY AS CITY,
@@ -41,6 +34,7 @@ SELECT
     PROPERTY_FAX AS FAX,
     PROPERTY_HS_TIMEZONE AS TIMEZONE,
     --PROPERTY_COMPANY AS COMPANY,
+    --PROPERTY_HS_LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
     'HUBSPOT' AS SOURCE_SCHEMA
 
 
@@ -51,25 +45,16 @@ FROM {{ get_silver_source(company , 'HUBSPOT_CONTACT') }}
 UNION ALL 
 
 SELECT
-    ID_DATE_KEY,
-    ID as CONTACT_ID,
-    CAST (NULL AS VARCHAR) AS ACCOUNT_ID,
+    ID,
     PROPERTY_FIRSTNAME AS FIRST_NAME,
     PROPERTY_LASTNAME AS LAST_NAME,
     PROPERTY_EMAIL AS EMAIL,
     PROPERTY_PHONE AS PHONE,
-    PROPERTY_CREATEDATE AS CREATED_DATE ,
-    CAST(NULL as TIMESTAMP_NTZ(9)) AS LAST_MODIFIED_DATE,
-    IS_ACTIVE,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE,
-
-    {% if company | lower == 'amh' %}
-        PROPERTY_MIDDLE_NAME AS MIDDLE_NAME,
-    {% endif %}
     PROPERTY_MOBILEPHONE AS MOBILE_PHONE,
     PROPERTY_LIFECYCLESTAGE AS LIFECYCLE_STAGE,
     PROPERTY_HUBSPOT_OWNER_ID AS OWNER_ID,
     PROPERTY_JOBTITLE AS JOBTITLE,
+    PROPERTY_CREATEDATE AS CREATE_DATE ,
     PROPERTY_HS_LEAD_STATUS AS LEAD_STATUS,
     PROPERTY_ADDRESS AS ADDRESS,
     PROPERTY_CITY AS CITY,
@@ -78,6 +63,14 @@ SELECT
     PROPERTY_FAX AS FAX,
     PROPERTY_HS_TIMEZONE AS TIMEZONE,
     --PROPERTY_COMPANY AS COMPANY,
+    --PROPERTY_LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
     'HUBSPOT_PAWVILLE' AS SOURCE_SCHEMA
 FROM {{ get_silver_source(company, 'HUBSPOT_PAWVILLE_CONTACT') }} 
 {% endif %}
+
+
+{% endif %}
+
+
+
+
