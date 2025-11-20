@@ -10,3 +10,6 @@ sources:
       - name: SMS_TO
       - name: COMPANY_DIRECTORY_PHONE_NUMBER
       - name: COMPANY_DIRECTORY
+      - name: USER_BUSINESS_HOUR_RANGE
+      - name: MESSAGE
+      - name: MESSAGE_TO

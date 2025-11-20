@@ -140,6 +140,9 @@ models:
         ringcentral:
             +schema: SILVER
             +materialized: table
+        gingr:
+            +schema: SILVER
+            +materialized: table
 
       gold:
         netsuite:
@@ -157,8 +160,17 @@ models:
           +materialized: table
         hubspot:
           +schema: GOLD
+        ringcentral:
+          +schema: GOLD
           +materialized: table
-        
+        gingr:
+            +schema: GOLD
+            +materialized: table
+        cdm:
+            +schema: GOLD
+            +materialized: table 
+
+
 
       reporting:
         netsuite:
