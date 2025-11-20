@@ -82,6 +82,24 @@ sources:
       - name: wagway_COA_MAPPING
       - name: wagway_addbacks 
       - name: CUSTOMRECORD_CSEG1
+      - name: ringcentral_account_call_log
+      - name: ringcentral_company_directory_phone_number
+      - name: ringcentral_company_directory
+      - name: hubspot_deal
+      - name: hubspot_deal_contact
+      - name: hubspot_contact
+      - name: gingr_owners
+      - name: ringcentral_sms
+      - name: ringcentral_sms_to
+      - name: ringcentral_message
+      - name: ringcentral_message_to
+      - name: gingr_pos_transactions
+      - name: gingr_pos_transaction_items_audit
+      - name: gingr_account_codes
+      - name: hubspot_pawville_deal
+      - name: hubspot_pawville_deal_contact
+      - name: hubspot_pawville_contact
+
       - name: netsuite_coa
       - name: netsuite_adjustments
 
