@@ -44,7 +44,8 @@ with source as (
     CAST(NULL AS NUMBER) AS DIM_ADDBACK_ID,
  
     -- Period / Currency
-    NULL AS DIM_PERIOD_ID,
+    
+    per.recordno AS DIM_PERIOD_ID,
     e.BATCH_DATE AS POSTING_PERIOD_DATE,
     e.CURRENCY AS CURRENCY,
     CONCAT(e.LOCATIONKEY, '-', b.BATCH_DATE, '-', e.CURRENCY) AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
@@ -80,6 +81,9 @@ LEFT JOIN {{ get_silver_source(company, 'GL_BATCH') }}  b
     ON e.batchno = b.recordno
 LEFT JOIN {{ get_silver_source(company, 'GL_ACCOUNT') }} acc
     ON e.ACCOUNTKEY  = acc.RECORDNO
+ 
+LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
+ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
     
 
  {% if company == 'spotless' %}
@@ -176,10 +180,10 @@ SELECT * FROM source
         WHERE SYMBOL = 'QB_HISTORY' and 
             batch_date between '2022-01-01' and '2022-08-31')
 {% elif company | lower  == 'spotless' %}
-    WHERE TRANSACTION_LINE_ID NOT IN 
+    WHERE (TRANSACTION_LINE_ID NOT IN 
         (select distinct GLENTRYKEY 
         from {{ get_silver_source(company, 'GL_DETAIL') }}
-        WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ'))
+        WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ'))) OR TRANSACTION_LINE_ID IS NULL 
 {% endif %}
-UNION ALL
+UNION 
 SELECT * FROM adjustments
