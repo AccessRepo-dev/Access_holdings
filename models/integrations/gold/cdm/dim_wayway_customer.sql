@@ -16,6 +16,7 @@ WITH cte1 AS (
             CONCAT('+1', REGEXP_REPLACE(property_phone, '[^0-9]', ''))
         ) AS phone_number
     FROM {{ get_silver_source('wagway', 'hubspot_contact') }}
+    WHERE is_active=1
 
     UNION ALL
 
@@ -27,7 +28,7 @@ WITH cte1 AS (
             CONCAT('+1', REGEXP_REPLACE(property_phone, '[^0-9]', ''))
         ) AS phone_number
     FROM {{ get_silver_source('wagway', 'hubspot_pawville_contact') }}
-
+    where is_active=1
     UNION ALL
 
     SELECT
@@ -104,7 +105,7 @@ cte3 AS (
             b.property_hs_calculated_mobile_number,
             CONCAT('+1', REGEXP_REPLACE(b.property_mobilephone, '[^0-9]', '')),
             CONCAT('+1', REGEXP_REPLACE(b.property_phone, '[^0-9]', ''))
-        )
+        ) AND b.is_active=1
 
     LEFT JOIN {{ get_silver_source('wagway', 'hubspot_contact') }} e
         ON a.phone_number = COALESCE(
@@ -112,7 +113,7 @@ cte3 AS (
             e.property_hs_calculated_mobile_number,
             CONCAT('+1', REGEXP_REPLACE(e.property_mobilephone, '[^0-9]', '')),
             CONCAT('+1', REGEXP_REPLACE(e.property_phone, '[^0-9]', ''))
-        )
+        ) AND e.is_active=1
 
     LEFT JOIN {{ get_silver_source('wagway', 'gingr_owners') }} h
         ON a.phone_number = CONCAT('+1', REGEXP_REPLACE(h.cell_phone, '[^0-9]', ''))

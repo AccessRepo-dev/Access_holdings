@@ -204,16 +204,16 @@ final_enriched AS (
     FROM services AS f
 
     LEFT JOIN {{ get_silver_source('wagway', 'hubspot_deal_contact') }} b 
-        ON f.deal_id = b.deal_id
+        ON f.deal_id = b.deal_id and b.is_active=1
 
     LEFT JOIN {{ get_silver_source('wagway', 'hubspot_contact') }} c 
-        ON c.id = b.contact_id
+        ON c.id = b.contact_id and c.is_active=1
 
     LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_deal_contact') }} d 
-        ON f.deal_id = d.deal_id
+        ON f.deal_id = d.deal_id and d.is_active=1
 
     LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_contact') }} e 
-        ON e.id = d.contact_id
+        ON e.id = d.contact_id and e.is_active=1
 
     -- join transactions by concatenated invoice id + source_db (matches PROPERTY_INVOICE_ID with suffix)
     LEFT JOIN {{ get_silver_source('wagway', 'gingr_pos_transactions') }} t 
