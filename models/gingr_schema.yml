@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: wagway_gingr_raw
+    database: wagway_raw     
+    schema: gingr_pups_gingr_ods_prod   
+    tables:
+      - name: OWNERS
+      - name: POS_TRANSACTIONS
+      - name: POS_TRANSACTION_ITEMS_AUDIT
+      - name: ACCOUNT_CODES

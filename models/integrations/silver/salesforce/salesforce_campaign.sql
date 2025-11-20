@@ -17,10 +17,11 @@ with raw as
 select *
 from {{ source_snapshot_schema(company, 'SALESFORCE_CAMPAIGN') }}
 {% if is_incremental() %}
-    where LAST_MODIFIED_DATE > (
-        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
-    )
+    where 
+        cast(LAST_MODIFIED_DATE as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
+        )
     or _FIVETRAN_DELETED = true
 
 {% endif %}
@@ -29,8 +30,8 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_CAMPAIGN') }}
 
 cleaned as 
 (
-    select
-    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) as ID_DATE_KEY,
+    select distinct
+    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
     TRIM(ID) AS CAMPAIGN_ID,
     TRIM(NAME) AS NAME,
     TRIM(TYPE) AS TYPE,

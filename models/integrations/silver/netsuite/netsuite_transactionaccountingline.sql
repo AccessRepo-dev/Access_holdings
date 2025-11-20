@@ -14,10 +14,11 @@ with source_data as (
     select *
     from {{ get_raw_source(company, sourcesystem, 'TRANSACTIONACCOUNTINGLINE') }}
     {% if is_incremental() %}
-    where LASTMODIFIEDDATE > (
-        select coalesce(max(LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
-    )
+    where 
+        cast(LASTMODIFIEDDATE as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(LASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
+        )
     or _FIVETRAN_DELETED = true
     {% endif %}
 ),
@@ -26,7 +27,7 @@ cleaned as (
     select
         TRY_CAST(TRANSACTION AS INT) AS TRANSACTION,
         TRY_CAST(TRANSACTIONLINE AS INT) AS TRANSACTIONLINE,
-        TRY_CAST(ACCOUNT AS INT) AS ACCOUNT,
+        COALESCE(TRY_CAST(ACCOUNT AS INT),0) AS ACCOUNT,
         TRY_CAST(ACCOUNTINGBOOK AS INT) AS ACCOUNTINGBOOK,
         TRIM(ACCOUNTTYPE) AS ACCOUNTTYPE,
         CASE WHEN POSTING='T' THEN TRUE ELSE FALSE END AS POSTING,

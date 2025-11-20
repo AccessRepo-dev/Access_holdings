@@ -19,10 +19,11 @@ with source_data as (
     where 
         (
             HEADER_1 ilike '%month%' and START_DATE is not null
-            and cast(WHENMODIFIED as timestamp_ntz) > (
-                select coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz)
-                from {{ this }}
-            )
+            and    
+        cast(WHENMODIFIED as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
+        )
         )
         or _FIVETRAN_DELETED = true
     {% else %}

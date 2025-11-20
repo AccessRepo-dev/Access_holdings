@@ -16,6 +16,7 @@
         PARENT_NAME,
         CHILD_NAME,
         CURRENCY_ID,
+        DIVISION_MAPPING,
         IS_INACTIVE,
         PARENT_ID,
         LAST_MODIFIED_DATE,

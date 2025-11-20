@@ -16,8 +16,9 @@ with source_data as (
     from {{ get_raw_source(company, sourcesystem, 'LOCATION_ENTITY') }}
 
     {% if is_incremental() %}
-        where WHENMODIFIED > (
-            select coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz)
+    where 
+        cast(WHENMODIFIED as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(WHENMODIFIED), '1900-01-01'::timestamp_ntz))
             from {{ this }}
         )
     {% endif %}
@@ -34,6 +35,11 @@ cleaned as (
     TRIM(LOCATIONID) AS LOCATIONID,
     TRIM(NAME) AS NAME ,
     TRIM(ENTITY) AS ENTITY,
+    {%if company | lower == 'amh'%}
+    TRIM(DIVISION_MAPPING) AS DIVISION_MAPPING,
+    {%else%}
+    CAST(NULL AS VARCHAR) AS DIVISION_MAPPING,
+    {%endif%}
     CASE WHEN STATUS ='active' THEN FALSE 
         WHEN STATUS = 'incative' THEN TRUE
         ELSE NULL 

@@ -1,11 +1,11 @@
 {% set company = var('company') %}
 
 {{ config(
+    enabled = (var('company') | lower) == 'wagway',
     database = get_target_database(company),
     materialized = 'table',
     alias = 'DIM_WAGWAY_CUSTOMER'
 ) }}
-
 
 WITH cte1 AS (
     SELECT
@@ -32,7 +32,7 @@ WITH cte1 AS (
 
     SELECT
         CONCAT('+1', REGEXP_REPLACE(cell_phone, '[^0-9]', '')) AS phone_number
-    FROM {{ get_silver_source('wagway', 'gingr_owners') }} 
+    FROM {{ get_silver_source('wagway', 'gingr_owners') }}
 
     UNION ALL
 
@@ -114,7 +114,7 @@ cte3 AS (
             CONCAT('+1', REGEXP_REPLACE(e.property_phone, '[^0-9]', ''))
         )
 
-    LEFT JOIN {{ get_silver_source('wagway', 'gingr_owners') }}  h
+    LEFT JOIN {{ get_silver_source('wagway', 'gingr_owners') }} h
         ON a.phone_number = CONCAT('+1', REGEXP_REPLACE(h.cell_phone, '[^0-9]', ''))
 
     LEFT JOIN {{ get_silver_source('wagway', 'ringcentral_account_call_log') }} i
@@ -136,6 +136,11 @@ cte4 AS (
     GROUP BY phone_number
 )
 
-SELECT *
+SELECT 
+    phone_number,
+    COALESCE(name, phone_number) AS name,
+    email,
+    location,
+    address
 FROM cte4
 WHERE LENGTH(phone_number) > 8

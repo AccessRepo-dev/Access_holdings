@@ -90,6 +90,8 @@ sources:
       - name: gingr_owners
       - name: ringcentral_sms
       - name: ringcentral_sms_to
+      - name: ringcentral_message
+      - name: ringcentral_message_to
       - name: gingr_pos_transactions
       - name: gingr_pos_transaction_items_audit
       - name: gingr_account_codes
@@ -97,6 +99,8 @@ sources:
       - name: hubspot_pawville_deal_contact
       - name: hubspot_pawville_contact
 
+      - name: netsuite_coa
+      - name: netsuite_adjustments
 
   - name: playfly_silver
     database: "{{ env_var('DBT_PLAYFLY') }}"

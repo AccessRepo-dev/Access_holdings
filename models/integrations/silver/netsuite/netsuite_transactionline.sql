@@ -14,10 +14,11 @@ with source_data as (
     select *
     from {{ get_raw_source(company, sourcesystem, 'TRANSACTIONLINE') }}
     {% if is_incremental() %}
-    where CAST(LINELASTMODIFIEDDATE AS TIMESTAMP_NTZ) > (
-        select coalesce(max(LINELASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
-    )
+    where 
+        cast(LINELASTMODIFIEDDATE as timestamp_ntz) > (
+            select dateadd(day, -1, coalesce(max(LINELASTMODIFIEDDATE), '1900-01-01'::timestamp_ntz))
+            from {{ this }}
+        )
     or _FIVETRAN_DELETED = true
     {% endif %}
 ),
@@ -35,16 +36,16 @@ cleaned as (
         CAST(CREATEDFROM AS INT) AS CREATEDFROM,
         CAST(ORDERPRIORITY AS INT) AS ORDERPRIORITY,
         CAST(ENTITY AS INT) AS ENTITY,
-        CAST(CLASS AS INT) AS CLASS,
-        CAST(DEPARTMENT AS INT) AS DEPARTMENT,
+        COALESCE(CAST(CLASS AS INT),0) AS CLASS,
+        COALESCE(CAST(DEPARTMENT AS INT), 0) AS DEPARTMENT,
         {% if company == 'wagway' %}
-            CSEG_CP_STORE_LOC AS LOCATION,
-            CSEG1 AS ADDBACK_ID,
+            COALESCE(CSEG_CP_STORE_LOC,0) AS LOCATION,
+            COALESCE(CSEG1,0) AS ADDBACK_ID,
         {% else %}
-            LOCATION,
+            COALESCE(LOCATION,0) AS LOCATION,
             NULL AS ADDBACK_ID,
         {% endif %}
-        CAST(SUBSIDIARY AS INT) AS SUBSIDIARY,
+        COALESCE(CAST(SUBSIDIARY AS INT),0) AS SUBSIDIARY,
         CAST(ITEM AS INT) AS ITEM,
         TRIM(ITEMTYPE) AS ITEMTYPE,
         CAST(UNITS AS INT) AS UNITS,

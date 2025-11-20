@@ -15,7 +15,7 @@ with source_data as (
     from {{ get_raw_source(company, sourcesystem, 'CLASSIFICATIONSUBSIDIARYMAP') }}
     {% if is_incremental() %}
     where _FIVETRAN_SYNCED > (
-        select coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
+        select coalesce(max(_FIVETRAN_SYNCED), '1900-01-01')
         from {{ this }}
     )
     or _FIVETRAN_DELETED = true

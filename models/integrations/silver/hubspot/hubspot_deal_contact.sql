@@ -8,7 +8,7 @@
     materialized = 'incremental',
     alias = sourcesystem ~'_DEAL_CONTACT',
     incremental_strategy = 'merge',
-    unique_key = 'UNIQUE_ID'
+    unique_key = 'ID_DATE_KEY'
 ) }}
 
 
@@ -19,7 +19,7 @@ with raw as (
     {% if is_incremental() %}
         where 
             _FIVETRAN_SYNCED > (
-                select coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)
+                select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'))
                 from {{ this }}
             )
             and 1=1
@@ -30,7 +30,7 @@ with raw as (
 
 cleaned as (
     SELECT
-        HASH(DEAL_ID,'_',CONTACT_ID,'_',TYPE_ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'MMDDYYYY')) AS UNIQUE_ID,
+        CONCAT(DEAL_ID,'_',CONTACT_ID,'_',TYPE_ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) AS ID_DATE_KEY,
         DEAL_ID,
         CATEGORY,
         CONTACT_ID,
