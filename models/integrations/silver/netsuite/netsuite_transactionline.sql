@@ -43,7 +43,7 @@ cleaned as (
             COALESCE(CSEG1,0) AS ADDBACK_ID,
         {% else %}
             COALESCE(LOCATION,0) AS LOCATION,
-            NULL AS ADDBACK_ID,
+            0 AS ADDBACK_ID,
         {% endif %}
         COALESCE(CAST(SUBSIDIARY AS INT),0) AS SUBSIDIARY,
         CAST(ITEM AS INT) AS ITEM,

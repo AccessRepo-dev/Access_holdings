@@ -4,7 +4,7 @@
 
 {{ config(
     database = get_target_database(company),
-    alias = 'dim_chart_of_account',
+    alias = 'dim_chart_of_account_bkp',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'DIM_CHART_OF_ACCOUNT_ID'

@@ -63,6 +63,8 @@ sources:
       - name: spotless_COA_MAPPING
       - name: spotless_addbacks 
       - name: VENDOR
+      - name: sage_coa
+      - name: sage_adjustments
 
 
   - name: amh_sage_raw
@@ -127,6 +129,8 @@ sources:
       - name: amh_COA_MAPPING
       - name: amh_addbacks 
       - name: VENDOR
+      - name: sage_coa
+      - name: sage_adjustments
 
   - name: spotless_gold
     database: "{{ env_var('DBT_SPOTLESS') }}"

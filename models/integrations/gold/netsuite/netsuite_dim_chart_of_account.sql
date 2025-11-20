@@ -4,7 +4,7 @@
     enabled = var('sourcesystem', 'none') == 'netsuite',
     database = get_target_database(company),
     materialized = 'incremental',
-    alias = 'dim_chart_of_account',
+    alias = 'dim_chart_of_account_bkp',
     unique_key = 'DIM_CHART_OF_ACCOUNT_ID',
     incremental_strategy = 'merge'
 ) }}
@@ -16,15 +16,12 @@ WITH source AS (
         {% if company == 'wagway' %}
             HASH(COALESCE(ACCOUNT_ID, 0),COALESCE(SUBSIDIARY_ID, 0),COALESCE(CLASS_ID, 0),COALESCE(LOCATION_ID, 0),COALESCE(DEPARTMENT_ID, 0),COALESCE(ADJUSTMENT_ID, 0)) AS DIM_CHART_OF_ACCOUNT_ID,
         {% else %}
-            HASH(ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID) AS DIM_CHART_OF_ACCOUNT_ID,
+            HASH(COALESCE(ACCOUNT_ID, 0),COALESCE(SUBSIDIARY_ID, 0),COALESCE(CLASS_ID, 0),COALESCE(LOCATION_ID, 0),COALESCE(DEPARTMENT_ID, 0)) AS DIM_CHART_OF_ACCOUNT_ID,
         {% endif %}
        
         ACCOUNT_ID,
-        {% if company == 'playfly'%}
-            NULL AS ACCOUNT_NAME,
-        {%else%}
-            ACCOUNT_NAME,
-        {%endif%}
+
+        ACCOUNT_NAME,
         CAST(ACCOUNT_NUMBER AS VARCHAR) AS ACCOUNT_NUMBER,
         SUBSIDIARY_ID,
         SUBSIDIARY_NAME,
@@ -58,11 +55,12 @@ WITH source AS (
         {%else%}
             CAST(NULL AS INT) IS_ADJ,
         {%endif%}
-        {% if company == 'playfly'%}
-            DEBT_MAPPING
-        {%else%}
-            CAST(NULL AS VARCHAR) AS DEBT_MAPPING
-        {%endif%}
+        -- {% if company == 'playfly'%}
+        --     DEBT_MAPPING
+        -- {%else%}
+        --     CAST(NULL AS VARCHAR) AS DEBT_MAPPING
+        -- {%endif%}
+        CAST(NULL AS VARCHAR) AS DEBT_MAPPING
 
 
     FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }}
