@@ -37,6 +37,10 @@ sources:
 
       # WEATHER tables
       - name: WEATHER_DAILY_OBS
+
+      # Federal Reserve
+      - name: FRED
+      
   - name: macro_silver
     database: access_dev    
     schema: silver        

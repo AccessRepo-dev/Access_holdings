@@ -8,7 +8,7 @@
 
 {{
     config(
-        enabled = var('sourcesystem') == 'netsuite' and var('company') | lower =='wagway',
+        enabled = var("company") | lower in ('wagway','playfly','amh','spotless'),
         database = get_target_database(company),
         target_schema = 'silver',
         alias = sourcesystem ~ '_Adjustments', 
@@ -22,20 +22,38 @@
 
 SELECT 
     DISTINCT 
+    {%if company == 'wagway'%}
     HASH(ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID,ADJUSTMENT_ID,ADJ_TYPE,PERIOD) AS unique_key,
-    HASH(ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID,ADJUSTMENT_ID) AS COA_ID ,
+    HASH(
+        ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID,ADJUSTMENT_ID) AS COA_ID ,
+    {%elif company == 'playfly'%}
+    HASH(ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID,ADJ_TYPE,PERIOD) AS unique_key,
+    HASH(
+        ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID) AS COA_ID ,
+    {%elif sourcesystem == 'sage'%}
+    HASH(ACCOUNT_ID, LOCATION_ID,DEPARTMENT_ID,PROJECT_ID, CLASS_ID,ADJ_TYPE,PERIOD) AS unique_key,
+    HASH(ACCOUNT_ID, LOCATION_ID,DEPARTMENT_ID,PROJECT_ID, CLASS_ID) AS COA_ID ,
+    {%endif%}
     ACCOUNT_ID,
-    SUBSIDIARY_ID,
     CLASS_ID,
     LOCATION_ID,
     DEPARTMENT_ID,
-    ADJUSTMENT_ID,
+     {%if company == 'wagway' %}
+        ADJUSTMENT_ID,
+         ADJUSTMENT_NAME,
+    {%endif%}
     LOCATION_NAME,
-    SUBSIDIARY_NAME,
     ACCOUNT_NAME,
     CLASS_NAME,
     DEPARTMENT_NAME,
-    ADJUSTMENT_NAME,
+    {%if sourcesystem == 'netsuite' %}
+        SUBSIDIARY_NAME,
+        SUBSIDIARY_ID,
+    {%endif%}
+    {%if sourcesystem == 'sage' %}
+        PROJECT_NAME,
+        PROJECT_ID,
+    {%endif%}
     ADJ_TYPE,
     PERIOD,
     AMOUNT

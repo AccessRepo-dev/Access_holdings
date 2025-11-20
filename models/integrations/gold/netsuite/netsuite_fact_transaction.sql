@@ -120,9 +120,7 @@ with source as (
         AND cer.TOSUBSIDIARY=COALESCE(sub.PARENT,1)
 
  
-)
-{%if company | lower == 'wagway'%}
-,
+),
 adjustments AS (
     SELECT
         CONCAT('ADJ-', CAST(COA_ID AS VARCHAR), '-', CAST(PERIOD AS VARCHAR))  AS  TRANSACTIONS_UNIQUE_ID,
@@ -157,8 +155,11 @@ adjustments AS (
         NULL AS ACCOUNTING_LINE_TYPE,
         LOCATION_ID AS DIM_LOCATION_ID,
         SUBSIDIARY_ID AS DIM_SUBSIDIARY_ID,
-        ADJUSTMENT_ID AS DIM_ADDBACK_ID,
-        
+        {%if comapny == 'wagway'%}
+            ADJUSTMENT_ID AS DIM_ADDBACK_ID,
+        {%else%}
+            0 as DIM_ADDBACK_ID,
+        {% endif %}
         -- Period / currency
         NULL AS DIM_PERIOD_ID,
         NULL AS POSTING_PERIOD_DATE,
@@ -205,7 +206,7 @@ adjustments AS (
 {% endif %}
     WHERE dbt_valid_to IS NULL  
 )
-{%endif%}
+
 SELECT * FROM source
 {% if company == 'playfly' %}
         WHERE 
@@ -213,8 +214,5 @@ SELECT * FROM source
             AND IS_POSTING = TRUE
 {% endif %}
 
-{%if company | lower == 'wagway'%}
-
 UNION 
 SELECT * FROM adjustments
-{% endif %}
