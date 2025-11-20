@@ -8,6 +8,7 @@
 
 {{
     config(
+        enabled = var("company") | lower in ('wagway','playfly','amh','spotless'),
         database = get_target_database(company),
         target_schema = 'silver',
         alias = sourcesystem ~ '_COA', 
