@@ -107,3 +107,10 @@ SELECT 'DateKey',
     'hash(DateKey)',
     'Housing_completed' AS DATASET,
     'Census' AS DATASOURCE
+
+UNION ALL
+
+SELECT 'SERIES_ID, DateKey',
+    'hash(SERIES_ID, DateKey)',
+    'FRED' AS DATASET,
+    'Federal Reserve Economic Data' AS DATASOURCE

@@ -155,8 +155,11 @@ adjustments AS (
         NULL AS ACCOUNTING_LINE_TYPE,
         LOCATION_ID AS DIM_LOCATION_ID,
         SUBSIDIARY_ID AS DIM_SUBSIDIARY_ID,
-        ADJUSTMENT_ID AS DIM_ADDBACK_ID,
-        
+        {%if comapny == 'wagway'%}
+            ADJUSTMENT_ID AS DIM_ADDBACK_ID,
+        {%else%}
+            0 as DIM_ADDBACK_ID,
+        {% endif %}
         -- Period / currency
         NULL AS DIM_PERIOD_ID,
         NULL AS POSTING_PERIOD_DATE,
@@ -203,11 +206,13 @@ adjustments AS (
 {% endif %}
     WHERE dbt_valid_to IS NULL  
 )
+
 SELECT * FROM source
 {% if company == 'playfly' %}
         WHERE 
             COALESCE(lower(STATUS_NAME), '') <> 'rejected'
             AND IS_POSTING = TRUE
 {% endif %}
+
 UNION 
 SELECT * FROM adjustments

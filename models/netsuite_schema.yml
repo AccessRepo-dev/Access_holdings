@@ -27,6 +27,7 @@ sources:
       - name: ACCOUNTSUBSIDIARYMAP
       - name: CUSTOMRECORD_CSEG1
       - name: CUSTOMRECORD_CSEG_CP_STORE_LOC
+      - name: CUSTOMLIST_STORE_LOC_CATEGORY
 
   - name: playfly_netsuite_raw
     database: playfly_raw
@@ -102,6 +103,8 @@ sources:
       - name: netsuite_coa
       - name: netsuite_adjustments
 
+
+
   - name: playfly_silver
     database: "{{ env_var('DBT_PLAYFLY') }}"
     schema: silver
@@ -129,6 +132,8 @@ sources:
       - name: playfly_COA_MAPPING
       - name: playfly_addbacks 
       - name: CUSTOMRECORD_CSEG1
+      - name: netsuite_coa
+      - name: netsuite_adjustments
   
   - name: wagway_gold
     database: "{{ env_var('DBT_WAGWAY') }}"

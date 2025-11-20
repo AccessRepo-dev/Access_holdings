@@ -42,6 +42,7 @@
         EXCHANGERATE,
         NETAMOUNT,
         AMOUNT,
+        AMOUNT_UNCONVERTED,
         CONVERTED_NET_AMOUNT,
         BOM_QUANTITY,
         QUANTITY,

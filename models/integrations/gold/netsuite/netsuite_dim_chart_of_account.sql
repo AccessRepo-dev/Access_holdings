@@ -13,18 +13,15 @@
 
 WITH source AS (
     SELECT
-         {% if company == 'wagway'%}
-            HASH(ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID,ADJUSTMENT_ID) AS DIM_CHART_OF_ACCOUNT_ID,
-        {%else%}
-            HASH(ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID,LOCATION_ID,DEPARTMENT_ID) AS DIM_CHART_OF_ACCOUNT_ID,
-        {%endif%}
+        {% if company == 'wagway' %}
+            HASH(COALESCE(ACCOUNT_ID, 0),COALESCE(SUBSIDIARY_ID, 0),COALESCE(CLASS_ID, 0),COALESCE(LOCATION_ID, 0),COALESCE(DEPARTMENT_ID, 0),COALESCE(ADJUSTMENT_ID, 0)) AS DIM_CHART_OF_ACCOUNT_ID,
+        {% else %}
+            HASH(COALESCE(ACCOUNT_ID, 0),COALESCE(SUBSIDIARY_ID, 0),COALESCE(CLASS_ID, 0),COALESCE(LOCATION_ID, 0),COALESCE(DEPARTMENT_ID, 0)) AS DIM_CHART_OF_ACCOUNT_ID,
+        {% endif %}
        
         ACCOUNT_ID,
-        {% if company == 'playfly'%}
-            NULL AS ACCOUNT_NAME,
-        {%else%}
-            ACCOUNT_NAME,
-        {%endif%}
+
+        ACCOUNT_NAME,
         CAST(ACCOUNT_NUMBER AS VARCHAR) AS ACCOUNT_NUMBER,
         SUBSIDIARY_ID,
         SUBSIDIARY_NAME,
@@ -54,15 +51,16 @@ WITH source AS (
         {% if company == 'wagway'%}
             CASE WHEN ADJUSTMENT_ID IS NOT NULL THEN 1 
         ELSE 0
-        END AS IS_ADJ
+        END AS IS_ADJ,
         {%else%}
-            CAST(NULL AS INT) IS_ADJ
-        {%endif%}, 
-        {% if company == 'playfly'%}
-            DEBT_MAPPING
-        {%else%}
-            CAST(NULL AS VARCHAR) AS DEBT_MAPPING
+            CAST(NULL AS INT) IS_ADJ,
         {%endif%}
+        -- {% if company == 'playfly'%}
+        --     DEBT_MAPPING
+        -- {%else%}
+        --     CAST(NULL AS VARCHAR) AS DEBT_MAPPING
+        -- {%endif%}
+        CAST(NULL AS VARCHAR) AS DEBT_MAPPING
 
 
     FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }}
@@ -95,7 +93,7 @@ derived_metric_rows AS (
         NULL AS CASH_FLOW_L1,
         NULL AS CASH_FLOW_L2,
         NULL AS CASH_FLOW_L3,
-        CASE WHEN '{{ metric }}' IN ('Total Liabilities & Equity','Equity','Total Assets','Total Liabilities','Signing Bonus Amortization') THEN 'BS' ELSE 'IS' END AS  IS_BS,
+        CASE WHEN '{{ metric }}' IN ('Total Liabilities & Equity','Equity','Total Assets','Total Liabilities') THEN 'BS' ELSE 'IS' END AS  IS_BS,
         NULL AS IS_ADJ,
         NULL AS DEBT_MAPPING
 
@@ -129,7 +127,8 @@ derived_metric_rows AS (
                 'BS' AS IS_BS,
                 NULL AS IS_ADJ,
                 NULL AS DEBT_MAPPING
-
+            
+            {% if var('company') | lower == 'playfly' %}
             UNION ALL
             SELECT
                 CAST({{ -loop.index }} * 100 - 3 AS NUMBER(19,0)) AS DIM_CHART_OF_ACCOUNT_ID,
@@ -159,6 +158,7 @@ derived_metric_rows AS (
                 'BS' AS IS_BS,
                 NULL AS IS_ADJ,
                 NULL AS DEBT_MAPPING
+            {% endif %}
         {% endif %}
 
     {% if not loop.last %}
