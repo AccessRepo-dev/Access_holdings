@@ -18,6 +18,7 @@ WITH source AS (
         LOCATION_NAME,
         PROJECT_NAME,
         ACCOUNT_NAME,
+        ACCOUNT_NUMBER,
         CLASS_NAME,
         DEPARTMENT_NAME,
         METRIC_L1,
