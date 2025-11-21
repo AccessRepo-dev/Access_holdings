@@ -20,7 +20,7 @@ with source as (
         PARENTKEY AS PARENT_ID,
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'CLASS') }}
+    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_CLASS') }}
     
     where 1=1
 

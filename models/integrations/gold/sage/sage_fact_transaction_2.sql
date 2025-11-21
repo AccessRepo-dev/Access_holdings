@@ -70,12 +70,12 @@ with source as (
     CAST(NULL AS DATE) AS CLOSEDATE,
     e.WHENMODIFIED AS LASTMODIFIEDDATE
      
-    FROM {{ get_silver_source(company, 'GL_ENTRY') }} e
-    LEFT JOIN {{ get_silver_source(company, 'GL_BATCH') }} b
+    FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_ENTRY') }} e
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_BATCH') }} b
         ON e.batchno = b.recordno
-    LEFT JOIN {{ get_silver_source(company, 'GL_ACCOUNT') }} acc
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_ACCOUNT') }} acc
         ON e.ACCOUNTKEY = acc.RECORDNO
-    LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_REPORTING_PERIOD') }} per
         ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
 
     {% if company == 'spotless' %}

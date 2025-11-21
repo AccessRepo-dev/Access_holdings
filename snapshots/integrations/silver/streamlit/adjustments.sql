@@ -1,6 +1,6 @@
 {% snapshot adjustments %}
 
-{% set company = var('company') %}
+{% set company = var('company') | lower %}
 {% set sourcesystem = var('sourcesystem') %}
 {% set src = 'streamlit'%}
 {% set src_table = company ~ '_adjustments' %}

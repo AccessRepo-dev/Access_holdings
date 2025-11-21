@@ -34,7 +34,7 @@ with source as (
         -- Metadata
         b.WHENMODIFIED AS LAST_MODIFIED_DATE
 
-FROM {{ get_silver_source(company, 'GL_BUDGET_ITEM') }} b
+FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_BUDGET_ITEM') }} b
 
 
     {% if is_incremental() %}

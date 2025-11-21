@@ -17,7 +17,7 @@ with source as (
         PARENTKEY AS PARENT,
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'DEPARTMENT') }}
+    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_DEPARTMENT') }}
     
     {% if is_incremental() %}
     where WHENMODIFIED > (
