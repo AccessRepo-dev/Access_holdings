@@ -1,0 +1,41 @@
+service_id,service_name,service_to_map
+1,Boarding,Boarding
+1,Boarding,Dog Boarding
+2,Daycare,Daycare
+3,General,Food/Treat Add-Ons
+3,General,Other
+3,General,Packages
+3,General,Retail
+3,General,General
+4,Gingr Sign Up,Gingr Sign Up
+5,Grooming,Bath
+5,Grooming,Groom
+5,Grooming,Grooming & Bathing
+5,Grooming,Grooming
+6,Invoiced,Fees
+6,Invoiced,POS
+6,Invoiced,Tips
+6,Invoiced,INVOICED
+7,Membership,Membership
+7,Membership,Memberships
+8,New Lead,New Lead
+9,Overnight,Overnight
+9,Overnight,Overnights
+10,Pet Sitting,Pet Sitting
+10,Pet Sitting,Petsitting
+10,Pet Sitting,Pet-Sitting
+11,PlayCare,Activities
+11,PlayCare,Playcare
+11,PlayCare,Puppy Play Care
+11,PlayCare,Puppy Playcare
+12,Training,Boot Camp
+12,Training,Private Training
+12,Training,Training
+13,Transport,Transportation
+13,Transport,Transport
+14,Veterinary,Vet
+14,Veterinary,Veterinary
+15,Walking,Walking
+16,Well Care,Well Care
+16,Well Care,Wellcare
+17,Wellness,Wellness
