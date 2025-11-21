@@ -109,29 +109,29 @@ sources:
     database: "{{ env_var('DBT_PLAYFLY') }}"
     schema: silver
     tables:
-      - name: ACCOUNT
-      - name: ACCOUNTINGPERIOD
-      - name: CLASSIFICATION
-      - name: CURRENCYRATE
-      - name: CURRENCY
-      - name: CONSOLIDATEDEXCHANGERATE
-      - name: DEPARTMENT
-      - name: EMPLOYEE
-      - name: ENTITY
-      - name: ITEM
-      - name: LOCATION
-      - name: SUBSIDIARY
-      - name: TRANSACTION
-      - name: TRANSACTIONACCOUNTINGLINE
-      - name: TRANSACTIONLINE
-      - name: TRANSACTIONSTATUS
-      - name: BUDGETLEGACY
-      - name: BUDGETCATEGORY
-      - name: CLASSIFICATIONSUBSIDIARYMAP
-      - name: ACCOUNTSUBSIDIARYMAP
+      - name: NETSUITE_ACCOUNT
+      - name: NETSUITE_ACCOUNTINGPERIOD
+      - name: NETSUITE_CLASSIFICATION
+      - name: NETSUITE_CURRENCYRATE
+      - name: NETSUITE_CURRENCY
+      - name: NETSUITE_CONSOLIDATEDEXCHANGERATE
+      - name: NETSUITE_DEPARTMENT
+      - name: NETSUITE_EMPLOYEE
+      - name: NETSUITE_ENTITY
+      - name: NETSUITE_ITEM
+      - name: NETSUITE_LOCATION
+      - name: NETSUITE_SUBSIDIARY
+      - name: NETSUITE_TRANSACTION
+      - name: NETSUITE_TRANSACTIONACCOUNTINGLINE
+      - name: NETSUITE_TRANSACTIONLINE
+      - name: NETSUITE_TRANSACTIONSTATUS
+      - name: NETSUITE_BUDGETLEGACY
+      - name: NETSUITE_BUDGETCATEGORY
+      - name: NETSUITE_CLASSIFICATIONSUBSIDIARYMAP
+      - name: NETSUITE_ACCOUNTSUBSIDIARYMAP
       - name: playfly_COA_MAPPING
       - name: playfly_addbacks 
-      - name: CUSTOMRECORD_CSEG1
+      - name: NETSUITE_CUSTOMRECORD_CSEG1
       - name: netsuite_coa
       - name: netsuite_adjustments
   
