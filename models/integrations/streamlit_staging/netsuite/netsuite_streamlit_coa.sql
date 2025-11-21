@@ -37,6 +37,7 @@ with transaction as (
     ) AS COA_ID,
     {% endif %}
     COALESCE(tal.ACCOUNT, 0) AS ACCOUNT_ID,
+    COALESCE(a.ACCTNUMBER,'Unknown') AS ACCOUNT_NUMBER,
     COALESCE(tl.SUBSIDIARY, 0) AS SUBSIDIARY_ID,
     COALESCE(tl.CLASS, 0) AS CLASS_ID,
     {%if company == 'wagway'%}
@@ -88,7 +89,7 @@ budget as (
             coalesce(b.account, 0),
             coalesce(b.subsidiary, 0),
             coalesce(b.class, 0),
-            coalesce(b.location, 0),
+            coalesce(b.CSEG_CP_STORE_LOC, 0),
             coalesce(b.department, 0),
             coalesce(b.cseg1, 0)
         ) AS COA_ID,
@@ -102,9 +103,14 @@ budget as (
         ) AS COA_ID,
          {% endif %}
         COALESCE(b.ACCOUNT, 0) AS ACCOUNT_ID,
+        COALESCE(a.ACCTNUMBER,'Unknown') AS ACCOUNT_NUMBER,
         COALESCE(b.SUBSIDIARY, 0) AS SUBSIDIARY_ID,
         COALESCE(b.CLASS, 0) AS CLASS_ID,
+        {%if company == 'wagway'%}
+        COALESCE(b.CSEG_CP_STORE_LOC, 0) AS LOCATION_ID,
+        {%else%}
         COALESCE(b.LOCATION, 0) AS LOCATION_ID,
+        {%endif%} 
         COALESCE(b.DEPARTMENT, 0) AS DEPARTMENT_ID,
         {%if company == 'wagway'%}
         COALESCE(b.CSEG1, 0)   AS ADJUSTMENT_ID,
@@ -140,10 +146,10 @@ budget as (
 ),
 combined as (
 select * from budget
-UNION ALL 
+UNION  
 SELECT * FROM transaction
 ) 
-SELECT  * ,
+SELECT DISTINCT  * ,
 NULL AS METRIC_L1,
     NULL AS METRIC_L2,
     NULL AS METRIC_L3,

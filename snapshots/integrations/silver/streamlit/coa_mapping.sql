@@ -32,6 +32,7 @@ SELECT
     {%endif%}
     LOCATION_NAME,
     ACCOUNT_NAME,
+    ACCOUNT_NUMBER,
     CLASS_NAME,
     DEPARTMENT_NAME,
     {%if sourcesystem == 'netsuite' %}
