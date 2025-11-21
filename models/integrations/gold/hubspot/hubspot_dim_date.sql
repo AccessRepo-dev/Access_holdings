@@ -1,3 +1,5 @@
+{% if false %}
+
 {% set company = var('company') %}
 {{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
 {{ config(enabled = var('company', 'none') in ['wagway', 'playfly', 'amh']) }}
@@ -62,3 +64,5 @@ final as (
 
 select *
 from final
+
+{% endif %}
