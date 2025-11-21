@@ -1,3 +1,4 @@
+
 {% set company = var('company', 'unknown_company') | lower %}
 
 {{ config(

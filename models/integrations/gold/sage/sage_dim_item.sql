@@ -48,7 +48,7 @@ with source as (
 
   
 
-    from {{ get_silver_source(company, 'ITEM') }}
+    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_ITEM') }}
     
     {% if is_incremental() %}
     where WHENMODIFIED > (

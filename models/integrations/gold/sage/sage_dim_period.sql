@@ -20,7 +20,7 @@ with source as (
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
 
-    FROM {{ get_silver_source(company, 'REPORTING_PERIOD') }}
+    FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_REPORTING_PERIOD') }}
     
     {% if is_incremental() %}
     WHERE WHENMODIFIED > (

@@ -1,5 +1,5 @@
 {% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
+{{ config(enabled = var('sourcesystem', 'none')  | lower == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
@@ -18,7 +18,7 @@ with source as (
         EFFECTIVEDATE as EFFECTIVE_DATE,
         EXCHANGERATE as EXCHANGE_RATE,
         LASTMODIFIEDDATE as LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'CURRENCYRATE') }}
+    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_CURRENCYRATE') }}
     where (_fivetran_deleted is null or _fivetran_deleted = false)
 
     {% if is_incremental() %}

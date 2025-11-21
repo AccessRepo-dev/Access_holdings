@@ -16,7 +16,7 @@ with source as (
         DESCRIPTION AS NAME,
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'GL_BUDGET_HEADER') }}
+    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_BUDGET_HEADER') }}
     
     {% if is_incremental() %}
     where WHENMODIFIED > (

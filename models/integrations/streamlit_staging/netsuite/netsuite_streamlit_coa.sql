@@ -1,6 +1,6 @@
 {% set company = var('company', 'Unknown company') | lower %}
 {% set sourcesystem = var('sourcesystem', 'Unknown source') | lower %}
-{% set src = var('company') ~ '_' ~ var('sourcesystem') ~ '_raw'%}
+{% set src = var('company') | lower ~ '_' ~ var('sourcesystem') | lower ~ '_raw'%}
 {{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
 
 

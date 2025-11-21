@@ -22,8 +22,8 @@ with source as (
         L.PARENTKEY AS PARENT_ID,
         L.WHENMODIFIED AS LAST_MODIFIED_DATE
 
-    FROM {{ get_silver_source(company, 'LOCATION') }} AS L
-    LEFT JOIN {{ get_silver_source(company, 'LOCATION_ENTITY') }} AS LE ON L.LOCATIONID = LE.LOCATIONID
+    FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_LOCATION') }} AS L
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_LOCATION_ENTITY') }} AS LE ON L.LOCATIONID = LE.LOCATIONID
 )
 SELECT *
 FROM source
