@@ -82,9 +82,6 @@ models:
     +database: PIPELINE_AUDIT_DB
     +schema: ELEMENTARY
 
-  elementary-data:
-    +database: "PIPELINE_AUDIT_DB"
-    +schema: "ELEMENTARY"
 
   +materialized: table
   +transient: false
@@ -150,9 +147,7 @@ models:
         cdm:
             +schema: GOLD
             +materialized: table 
-
-
-
+            
       reporting:
         netsuite:
           +schema: GOLD
@@ -177,6 +172,3 @@ seeds:
     macro_economic:
       +database: "{{env_var('DBT_ACCESS')}}"
       +schema: SILVER
-
-on-run-end:
-  - "{{ audit_failures(results) }}"
