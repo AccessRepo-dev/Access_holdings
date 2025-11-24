@@ -39,7 +39,7 @@ FROM {{ source(src, 'GL_ENTRY') }} e
 {% if company | lower  == 'amh' %}
     WHERE e.RECORDNO NOT IN 
         (select distinct GLENTRYKEY 
-        from {{ get_silver_source(company, 'GL_DETAIL') }}
+        from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_DETAIL') }}
         WHERE SYMBOL = 'QB_HISTORY' and 
             batch_date between '2022-01-01' and '2022-08-31'
         )
@@ -49,7 +49,7 @@ FROM {{ source(src, 'GL_ENTRY') }} e
     e.RECORDNO NOT IN 
         (select 
             distinct GLENTRYKEY 
-            from {{ get_silver_source(company, 'GL_DETAIL') }}
+            from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_DETAIL') }}
             WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ')
         )
 {% endif %}

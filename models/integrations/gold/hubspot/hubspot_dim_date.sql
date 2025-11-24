@@ -2,6 +2,7 @@
 
 {% set company = var('company') %}
 {{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
+{{ config(enabled = var('company', 'none') in ['wagway', 'playfly', 'amh']) }}
 {{ config(
     database = get_target_database(company),
     alias = 'dim_date',
@@ -63,6 +64,5 @@ final as (
 
 select *
 from final
-
 
 {% endif %}

@@ -28,8 +28,11 @@ with source as (
     CAST(COALESCE(acc.ACCOUNTNO,E.ACCOUNTNO) AS VARCHAR) AS ACCOUNT_NUMBER,
     acc.ACCOUNTTYPE AS ACCOUNT_TYPE,
     COALESCE(acc.TITLE,E.ACCOUNTTITLE) AS ACCOUNT_NAME,
+    {%if company | lower == 'amh'%}
+    (HASH(COALESCE(e.ACCOUNTKEY,0),COALESCE(e.PROJECTDIMKEY,0),COALESCE(e.DEPARTMENTKEY,0),COALESCE(e.CLASSDIMKEY,0),COALESCE(e.LOCATIONKEY,0))) AS DIM_CHART_OF_ACCOUNT_ID,
+    {%else%}
     (HASH(e.ACCOUNTKEY, e.LOCATIONKEY,e.DEPARTMENTKEY,e.PROJECTDIMKEY,e.CLASSDIMKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
-
+    {%endif%}
     e.CLASSDIMKEY AS DIM_CLASS_ID,
     e.PROJECTDIMKEY AS DIM_PROJECT_ID,
     -- Transaction Line
@@ -76,14 +79,14 @@ with source as (
     NULL AS ADJ_TYPE,
     e.WHENMODIFIED AS LASTMODIFIEDDATE
  
-FROM {{ get_silver_source(company, 'GL_ENTRY') }}  e
+FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_ENTRY') }}  e
 
-LEFT JOIN {{ get_silver_source(company, 'GL_BATCH') }}  b
+LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_BATCH') }}  b
     ON e.batchno = b.recordno
-LEFT JOIN {{ get_silver_source(company, 'GL_ACCOUNT') }} acc
+LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_ACCOUNT') }} acc
     ON e.ACCOUNTKEY  = acc.RECORDNO
  
-LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
+LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_REPORTING_PERIOD') }} per
 ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
     
 
@@ -178,13 +181,13 @@ SELECT * FROM source
 {% if company | lower  == 'amh' %}
     WHERE TRANSACTION_LINE_ID NOT IN 
         (select distinct GLENTRYKEY 
-        from {{ get_silver_source(company, 'GL_DETAIL') }}
+        from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_DETAIL') }}
         WHERE SYMBOL = 'QB_HISTORY' and 
             batch_date between '2022-01-01' and '2022-08-31')
 {% elif company | lower  == 'spotless' %}
     WHERE (TRANSACTION_LINE_ID NOT IN 
         (select distinct GLENTRYKEY 
-        from {{ get_silver_source(company, 'GL_DETAIL') }}
+        from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_DETAIL') }}
         WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ'))) OR TRANSACTION_LINE_ID IS NULL 
 {% endif %}
 UNION 
