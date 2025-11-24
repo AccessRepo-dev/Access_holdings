@@ -82,10 +82,6 @@ models:
     +database: PIPELINE_AUDIT_DB
     +schema: ELEMENTARY
 
-  elementary-data:
-    +database: "PIPELINE_AUDIT_DB"
-    +schema: "ELEMENTARY"
-
   +materialized: table
   +transient: false
   Access_Holdings:
@@ -150,9 +146,6 @@ models:
         cdm:
             +schema: GOLD
             +materialized: table 
-
-
-
       reporting:
         netsuite:
           +schema: GOLD
@@ -166,6 +159,9 @@ models:
         +materialized: table
 
 seeds:
+  +meta:
+      elementary:
+        enabled: true
   Access_Holdings:
     netsuite:
       +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
@@ -178,5 +174,3 @@ seeds:
       +database: "{{env_var('DBT_ACCESS')}}"
       +schema: SILVER
 
-on-run-end:
-  - "{{ audit_failures(results) }}"
