@@ -10,19 +10,24 @@
     unique_key = 'ID'
 ) }}
 
-with raw as 
-(
-select *
-from {{ get_raw_source(company, sourcesystem, 'ACCOUNT_CALL_LOG') }}
-{% if is_incremental() %}
-    where LAST_MODIFIED_DATE > (
-        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
+with source_data as (
+
+    select *
+    from {{ get_raw_source(company, sourcesystem, 'ACCOUNT_CALL_LOG') }}
+
+    {% if is_incremental() %}
+    where LAST_MODIFIED_TIME > (
+        select dateadd(
+            day, 
+            -1,
+            coalesce(max(t.LAST_MODIFIED_TIME), '1900-01-01'::timestamp_ntz)
+        )
+        from {{ this }} t
     )
+    {% endif %}
 
-{% endif %}
-
-),
+)
+,
 
 cleaned as 
 (
@@ -54,8 +59,9 @@ cleaned as
     TRIM(TO_DIALED_PHONE_NUMBER) AS TO_DIALED_PHONE_NUMBER,
     CAST(TRIM(EXTENSION_ID) AS BIGINT) AS EXTENSION_ID,
     'PUPS Pets Club' AS COMPANY,
+    CAST(LAST_MODIFIED_TIME AS TIMESTAMP_NTZ) AS LAST_MODIFIED_TIME,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
-    from raw
+    from source_data
 )
 
 select * from cleaned
