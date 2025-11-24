@@ -1,5 +1,5 @@
 {% set company = var('company', 'Unknown company') | lower %}
-{% set company = var('sourcesystem') | lower %}
+{% set sourcesystem = var('sourcesystem') | lower %}
 
 {{ config(
     enabled = var('company')|lower == 'wagway' and var('sourcesystem') | lower =='netsuite',
