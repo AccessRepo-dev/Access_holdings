@@ -73,6 +73,7 @@ with source as (
     CAST(NULL AS DATE) AS ENDDATE,
     CAST(NULL AS DATE) AS DUEDATE,
     CAST(NULL AS DATE) AS CLOSEDATE,
+    NULL AS ADJ_TYPE,
     e.WHENMODIFIED AS LASTMODIFIEDDATE
  
 FROM {{ get_silver_source(company, 'GL_ENTRY') }}  e
@@ -161,6 +162,7 @@ adjustments AS (
         NULL AS ENDDATE,
         NULL AS DUEDATE,
         NULL AS CLOSEDATE,
+        ADJ_TYPE ,
         CURRENT_TIMESTAMP AS LASTMODIFIEDDATE
      
     FROM  {{ get_silver_source(company, 'sage_adjustments') }} tl

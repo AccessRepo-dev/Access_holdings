@@ -57,6 +57,7 @@
         ENDDATE,
         DUEDATE,
         CLOSEDATE,
+        ADJ_TYPE,
         LASTMODIFIEDDATE,
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
