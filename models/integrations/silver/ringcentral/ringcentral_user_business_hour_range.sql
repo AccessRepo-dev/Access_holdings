@@ -5,8 +5,7 @@
 
 {{ config(
     database=get_target_database(var('company')),
-    materialized = 'incremental',
-    incremental_strategy = 'merge',
+    materialized = 'table',
     unique_key = ['EXTENSION_ID', 'DAY', 'INDEX']
 ) }}
 
@@ -14,14 +13,6 @@ with raw as
 (
 select *
 from {{ get_raw_source(company, sourcesystem, 'USER_BUSINESS_HOUR_RANGE') }}
-{% if is_incremental() %}
-    where LAST_MODIFIED_DATE > (
-        select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)
-        from {{ this }}
-    )
-
-{% endif %}
-
 ),
 
 cleaned as 
