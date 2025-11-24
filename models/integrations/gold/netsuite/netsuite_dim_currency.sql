@@ -1,6 +1,6 @@
 
 {% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
+{{ config(enabled = var('sourcesystem', 'none')  | lower == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
@@ -21,7 +21,7 @@ with source as (
         HISTORICALRATE,
         AVERAGERATE,
         CURRENTRATE
-    from {{ get_silver_source(company, 'CONSOLIDATEDEXCHANGERATE') }}
+    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_CONSOLIDATEDEXCHANGERATE') }}
     WHERE TOCURRENCY=1
 
 )

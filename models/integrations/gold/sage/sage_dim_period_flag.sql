@@ -14,7 +14,7 @@ with source as (
     SELECT 
         RECORDNO AS DIM_PERIOD_ID,
         START_DATE
-    FROM {{ get_silver_source(company, 'REPORTING_PERIOD') }}
+    FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_REPORTING_PERIOD') }}
     WHERE LOWER(SPLIT_PART(NAME, ' ', 3)) IN 
     (
         'january','february','march','april','may','june',

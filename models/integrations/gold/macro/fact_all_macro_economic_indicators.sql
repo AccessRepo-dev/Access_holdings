@@ -22,7 +22,7 @@ nahb_housing_cte AS (
         hash(DateKey) AS unique_id, 
         DateKey,
         'HMI' AS measure_name,
-        HMI AS measure_value,
+        CAST(HMI AS NUMBER) AS measure_value,
         NULL AS keys_list,
         NULL AS key1,
         NULL AS key2,
@@ -280,15 +280,15 @@ census_housing_completed_cte AS (
 ),
 fred_cte AS (
     SELECT 
+        hash(series_id, DateKey) AS unique_id,
         DateKey,
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
-        hash(series_id, DateKey) AS unique_id,
         NULL AS keys_list, 
         NULL AS key1,
         NULL AS key2,
         NULL AS key3,
-        NULL AS key4, 
+        NULL AS key4,
         'FRED' AS DATASET,
         'Federal Reserve Economic Data' AS DATASOURCE,
 

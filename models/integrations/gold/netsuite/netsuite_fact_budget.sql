@@ -1,5 +1,5 @@
 {% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
+{{ config(enabled = var('sourcesystem', 'none') | lower == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
@@ -40,8 +40,8 @@ with source as (
         BUDGET.LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
 
 
-    from {{ get_silver_source(company, 'BUDGETLEGACY') }} AS BUDGET
-    LEFT JOIN {{ get_silver_source(company, 'ACCOUNTINGPERIOD') }} per 
+    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_BUDGETLEGACY') }} AS BUDGET
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_ACCOUNTINGPERIOD') }} per 
         ON BUDGET.PERIOD = per.ID
    
     {% if is_incremental() %}

@@ -5,8 +5,7 @@
 {{ config(
     database = get_target_database(company),
     alias = 'dim_currency',
-    materialized = 'incremental',
-    incremental_strategy = 'merge',
+    materialized = 'table',
     unique_key = 'DIM_CURRENCY_ID'
 ) }}
 
@@ -18,11 +17,9 @@ with source as (
     DISTINCT
     per.RECORDNO AS DIM_PERIOD_ID,
     e.LOCATIONKEY AS FROM_SUBSIDIARY_ID,
-    e.LOCATIONKEY AS TO_SUBSIDIARY_ID,
-
- 
-FROM {{ get_silver_source(company, 'GL_ENTRY') }}  e
-LEFT JOIN {{ get_silver_source(company, 'REPORTING_PERIOD') }} per
+    e.LOCATIONKEY AS TO_SUBSIDIARY_ID
+FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_ENTRY') }}  e
+LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_REPORTING_PERIOD') }} per
     ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
 
         

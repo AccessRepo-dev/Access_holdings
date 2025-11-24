@@ -1,5 +1,5 @@
 {% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
+{{ config(enabled = var('sourcesystem', 'none') | lower == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
@@ -19,7 +19,7 @@ with source as (
         PARENT AS PARENT_ID,
         ISINACTIVE AS IS_INACTIVE,
         LASTMODIFIEDDATE AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, 'CLASSIFICATION') }} c
+    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_CLASSIFICATION') }} c
 
     {% if is_incremental() %}
     where LASTMODIFIEDDATE > (

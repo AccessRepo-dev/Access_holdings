@@ -18,6 +18,7 @@ WITH source AS (
         LOCATION_NAME,
         PROJECT_NAME,
         ACCOUNT_NAME,
+        ACCOUNT_NUMBER,
         CLASS_NAME,
         DEPARTMENT_NAME,
         METRIC_L1,
@@ -45,7 +46,7 @@ WITH source AS (
 
     FROM {{ get_silver_source(company, sourcesystem ~ '_coa') }} coa
     {% if company == 'spotless' %}
-    LEFT JOIN {{ get_silver_source(company, 'CLASS') }} c ON c.RECORDNO =  coa.CLASS_ID
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_CLASS') }} c ON c.RECORDNO =  coa.CLASS_ID
     {% endif %}
     WHERE dbt_valid_to IS NULL  -- Only get active records from snapshot
 )

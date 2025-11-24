@@ -5,7 +5,6 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
-    alias = 'gl_acct_grp_hierarchy',
     incremental_strategy = 'merge',
     unique_key = 'RECORDNO'
 ) }}

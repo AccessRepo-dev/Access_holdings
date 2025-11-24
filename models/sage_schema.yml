@@ -36,33 +36,33 @@ sources:
     database: "{{ env_var('DBT_SPOTLESS') }}"
     schema: silver
     tables:
-      - name: ASSET
-      - name: BANKACCOUNT
-      - name: CLASS
-      - name: CURRENCY
-      - name: CUSTOMER
-      - name: DEPARTMENT
-      - name: DEPRECIATION_SUMMARY
-      - name: EMPLOYEE
-      - name: ENTITYACCTDEFAULT
-      - name: GL_ACCOUNT
-      - name: GL_ACCT_GRP
-      - name: GL_ACCT_GRP_MEMBER
-      - name: GL_BATCH
-      - name: GL_BUDGET_HEADER
-      - name: GL_BUDGET_ITEM
-      - name: GL_COA_CAT_MEMBER
-      - name: GL_DETAIL
-      - name: GL_ENTRY
-      - name: GLACCTGRPHIERARCHY
-      - name: ITEM
-      - name: LOCATION
-      - name: LOCATION_ENTITY
-      - name: PROJECT
-      - name: REPORTING_PERIOD
+      - name: SAGE_ASSET
+      - name: SAGE_BANKACCOUNT
+      - name: SAGE_CLASS
+      - name: SAGE_CURRENCY
+      - name: SAGE_CUSTOMER
+      - name: SAGE_DEPARTMENT
+      - name: SAGE_DEPRECIATION_SUMMARY
+      - name: SAGE_EMPLOYEE
+      - name: SAGE_ENTITYACCTDEFAULT
+      - name: SAGE_GL_ACCOUNT
+      - name: SAGE_GL_ACCT_GRP
+      - name: SAGE_GL_ACCT_GRP_MEMBER
+      - name: SAGE_GL_BATCH
+      - name: SAGE_GL_BUDGET_HEADER
+      - name: SAGE_GL_BUDGET_ITEM
+      - name: SAGE_GL_COA_CAT_MEMBER
+      - name: SAGE_GL_DETAIL
+      - name: SAGE_GL_ENTRY
+      - name: SAGE_GLACCTGRPHIERARCHY
+      - name: SAGE_ITEM
+      - name: SAGE_LOCATION
+      - name: SAGE_LOCATION_ENTITY
+      - name: SAGE_PROJECT
+      - name: SAGE_REPORTING_PERIOD
       - name: spotless_COA_MAPPING
       - name: spotless_addbacks 
-      - name: VENDOR
+      - name: SAGE_VENDOR
       - name: sage_coa
       - name: sage_adjustments
 
@@ -102,33 +102,33 @@ sources:
     database: "{{ env_var('DBT_AMH') }}"
     schema: silver
     tables:
-      - name: ASSET
-      - name: BANKACCOUNT
-      - name: CLASS
-      - name: CURRENCY
-      - name: CUSTOMER
-      - name: DEPARTMENT
-      - name: DEPRECIATION_SUMMARY
-      - name: EMPLOYEE
-      - name: ENTITYACCTDEFAULT
-      - name: GL_ACCOUNT
-      - name: GL_ACCT_GRP
-      - name: GL_ACCT_GRP_MEMBER
-      - name: GL_BATCH
-      - name: GL_BUDGET_HEADER
-      - name: GL_BUDGET_ITEM
-      - name: GL_COA_CAT_MEMBER
-      - name: GL_DETAIL
-      - name: GL_ENTRY
-      - name: GLACCTGRPHIERARCHY
-      - name: ITEM
-      - name: LOCATION
-      - name: LOCATION_ENTITY
-      - name: PROJECT
-      - name: REPORTING_PERIOD
+      - name: SAGE_ASSET
+      - name: SAGE_BANKACCOUNT
+      - name: SAGE_CLASS
+      - name: SAGE_CURRENCY
+      - name: SAGE_CUSTOMER
+      - name: SAGE_DEPARTMENT
+      - name: SAGE_DEPRECIATION_SUMMARY
+      - name: SAGE_EMPLOYEE
+      - name: SAGE_ENTITYACCTDEFAULT
+      - name: SAGE_GL_ACCOUNT
+      - name: SAGE_GL_ACCT_GRP
+      - name: SAGE_GL_ACCT_GRP_MEMBER
+      - name: SAGE_GL_BATCH
+      - name: SAGE_GL_BUDGET_HEADER
+      - name: SAGE_GL_BUDGET_ITEM
+      - name: SAGE_GL_COA_CAT_MEMBER
+      - name: SAGE_GL_DETAIL
+      - name: SAGE_GL_ENTRY
+      - name: SAGE_GLACCTGRPHIERARCHY
+      - name: SAGE_ITEM
+      - name: SAGE_LOCATION
+      - name: SAGE_LOCATION_ENTITY
+      - name: SAGE_PROJECT
+      - name: SAGE_REPORTING_PERIOD
       - name: amh_COA_MAPPING
       - name: amh_addbacks 
-      - name: VENDOR
+      - name: SAGE_VENDOR
       - name: sage_coa
       - name: sage_adjustments
 

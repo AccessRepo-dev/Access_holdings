@@ -23,6 +23,7 @@ WITH source AS (
         LOCATION_NAME,
         SUBSIDIARY_NAME,
         ACCOUNT_NAME,
+        ACCOUNT_NUMBER,
         CLASS_NAME,
         DEPARTMENT_NAME,
         {%if company == 'wagway'%}

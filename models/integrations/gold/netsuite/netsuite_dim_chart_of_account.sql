@@ -55,12 +55,12 @@ WITH source AS (
         {%else%}
             CAST(NULL AS INT) IS_ADJ,
         {%endif%}
-        -- {% if company == 'playfly'%}
-        --     DEBT_MAPPING
-        -- {%else%}
-        --     CAST(NULL AS VARCHAR) AS DEBT_MAPPING
-        -- {%endif%}
-        CAST(NULL AS VARCHAR) AS DEBT_MAPPING
+        {% if company == 'playfly'%}
+            DEBT_MAPPING
+        {%else%}
+            CAST(NULL AS VARCHAR) AS DEBT_MAPPING
+        {%endif%}
+       
 
 
     FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }}

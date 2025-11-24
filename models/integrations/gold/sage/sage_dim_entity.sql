@@ -22,7 +22,7 @@ with source as (
         WHENMODIFIED AS LAST_MODIFIED_DATE,
         WHENCREATED AS DATE_CREATED,
         VENDORID AS VENDOR_ID
-    from {{ get_silver_source(company, 'VENDOR') }}
+    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_VENDOR') }}
     
     where 1=1
 

@@ -19,6 +19,7 @@ with transaction as (
     HASH(COALESCE(e.ACCOUNTKEY,0), COALESCE(e.LOCATIONKEY,0),COALESCE(e.DEPARTMENTKEY,0),COALESCE(e.PROJECTDIMKEY,0),COALESCE(e.CLASSDIMKEY,0)) AS COA_ID,
     
     COALESCE(e.ACCOUNTKEY, 0) AS ACCOUNT_ID,
+    COALESCE(cast(e.ACCOUNTNO as varchar), 'Unknown') AS ACCOUNT_NUMBER,
     COALESCE(e.CLASSDIMKEY, 0) AS CLASS_ID,
     COALESCE(e.LOCATIONKEY, 0) AS LOCATION_ID,
    COALESCE(e.PROJECTDIMKEY,0) AS PROJECT_ID,
@@ -35,12 +36,25 @@ with transaction as (
 
 FROM {{ source(src, 'GL_ENTRY') }} e
 
-{% if is_incremental() %}
-    where COA_ID not in (
-        select COA_ID
-        from {{ this }}
-    )
+{% if company | lower  == 'amh' %}
+    WHERE e.RECORDNO NOT IN 
+        (select distinct GLENTRYKEY 
+        from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_DETAIL') }}
+        WHERE SYMBOL = 'QB_HISTORY' and 
+            batch_date between '2022-01-01' and '2022-08-31'
+        )
+{% elif company | lower  == 'spotless' %}
+    WHERE e.BATCHTITLE not in ('VIE Depreciation & Amortization','record VIE transactions') AND LOCATIONKEY <> 492 
+    AND 
+    e.RECORDNO NOT IN 
+        (select 
+            distinct GLENTRYKEY 
+            from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_DETAIL') }}
+            WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ')
+        )
 {% endif %}
+
+
 ),
 budget as (
     SELECT
@@ -49,6 +63,7 @@ budget as (
     HASH(COALESCE(e.ACCOUNTKEY,0), COALESCE(e.LOCATIONKEY,0),COALESCE(e.DEPTKEY,0),COALESCE(e.PROJECTDIMKEY,0),COALESCE(e.CLASSDIMKEY,0)) AS COA_ID,
     
     COALESCE(e.ACCOUNTKEY, 0) AS ACCOUNT_ID,
+    COALESCE(CAST(e.ACCT_NO AS VARCHAR), 'Unknown') AS ACCOUNT_NUMBER,
     COALESCE(e.CLASSDIMKEY, 0) AS CLASS_ID,
     COALESCE(e.LOCATIONKEY, 0) AS LOCATION_ID,
    COALESCE(e.PROJECTDIMKEY,0) AS PROJECT_ID,
@@ -63,19 +78,14 @@ budget as (
     CURRENT_TIMESTAMP AS DATA_LOADED_AT 
 
     FROM {{ source(src, 'GL_BUDGET_ITEM') }} e
-      {% if is_incremental() %}
-    where COA_ID not in (
-        select COA_ID
-        from {{ this }}
-    )
-    {% endif %}
 ),
 combined as (
 select * from budget
-UNION ALL 
+UNION  
 SELECT * FROM transaction
 ) 
-SELECT  * ,
+SELECT  
+DISTINCT * ,
 NULL AS METRIC_L1,
     NULL AS METRIC_L2,
     NULL AS METRIC_L3,
@@ -88,3 +98,9 @@ NULL AS METRIC_L1,
     NULL AS IS_BS,
     NULL AS DEBT_MAPPING
     FROM combined
+{% if is_incremental() %}
+    where COA_ID not in (
+        select COA_ID
+        from {{ this }}
+    )
+{% endif %}

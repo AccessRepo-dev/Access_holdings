@@ -1,5 +1,5 @@
 {% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
+{{ config(enabled = var('sourcesystem', 'none') | lower == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
@@ -92,20 +92,21 @@ with source as (
         t.ENDDATE,
         t.DUEDATE,
         t.CLOSEDATE,
+        NULL AS ADJ_TYPE,
         t.LASTMODIFIEDDATE
         
-    FROM {{ get_silver_source(company, 'TRANSACTIONLINE') }} tl
-    LEFT JOIN {{ get_silver_source(company, 'TRANSACTION') }} t
+    FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_TRANSACTIONLINE') }} tl
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_TRANSACTION') }} t
         ON t.ID = tl.TRANSACTION
-    LEFT JOIN {{ get_silver_source(company, 'TRANSACTIONACCOUNTINGLINE') }} tal
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_TRANSACTIONACCOUNTINGLINE') }} tal
         ON tl.transaction = tal.transaction and tl.id = tal.transactionline
-    LEFT JOIN {{ get_silver_source(company, 'ACCOUNT') }} a
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_ACCOUNT') }} a
         ON a.ID = tal.ACCOUNT
-    LEFT JOIN {{ get_silver_source(company, 'ACCOUNTINGPERIOD') }} per
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_ACCOUNTINGPERIOD') }} per
         ON per.ID = t.POSTINGPERIOD
-    LEFT JOIN {{ get_silver_source(company, 'TRANSACTIONSTATUS') }} txs
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_TRANSACTIONSTATUS') }} txs
         ON txs.ID = t.status and txs.trantype = t.type and t.customtype = txs.trancustomtype
-    LEFT JOIN {{ get_silver_source(company, 'SUBSIDIARY') }} sub 
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_SUBSIDIARY') }} sub 
         ON sub.ID=tl.SUBSIDIARY
     LEFT JOIN {{ get_gold_source(company, 'DIM_CHART_OF_ACCOUNT') }} coa 
         ON 
@@ -114,7 +115,7 @@ with source as (
             {% else %}
                 HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT) = coa.DIM_CHART_OF_ACCOUNT_ID
             {% endif %}
-    LEFT JOIN {{ get_silver_source(company, 'CONSOLIDATEDEXCHANGERATE') }} cer
+    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_CONSOLIDATEDEXCHANGERATE') }} cer
         ON cer.POSTINGPERIOD = t.POSTINGPERIOD 
         AND cer.FROMSUBSIDIARY=tl.SUBSIDIARY
         AND cer.TOSUBSIDIARY=COALESCE(sub.PARENT,1)
@@ -195,6 +196,7 @@ adjustments AS (
         NULL AS ENDDATE,
         NULL AS DUEDATE,
         NULL AS CLOSEDATE,
+        ADJ_TYPE, 
         CURRENT_TIMESTAMP AS LASTMODIFIEDDATE
      
     FROM  {{ get_silver_source(company, 'netsuite_adjustments') }} tl

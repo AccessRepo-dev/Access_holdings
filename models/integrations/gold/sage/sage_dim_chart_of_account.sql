@@ -52,7 +52,7 @@ WITH source AS (
         DEBT_MAPPING
     FROM {{ get_silver_source(company, company ~ '_COA_MAPPING') }} coa
      {% if company == 'spotless' %}
-        LEFT JOIN {{ get_silver_source(company, 'CLASS') }} c ON c.RECORDNO =  coa.CLASS_ID
+        LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_CLASS') }} c ON c.RECORDNO =  coa.CLASS_ID
         {% endif %}
     
 ),
