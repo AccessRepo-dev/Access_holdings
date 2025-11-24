@@ -30,7 +30,7 @@ with transaction as (
     COALESCE(e.ACCOUNTTITLE, 'Unknown') AS ACCOUNT_NAME,
     COALESCE(e.CLASSNAME, 'Unknown') AS CLASS_NAME,
     COALESCE(e.DEPARTMENTTITLE, 'Unknown') AS DEPARTMENT_NAME,
-
+    'GL_ENTRY' AS SOURCE,
     CURRENT_TIMESTAMP AS DATA_LOADED_AT 
 
 
@@ -76,7 +76,7 @@ budget as (
     COALESCE(e.DEPTITLE, 'Unknown') AS DEPARTMENT_NAME,
 
     CURRENT_TIMESTAMP AS DATA_LOADED_AT 
-
+    'BUDGET' AS SOURCE ,
     FROM {{ source(src, 'GL_BUDGET_ITEM') }} e
 ),
 combined as (
