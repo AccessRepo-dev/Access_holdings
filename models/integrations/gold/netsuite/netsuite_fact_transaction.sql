@@ -92,6 +92,7 @@ with source as (
         t.ENDDATE,
         t.DUEDATE,
         t.CLOSEDATE,
+        NULL AS ADJ_TYPE,
         t.LASTMODIFIEDDATE
         
     FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_TRANSACTIONLINE') }} tl
@@ -195,6 +196,7 @@ adjustments AS (
         NULL AS ENDDATE,
         NULL AS DUEDATE,
         NULL AS CLOSEDATE,
+        ADJ_TYPE, 
         CURRENT_TIMESTAMP AS LASTMODIFIEDDATE
      
     FROM  {{ get_silver_source(company, 'netsuite_adjustments') }} tl
