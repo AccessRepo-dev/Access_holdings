@@ -2,6 +2,7 @@
 {{ config(enabled = var('sourcesystem', 'none') | lower == 'netsuite') }}
 
 {{ config(
+    enabled = false,
     database = get_target_database(company),
     materialized = 'table',
     alias = 'fact_transaction_trimmed'
