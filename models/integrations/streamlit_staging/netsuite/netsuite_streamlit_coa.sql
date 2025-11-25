@@ -149,6 +149,23 @@ select * from budget
 UNION  
 SELECT * FROM transaction
 ) 
+{%if company == 'wagway'%}
+SELECT DISTINCT  a.*,
+    b.METRIC_L1,
+    b.METRIC_L2,
+    b.METRIC_L3,
+    b.METRIC_L4,
+    b.METRIC_L5,
+    b.METRIC_L6,
+    b.CASHFLOW_L1,
+    b.CASHFLOW_L2,
+    b.CASHFLOW_L3,
+    b.IS_BS,
+    b.DEBT_MAPPING
+    FROM combined a
+    LEFT JOIN {{this}} b ON a.ACCOUNT_ID = b.ACCOUNT_ID AND a.SUBSIDIARY_ID = b.SUBSIDIARY_ID AND a.CLASS_ID = b.CLASS_ID
+
+{%else%}
 SELECT DISTINCT  * ,
 NULL AS METRIC_L1,
     NULL AS METRIC_L2,
@@ -161,4 +178,6 @@ NULL AS METRIC_L1,
     NULL AS CASHFLOW_L3,
     NULL AS IS_BS,
     NULL AS DEBT_MAPPING
-    FROM combined
+    FROM combined a
+{%endif%} 
+    
