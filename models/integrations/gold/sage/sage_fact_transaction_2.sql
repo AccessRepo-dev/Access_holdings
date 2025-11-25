@@ -1,7 +1,8 @@
 {% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
+--{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
  
 {{ config(
+    enabled = false,
     database = get_target_database(company),
     materialized = 'table',
     alias = 'fact_transaction_trimmed'

@@ -1,13 +1,14 @@
 {% set company = var('company', 'Unknown company') | lower %}
 
 {{ config(
-    enabled = var('sourcesystem', 'none') == 'netsuite',
+    enabled = false,
     database = get_target_database(company),
     materialized = 'incremental',
     alias = 'dim_chart_of_account_bkp',
     unique_key = 'DIM_CHART_OF_ACCOUNT_ID',
     incremental_strategy = 'merge'
 ) }}
+--enabled = var('sourcesystem', 'none') == 'netsuite',
 
 {% set derived_metrics = var('derived_metrics') %}
 
