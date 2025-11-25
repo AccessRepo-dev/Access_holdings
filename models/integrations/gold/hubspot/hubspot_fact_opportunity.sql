@@ -1,87 +1,56 @@
-{% if false %}
+{% set company = var("company") %}
+{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]) }}
+{{ config(enabled=var("company", "none") in ["wagway", "playfly", "amh"]) }}
+{{
+    config(
+        database=get_target_database(company),
+        alias="fact_opportunity",
+        materialized="incremental",
+        incremental_strategy="merge",
+        unique_key="ID_DATE_KEY",
+    )
+}}
 
-{% set company = var('company') %}
-{{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville'])}}
-{{ config(enabled = var('company', 'none') in ['wagway', 'playfly', 'amh']) }}
-{{ config(
-    database = get_target_database(company),
-    alias = 'dim_opportunity',
-    materialized = 'incremental',
-    incremental_strategy = 'merge',
-    unique_key = 'ID_DATE_KEY'
-) }}
+select
+    a.id_date_key,
+    a.deal_id as opportunity_id,
+    c.company_id as account_id,
+    owner_id as user_id,  -- need to check if this needs to be owner or user
+    b.label as stage_name,
+    a.property_amount as amount,
+    a.is_active,
+    'HUBSPOT' as source_schema,
+    current_timestamp()::timestamp_ntz as gold_load_date
+from {{ get_silver_source(company, "HUBSPOT_DEAL") }} a
+join
+    {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE_STAGE") }} b
+    on b.stage_id = a.deal_pipeline_stage_id
+    and b.is_active = 1
+join
+    {{ get_silver_source(company, "HUBSPOT_DEAL_COMPANY") }} c
+    on a.deal_id = c.deal_id
+    and b.is_active = 1
 
-SELECT
-    ID_DATE_KEY,
-    {% if company | lower == 'wagway' %}
-        ID AS CONTACT_ID,
-    {% else %}
-        CONTACT_ID,
-    {% endif %}
-    CAST (NULL AS VARCHAR) AS ACCOUNT_ID,
-    PROPERTY_FIRSTNAME AS FIRST_NAME,
-    PROPERTY_LASTNAME AS LAST_NAME,
-    PROPERTY_EMAIL AS EMAIL,
-    PROPERTY_PHONE AS PHONE,
-    PROPERTY_CREATEDATE AS CREATED_DATE ,
-    CAST(NULL as TIMESTAMP_NTZ(9)) AS LAST_MODIFIED_DATE,
-    IS_ACTIVE,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE,
+{% if company == "wagway" %}
+    union all
 
-    {% if company | lower == 'amh' %}
-        PROPERTY_MIDDLE_NAME AS MIDDLE_NAME,
-    {% endif %}
-    PROPERTY_MOBILEPHONE AS MOBILE_PHONE,
-    PROPERTY_LIFECYCLESTAGE AS LIFECYCLE_STAGE,
-    PROPERTY_HUBSPOT_OWNER_ID AS OWNER_ID,
-    PROPERTY_JOBTITLE AS JOBTITLE,
-    PROPERTY_HS_LEAD_STATUS AS LEAD_STATUS,
-    PROPERTY_ADDRESS AS ADDRESS,
-    PROPERTY_CITY AS CITY,
-    PROPERTY_STATE AS STATE,
-    PROPERTY_COUNTRY AS COUNTRY,
-    PROPERTY_FAX AS FAX,
-    PROPERTY_HS_TIMEZONE AS TIMEZONE,
-    --PROPERTY_COMPANY AS COMPANY,
-    'HUBSPOT' AS SOURCE_SCHEMA
-
-
-FROM {{ get_silver_source(company , 'HUBSPOT_CONTACT') }} 
-
-
-{% if company == 'wagway'%} 
-UNION ALL 
-
-SELECT
-    ID_DATE_KEY,
-    ID as CONTACT_ID,
-    CAST (NULL AS VARCHAR) AS ACCOUNT_ID,
-    PROPERTY_FIRSTNAME AS FIRST_NAME,
-    PROPERTY_LASTNAME AS LAST_NAME,
-    PROPERTY_EMAIL AS EMAIL,
-    PROPERTY_PHONE AS PHONE,
-    PROPERTY_CREATEDATE AS CREATED_DATE ,
-    CAST(NULL as TIMESTAMP_NTZ(9)) AS LAST_MODIFIED_DATE,
-    IS_ACTIVE,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE,
-
-    {% if company | lower == 'amh' %}
-        PROPERTY_MIDDLE_NAME AS MIDDLE_NAME,
-    {% endif %}
-    PROPERTY_MOBILEPHONE AS MOBILE_PHONE,
-    PROPERTY_LIFECYCLESTAGE AS LIFECYCLE_STAGE,
-    PROPERTY_HUBSPOT_OWNER_ID AS OWNER_ID,
-    PROPERTY_JOBTITLE AS JOBTITLE,
-    PROPERTY_HS_LEAD_STATUS AS LEAD_STATUS,
-    PROPERTY_ADDRESS AS ADDRESS,
-    PROPERTY_CITY AS CITY,
-    PROPERTY_STATE AS STATE,
-    PROPERTY_COUNTRY AS COUNTRY,
-    PROPERTY_FAX AS FAX,
-    PROPERTY_HS_TIMEZONE AS TIMEZONE,
-    --PROPERTY_COMPANY AS COMPANY,
-    'HUBSPOT_PAWVILLE' AS SOURCE_SCHEMA
-FROM {{ get_silver_source(company, 'HUBSPOT_PAWVILLE_CONTACT') }} 
-{% endif %}
-
+    select
+        a.id_date_key,
+        a.deal_id as opportunity_id,
+        c.company_id as account_id,
+        owner_id as user_id,  -- need to check if this needs to be owner or user
+        b.label as stage_name,
+        a.property_amount as amount,
+        a.is_active,
+        'HUBSPOT_PAWVILLE' as source_schema,
+        current_timestamp()::timestamp_ntz as gold_load_date
+    from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL") }} a
+    join
+        {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE") }} b
+        on b.stage_id = a.deal_pipeline_stage_id
+        and b.is_active = 1
+    join
+        {{ get_silver_source(company, "HUBSPOT_PAWVILLE_COMPANY") }} c
+        on a.deal_id = c.deal_id
+        and b.is_active = 1
 {% endif %}
