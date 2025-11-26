@@ -19,9 +19,9 @@ with
         from {{ source_snapshot_schema(company, sourcesystem ~ "_DEAL") }}
         {% if is_incremental() %}
             where
-                _fivetran_synced > (
+                property_hs_lastmodifieddate > (
                     select
-                        dateadd(day, -1, coalesce(max(_fivetran_synced), '1900-01-01'))
+                        dateadd(day, -1, coalesce(max(property_hs_lastmodifieddate), '1900-01-01'))
                     from {{ this }}
                 )
         {% else %} where 1 = 1

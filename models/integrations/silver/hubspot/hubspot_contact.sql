@@ -16,8 +16,8 @@ WITH raw AS (
     from {{ source_snapshot_schema(company, sourcesystem ~ '_CONTACT') }}
 
     {% if is_incremental() %}
-        WHERE _FIVETRAN_SYNCED > (
-            select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'))
+        WHERE PROPERTY_LASTMODIFIEDDATE > (
+            select dateadd(day, -1, coalesce(max(PROPERTY_LASTMODIFIEDDATE), '1900-01-01'))
             FROM {{ this }}
         )
        -- AND 1 = 1
@@ -90,6 +90,7 @@ cleaned AS (
         {% endif %}
 
         _FIVETRAN_SYNCED,
+        CAST(TRIM(PROPERTY_LASTMODIFIEDDATE) AS TIMESTAMP_NTZ) AS PROPERTY_LASTMODIFIEDDATE,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
         CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
         CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,

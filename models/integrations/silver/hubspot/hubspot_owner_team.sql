@@ -2,7 +2,8 @@
 {% set sourcesystem = var('sourcesystem') | upper %}
 
 {{ config(
-    enabled = var('sourcesystem') | lower in ['hubspot'] and var('company') | lower in ['wagway'],
+    enabled = var('sourcesystem') | lower in ['hubspot']
+           and var('company') | lower in ['wagway'],
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_OWNER_TEAM',
@@ -17,11 +18,10 @@ with source as (
     {% if is_incremental() %}
         where 
             _FIVETRAN_SYNCED > (
-                select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz))
-                from {{ this }} 
+                select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'))
+                from {{ this }}
             )
             and 1=1
-
     {% else %}
         where 1=1
     {% endif %}
@@ -29,16 +29,16 @@ with source as (
 
 cleaned as (
     select
-        CONCAT(OWNER_ID,'_',TEAM_ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,  
-        CAST(TRIM(OWNER_ID) AS BIGINT) AS OWNER_ID,
-	    CAST(TRIM(TEAM_ID) AS BIGINT) AS TEAM_ID,
-	    CAST(TRIM(_FIVETRAN_DELETED) AS BOOLEAN) AS _FIVETRAN_DELETED,
-	    CAST(TRIM(IS_TEAM_PRIMARY) AS BOOLEAN) AS IS_TEAM_PRIMARY,
-	    CAST(TRIM(_FIVETRAN_SYNCED) AS TIMESTAMP_TZ) AS_FIVETRAN_SYNCED,
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
-        CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
-        CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
-        CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active
+        concat(OWNER_ID,'_',TEAM_ID,'_',to_varchar(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
+        cast(trim(OWNER_ID) as bigint) as OWNER_ID,
+        cast(trim(TEAM_ID) as bigint) as TEAM_ID,
+        cast(trim(_FIVETRAN_DELETED) as boolean) as _FIVETRAN_DELETED,
+        cast(trim(IS_TEAM_PRIMARY) as boolean) as IS_TEAM_PRIMARY,
+        cast(trim(_FIVETRAN_SYNCED) as timestamp_tz) as _FIVETRAN_SYNCED,
+        current_timestamp()::timestamp_ntz as SILVER_LOAD_DATE,
+        cast(DBT_VALID_FROM as timestamp_ntz) as DBT_VALID_FROM,
+        cast(DBT_VALID_TO as timestamp_ntz) as DBT_VALID_TO,
+        case when DBT_VALID_TO is null then 1 else 0 end as IS_ACTIVE
     from source
 )
 
