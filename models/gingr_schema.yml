@@ -9,3 +9,4 @@ sources:
       - name: POS_TRANSACTIONS
       - name: POS_TRANSACTION_ITEMS_AUDIT
       - name: ACCOUNT_CODES
+      - name: POS_TRANSACTION_ITEMS
