@@ -27,6 +27,7 @@ with raw as
             )
             from {{ this }} t
         )
+    or _FIVETRAN_DELETED = true
     {% endif %}
 ),
 
