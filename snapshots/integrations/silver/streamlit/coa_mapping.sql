@@ -26,7 +26,7 @@ SELECT
     CLASS_ID,
     LOCATION_ID,
     DEPARTMENT_ID,
-    {%if company == 'wagway' %}
+    {%if sourcesystem == 'netsuite' %}
         ADJUSTMENT_ID,
         ADJUSTMENT_NAME,
     {%endif%}
