@@ -115,7 +115,7 @@ NULL AS METRIC_L1,
     FROM combined a
 {%endif%} 
 {% if is_incremental() %}
-    where COA_ID not in (
+    where a.COA_ID not in (
         select COA_ID
         from {{ this }}
     )
