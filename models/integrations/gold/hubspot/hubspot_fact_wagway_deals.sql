@@ -7,9 +7,7 @@
     alias = 'FACT_WAGWAY_HUBSPOT_DEALS'
 ) }}
 
-WITH cte AS (
-
-    -- Pawville HubSpot Deals (active only)
+WITH CTE AS (
     SELECT 
         DEAL_ID,
         PROPERTY_DEALNAME,
@@ -29,15 +27,13 @@ WITH cte AS (
         CONCAT(TRIM(CAST(PROPERTY_LOCATION_ID AS VARCHAR)), '-pawville') AS SK_LOCATION_ID,
         NULL AS SERVICE_CATEGORY,
         PROPERTY_HS_PROJECTED_AMOUNT,
-        CONCAT(CAST(PROPERTY_INVOICE_ID AS VARCHAR), '-pawville') AS PROPERTY_INVOICE_ID,
-        'Pawville' AS COMPANY,
-        IS_ACTIVE
+        CONCAT(PROPERTY_INVOICE_ID, '-pawville') AS PROPERTY_INVOICE_ID,
+        'Pawville' AS COMPANY
     FROM {{ get_silver_source('wagway', 'hubspot_pawville_deal') }}
     WHERE IS_ACTIVE = 1
 
     UNION ALL
 
-    -- PUPS HubSpot Deals (active only)
     SELECT 
         DEAL_ID,
         PROPERTY_DEALNAME,
@@ -79,15 +75,15 @@ WITH cte AS (
             ELSE PROPERTY_SERVICE_TYPE
         END AS SERVICE_CATEGORY,
         PROPERTY_HS_PROJECTED_AMOUNT,
-        CONCAT(CAST(PROPERTY_INVOICE_ID AS VARCHAR), '-pupspetclub') AS PROPERTY_INVOICE_ID,
-        'PUPS Pet Club' AS COMPANY,
-        IS_ACTIVE
+        CONCAT(PROPERTY_INVOICE_ID, '-pupspetclub') AS PROPERTY_INVOICE_ID,
+        'PUPS Pet Club' AS COMPANY
     FROM {{ get_silver_source('wagway', 'hubspot_deal') }}
     WHERE IS_ACTIVE = 1
 ),
 
 base AS (
-    SELECT *,
+    SELECT
+        *,
         ARRAY_COMPACT(ARRAY_CONSTRUCT(
             CASE WHEN property_dealname ILIKE '%Daycare%' THEN 'Daycare' END,
             CASE WHEN property_dealname ILIKE '%Grooming%' OR property_dealname ILIKE '%Groom%' THEN 'Grooming' END,
@@ -113,7 +109,7 @@ base AS (
                    OR property_dealname ILIKE '%Vet%' THEN 'Veterinary' END,
             CASE WHEN property_dealname ILIKE '%General%' THEN 'General' END
         )) AS svc_array
-    FROM cte
+    FROM CTE
 ),
 
 services AS (
@@ -123,8 +119,7 @@ services AS (
         CASE
             WHEN ARRAY_SIZE(svc_array) = 0 THEN NULL
             WHEN LOWER(svc_array[0]::string) IN ('new lead', 'gingr sign up') 
-                 AND ARRAY_SIZE(svc_array) > 1
-                THEN svc_array[1]::string
+                 AND ARRAY_SIZE(svc_array) > 1 THEN svc_array[1]::string
             ELSE svc_array[0]::string
         END AS SERVICE_TYPE
     FROM base
@@ -134,27 +129,17 @@ final_enriched AS (
     SELECT
         f.deal_id,
         f.property_dealname,
-        b.contact_id,
-
-        -- transaction total into first row only; default 0
-        NVL(
-            CASE 
-                WHEN ROW_NUMBER() OVER (PARTITION BY f.deal_id ORDER BY ac.code) = 1 
-                    THEN CAST(COALESCE(t.total, f.property_amount) AS FLOAT)
-                ELSE 0
-            END,
-        0) AS property_amount,
-
+        COALESCE(b.contact_id, d.contact_id) AS contact_id,
+        tia.price AS property_amount,
         f.deal_pipeline_id,
         f.deal_pipeline_stage_id,
         f.property_hs_is_closed_won,
         f.property_closedate,
-        CASE WHEN f.property_createdate > f.property_closedate 
-            THEN f.property_closedate 
-            ELSE f.property_createdate END AS property_createdate,
+        CASE 
+            WHEN f.property_createdate > f.property_closedate THEN f.property_closedate 
+            ELSE f.property_createdate 
+        END AS property_createdate,
         f.owner_id,
-
-        -- PHONE NUMBER PRIORITY
         COALESCE(
             c.property_hs_calculated_phone_number,
             c.property_hs_calculated_mobile_number,
@@ -166,7 +151,6 @@ final_enriched AS (
             CONCAT('+1', REGEXP_REPLACE(e.property_mobilephone, '[^0-9]', '')),
             CONCAT('+1', REGEXP_REPLACE(e.property_phone, '[^0-9]', ''))
         ) AS phone_number,
-
         f.property_hs_all_owner_ids,
         f.property_dealtype,
         f.property_hs_forecast_amount,
@@ -177,56 +161,115 @@ final_enriched AS (
         f.property_hs_projected_amount,
         f.property_invoice_id,
         f.company,
-
-        -- enhanced service_type logic (packages, memberships, pipe parsing)
         COALESCE(
             CASE 
-                WHEN f.service_type IS NULL AND f.property_invoice_id IS NOT NULL 
-                    THEN (
-                        CASE 
-                            WHEN ac.code ILIKE '%packages %' 
-                                THEN RIGHT(ac.code, LENGTH(ac.code) - POSITION('|' , ac.code) - 1)
-                            WHEN ac.code ILIKE '%memberships%' 
-                                THEN 'Memberships'
-                            WHEN ac.code ILIKE '%|%' 
-                                THEN LEFT(ac.code, POSITION('|' , ac.code) - 2)
-                            ELSE ac.code
-                        END
-                    )
+                WHEN f.service_type IS NULL AND f.property_invoice_id IS NOT NULL THEN
+                    CASE 
+                        WHEN ac.code ILIKE '%packages %' 
+                            THEN RIGHT(ac.code, LENGTH(ac.code) - POSITION('|', ac.code) - 1)
+                        WHEN ac.code ILIKE '%memberships%' 
+                            THEN 'Memberships'
+                        WHEN ac.code ILIKE '%|%' 
+                            THEN LEFT(ac.code, POSITION('|', ac.code) - 2)
+                        ELSE ac.code
+                    END
                 WHEN f.service_type IS NULL AND f.property_invoice_id IS NULL 
                     THEN 'Other deal'
                 ELSE f.service_type 
             END,
         'Invoiced') AS service_type,
-
         f.grouped_service_type
-
     FROM services AS f
-
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_deal_contact') }} b 
-        ON f.deal_id = b.deal_id and b.is_active=1
-
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_contact') }} c 
-        ON c.id = b.contact_id and c.is_active=1
-
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_deal_contact') }} d 
-        ON f.deal_id = d.deal_id and d.is_active=1
-
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_contact') }} e 
-        ON e.id = d.contact_id and e.is_active=1
-
-    -- join transactions by concatenated invoice id + source_db (matches PROPERTY_INVOICE_ID with suffix)
-    LEFT JOIN {{ get_silver_source('wagway', 'gingr_pos_transactions') }} t 
+    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_deal_contact') }} AS b
+        ON f.deal_id = b.deal_id
+        AND b.is_active = 1
+    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_contact') }}  AS c
+        ON c.id = b.contact_id
+        AND c.is_active = 1
+    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_deal_contact') }} AS d
+        ON f.deal_id = d.deal_id
+        AND d.is_active = 1
+    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_contact') }} AS e
+        ON e.id = d.contact_id
+        AND e.is_active = 1
+    LEFT JOIN (
+        SELECT * 
+        FROM {{ get_silver_source('wagway', 'gingr_pos_transactions') }} 
+        WHERE total = payment_amount
+    ) AS t
         ON CONCAT(t.id, '-', t.source_db) = f.property_invoice_id
-
-    LEFT JOIN {{ get_silver_source('wagway', 'gingr_owners') }} j 
+        AND t.delete_indicator = 0
+    LEFT JOIN {{ get_silver_source('wagway', 'gingr_owners') }}  AS j
         ON j.id = t.owner_id
-
-    LEFT JOIN {{ get_silver_source('wagway', 'gingr_pos_transaction_items_audit') }}  tia 
+        AND j.delete_indicator = 0
+    LEFT JOIN {{ get_silver_source('wagway', 'gingr_pos_transaction_items') }} AS tia
         ON tia.pos_transaction_id = t.id
-
-    LEFT JOIN {{ get_silver_source('wagway', 'gingr_account_codes') }} ac 
+        AND tia.delete_indicator = 0
+    LEFT JOIN {{ get_silver_source('wagway', 'gingr_account_codes') }}  AS ac
         ON ac.id = tia.account_code_id
+        AND ac.delete_indicator = 0
+),
+CTE_DEAL_STAGE AS
+(
+  SELECT
+        DPS.STAGE_ID,
+        DPS.LABEL,
+        DP.LABEL AS PIPELINE_LABEL,
+        DPS.DISPLAY_ORDER,
+        DPS.CREATED_AT,
+        DPS.UPDATED_AT,
+        DPS.WRITE_PERMISSIONS,
+        DPS.PIPELINE_ID,
+        DPS.IS_CLOSED,
+        DPS.PROBABILITY,
+        'PUPS Pet Club' AS COMPANY
+    FROM {{ get_silver_source('wagway', 'hubspot_deal_pipeline_stage') }} DPS
+    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_deal_pipeline') }} DP 
+        ON DP.PIPELINE_ID = DPS.PIPELINE_ID AND DP.IS_ACTIVE=1
+    WHERE DPS.IS_ACTIVE=1
+
+    UNION
+
+    SELECT
+        DPS.STAGE_ID,
+        DPS.LABEL,
+        DP.LABEL AS PIPELINE_LABEL,
+        DPS.DISPLAY_ORDER,
+        DPS.CREATED_AT,
+        DPS.UPDATED_AT,
+        DPS.WRITE_PERMISSIONS,
+        DPS.PIPELINE_ID,
+        DPS.IS_CLOSED,
+        DPS.PROBABILITY,
+        'PAWVILLE' AS COMPANY
+    FROM {{ get_silver_source('wagway', 'hubspot_pawville_deal_pipeline_stage') }} DPS
+    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_deal_pipeline') }}DP 
+        ON DP.PIPELINE_ID = DPS.PIPELINE_ID
 )
 
-SELECT DISTINCT * FROM final_enriched
+,cte2 AS (
+    SELECT 
+        fe.*,
+        CASE 
+            WHEN fe.contact_id IS NULL THEN NULL
+            ELSE MIN(
+                CASE 
+                    WHEN (fe.property_invoice_id IS NOT NULL OR ds.label ILIKE '%purchase%') 
+                        THEN LEAST(fe.property_closedate, fe.property_createdate) 
+                END
+            ) OVER (PARTITION BY fe.contact_id)
+        END AS acquisition_date,
+        MIN(fe.property_createdate) OVER (PARTITION BY fe.contact_id) AS contact_date,
+        CASE 
+            WHEN ROW_NUMBER() OVER (PARTITION BY fe.property_invoice_id ORDER BY fe.property_amount DESC) = 1 
+                THEN fe.property_invoice_id 
+            ELSE NULL 
+        END AS max_revenue_invoice_id,
+		CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
+    FROM final_enriched fe
+    LEFT JOIN CTE_DEAL_STAGE ds 
+        ON fe.deal_pipeline_stage_id = ds.label
+)
+
+SELECT DISTINCT *
+FROM cte2
