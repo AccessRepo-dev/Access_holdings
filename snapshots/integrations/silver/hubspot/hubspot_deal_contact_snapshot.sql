@@ -10,7 +10,7 @@
         database = get_target_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_DEAL_CONTACT', 
-        unique_key=['DEAL_ID','CONTACT_ID','TYPE_ID'],
+        unique_key=['DEAL_ID','CONTACT_ID'],
         strategy='timestamp',
         updated_at='_FIVETRAN_SYNCED',
         invalidate_hard_deletes=True
