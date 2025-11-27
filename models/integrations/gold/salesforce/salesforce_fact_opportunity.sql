@@ -16,6 +16,7 @@ with source as (
         op.id as OPPORTUNITY_ID,
         ac.ACCOUNT_ID,
         u.ID AS USER_ID,
+        l.owner_id,
         op.STAGE_NAME,
         CAST(op.AMOUNT AS NUMBER) AS AMOUNT,
         op.IS_ACTIVE,
@@ -25,6 +26,8 @@ with source as (
         ON op.account_id=ac.account_id AND ac.IS_ACTIVE = 1
     LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_USER') }} u 
         ON op.owner_id = u.id AND u.IS_ACTIVE = 1
+    LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_LEAD') }} l 
+        ON op.id = l.CONVERTED_OPPORTUNITY_ID and l.IS_ACTIVE = 1
 
 )
 select *
