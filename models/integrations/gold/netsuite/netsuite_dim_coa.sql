@@ -15,22 +15,17 @@ WITH source AS (
         CLASS_ID,
         LOCATION_ID,
         DEPARTMENT_ID,
-        {%if company == 'wagway'%}
-            ADJUSTMENT_ID,
-        {%else%}
-            0 AS ADJUSTMENT_ID,
-        {%endif%}
+   
+        ADJUSTMENT_ID,
+        
         LOCATION_NAME,
         SUBSIDIARY_NAME,
         ACCOUNT_NAME,
         ACCOUNT_NUMBER,
         CLASS_NAME,
         DEPARTMENT_NAME,
-        {%if company == 'wagway'%}
-            ADJUSTMENT_NAME,
-        {%else%}
-            'Unknown' AS ADJUSTMENT_NAME,
-        {%endif%}
+        ADJUSTMENT_NAME,
+      
         METRIC_L1,
         METRIC_L2,
         METRIC_L3,
@@ -43,13 +38,11 @@ WITH source AS (
         IS_BS,
         DEBT_MAPPING,
         
-        {% if company == 'wagway'%}
-        CASE WHEN ADJUSTMENT_ID <> 0 THEN 1 
+  
+        CASE WHEN COALESCE(ADJUSTMENT_ID,0) <> 0 THEN 1 
             ELSE 0
         END AS IS_ADJ
-        {% else %}
-        CAST(NULL AS INT) AS IS_ADJ
-        {% endif %}
+      
 
     FROM {{ get_silver_source(company, sourcesystem ~ '_coa') }}
     WHERE dbt_valid_to IS NULL  -- Only get active records from snapshot
