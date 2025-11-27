@@ -52,12 +52,7 @@ FROM {{ source(src, 'GL_ENTRY') }} e
             WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ')
         )
 {% endif %}
-{% if is_incremental() %}
-    where COA_ID not in (
-        select COA_ID
-        from {{ this }}
-    )
-{%endif%} 
+
 ),
 budget as (
     SELECT
@@ -80,12 +75,7 @@ budget as (
 
     CURRENT_TIMESTAMP AS DATA_LOADED_AT
     FROM {{ source(src, 'GL_BUDGET_ITEM') }} e
-{% if is_incremental() %}
-    where COA_ID not in (
-        select COA_ID
-        from {{ this }}
-    )
-    {%endif%} 
+
 ),
 combined as (
 select * from budget
@@ -123,4 +113,10 @@ NULL AS METRIC_L1,
     NULL AS IS_BS,
     NULL AS DEBT_MAPPING
     FROM combined a
+{%endif%} 
+{% if is_incremental() %}
+    where COA_ID not in (
+        select COA_ID
+        from {{ this }}
+    )
 {%endif%} 
