@@ -54,6 +54,7 @@ sources:
       - name: CLASSIFICATIONSUBSIDIARYMAP
       - name: ACCOUNTSUBSIDIARYMAP
       - name: CUSTOMRECORD_CSEG1
+      - name: CUSTOMRECORD_CSEG2
 
   - name: wagway_silver
     database: "{{ env_var('DBT_WAGWAY') }}"
@@ -79,6 +80,7 @@ sources:
       - name: NETSUITE_BUDGETCATEGORY
       - name: NETSUITE_CLASSIFICATIONSUBSIDIARYMAP
       - name: NETSUITE_ACCOUNTSUBSIDIARYMAP
+    
       - name: wagway_COA_MAPPING
       - name: wagway_addbacks 
       - name: NETSUITE_CUSTOMRECORD_CSEG1
@@ -132,6 +134,7 @@ sources:
       - name: playfly_COA_MAPPING
       - name: playfly_addbacks 
       - name: NETSUITE_CUSTOMRECORD_CSEG1
+      - name: NETSUITE_CUSTOMRECORD_CSEG2
       - name: netsuite_coa
       - name: netsuite_adjustments
   
