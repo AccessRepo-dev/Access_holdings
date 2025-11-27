@@ -2,7 +2,7 @@
 {% set sourcesystem = var('sourcesystem') | lower %}
 
 {{ config(
-    enabled = var('company')|lower == 'wagway' and var('sourcesystem') | lower =='netsuite',
+    enabled =  var('sourcesystem') | lower =='netsuite',
     database = get_target_database(company),
     materialized = 'incremental',
     alias = 'dim_addback',
@@ -17,9 +17,14 @@ with source as (
         NAME,
         ISINACTIVE AS IS_INACTIVE,
         LASTMODIFIED as LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, (sourcesystem | upper) ~ '_CUSTOMRECORD_CSEG1') }}
+    
+    from 
+    {%if company == 'wagway'%} 
+    {{ get_silver_source(company, (sourcesystem | upper) ~ '_CUSTOMRECORD_CSEG1') }}
+    {%else%} 
+      {{ get_silver_source(company, (sourcesystem | upper) ~ '_CUSTOMRECORD_CSEG2') }}
+    {%endif%}
     where (_fivetran_deleted is null or _fivetran_deleted = false)
-
     {% if is_incremental() %}
         and LASTMODIFIED > (
             select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')

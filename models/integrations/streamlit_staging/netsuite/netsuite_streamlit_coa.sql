@@ -33,7 +33,8 @@ with transaction as (
             coalesce(tl.subsidiary, 0),
             coalesce(tl.class, 0),
             coalesce(tl.location, 0),
-            coalesce(tl.department, 0)
+            coalesce(tl.department, 0),
+            coalesce(tl.CSEG2,0)
     ) AS COA_ID,
     {% endif %}
     COALESCE(tal.ACCOUNT, 0) AS ACCOUNT_ID,
@@ -49,6 +50,8 @@ with transaction as (
     COALESCE(tl.DEPARTMENT, 0) AS DEPARTMENT_ID,
     {%if company == 'wagway'%}
     COALESCE(tl.CSEG1, 0)  AS ADJUSTMENT_ID,
+    {%else%}
+     COALESCE(tl.CSEG2, 0)  AS ADJUSTMENT_ID,
     {%endif%}
    
     COALESCE(l.NAME, 'Unknown') AS LOCATION_NAME,
@@ -56,9 +59,8 @@ with transaction as (
     COALESCE(a.FULLNAME, 'Unknown') AS ACCOUNT_NAME,
     COALESCE(c.NAME, 'Unknown') AS CLASS_NAME,
     COALESCE(d.FULLNAME, 'Unknown') AS DEPARTMENT_NAME,
-    {%if company == 'wagway'%}
     COALESCE(ad.name, 'Unknown') AS ADJUSTMENT_NAME,
-    {%endif%}
+   
     CURRENT_TIMESTAMP AS DATA_LOADED_AT 
 
 
@@ -71,6 +73,7 @@ LEFT JOIN {{ source(src, 'CLASSIFICATION') }} c ON c.ID = COALESCE(tl.CLASS, 0)
     LEFT JOIN {{ source(src, 'CUSTOMRECORD_CSEG1') }} ad ON COALESCE(tl.CSEG1, 0) = ad.ID
 {%else%}
     LEFT JOIN {{ source(src, 'LOCATION') }} l ON l.ID = COALESCE(tl.location, 0)
+    LEFT JOIN {{ source(src, 'CUSTOMRECORD_CSEG2') }} ad ON COALESCE(tl.CSEG2, 0) = ad.ID
 {%endif%}
 LEFT JOIN {{ source(src, 'SUBSIDIARY') }} s ON s.ID = COALESCE(tl.SUBSIDIARY, 0)
 LEFT JOIN {{ source(src, 'DEPARTMENT') }} d ON d.ID = COALESCE(tl.DEPARTMENT, 0)
@@ -99,7 +102,8 @@ budget as (
             coalesce(b.subsidiary, 0),
             coalesce(b.class, 0),
             coalesce(b.location, 0),
-            coalesce(b.department, 0)
+            coalesce(b.department, 0),
+            0 
         ) AS COA_ID,
          {% endif %}
         COALESCE(b.ACCOUNT, 0) AS ACCOUNT_ID,
@@ -114,6 +118,8 @@ budget as (
         COALESCE(b.DEPARTMENT, 0) AS DEPARTMENT_ID,
         {%if company == 'wagway'%}
         COALESCE(b.CSEG1, 0)   AS ADJUSTMENT_ID,
+        {%else%}
+        0 as ADJUSTMENT_ID,
         {%endif%} 
         COALESCE(l.NAME, 'Unknown') AS LOCATION_NAME,
         COALESCE(s.NAME, 'Unknown') AS SUBSIDIARY_NAME,
@@ -121,7 +127,9 @@ budget as (
         COALESCE(c.NAME, 'Unknown') AS CLASS_NAME,
         COALESCE(d.FULLNAME, 'Unknown') AS DEPARTMENT_NAME,
         {%if company == 'wagway'%}
-        COALESCE(ad.name, 'Unknown')   AS ADJUSTMENT_NAME, 
+        COALESCE(ad.name, 'Unknown')   AS ADJUSTMENT_NAME,
+        {%else%}
+        'Unknown' as ADJUSTMENT_NAME,  
         {%endif%} 
        CURRENT_TIMESTAMP AS DATA_LOADED_AT 
         FROM {{ source(src, 'BUDGETLEGACY') }} b
@@ -180,4 +188,5 @@ NULL AS METRIC_L1,
     NULL AS DEBT_MAPPING
     FROM combined a
 {%endif%} 
+
     
