@@ -28,7 +28,7 @@
 {%else%}
 {{
  config( 
-        unique_key = ['ACCOUNT_ID', 'LOCATION_ID', 'DEPARTMENT_ID','','PROJECT_ID','CLASS_ID','ADJ_TYPE','PERIOD']   
+        unique_key = ['ACCOUNT_ID', 'LOCATION_ID', 'DEPARTMENT_ID','PROJECT_ID','CLASS_ID','ADJ_TYPE','PERIOD']   
     )
     }}
 {%endif%}
