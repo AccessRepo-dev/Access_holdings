@@ -8,7 +8,7 @@
 {{
     config(
         enabled = (var('company') | lower == 'wagway') and var('sourcesystem') | lower == 'hubspot',
-        database = get_target_database(company),
+        database = get_raw_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_PUPS_PRODUCTS', 
         unique_key='id',

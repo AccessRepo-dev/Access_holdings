@@ -7,7 +7,7 @@
 
 {{
     config(
-        database = get_target_database(company),
+        database = get_raw_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         unique_key='id',
         strategy='timestamp',
