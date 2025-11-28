@@ -44,7 +44,7 @@ sources:
       - name: PUPS_PRODUCTS
 
   - name: wagway_snapshots
-    database: "{{ env_var('DBT_WAGWAY') }}"     
+    database: wagway_raw     
     schema: HUBSPOT_SNAPSHOTS        
     tables: 
     - name : HUBSPOT_COMPANY
@@ -67,7 +67,7 @@ sources:
 
   
   - name: wagway_snapshots
-    database: "{{ env_var('DBT_WAGWAY') }}"     
+    database: wagway_raw     
     schema: HUBSPOT_PAWVILLE_SNAPSHOTS        
     tables: 
     - name : HUBSPOT_PAWVILLE_COMPANY
@@ -143,7 +143,7 @@ sources:
 
 
   - name: amh_snapshots
-    database: "{{ env_var('DBT_AMH') }}"     
+    database: amh_raw    
     schema: HUBSPOT_SNAPSHOTS        
     tables: 
     - name : HUBSPOT_CONTACT
@@ -201,7 +201,7 @@ sources:
 
 
   - name: playfly_snapshots
-    database: "{{ env_var('DBT_PLAYFLY') }}"     
+    database: playfly_raw  
     schema: HUBSPOT_SNAPSHOTS        
     tables: 
     - name : HUBSPOT_COMPANY
