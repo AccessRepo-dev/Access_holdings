@@ -138,13 +138,7 @@ models:
           +materialized: table
         hubspot:
           +schema: GOLD
-        ringcentral:
-          +schema: GOLD
-          +materialized: table
-        gingr:
-            +schema: GOLD
-            +materialized: table
-        cdm:
+        wagway_multisource_models:
             +schema: GOLD
             +materialized: table 
             
