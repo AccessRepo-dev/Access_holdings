@@ -4,7 +4,7 @@
     enabled = (var('company') | lower) == 'wagway',
     database = get_target_database(company),
     materialized = 'table',
-    alias = 'FACT_WAGWAY_GINGR_TRANSACTION'
+    alias = 'FACT_WAGWAY_TRANSACTION'
 ) }}
 
 SELECT
