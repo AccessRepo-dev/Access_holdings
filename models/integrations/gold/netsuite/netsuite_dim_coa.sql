@@ -38,10 +38,15 @@ WITH source AS (
         IS_BS,
         DEBT_MAPPING,
         
-  
+        {%if company == 'playfly' %}
+        CASE WHEN COALESCE(ADJUSTMENT_ID,0) = 21 then 1
+        ELSE 0 
+        END AS IS_ADJ
+        {%else%}
         CASE WHEN COALESCE(ADJUSTMENT_ID,0) <> 0 THEN 1 
             ELSE 0
         END AS IS_ADJ
+        {%endif%}
       
 
     FROM {{ get_silver_source(company, sourcesystem ~ '_coa') }}
