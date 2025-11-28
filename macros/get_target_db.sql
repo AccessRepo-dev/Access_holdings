@@ -6,7 +6,7 @@
 
 
 {% macro get_raw_database(company) -%}
-  {% set company_up = company | upper %}
+  {% set company_up = company | lower %}
   {% set raw_company = company_up ~ '_raw' %}
   {{return(raw_company)}}
 {%- endmacro %}
