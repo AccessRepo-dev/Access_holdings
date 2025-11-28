@@ -8,7 +8,7 @@
 
 {{
     config(
-        database = get_target_database(company),
+        database = get_raw_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_DEAL_PIPELINE_STAGE', 
         unique_key='STAGE_ID',
