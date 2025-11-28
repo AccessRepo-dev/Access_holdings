@@ -84,24 +84,38 @@ sources:
       - name: wagway_COA_MAPPING
       - name: wagway_addbacks 
       - name: NETSUITE_CUSTOMRECORD_CSEG1
-      - name: ringcentral_account_call_log
-      - name: ringcentral_company_directory_phone_number
-      - name: ringcentral_company_directory
+
+      - name: hubspot_pawville_deal
+      - name: hubspot_pawville_deal_contact
+      - name: hubspot_pawville_contact
+      - name: hubspot_pawville_deal_pipeline_stage
+      - name: hubspot_pawville_deal_pipeline
+      - name: hubspot_pawville_owner
       - name: hubspot_deal
       - name: hubspot_deal_contact
       - name: hubspot_contact
-      - name: gingr_owners
+      - name: hubspot_deal_pipeline_stage
+      - name: hubspot_deal_pipeline
+      - name: hubspot_owner
+      - name: hubspot_owner_team
+      - name: hubspot_team
+
+      - name: ringcentral_account_call_log
+      - name: ringcentral_company_directory_phone_number
+      - name: ringcentral_company_directory
       - name: ringcentral_sms
       - name: ringcentral_sms_to
       - name: ringcentral_message
       - name: ringcentral_message_to
+      - name: ringcentral_user_business_hour_range 
+
+      - name: gingr_owners
       - name: gingr_pos_transactions
       - name: gingr_pos_transaction_items_audit
       - name: gingr_account_codes
-      - name: hubspot_pawville_deal
-      - name: hubspot_pawville_deal_contact
-      - name: hubspot_pawville_contact
+      - name: gingr_pos_transaction_items
 
+      - name: wagway_location_capacity_mapping
       - name: netsuite_coa
       - name: netsuite_adjustments
 

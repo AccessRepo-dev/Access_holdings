@@ -8,27 +8,30 @@
 ) }}
 
 ----------------------------------------------------------
--- CTE1:  Gingr phone numbers for matching
+-- CTE1: Gingr phone numbers for matching
 ----------------------------------------------------------
-with cte1 as (
-    select
-        id as owner_id,
-        case
-            when length(regexp_replace(concat('+1', regexp_replace(cell_phone, '[^0-9]', '')), '[^0-9]', '')) = 10
-                then concat('+1', regexp_replace(concat('+1', regexp_replace(cell_phone, '[^0-9]', '')), '[^0-9]', ''))
-            when length(regexp_replace(concat('+1', regexp_replace(cell_phone, '[^0-9]', '')), '[^0-9]', '')) = 11
-                and left(regexp_replace(concat('+1', regexp_replace(cell_phone, '[^0-9]', '')), '[^0-9]', ''), 1) = '1'
-                then concat('+', regexp_replace(concat('+1', regexp_replace(cell_phone, '[^0-9]', '')), '[^0-9]', ''))
-            else concat('+', regexp_replace(concat('+1', regexp_replace(cell_phone, '[^0-9]', '')), '[^0-9]', ''))
-        end as clean_number
-    from {{ get_silver_source('wagway', 'gingr_owners') }}
+
+WITH cte1 AS (
+    SELECT 
+        CASE
+            WHEN LENGTH(REGEXP_REPLACE(CONCAT('+1', REGEXP_REPLACE(cell_phone, '[^0-9]', '')), '[^0-9]', '')) = 10
+                THEN CONCAT('+1', REGEXP_REPLACE(CONCAT('+1', REGEXP_REPLACE(cell_phone, '[^0-9]', '')), '[^0-9]', ''))
+            WHEN LENGTH(REGEXP_REPLACE(CONCAT('+1', REGEXP_REPLACE(cell_phone, '[^0-9]', '')), '[^0-9]', '')) = 11
+                 AND LEFT(REGEXP_REPLACE(CONCAT('+1', REGEXP_REPLACE(cell_phone, '[^0-9]', '')), '[^0-9]', ''), 1) = '1'
+                THEN CONCAT('+', REGEXP_REPLACE(CONCAT('+1', REGEXP_REPLACE(cell_phone, '[^0-9]', '')), '[^0-9]', ''))
+            ELSE CONCAT('+', REGEXP_REPLACE(CONCAT('+1', REGEXP_REPLACE(cell_phone, '[^0-9]', '')), '[^0-9]', ''))
+        END AS clean_number,
+        id AS owner_id
+    FROM {{ get_silver_source('wagway', 'gingr_owners') }}
+    WHERE delete_indicator = 0
 ),
 
 ----------------------------------------------------------
 -- CTE2: Main call log with hubspot + ringcentral + gingr
 ----------------------------------------------------------
-cte2 as (
-    select distinct
+
+cte2 AS (
+    SELECT DISTINCT
         a.id,
         a.start_time,
         a.duration,
@@ -42,6 +45,8 @@ cte2 as (
         a.reason_description,
         a.account_id,
         a.session_id,
+        br."FROM" AS time_from,
+        br."TO" AS time_to,
         a.from_phone_number,
         a.from_extension_number,
         a.from_extension_id,
@@ -55,118 +60,135 @@ cte2 as (
         a.to_name,
         a.to_dialed_phone_number,
         a.extension_id,
-        'PUPS Pet Club' as company,
+        COALESCE(a.from_extension_id, cpn.company_directory_id) AS employee_extension_id,
+        'PUPS Pet Club' AS company,
 
-        -- PROPERTY_PHONE_NUMBER
-        case 
-            when a.direction = 'Inbound' then a.from_phone_number
-            else a.to_phone_number
-        end as property_phone_number,
+        CASE 
+            WHEN a.direction = 'Inbound' THEN a.from_phone_number 
+            ELSE a.to_phone_number 
+        END AS property_phone_number,
 
-        -- LOCATION (fallback to directory)
-        coalesce(
-            case when a.direction = 'Outbound' then a.from_name else a.to_name end,
-            concat(c.first_name, ' ', c.last_name)
-        ) as location,
+        COALESCE(
+            CASE WHEN a.direction = 'Outbound' THEN a.from_name ELSE a.to_name END,
+            CONCAT(c.first_name, ' ', c.last_name)
+        ) AS location,
 
-        -- PROPERTY
-        case when a.direction = 'Inbound' then a.from_name else a.to_name end as property,
+        CASE 
+            WHEN a.direction = 'Inbound' THEN a.from_name 
+            ELSE a.to_name 
+        END AS property,
 
-        -- HOURS
-        a.duration_ms / 360000.0 as hours,
+        a.duration_ms / 360000.0 AS hours,
 
-        -- CALLBACK
-        case
-            when a.direction = 'Inbound'
-             and a.result = 'Missed'
-             and not exists (
-                select 1
-                from {{ get_silver_source('wagway', 'ringcentral_account_call_log') }} b
-                where a.from_phone_number = b.to_phone_number
-                  and b.start_time > a.start_time
-            )
-            then 0
-            else 1
-        end as callback,
+        CASE 
+            WHEN a.direction = 'Inbound'
+             AND a.result = 'Missed'
+             AND NOT EXISTS (
+                    SELECT 1 
+                    FROM {{ get_silver_source('wagway', 'ringcentral_account_call_log') }} b
+                    WHERE a.from_phone_number = b.to_phone_number
+                      AND b.start_time > a.start_time
+                )
+            THEN 0 
+            ELSE 1 
+        END AS callback,
 
-        -- FORWARDED
-        case
-            when (
-                a.to_name ilike '%fwd%' or a.from_name ilike '%fwd%'
-                or (
+        CASE 
+            WHEN a.to_name ILIKE '%fwd%'
+               OR a.from_name ILIKE '%fwd%'
+               OR (
                     a.direction = 'Inbound'
-                    and a.from_phone_number is null
-                    and replace(a.from_name, ' ', '') in (
-                        select replace(concat(first_name, last_name), ' ', '')
-                        from {{ get_silver_source('wagway', 'ringcentral_company_directory') }}
+                    AND a.from_phone_number IS NULL
+                    AND REPLACE(a.from_name, ' ', '') IN (
+                        SELECT REPLACE(CONCAT(first_name, last_name), ' ', '')
+                        FROM {{ get_silver_source('wagway', 'ringcentral_company_directory') }}
                     )
-                )
-                or (
+                  )
+               OR (
                     a.direction = 'Outbound'
-                    and a.to_phone_number is null
-                    and replace(a.to_name, ' ', '') in (
-                        select replace(concat(first_name, last_name), ' ', '')
-                        from {{ get_silver_source('wagway', 'ringcentral_company_directory') }}
+                    AND a.to_phone_number IS NULL
+                    AND REPLACE(a.to_name, ' ', '') IN (
+                        SELECT REPLACE(CONCAT(first_name, last_name), ' ', '')
+                        FROM {{ get_silver_source('wagway', 'ringcentral_company_directory') }}
                     )
-                )
-            )
-            then 1 else 0
-        end as forwarded,
+                  )
+            THEN 1 
+            ELSE 0 
+        END AS forwarded,
 
-        -- HubSpot property club
-        min(e.property_club_c) over (
-            partition by 
-                case when a.direction = 'Inbound' then a.from_phone_number else a.to_phone_number end
-            order by f.property_createdate
-        ) as property_club_c,
+        MIN(e.property_club_c) OVER (
+            PARTITION BY 
+                CASE WHEN a.direction = 'Outbound' THEN a.from_phone_number ELSE a.to_phone_number END
+            ORDER BY f.property_createdate
+        ) AS property_club_c,
 
-        -- GINGR match
-        g.owner_id as customer_id
+        g.owner_id AS customer_id
 
-    from {{ get_silver_source('wagway', 'ringcentral_account_call_log') }} a
-
-    left join {{ get_silver_source('wagway', 'ringcentral_company_directory_phone_number') }} d
-        on d.phone_number = case
-            when a.direction = 'Outbound' then a.from_phone_number
-            else a.to_phone_number
-        end
-
-    left join {{ get_silver_source('wagway', 'ringcentral_company_directory') }} c
-        on c.id = d.company_directory_id
-
-    left join {{ get_silver_source('wagway', 'hubspot_contact') }} e
-        on coalesce(
-            e.property_hs_calculated_phone_number,
-            e.property_hs_calculated_mobile_number
-        ) = case when a.direction = 'Outbound' then a.to_phone_number else a.from_phone_number end
-
-    left join {{ get_silver_source('wagway', 'hubspot_deal_contact') }} b
-        on e.id = b.contact_id
-
-    left join {{ get_silver_source('wagway', 'hubspot_deal') }} f
-        on b.deal_id = f.deal_id
-
-    left join cte1 g 
-        on case 
-            when a.direction = 'Inbound' then a.from_phone_number
-            else a.to_phone_number 
-        end = g.clean_number
+    FROM {{ get_silver_source('wagway', 'ringcentral_account_call_log') }} a
+    LEFT JOIN {{ get_silver_source('wagway', 'ringcentral_company_directory_phone_number') }} d
+        ON d.phone_number = CASE 
+                                WHEN a.direction = 'Outbound' THEN a.from_phone_number 
+                                ELSE a.to_phone_number 
+                            END
+    LEFT JOIN {{ get_silver_source('wagway', 'ringcentral_company_directory') }} c
+        ON c.id = d.company_directory_id
+    LEFT JOIN {{ get_silver_source('wagway', 'ringcentral_company_directory_phone_number') }} cpn
+        ON CASE 
+                WHEN a.direction = 'Inbound' THEN a.to_phone_number 
+                ELSE a.from_phone_number 
+            END = cpn.phone_number
+    LEFT JOIN {{ get_silver_source('wagway', 'ringcentral_user_business_hour_range') }} br
+        ON employee_extension_id = br.extension_id
+    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_contact') }} e 
+        ON COALESCE(
+                e.property_hs_calculated_phone_number, 
+                e.property_hs_calculated_mobile_number
+           ) = CASE 
+                    WHEN a.direction = 'Outbound' THEN a.to_phone_number 
+                    ELSE a.from_phone_number 
+                END
+       AND e.is_active = 1
+    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_deal_contact') }} b 
+        ON e.id = b.contact_id 
+       AND b.is_active = 1
+    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_deal') }} f 
+        ON b.deal_id = f.deal_id 
+       AND f.is_active = 1
+    LEFT JOIN cte1 g 
+        ON property_phone_number = g.clean_number
 ),
 
 ----------------------------------------------------------
--- Final output with revenue cte
+-- CTE3: Gingr revenue by customer + call time window
 ----------------------------------------------------------
-revenue_cte as (
-    select
-        owner_id,
-        sum(total) as revenue
-    from {{ get_silver_source('wagway', 'gingr_pos_transactions') }}
-    group by owner_id
+
+cte3 AS (
+    SELECT
+        h.owner_id AS customer_id,
+        a.id AS call_id,
+        SUM(g.price) AS revenue_from_gingr_7
+    FROM cte2 a
+    LEFT JOIN {{ get_silver_source('wagway', 'gingr_pos_transactions') }} h
+        ON h.owner_id = a.customer_id
+       AND TO_TIMESTAMP(h.create_stamp) BETWEEN a.start_time AND DATEADD(day, 7, a.start_time)
+       AND h.delete_indicator = 0
+    LEFT JOIN {{ get_silver_source('wagway', 'gingr_pos_transaction_items') }} g
+        ON h.id = g.pos_transaction_id
+       AND g.delete_indicator = 0
+    GROUP BY 1, 2
 )
 
-select
+----------------------------------------------------------
+-- FINAL QUERY
+----------------------------------------------------------
+
+SELECT 
     a.*,
-    case when a.customer_id is not null then 1 else 0 end as is_in_gingr,
-    coalesce(r.revenue, 0) as revenue
-from cte2 a
-left join revenue_cte r on a.customer_id = r.owner_id
+    CASE WHEN a.customer_id IS NOT NULL THEN 1 ELSE 0 END AS is_in_gingr,
+    COALESCE(r.revenue_from_gingr_7, 0) AS revenue_from_gingr_7,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
+
+FROM cte2 a
+LEFT JOIN cte3 r
+    ON r.call_id = a.id
+    
