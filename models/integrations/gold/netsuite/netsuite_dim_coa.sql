@@ -37,7 +37,8 @@ WITH source AS (
         CASHFLOW_L3 AS CASH_FLOW_L3,
         IS_BS,
         DEBT_MAPPING,
-        
+        CAST(NULL AS NUMBER) AS PROJECT_ID,
+        CAST(NULL AS VARCHAR) AS PROJECT_NAME,
         {%if company == 'playfly' %}
         CASE WHEN COALESCE(ADJUSTMENT_ID,0) = 21 then 1
         ELSE 0 
