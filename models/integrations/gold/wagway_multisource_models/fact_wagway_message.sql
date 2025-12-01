@@ -4,7 +4,7 @@
     enabled = (var('company') | lower) == 'wagway',
     database = get_target_database(company),
     materialized = 'table',
-    alias = 'FACT_WAGWAY_RINGCENTRAL_MESSAGE'
+    alias = 'FACT_WAGWAY_MESSAGE'
 ) }}
 
 -- Updated logic to match Snowflake SQL

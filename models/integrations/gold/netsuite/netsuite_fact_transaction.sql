@@ -30,11 +30,9 @@ with source as (
         a.ACCTTYPE AS ACCOUNT_TYPE,
         a.FULLNAME AS ACCOUNT_NAME,
        
-         {% if company == 'wagway' %}
-             HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT,tl.ADDBACK_ID) AS DIM_CHART_OF_ACCOUNT_ID,
-        {% else %}
-             HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT) AS DIM_CHART_OF_ACCOUNT_ID,
-        {% endif %}
+         
+        HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT,tl.ADDBACK_ID) AS DIM_CHART_OF_ACCOUNT_ID,
+        
         tl.CLASS AS DIM_CLASS_ID,
         CAST(NULL AS INT) AS DIM_PROJECT_ID,
         
@@ -46,16 +44,9 @@ with source as (
         tl.ACCOUNTINGLINETYPE AS ACCOUNTING_LINE_TYPE,
         tl.LOCATION AS DIM_LOCATION_ID,
         tl.SUBSIDIARY AS DIM_SUBSIDIARY_ID,
-        
-        {% if company == 'wagway' %}
-            tl.ADDBACK_ID AS DIM_ADDBACK_ID,
-        {% else %}
-            CAST(NULL AS NUMBER) AS DIM_ADDBACK_ID,
-        {% endif %}
-        
+        tl.ADDBACK_ID AS DIM_ADDBACK_ID,
         -- Period / currency / consolidation
-        t.POSTINGPERIOD AS DIM_PERIOD_ID
-        ,
+        t.POSTINGPERIOD AS DIM_PERIOD_ID,
         per.CLOSEDONDATE AS POSTING_PERIOD_DATE,
         CAST(sub.CURRENCY AS VARCHAR ) AS CURRENCY,
         CONCAT(tl.SUBSIDIARY, '-', t.POSTINGPERIOD, '-', t.CURRENCY) AS CONSOLIDATED_EXCHANGE_RATE_UNIQUE_ID,
@@ -110,11 +101,8 @@ with source as (
         ON sub.ID=tl.SUBSIDIARY
     LEFT JOIN {{ get_gold_source(company, 'DIM_CHART_OF_ACCOUNT') }} coa 
         ON 
-            {% if company == 'wagway' %}
-             HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT,tl.ADDBACK_ID) = coa.DIM_CHART_OF_ACCOUNT_ID
-            {% else %}
-                HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT) = coa.DIM_CHART_OF_ACCOUNT_ID
-            {% endif %}
+        HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT,tl.ADDBACK_ID) = coa.DIM_CHART_OF_ACCOUNT_ID
+            
     LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_CONSOLIDATEDEXCHANGERATE') }} cer
         ON cer.POSTINGPERIOD = t.POSTINGPERIOD 
         AND cer.FROMSUBSIDIARY=tl.SUBSIDIARY
@@ -140,10 +128,8 @@ adjustments AS (
         NULL ACCOUNT_NUMBER,
         NULL AS ACCOUNT_TYPE,
         ACCOUNT_NAME,
-        CASE WHEN ADJ_TYPE = 'Lender Adjustment' THEN -18
-        WHEN ADJ_TYPE = 'Pro-Forma Adjustment' THEN -19 
-        ELSE COA_ID 
-        END AS DIM_CHART_OF_ACCOUNT_ID,
+        
+      COA_ID  AS DIM_CHART_OF_ACCOUNT_ID,
         
         CLASS_ID AS DIM_CLASS_ID,
         NULL AS DIM_PROJECT_ID,
@@ -156,11 +142,8 @@ adjustments AS (
         NULL AS ACCOUNTING_LINE_TYPE,
         LOCATION_ID AS DIM_LOCATION_ID,
         SUBSIDIARY_ID AS DIM_SUBSIDIARY_ID,
-        {%if comapny == 'wagway'%}
-            ADJUSTMENT_ID AS DIM_ADDBACK_ID,
-        {%else%}
-            0 as DIM_ADDBACK_ID,
-        {% endif %}
+        ADJUSTMENT_ID AS DIM_ADDBACK_ID,
+        
         -- Period / currency
         NULL AS DIM_PERIOD_ID,
         NULL AS POSTING_PERIOD_DATE,

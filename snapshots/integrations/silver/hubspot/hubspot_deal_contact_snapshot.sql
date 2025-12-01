@@ -7,7 +7,7 @@
 {{
     config(
         enabled = var('sourcesystem') | lower in ['hubspot','hubspot_pawville'] and var('company') | lower in ['wagway', 'playfly','amh'],
-        database = get_target_database(company),
+        database = get_raw_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_DEAL_CONTACT', 
         unique_key=['DEAL_ID','CONTACT_ID','TYPE_ID'],

@@ -18,8 +18,8 @@ with source as (
     
     {% if is_incremental() %}
         where 
-            _FIVETRAN_SYNCED > (
-                select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'))
+            UPDATED_AT > (
+                select dateadd(day, -1, coalesce(max(UPDATED_AT), '1900-01-01'))
                 from {{ this }}
             )
             and 1=1
@@ -36,6 +36,11 @@ cleaned as (
         CAST(PIPELINE_ID AS varchar) AS PIPELINE_ID,
         CAST(PROBABILITY AS FLOAT) AS PROBABILITY, 
         _FIVETRAN_SYNCED,
+        IS_CLOSED,
+        TRIM(WRITE_PERMISSIONS) AS WRITE_PERMISSIONS ,
+        DISPLAY_ORDER,
+        CAST(CREATED_AT AS TIMESTAMP_NTZ) AS CREATED_AT,
+        CAST(UPDATED_AT AS TIMESTAMP_NTZ) AS UPDATED_AT,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
         CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
         CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,

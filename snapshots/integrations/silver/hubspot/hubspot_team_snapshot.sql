@@ -3,11 +3,11 @@
 
 {% set company = var('company') %}
 {% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('sourcesystem', 'none') | lower in ['hubspot']) }}
+{{ config(enabled = var('sourcesystem', 'none') | lower == 'hubspot' and var('company', 'none') | lower == 'wagway')}}
 
 {{
     config(
-        database = get_target_database(company),
+        database = get_raw_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_TEAM', 
         unique_key='ID',

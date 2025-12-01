@@ -53,7 +53,6 @@ FROM {{ source(src, 'GL_ENTRY') }} e
         )
 {% endif %}
 
-
 ),
 budget as (
     SELECT
@@ -76,14 +75,32 @@ budget as (
 
     CURRENT_TIMESTAMP AS DATA_LOADED_AT
     FROM {{ source(src, 'GL_BUDGET_ITEM') }} e
+
 ),
 combined as (
 select * from budget
 UNION  
 SELECT * FROM transaction
 ) 
-SELECT  
-DISTINCT * ,
+
+{%if company == 'spotless'%}
+SELECT DISTINCT  a.*,
+    b.METRIC_L1,
+    b.METRIC_L2,
+    b.METRIC_L3,
+    b.METRIC_L4,
+    b.METRIC_L5,
+    b.METRIC_L6,
+    b.CASHFLOW_L1,
+    b.CASHFLOW_L2,
+    b.CASHFLOW_L3,
+    b.IS_BS,
+    b.DEBT_MAPPING
+    FROM combined a
+    LEFT JOIN {{this}} b ON a.ACCOUNT_ID = b.ACCOUNT_ID AND a.LOCATION_ID = b.LOCATION_ID AND a.CLASS_ID = b.CLASS_ID AND METRIC_L1 IS NOT NULL 
+
+{%else%}
+SELECT DISTINCT  * ,
 NULL AS METRIC_L1,
     NULL AS METRIC_L2,
     NULL AS METRIC_L3,
@@ -95,10 +112,11 @@ NULL AS METRIC_L1,
     NULL AS CASHFLOW_L3,
     NULL AS IS_BS,
     NULL AS DEBT_MAPPING
-    FROM combined
+    FROM combined a
+{%endif%} 
 {% if is_incremental() %}
-    where COA_ID not in (
+    where a.COA_ID not in (
         select COA_ID
         from {{ this }}
     )
-{% endif %}
+{%endif%} 

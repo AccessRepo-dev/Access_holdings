@@ -1,0 +1,330 @@
+sk_location_id,Location,Service,Day,Capacity
+2-pawville,Jacksonville,Boarding,mon,75
+2-pawville,Jacksonville,Boarding,tue,75
+2-pawville,Jacksonville,Boarding,wed,75
+2-pawville,Jacksonville,Boarding,thur,75
+2-pawville,Jacksonville,Boarding,fri,75
+2-pawville,Jacksonville,Boarding,sat,75
+2-pawville,Jacksonville,Boarding,sun,75
+7-pawville,Pawleys,Boarding,mon,86
+7-pawville,Pawleys,Boarding,tue,86
+7-pawville,Pawleys,Boarding,wed,86
+7-pawville,Pawleys,Boarding,thur,86
+7-pawville,Pawleys,Boarding,fri,86
+7-pawville,Pawleys,Boarding,sat,86
+7-pawville,Pawleys,Boarding,sun,86
+3-pawville,North Shore,Boarding,mon,42
+3-pawville,North Shore,Boarding,tue,42
+3-pawville,North Shore,Boarding,wed,42
+3-pawville,North Shore,Boarding,thur,42
+3-pawville,North Shore,Boarding,fri,42
+3-pawville,North Shore,Boarding,sat,42
+3-pawville,North Shore,Boarding,sun,42
+8-pawville,Northchase,Boarding,mon,58
+8-pawville,Northchase,Boarding,tue,58
+8-pawville,Northchase,Boarding,wed,58
+8-pawville,Northchase,Boarding,thur,58
+8-pawville,Northchase,Boarding,fri,58
+8-pawville,Northchase,Boarding,sat,58
+8-pawville,Northchase,Boarding,sun,58
+6-pawville,Scotts Hill,Boarding,mon,104
+6-pawville,Scotts Hill,Boarding,tue,104
+6-pawville,Scotts Hill,Boarding,wed,104
+6-pawville,Scotts Hill,Boarding,thur,104
+6-pawville,Scotts Hill,Boarding,fri,104
+6-pawville,Scotts Hill,Boarding,sat,104
+6-pawville,Scotts Hill,Boarding,sun,104
+1-pawville,Surf City,Boarding,mon,55
+1-pawville,Surf City,Boarding,tue,55
+1-pawville,Surf City,Boarding,wed,55
+1-pawville,Surf City,Boarding,thur,55
+1-pawville,Surf City,Boarding,fri,55
+1-pawville,Surf City,Boarding,sat,55
+1-pawville,Surf City,Boarding,sun,55
+9-pawville,Winder,Boarding,mon,85
+9-pawville,Winder,Boarding,tue,85
+9-pawville,Winder,Boarding,wed,85
+9-pawville,Winder,Boarding,thur,85
+9-pawville,Winder,Boarding,fri,85
+9-pawville,Winder,Boarding,sat,85
+9-pawville,Winder,Boarding,sun,85
+10-pawville,Citrus,Boarding,mon,70
+10-pawville,Citrus,Boarding,tue,70
+10-pawville,Citrus,Boarding,wed,70
+10-pawville,Citrus,Boarding,thur,70
+10-pawville,Citrus,Boarding,fri,70
+10-pawville,Citrus,Boarding,sat,70
+10-pawville,Citrus,Boarding,sun,70
+5-pawville,Midtown,Boarding,mon,94
+5-pawville,Midtown,Boarding,tue,94
+5-pawville,Midtown,Boarding,wed,94
+5-pawville,Midtown,Boarding,thur,94
+5-pawville,Midtown,Boarding,fri,94
+5-pawville,Midtown,Boarding,sat,94
+5-pawville,Midtown,Boarding,sun,94
+10-pawville,Citrus,Daycare,mon,15
+10-pawville,Citrus,Daycare,tue,15
+10-pawville,Citrus,Daycare,wed,15
+10-pawville,Citrus,Daycare,thur,15
+10-pawville,Citrus,Daycare,fri,15
+10-pawville,Citrus,Daycare,sat,15
+10-pawville,Citrus,Daycare,sun,15
+2-pawville,Jacksonville,Daycare,mon,48
+2-pawville,Jacksonville,Daycare,tue,48
+2-pawville,Jacksonville,Daycare,wed,48
+2-pawville,Jacksonville,Daycare,thur,48
+2-pawville,Jacksonville,Daycare,fri,48
+2-pawville,Jacksonville,Daycare,sat,10
+2-pawville,Jacksonville,Daycare,sun,0
+5-pawville,Midtown,Daycare,mon,60
+5-pawville,Midtown,Daycare,tue,60
+5-pawville,Midtown,Daycare,wed,60
+5-pawville,Midtown,Daycare,thur,60
+5-pawville,Midtown,Daycare,fri,60
+5-pawville,Midtown,Daycare,sat,60
+5-pawville,Midtown,Daycare,sun,60
+3-pawville,North Shore,Daycare,mon,44
+3-pawville,North Shore,Daycare,tue,44
+3-pawville,North Shore,Daycare,wed,44
+3-pawville,North Shore,Daycare,thur,44
+3-pawville,North Shore,Daycare,fri,44
+3-pawville,North Shore,Daycare,sat,10
+3-pawville,North Shore,Daycare,sun,10
+8-pawville,Northchase,Daycare,mon,10
+8-pawville,Northchase,Daycare,tue,13
+8-pawville,Northchase,Daycare,wed,13
+8-pawville,Northchase,Daycare,thur,10
+8-pawville,Northchase,Daycare,fri,10
+8-pawville,Northchase,Daycare,sat,10
+8-pawville,Northchase,Daycare,sun,0
+7-pawville,Pawleys,Daycare,mon,50
+7-pawville,Pawleys,Daycare,tue,50
+7-pawville,Pawleys,Daycare,wed,50
+7-pawville,Pawleys,Daycare,thur,50
+7-pawville,Pawleys,Daycare,fri,50
+7-pawville,Pawleys,Daycare,sat,20
+7-pawville,Pawleys,Daycare,sun,20
+6-pawville,Scotts Hill,Daycare,mon,70
+6-pawville,Scotts Hill,Daycare,tue,70
+6-pawville,Scotts Hill,Daycare,wed,70
+6-pawville,Scotts Hill,Daycare,thur,70
+6-pawville,Scotts Hill,Daycare,fri,70
+6-pawville,Scotts Hill,Daycare,sat,50
+6-pawville,Scotts Hill,Daycare,sun,50
+1-pawville,Surf City,Daycare,mon,44
+1-pawville,Surf City,Daycare,tue,44
+1-pawville,Surf City,Daycare,wed,44
+1-pawville,Surf City,Daycare,thur,44
+1-pawville,Surf City,Daycare,fri,44
+1-pawville,Surf City,Daycare,sat,20
+1-pawville,Surf City,Daycare,sun,10
+9-pawville,Winder,Daycare,mon,30
+9-pawville,Winder,Daycare,tue,30
+9-pawville,Winder,Daycare,wed,30
+9-pawville,Winder,Daycare,thur,30
+9-pawville,Winder,Daycare,fri,30
+9-pawville,Winder,Daycare,sat,30
+9-pawville,Winder,Daycare,sun,30
+10-pawville,Citrus,Grooming,mon,2
+10-pawville,Citrus,Grooming,tue,2
+10-pawville,Citrus,Grooming,wed,2
+10-pawville,Citrus,Grooming,thur,2
+10-pawville,Citrus,Grooming,fri,2
+10-pawville,Citrus,Grooming,sat,2
+10-pawville,Citrus,Grooming,sun,2
+2-pawville,Jacksonville,Grooming,mon,1
+2-pawville,Jacksonville,Grooming,tue,1
+2-pawville,Jacksonville,Grooming,wed,1
+2-pawville,Jacksonville,Grooming,thur,1
+2-pawville,Jacksonville,Grooming,fri,1
+2-pawville,Jacksonville,Grooming,sat,1
+2-pawville,Jacksonville,Grooming,sun,1
+5-pawville,Midtown,Grooming,mon,1
+5-pawville,Midtown,Grooming,tue,1
+5-pawville,Midtown,Grooming,wed,1
+5-pawville,Midtown,Grooming,thur,1
+5-pawville,Midtown,Grooming,fri,1
+5-pawville,Midtown,Grooming,sat,1
+5-pawville,Midtown,Grooming,sun,1
+3-pawville,North Shore,Grooming,mon,2
+3-pawville,North Shore,Grooming,tue,2
+3-pawville,North Shore,Grooming,wed,2
+3-pawville,North Shore,Grooming,thur,2
+3-pawville,North Shore,Grooming,fri,2
+3-pawville,North Shore,Grooming,sat,2
+3-pawville,North Shore,Grooming,sun,2
+8-pawville,Northchase,Grooming,mon,1
+8-pawville,Northchase,Grooming,tue,1
+8-pawville,Northchase,Grooming,wed,1
+8-pawville,Northchase,Grooming,thur,1
+8-pawville,Northchase,Grooming,fri,1
+8-pawville,Northchase,Grooming,sat,1
+8-pawville,Northchase,Grooming,sun,1
+7-pawville,Pawleys,Grooming,mon,1
+7-pawville,Pawleys,Grooming,tue,1
+7-pawville,Pawleys,Grooming,wed,1
+7-pawville,Pawleys,Grooming,thur,1
+7-pawville,Pawleys,Grooming,fri,1
+7-pawville,Pawleys,Grooming,sat,1
+7-pawville,Pawleys,Grooming,sun,1
+6-pawville,Scotts Hill,Grooming,mon,5
+6-pawville,Scotts Hill,Grooming,tue,5
+6-pawville,Scotts Hill,Grooming,wed,5
+6-pawville,Scotts Hill,Grooming,thur,5
+6-pawville,Scotts Hill,Grooming,fri,5
+6-pawville,Scotts Hill,Grooming,sat,5
+6-pawville,Scotts Hill,Grooming,sun,5
+1-pawville,Surf City,Grooming,mon,2
+1-pawville,Surf City,Grooming,tue,2
+1-pawville,Surf City,Grooming,wed,2
+1-pawville,Surf City,Grooming,thur,2
+1-pawville,Surf City,Grooming,fri,2
+1-pawville,Surf City,Grooming,sat,2
+1-pawville,Surf City,Grooming,sun,2
+8-pupspetclub,DoBro Club,Boarding,mon,45
+8-pupspetclub,DoBro Club,Boarding,tue,45
+8-pupspetclub,DoBro Club,Boarding,wed,45
+8-pupspetclub,DoBro Club,Boarding,thur,45
+8-pupspetclub,DoBro Club,Boarding,fri,45
+8-pupspetclub,DoBro Club,Boarding,sat,45
+8-pupspetclub,DoBro Club,Boarding,sun,45
+1-pupspetclub,Lakeview Club,Boarding,mon,70
+1-pupspetclub,Lakeview Club,Boarding,tue,70
+1-pupspetclub,Lakeview Club,Boarding,wed,70
+1-pupspetclub,Lakeview Club,Boarding,thur,70
+1-pupspetclub,Lakeview Club,Boarding,fri,70
+1-pupspetclub,Lakeview Club,Boarding,sat,70
+1-pupspetclub,Lakeview Club,Boarding,sun,70
+5-pupspetclub,South Loop Club,Boarding,mon,90
+5-pupspetclub,South Loop Club,Boarding,tue,90
+5-pupspetclub,South Loop Club,Boarding,wed,90
+5-pupspetclub,South Loop Club,Boarding,thur,90
+5-pupspetclub,South Loop Club,Boarding,fri,90
+5-pupspetclub,South Loop Club,Boarding,sat,90
+5-pupspetclub,South Loop Club,Boarding,sun,90
+9-pupspetclub,Williamsburg Club,Boarding,mon,15
+9-pupspetclub,Williamsburg Club,Boarding,tue,15
+9-pupspetclub,Williamsburg Club,Boarding,wed,15
+9-pupspetclub,Williamsburg Club,Boarding,thur,15
+9-pupspetclub,Williamsburg Club,Boarding,fri,15
+9-pupspetclub,Williamsburg Club,Boarding,sat,15
+9-pupspetclub,Williamsburg Club,Boarding,sun,15
+8-pupspetclub,DoBro Club,Daycare,mon,75
+8-pupspetclub,DoBro Club,Daycare,tue,75
+8-pupspetclub,DoBro Club,Daycare,wed,75
+8-pupspetclub,DoBro Club,Daycare,thur,75
+8-pupspetclub,DoBro Club,Daycare,fri,75
+8-pupspetclub,DoBro Club,Daycare,sat,75
+8-pupspetclub,DoBro Club,Daycare,sun,75
+2-pupspetclub,Gold Coast Club,Daycare,mon,50
+2-pupspetclub,Gold Coast Club,Daycare,tue,50
+2-pupspetclub,Gold Coast Club,Daycare,wed,50
+2-pupspetclub,Gold Coast Club,Daycare,thur,50
+2-pupspetclub,Gold Coast Club,Daycare,fri,50
+2-pupspetclub,Gold Coast Club,Daycare,sat,50
+2-pupspetclub,Gold Coast Club,Daycare,sun,50
+1-pupspetclub,Lakeview Club,Daycare,mon,50
+1-pupspetclub,Lakeview Club,Daycare,tue,50
+1-pupspetclub,Lakeview Club,Daycare,wed,50
+1-pupspetclub,Lakeview Club,Daycare,thur,50
+1-pupspetclub,Lakeview Club,Daycare,fri,50
+1-pupspetclub,Lakeview Club,Daycare,sat,50
+1-pupspetclub,Lakeview Club,Daycare,sun,50
+3-pupspetclub,River North Club,Daycare,mon,45
+3-pupspetclub,River North Club,Daycare,tue,45
+3-pupspetclub,River North Club,Daycare,wed,45
+3-pupspetclub,River North Club,Daycare,thur,45
+3-pupspetclub,River North Club,Daycare,fri,45
+3-pupspetclub,River North Club,Daycare,sat,45
+3-pupspetclub,River North Club,Daycare,sun,45
+5-pupspetclub,South Loop Club,Daycare,mon,75
+5-pupspetclub,South Loop Club,Daycare,tue,75
+5-pupspetclub,South Loop Club,Daycare,wed,75
+5-pupspetclub,South Loop Club,Daycare,thur,75
+5-pupspetclub,South Loop Club,Daycare,fri,75
+5-pupspetclub,South Loop Club,Daycare,sat,75
+5-pupspetclub,South Loop Club,Daycare,sun,75
+6-pupspetclub,Streeterville Club,Daycare,mon,45
+6-pupspetclub,Streeterville Club,Daycare,tue,45
+6-pupspetclub,Streeterville Club,Daycare,wed,45
+6-pupspetclub,Streeterville Club,Daycare,thur,45
+6-pupspetclub,Streeterville Club,Daycare,fri,45
+6-pupspetclub,Streeterville Club,Daycare,sat,45
+6-pupspetclub,Streeterville Club,Daycare,sun,45
+4-pupspetclub,Wicker Park Club,Daycare,mon,50
+4-pupspetclub,Wicker Park Club,Daycare,tue,50
+4-pupspetclub,Wicker Park Club,Daycare,wed,50
+4-pupspetclub,Wicker Park Club,Daycare,thur,50
+4-pupspetclub,Wicker Park Club,Daycare,fri,50
+4-pupspetclub,Wicker Park Club,Daycare,sat,50
+4-pupspetclub,Wicker Park Club,Daycare,sun,50
+9-pupspetclub,Williamsburg Club,Daycare,mon,75
+9-pupspetclub,Williamsburg Club,Daycare,tue,75
+9-pupspetclub,Williamsburg Club,Daycare,wed,75
+9-pupspetclub,Williamsburg Club,Daycare,thur,75
+9-pupspetclub,Williamsburg Club,Daycare,fri,75
+9-pupspetclub,Williamsburg Club,Daycare,sat,75
+9-pupspetclub,Williamsburg Club,Daycare,sun,75
+8-pupspetclub,DoBro Club,Playcare,mon,8
+8-pupspetclub,DoBro Club,Playcare,tue,8
+8-pupspetclub,DoBro Club,Playcare,wed,8
+8-pupspetclub,DoBro Club,Playcare,thur,8
+8-pupspetclub,DoBro Club,Playcare,fri,8
+8-pupspetclub,DoBro Club,Playcare,sat,8
+8-pupspetclub,DoBro Club,Playcare,sun,8
+1-pupspetclub,Lakeview Club,Playcare,mon,8
+1-pupspetclub,Lakeview Club,Playcare,tue,8
+1-pupspetclub,Lakeview Club,Playcare,wed,8
+1-pupspetclub,Lakeview Club,Playcare,thur,8
+1-pupspetclub,Lakeview Club,Playcare,fri,8
+1-pupspetclub,Lakeview Club,Playcare,sat,8
+1-pupspetclub,Lakeview Club,Playcare,sun,8
+3-pupspetclub,River North Club,Playcare,mon,5
+3-pupspetclub,River North Club,Playcare,tue,5
+3-pupspetclub,River North Club,Playcare,wed,5
+3-pupspetclub,River North Club,Playcare,thur,5
+3-pupspetclub,River North Club,Playcare,fri,5
+3-pupspetclub,River North Club,Playcare,sat,5
+3-pupspetclub,River North Club,Playcare,sun,5
+5-pupspetclub,South Loop Club,Playcare,mon,10
+5-pupspetclub,South Loop Club,Playcare,tue,10
+5-pupspetclub,South Loop Club,Playcare,wed,10
+5-pupspetclub,South Loop Club,Playcare,thur,10
+5-pupspetclub,South Loop Club,Playcare,fri,10
+5-pupspetclub,South Loop Club,Playcare,sat,10
+5-pupspetclub,South Loop Club,Playcare,sun,10
+6-pupspetclub,Streeterville Club,Playcare,mon,7
+6-pupspetclub,Streeterville Club,Playcare,tue,7
+6-pupspetclub,Streeterville Club,Playcare,wed,7
+6-pupspetclub,Streeterville Club,Playcare,thur,7
+6-pupspetclub,Streeterville Club,Playcare,fri,7
+6-pupspetclub,Streeterville Club,Playcare,sat,7
+6-pupspetclub,Streeterville Club,Playcare,sun,7
+4-pupspetclub,Wicker Park Club,Playcare,mon,7
+4-pupspetclub,Wicker Park Club,Playcare,tue,7
+4-pupspetclub,Wicker Park Club,Playcare,wed,7
+4-pupspetclub,Wicker Park Club,Playcare,thur,7
+4-pupspetclub,Wicker Park Club,Playcare,fri,7
+4-pupspetclub,Wicker Park Club,Playcare,sat,7
+4-pupspetclub,Wicker Park Club,Playcare,sun,7
+9-pupspetclub,Williamsburg Club,Playcare,mon,8
+9-pupspetclub,Williamsburg Club,Playcare,tue,8
+9-pupspetclub,Williamsburg Club,Playcare,wed,8
+9-pupspetclub,Williamsburg Club,Playcare,thur,8
+9-pupspetclub,Williamsburg Club,Playcare,fri,8
+9-pupspetclub,Williamsburg Club,Playcare,sat,8
+9-pupspetclub,Williamsburg Club,Playcare,sun,8
+4-pawville,North Carolina,Boarding,mon,0
+4-pawville,North Carolina,Boarding,tue,0
+4-pawville,North Carolina,Boarding,wed,0
+4-pawville,North Carolina,Boarding,thur,0
+4-pawville,North Carolina,Boarding,fri,0
+4-pawville,North Carolina,Boarding,sat,0
+4-pawville,North Carolina,Boarding,sun,0
+7-pupspetclub,Lakeshore,Boarding,mon,0
+7-pupspetclub,Lakeshore,Boarding,tue,0
+7-pupspetclub,Lakeshore,Boarding,wed,0
+7-pupspetclub,Lakeshore,Boarding,thur,0
+7-pupspetclub,Lakeshore,Boarding,fri,0
+7-pupspetclub,Lakeshore,Boarding,sat,0
+7-pupspetclub,Lakeshore,Boarding,sun,0

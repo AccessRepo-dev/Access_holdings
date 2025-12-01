@@ -24,7 +24,7 @@ sources:
 
 
   - name: zeus_snapshots
-    database: "{{ env_var('DBT_ZEUS') }}"     
+    database: zeus_raw  
     schema: SALESFORCE_SNAPSHOTS        
     tables:
       - name: SALESFORCE_ACCOUNT
