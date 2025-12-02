@@ -170,7 +170,7 @@ cte3 AS (
     FROM cte2 a
     LEFT JOIN {{ get_silver_source('wagway', 'gingr_pos_transactions') }} h
         ON h.owner_id = a.customer_id
-       AND TO_TIMESTAMP(h.create_stamp) BETWEEN a.start_time AND DATEADD(day, 7, a.start_time)
+       AND h.create_stamp BETWEEN a.start_time AND DATEADD(day, 7, a.start_time)
        AND h.delete_indicator = 0
     LEFT JOIN {{ get_silver_source('wagway', 'gingr_pos_transaction_items') }} g
         ON h.id = g.pos_transaction_id
