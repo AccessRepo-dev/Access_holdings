@@ -16,11 +16,9 @@ with source as (
     
     {% if is_incremental() %}
         where 
-            UPDATED_AT > (
-                select dateadd(day, -1, coalesce(max(UPDATED_AT), '1900-01-01'))
-                from {{ this }}
-            )
-            and 1=1
+            (UPDATED_AT > (select dateadd(day, -3, coalesce(max(UPDATED_AT), '1900-01-01')) from {{ this }})
+        OR 
+            (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
     {% else %}
         where 1=1
     {% endif %}
