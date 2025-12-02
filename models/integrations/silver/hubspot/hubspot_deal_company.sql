@@ -16,11 +16,10 @@ WITH source AS (
     from {{ source_snapshot_schema(company, sourcesystem ~ '_DEAL_COMPANY') }}
 
     {% if is_incremental() %}
-        WHERE _FIVETRAN_SYNCED > (
-            select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'))
-            FROM {{ this }}
-        )
-        AND 1 = 1
+        WHERE 
+            (_FIVETRAN_SYNCED > (select dateadd(day, -3, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01')) FROM {{ this }})
+        OR 
+            (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
     {% else %}
         WHERE 1 = 1
     {% endif %}

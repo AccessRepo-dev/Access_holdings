@@ -17,15 +17,12 @@ select *
 from {{ source_snapshot_schema(company, 'SALESFORCE_OPPORTUNITY') }}
 {% if is_incremental() %}
     where 
-        cast(LAST_MODIFIED_DATE as timestamp_ntz) > (
-            select dateadd(day, -1, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz))
-            from {{ this }}
-        )
-        and 1=1
-        --DBT_VALID_TO is null
+        (cast(LAST_MODIFIED_DATE as timestamp_ntz) > (select dateadd(day, -3, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)) from {{ this }})
+    OR 
+        (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
+
 {% else %}
     where 1=1
-    --DBT_VALID_TO is null
 {% endif %}
     
 ),

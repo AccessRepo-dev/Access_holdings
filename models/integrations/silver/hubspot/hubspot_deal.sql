@@ -19,11 +19,9 @@ with
         from {{ source_snapshot_schema(company, sourcesystem ~ "_DEAL") }}
         {% if is_incremental() %}
             where
-                property_hs_lastmodifieddate > (
-                    select
-                        dateadd(day, -1, coalesce(max(property_hs_lastmodifieddate), '1900-01-01'))
-                    from {{ this }}
-                )
+                (property_hs_lastmodifieddate > (select dateadd(day, -3, coalesce(max(property_hs_lastmodifieddate), '1900-01-01')) from {{ this }}) 
+            OR 
+                (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
         {% else %} where 1 = 1
         {% endif %}
     ),

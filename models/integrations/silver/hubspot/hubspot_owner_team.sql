@@ -17,11 +17,9 @@ with source as (
     
     {% if is_incremental() %}
         where 
-            _FIVETRAN_SYNCED > (
-                select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'))
-                from {{ this }}
-            )
-            and 1=1
+            (_FIVETRAN_SYNCED > (select dateadd(day, -3, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01')) from {{ this }})
+        OR 
+            (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
     {% else %}
         where 1=1
     {% endif %}
