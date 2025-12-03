@@ -15,7 +15,10 @@ select
     a.from_location,
     b.phone_number,
     b.name,
-    b.location as to_location
+    b.location as to_location,
+    a.CREATION_TIME,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
+
 from {{ get_silver_source('wagway', 'ringcentral_message') }} a
 left join {{ get_silver_source('wagway', 'ringcentral_message_to') }} b
     on a.id = b.message_id

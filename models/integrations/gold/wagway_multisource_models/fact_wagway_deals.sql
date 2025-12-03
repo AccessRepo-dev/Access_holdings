@@ -265,10 +265,11 @@ CTE_DEAL_STAGE AS
                 THEN fe.property_invoice_id 
             ELSE NULL 
         END AS max_revenue_invoice_id,
+        ds.label,
 		CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
     FROM final_enriched fe
     LEFT JOIN CTE_DEAL_STAGE ds 
-        ON fe.deal_pipeline_stage_id = ds.label
+        ON fe.deal_pipeline_stage_id = ds.stage_id
 )
 
 SELECT DISTINCT *
