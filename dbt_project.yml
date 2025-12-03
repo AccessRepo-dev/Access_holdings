@@ -131,6 +131,9 @@ models:
         sage:
           +schema: GOLD
           +materialized: table
+        sedona:
+          +schema: GOLD
+          +materialized: table
         macro:
           +database: "{{env_var('DBT_ACCESS')}}"
           +schema: GOLD
