@@ -29,7 +29,7 @@
 {%else%}
     {{
     config( 
-            unique_key = ['SUBSIDIARY_ID','COA_ID']  )
+            unique_key = ['SUBSIDIARY_ID','COA_ID','ADJ_TYPE','PERIOD']  )
         }}
 {%endif%}
 
@@ -42,6 +42,7 @@ SELECT
     ADJ_TYPE,
     PERIOD,
     AMOUNT
+    
 FROM {{ source(src, src_table) }}
 {%else%}
 SELECT 

@@ -56,7 +56,7 @@
         
         -- Amounts
         AMOUNT AS NETAMOUNT,
-
+        AMOUNT, 
         AMOUNT AS AMOUNT_UNCONVERTED,
         
         AMOUNT AS CONVERTED_NET_AMOUNT,
