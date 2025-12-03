@@ -266,6 +266,7 @@ CTE_DEAL_STAGE AS
             ELSE NULL 
         END AS max_revenue_invoice_id,
         ds.label,
+        ds.probability,
 		CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
     FROM final_enriched fe
     LEFT JOIN CTE_DEAL_STAGE ds 
