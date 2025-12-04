@@ -1,5 +1,5 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') | lower == 'netsuite') }}
+{% set company = var('company', 'wagway') | lower %}
+{{ config(enabled = var('sourcesystem', 'netsuite') | lower == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
@@ -29,7 +29,7 @@ with source as (
         LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
         PARENT AS PARENT_ID,
         VENDOR AS VENDOR_ID
-    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_ENTITY') }}
+    from {{ ref('netsuite_entity') }}
     where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}
     and LASTMODIFIEDDATE > (
