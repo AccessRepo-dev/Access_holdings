@@ -19,7 +19,7 @@ from {{ get_raw_source(company, sourcesystem, 'COMPANY_DIRECTORY') }}
 cleaned as 
 (
     select
-    CAST(TRIM(ID) AS BIGINT) AS ID,
+    CAST(ID AS BIGINT) AS ID,
     TRIM(EMAIL) AS EMAIL,
     TRIM(FIRST_NAME) AS FIRST_NAME,
     TRIM(LAST_NAME) AS LAST_NAME,
