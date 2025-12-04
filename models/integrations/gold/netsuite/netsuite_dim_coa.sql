@@ -1,7 +1,7 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{% set sourcesystem = var('sourcesystem') %}
+{% set company = var('company', 'wagway') | lower %}
+{% set sourcesystem = var('sourcesystem','netsuite') %}
 {{ config(
-    enabled = var('sourcesystem') |lower == 'netsuite' ,
+    enabled = var('sourcesystem','netsuite') |lower == 'netsuite' ,
     database = get_target_database(company),
     alias = 'dim_chart_of_account',
     unique_key = 'DIM_CHART_OF_ACCOUNT_ID',
@@ -50,7 +50,7 @@ WITH source AS (
         {%endif%}
       
 
-    FROM {{ get_silver_source(company, sourcesystem ~ '_coa') }}
+    FROM {{ ref('coa_mapping') }}
     WHERE dbt_valid_to IS NULL  -- Only get active records from snapshot
 )
 

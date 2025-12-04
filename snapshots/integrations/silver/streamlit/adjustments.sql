@@ -1,14 +1,14 @@
 {% snapshot adjustments %}
 
-{% set company = var('company') | lower %}
-{% set sourcesystem = var('sourcesystem') %}
+{% set company = var('company','wagway') | lower %}
+{% set sourcesystem = var('sourcesystem','netsuite') %}
 {% set src = 'streamlit'%}
 {% set src_table = company ~ '_adjustments' %}
 
 
 {{
     config(
-        enabled = var("company") | lower in ('wagway','playfly','amh','spotless','zeus'),
+        enabled = var('company','wagway') | lower in ('wagway','playfly','amh','spotless','zeus'),
         database = get_target_database(company),
         target_schema = 'silver',
         alias = sourcesystem ~ '_Adjustments', 

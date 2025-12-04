@@ -1,6 +1,6 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{% set sourcesystem  = var('sourcesystem', 'Unknown source') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'netsuite' and var('company', 'none') == 'playfly' )}}
+{% set company = var('company', 'playfly') | lower %}
+{% set sourcesystem  = var('sourcesystem', 'netsuite') | lower %}
+{{ config(enabled = var('sourcesystem', 'netsuite') == 'netsuite' and var('company', 'playfly') == 'playfly' )}}
 
 {{ config(
     database = get_target_database(company),
