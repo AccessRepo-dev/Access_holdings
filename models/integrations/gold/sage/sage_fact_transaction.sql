@@ -1,5 +1,5 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
+{% set company = var('company', 'spotless') | lower %}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
  
 {{ config(
     database = get_target_database(company),
@@ -75,14 +75,14 @@ with source as (
     NULL AS ADJ_TYPE,
     e.WHENMODIFIED AS LASTMODIFIEDDATE
  
-FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_ENTRY') }}  e
+FROM {{ ref('sage_gl_entry') }}  e
 
-LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_BATCH') }}  b
+LEFT JOIN {{ ref('sage_gl_batch') }}  b
     ON e.batchno = b.recordno
-LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_ACCOUNT') }} acc
+LEFT JOIN {{ ref('sage_gl_account') }} acc
     ON e.ACCOUNTKEY  = acc.RECORDNO
  
-LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_REPORTING_PERIOD') }} per
+LEFT JOIN {{ ref('sage_reporting_period') }} per
 ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
     
 
@@ -164,7 +164,7 @@ adjustments AS (
         ADJ_TYPE ,
         CURRENT_TIMESTAMP AS LASTMODIFIEDDATE
      
-    FROM  {{ get_silver_source(company, 'sage_adjustments') }} tl
+    FROM  {{ ref('adjustments') }} tl
     
 {% if is_incremental() %}
     DELETE FROM {{ this }}
@@ -177,13 +177,13 @@ SELECT * FROM source
 {% if company | lower  == 'amh' %}
     WHERE TRANSACTION_LINE_ID NOT IN 
         (select distinct GLENTRYKEY 
-        from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_DETAIL') }}
+        from {{ ref('sage_gl_detail') }}
         WHERE SYMBOL = 'QB_HISTORY' and 
             batch_date between '2022-01-01' and '2022-08-31')
 {% elif company | lower  == 'spotless' %}
     WHERE (TRANSACTION_LINE_ID NOT IN 
         (select distinct GLENTRYKEY 
-        from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_DETAIL') }}
+        from {{ ref('sage_gl_detail') }}
         WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ'))) OR TRANSACTION_LINE_ID IS NULL 
 {% endif %}
 UNION 

@@ -1,6 +1,6 @@
-{% set company = var('company', 'Unknown company') | lower %}
+{% set company = var('company', 'spotless') | lower %}
 
-{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
 
 {{ config(
     database = get_target_database(company),
@@ -22,7 +22,7 @@ with source as (
         WHENMODIFIED AS LAST_MODIFIED_DATE,
         WHENCREATED AS DATE_CREATED,
         VENDORID AS VENDOR_ID
-    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_VENDOR') }}
+    from {{ ref('sage_vendor') }}
     
     where 1=1
 

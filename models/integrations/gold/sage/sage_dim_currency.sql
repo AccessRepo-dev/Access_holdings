@@ -1,6 +1,6 @@
 
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
+{% set company = var('company', 'spotless') | lower %}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
 
 {{ config(
     database = get_target_database(company),
@@ -18,8 +18,8 @@ with source as (
     per.RECORDNO AS DIM_PERIOD_ID,
     e.LOCATIONKEY AS FROM_SUBSIDIARY_ID,
     e.LOCATIONKEY AS TO_SUBSIDIARY_ID
-FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_ENTRY') }}  e
-LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_REPORTING_PERIOD') }} per
+FROM {{ ref('sage_gl_entry') }}  e
+LEFT JOIN {{ ref('sage_reporting_period') }} per
     ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
 
         

@@ -1,5 +1,5 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
+{% set company = var('company', 'spotless') | lower %}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
 
 {{ config(
     database = get_target_database(company),
@@ -16,7 +16,7 @@ with source as (
         DESCRIPTION AS NAME,
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_BUDGET_HEADER') }}
+    from  {{ref('sage_gl_budget_header')}}
     
     {% if is_incremental() %}
     where WHENMODIFIED > (
