@@ -1,87 +1,92 @@
 CODE,MAPPING
-Invoiced,Invoiced
-Activities,Activities
-Transportation,Transportation
-Walking,Walking
-Wellness,Wellness
-Adopt an Angel,Adopt an Angel
-Boarding,Boarding
-Boot Camp,Boot Camp
-Other,Other
-Overnights,Overnights
-Fees,Fees
-Other deal,Other
-Boarding - Add-ons,Boarding
-Dog Boarding,Boarding
-Villas,Villas
-Surf City Villa,Villas
-Condo,Condo
-Food/Treat Add-Ons,Food
-Midtown Grooming,Grooming
-Day BOARDING,Boarding
-Grooming & Bathing - Reservations,Grooming
-Boarding | Dog Boarding,Boarding
-Boarding | Cat Boarding,Boarding
-Daycare,Daycare
-Grooming & Bathing,Grooming
-Retail | Retail,Retail
-Training,Training
-Feed,Food
-Baths,Grooming
-Packages,Packages
-Add-Ons,General
-Dog Boarding | General Room Type,Boarding
-Waggin' Wagon,Villas
-Daycare | Half Day,Daycare
-Self Service Dog Wash,Grooming
-Daycare | Full Day,Daycare
-Private Training,Training
-Tips | Tips,General
-Bathing/ Grooming Add Ons,Grooming
-Packages | Training,Training
-Other | Deposits,Other
-Groom,Grooming
-Holiday Deposits,Boarding
-Other | Pawville Vet Clinic Visit,Veterinary
-Bath,Grooming
 A La Carte,General
-Pawville Plus Membership,Membership
-Memberships / Subscriptions,Membership
-Play Park,Daycare
-Dog Boarding | Townhomes,Boarding
-Packages | Boarding,Boarding
-Tips,General
+Activities,Activities
+Add On,Add On
+Additional Services,Add On
+Additional Services | Additional Services,Add On
+Add-Ons,Add On
+Adopt an Angel,Adopt an Angel
+Bath,Grooming
+Bathing/ Grooming Add Ons,Grooming
+Baths,Grooming
+Boarding,Boarding
+Boarding - Add-ons,Boarding
 Boarding - Reservations,Boarding
-Retail,Retail
-Dog Boarding | Condos,Boarding
-Dog Boarding | Pet Sitting,Boarding
-Dog Boarding | Villas / Cottages,Boarding
-Cat Boarding | Villas,Boarding
-Cat Boarding | Condos,Boarding
-Memberships,Membership
-Cat Boarding | Townhomes,Boarding
-Packages | Grooming & Bathing,Grooming
+Boarding | Cat Boarding,Boarding
+Boarding | Dog Boarding,Boarding
 Boarding | Other Animal Boarding,Boarding
-Packages | Daycare,Daycare
-Dog Boarding | Day Boarding,Boarding
-POS,General
+Boot Camp,Boot Camp
+Cat Boarding,Boarding
+Cat Boarding | Condos,Boarding
+Cat Boarding | Townhomes,Boarding
+Cat Boarding | Villas,Boarding
+Condo,Condo
+Day BOARDING,Boarding
+Daycare,Daycare
 Daycare - Add-ons,Daycare
+Daycare | Full Day,Daycare
+Daycare | Half Day,Daycare
+Dog Boarding,Boarding
+Dog Boarding | Condos,Boarding
+Dog Boarding | Day Boarding,Boarding
+Dog Boarding | General Room Type,Boarding
+Dog Boarding | Pet Sitting,Boarding
+Dog Boarding | Townhomes,Boarding
+Dog Boarding | Villas / Cottages,Boarding
+Feed,Food
+Fees,Fees
+Food/Treat Add-Ons,Food
+General,General
+Gingr Sign Up,Gingr Sign Up
+Groom,Grooming
+Grooming,Grooming
+Grooming & Bathing,Grooming
+Grooming & Bathing - Reservations,Grooming
 Grooming & Bathing | A la Carte,Grooming
-Training | Private Training,Training
-Training - Add-ons,Training
 Grooming & Bathing | Bath,Grooming
 Grooming & Bathing | Groom,Grooming
-Other | Fees,Other
-Additional Services | Additional Services,Other
-Additional Services,Other
-General,General
-Veterinary,Veterinary
-Gingr Sign Up,Gingr Sign Up
-Cat Boarding,Boarding
-Playcare,Daycare
-Grooming,Grooming
-Pet Sitting,Daycare
-Transport,Transportation
-New Lead,Other
+Holiday Deposits,Boarding
+Invoiced,Invoiced
 Membership,Membership
+Memberships,Membership
+Memberships / Subscriptions,Membership
+Midtown Grooming,Grooming
+New Lead,Other
+No Show/Cancellation,Cancelled
+Other,Other
+Other | Deposits,Other
+Other | Fees,Other
+Other | Pawville Vet Clinic Visit,Veterinary
+Other deal,Other
+Overnights,Overnights
+Packages,Packages
+Packages | Boarding,Boarding
+Packages | Daycare,Daycare
+Packages | Grooming & Bathing,Grooming
+Packages | Training,Training
+Pawville Plus Membership,Membership
+Pet Sitting,Daycare
+Play Park,Daycare
+Playcare,Daycare
+POS,General
+Premium,Premium
+Private Training,Training
 Puppy Playcare,Daycare
+Retail,Retail
+Retail | Retail,Retail
+Self Service Dog Wash,Grooming
+Store Credit,Store Credit
+Surf City Villa,Villas
+Tip,General
+Tips,General
+Tips | Tips,General
+Training,Training
+Training - Add-ons,Training
+Training | Private Training,Training
+Transport,Transportation
+Transportation,Transportation
+Veterinary,Veterinary
+Villas,Villas
+Waggin' Wagon,Villas
+Walking,Walking
+Wellness,Wellness
