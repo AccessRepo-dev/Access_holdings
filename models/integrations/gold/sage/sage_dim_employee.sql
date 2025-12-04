@@ -1,6 +1,6 @@
 
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
+{% set company = var('company', 'spotless') | lower %}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
 
 {{ config(
     database = get_target_database(company),
@@ -22,7 +22,7 @@ with source as (
         STATUS AS IS_INACTIVE,
         WHENCREATED AS DATE_CREATED,
         WHENMODIFIED AS LAST_MODIFIED_DATE
-    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_EMPLOYEE') }}
+    from {{ ref('sage_employee') }}
     
     {% if is_incremental() %}
     where WHENMODIFIED > (
