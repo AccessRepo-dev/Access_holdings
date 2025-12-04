@@ -1,5 +1,5 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') | lower == 'netsuite') }}
+{% set company = var('company', 'wagway') | lower %}
+{{ config(enabled = var('sourcesystem', 'netsuite') | lower == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
@@ -13,7 +13,7 @@ with source as (
         NAME,
         ISINACTIVE AS IS_INACTIVE
          
-    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_BUDGETCATEGORY') }}
+    from {{ref('netsuite_budgetcategory')}}
    
 )
 

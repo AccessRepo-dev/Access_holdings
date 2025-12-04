@@ -1,14 +1,14 @@
 {% snapshot coa_mapping %}
 
-{% set company = var('company') | lower %}
-{% set sourcesystem = var('sourcesystem') %}
+{% set company = var('company','wagway') | lower %}
+{% set sourcesystem = var('sourcesystem','netsuite') %}
 {% set src = 'streamlit'%}
 {% set src_table = company ~ '_coa_mapping' %}
 
 
 {{
     config(
-        enabled = var("company") | lower in ('wagway','playfly','amh','spotless'),
+        enabled = var("company",'wagway') | lower in ('wagway','playfly','amh','spotless'),
         database = get_target_database(company),
         target_schema = 'silver',
         alias = sourcesystem ~ '_COA', 
