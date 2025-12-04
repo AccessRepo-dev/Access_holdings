@@ -1,8 +1,8 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{% set sourcesystem = var('sourcesystem') | lower %}
+{% set company = var('company', 'wagway') | lower %}
+{% set sourcesystem = var('sourcesystem','netsuite') | lower %}
 
 {{ config(
-    enabled =  var('sourcesystem') | lower =='netsuite',
+    enabled =  var('sourcesystem','netsuite') | lower =='netsuite',
     database = get_target_database(company),
     materialized = 'incremental',
     alias = 'dim_addback',
@@ -20,9 +20,9 @@ with source as (
     
     from 
     {%if company == 'wagway'%} 
-    {{ get_silver_source(company, (sourcesystem | upper) ~ '_CUSTOMRECORD_CSEG1') }}
+        {{ref('netsuite_customrecord_cseg1')}}
     {%else%} 
-      {{ get_silver_source(company, (sourcesystem | upper) ~ '_CUSTOMRECORD_CSEG2') }}
+        {{ref('netsuite_customrecord_cseg2')}}
     {%endif%}
     where (_fivetran_deleted is null or _fivetran_deleted = false)
     {% if is_incremental() %}

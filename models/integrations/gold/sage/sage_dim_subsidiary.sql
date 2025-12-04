@@ -1,6 +1,6 @@
 
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
+{% set company = var('company', 'spotless') | lower %}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
 
 {{ config(
     database = get_target_database(company),
@@ -22,8 +22,8 @@ with source as (
         L.PARENTKEY AS PARENT_ID,
         L.WHENMODIFIED AS LAST_MODIFIED_DATE
 
-    FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_LOCATION') }} AS L
-    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_LOCATION_ENTITY') }} AS LE ON L.LOCATIONID = LE.LOCATIONID
+    FROM {{ ref('sage_location') }} AS L
+    LEFT JOIN {{ ref('sage_location_entity') }} AS LE ON L.LOCATIONID = LE.LOCATIONID
 )
 SELECT *
 FROM source

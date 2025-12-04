@@ -1,5 +1,5 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
+{% set company = var('company', 'wagway') | lower %}
+{{ config(enabled = var('sourcesystem', 'netsuite') == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
@@ -28,6 +28,6 @@ SELECT
     SUM(BOM_QUANTITY) AS TOTAL_BOM_QUANTITY,
     SUM(QUANTITY) AS TOTAL_QUANTITY
 
-FROM {{ get_gold_source(company, 'FACT_TRANSACTION') }}
+FROM {{ ref('netsuite_fact_transaction') }}
 GROUP BY
     ALL
