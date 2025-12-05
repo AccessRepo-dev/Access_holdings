@@ -82,6 +82,7 @@
         CURRENT_TIMESTAMP AS LASTMODIFIEDDATE
      
     FROM  {{ get_silver_source(company, 'sedona_adjustments') }} tl
+    WHERE dbt_valid_to IS NULL  
     
 
 

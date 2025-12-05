@@ -4,7 +4,10 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'table',
-    alias = 'fact_transaction'
+    alias = 'fact_transaction',
+    pre_hook=[
+        "{% if is_incremental() %}DELETE FROM {{ this }} WHERE TRANSACTIONS_UNIQUE_ID LIKE 'ADJ-%'{% endif %}"
+    ]
 ) }}
 
 
@@ -183,12 +186,7 @@ adjustments AS (
         CURRENT_TIMESTAMP AS LASTMODIFIEDDATE
      
     FROM  {{ ref('adjustments') }} tl
-    
-    {% if is_incremental() %}
-    -- First, remove old adjustment records
-    DELETE FROM {{ this }}
-    WHERE TRANSACTIONS_UNIQUE_ID LIKE 'ADJ-%';
-{% endif %}
+  
     WHERE dbt_valid_to IS NULL  
 )
 
