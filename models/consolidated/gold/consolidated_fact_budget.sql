@@ -27,6 +27,8 @@
         HASH(DIM_CHART_OF_ACCOUNT_ID, '{{ c.name }}',  '{{ c.source }}') as DIM_CHART_OF_ACCOUNT_ID,
         HASH(DIM_PROJECT_ID, '{{ c.name }}',  '{{ c.source }}') as DIM_PROJECT_ID,
         AMOUNT,
+        TYPE,
+        ACTUAL_AMOUNT,
         LAST_MODIFIED_DATE,
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
