@@ -43,14 +43,27 @@ with source as (
     from {{ ref('netsuite_budgetlegacy') }} AS BUDGET
     LEFT JOIN {{ ref('netsuite_accountingperiod') }} per 
         ON BUDGET.PERIOD = per.ID
-   
+
     {% if is_incremental() %}
       where BUDGET.LASTMODIFIEDDATE > (
           select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
           from {{ this }}
       )
     {% endif %}
+),
+coa as 
+(
+    SELECT *,
+    CASE 
+        WHEN METRIC_L1 IN ('COGS', 'Operating Expenses', 'Field Corporate Expenses', 'Corporate Expenses', 'Amortization', 'Depreciation', 'Taxes') OR METRIC_L2 IN ('Interest Expense', 'Other Expense')
+            THEN -1
+        ELSE 1
+    END AS TYPE 
+    FROM 
+    {{ ref('netsuite_dim_coa') }} coa 
+        
 )
+select s.*,coa.TYPE , coa.TYPE * s.AMOUNT AS ACTUAL_AMOUNT
+from source s
+left join coa on coa.DIM_CHART_OF_ACCOUNT_ID = s.DIM_CHART_OF_ACCOUNT_ID 
 
-select *
-from source
