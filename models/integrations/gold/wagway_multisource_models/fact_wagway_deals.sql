@@ -1,8 +1,5 @@
-{% set company = var('company') %}
-
 {{ config(
-    enabled = (var('company') | lower) == 'wagway',
-    database = get_target_database(company),
+    database = get_target_database('wagway'),
     materialized = 'table',
     alias = 'FACT_WAGWAY_DEALS'
 ) }}
