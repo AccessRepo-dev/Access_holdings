@@ -5,7 +5,10 @@
     database = get_target_database(company),
     alias = 'fact_transaction',
     materialized = 'table',
-    unique_key = 'TRANSACTIONS_UNIQUE_ID'
+    unique_key = 'TRANSACTIONS_UNIQUE_ID',
+    pre_hook=[
+        "{% if is_incremental() %} DELETE FROM {{ this }} WHERE TRANSACTIONS_UNIQUE_ID LIKE 'ADJ-%'{% endif %}"
+    ]
 ) }}
  
 
@@ -166,10 +169,7 @@ adjustments AS (
      
     FROM  {{ ref('adjustments') }} tl
     
-{% if is_incremental() %}
-    DELETE FROM {{ this }}
-    WHERE TRANSACTIONS_UNIQUE_ID LIKE 'ADJ-%';
-{% endif %}
+
     WHERE dbt_valid_to IS NULL  
 )
 
