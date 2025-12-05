@@ -1,9 +1,9 @@
 {% snapshot salesforce_record_type %}
 
 
-{% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('sourcesystem', 'none') == 'salesforce') }}
+{% set company = var('company','zeus') %}
+{% set sourcesystem = var('sourcesystem','salesforce') %}
+{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce') }}
 
 {{
     config(
