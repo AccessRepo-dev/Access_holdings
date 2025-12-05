@@ -148,9 +148,9 @@ cte2 AS (
         g.acquisition_date,
 
         CASE
-            WHEN DATE(g.acquisition_date) = DATE(a.start_time) THEN 'New Customer'
-            WHEN DATE(g.acquisition_date) < DATE(a.start_time) THEN 'Existing Customer'
-            ELSE NULL
+            WHEN DATE(g.acquisition_date) = DATE(a.start_time) THEN 'New Customers'
+            WHEN DATE(g.acquisition_date) < DATE(a.start_time) THEN 'Existing Customers'
+            ELSE 'Leads'
         END AS new_customer_flag,
 
         RANK() OVER (PARTITION BY a.id ORDER BY g.acquisition_date DESC) AS rnk
