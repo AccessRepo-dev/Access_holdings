@@ -132,7 +132,7 @@ adjustments AS (
         NULL AS ACCOUNT_TYPE,
         ACCOUNT_NAME,
         
-      COA_ID  AS DIM_CHART_OF_ACCOUNT_ID,
+        COA_ID AS DIM_CHART_OF_ACCOUNT_ID,
         
         CLASS_ID AS DIM_CLASS_ID,
         NULL AS DIM_PROJECT_ID,

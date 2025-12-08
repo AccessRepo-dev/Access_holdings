@@ -39,7 +39,7 @@ SELECT
     DEPARTMENT_NAME,
     {%if sourcesystem == 'netsuite' %}
         SUBSIDIARY_NAME,
-         SUBSIDIARY_ID,
+        SUBSIDIARY_ID,
     {%endif%}
     {%if sourcesystem == 'sage' %}
         PROJECT_NAME,
