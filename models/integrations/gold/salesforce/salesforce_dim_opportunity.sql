@@ -35,7 +35,7 @@ with source as (
     FROM {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}  as O
     LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_LEAD') }}  as L 
         ON L.CONVERTED_OPPORTUNITY_ID = O.ID and  L.IS_ACTIVE = 1
-    LEFT JOIN ZEUS_DEV.SILVER.SALESFORCE_ACCOUNT A 
+    LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}  A 
         ON A.ACCOUNT_ID = O.ACCOUNT_ID 
         and A.IS_ACTIVE = 1
     where O.IS_ACTIVE = 1
