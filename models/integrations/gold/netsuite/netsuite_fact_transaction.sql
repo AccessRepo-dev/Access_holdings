@@ -132,7 +132,7 @@ adjustments AS (
         NULL AS ACCOUNT_TYPE,
         ACCOUNT_NAME,
         
-      COA_ID  AS DIM_CHART_OF_ACCOUNT_ID,
+        COA_ID AS DIM_CHART_OF_ACCOUNT_ID,
         
         CLASS_ID AS DIM_CLASS_ID,
         NULL AS DIM_PROJECT_ID,
@@ -196,7 +196,7 @@ SELECT * FROM source
             COALESCE(lower(STATUS_NAME), '') <> 'rejected'
             AND IS_POSTING = TRUE
             AND NOT  (ACCOUNT_NUMBER = 50100 AND  MEMO IN ('To Reclass Q1 FY26 Rights Fees Expenses to New Expense Accounts','To Reclass Q1 FY26 Rights Fees Expense to New Expense Accounts') ) 
-            AND NOT (DIM_PERIOD_ID = 105  )
+          
         
            
 {% endif %}

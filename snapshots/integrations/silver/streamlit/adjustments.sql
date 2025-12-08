@@ -13,8 +13,9 @@
         target_schema = 'silver',
         alias = sourcesystem ~ '_Adjustments', 
         strategy = 'check',
-        check_cols = ['AMOUNT'],
-        invalidate_hard_deletes = True
+        check_cols = ['AMOUNT','LAST_UPDATED_AT','LAST_UPDATED_BY'],
+        invalidate_hard_deletes = True,
+        on_schema_change='append_new_columns'
     )
 }}
 {%if sourcesystem == 'netsuite'%}
@@ -41,7 +42,11 @@ SELECT
     COA_ID,
     ADJ_TYPE,
     PERIOD,
-    AMOUNT
+    AMOUNT,
+    CREATED_AT,
+    CREATED_BY,
+    LAST_UPDATED_AT,
+    LAST_UPDATED_BY
     
 FROM {{ source(src, src_table) }}
 {%else%}
@@ -74,7 +79,11 @@ SELECT
     {%endif%}
     ADJ_TYPE,
     PERIOD,
-    AMOUNT
+    AMOUNT,
+    CREATED_AT,
+    CREATED_BY,
+    LAST_UPDATED_AT,
+    LAST_UPDATED_BY
 
 FROM {{ source(src, src_table) }}
 {%endif%}
