@@ -27,10 +27,8 @@
         NULL ACCOUNT_NUMBER,
         NULL AS ACCOUNT_TYPE,
         NULL AS ACCOUNT_NAME,
-        CASE WHEN ADJ_TYPE = 'Lender Adjustment' THEN -18
-        WHEN ADJ_TYPE = 'Pro-Forma Adjustment' THEN -19 
-        ELSE COA_ID 
-        END AS DIM_CHART_OF_ACCOUNT_ID,
+       
+        COA_ID AS  DIM_CHART_OF_ACCOUNT_ID,
         
         NULL AS DIM_CLASS_ID,
         NULL AS DIM_PROJECT_ID,

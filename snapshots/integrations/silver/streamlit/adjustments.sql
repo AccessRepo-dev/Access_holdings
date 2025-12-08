@@ -14,7 +14,8 @@
         alias = sourcesystem ~ '_Adjustments', 
         strategy = 'check',
         check_cols = ['AMOUNT','LAST_UPDATED_AT','LAST_UPDATED_BY'],
-        invalidate_hard_deletes = True
+        invalidate_hard_deletes = True,
+        on_schema_change='append_new_columns'
     )
 }}
 {%if sourcesystem == 'netsuite'%}
