@@ -4,7 +4,8 @@
 
 {{ config(
     database = get_target_database(company),
-    materialized = 'table',
+    materialized = 'incremental',
+    incremental_strategy = 'merge',
     alias = 'dim_opportunity',
 ) }}
 

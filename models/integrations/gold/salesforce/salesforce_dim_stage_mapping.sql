@@ -5,7 +5,8 @@
 {{ config(
     database = get_target_database(company),
     alias = 'dim_stage_mapping',
-    materialized = 'table'
+    materialized = 'incremental',
+    incremental_strategy = 'merge',
 ) }}
 
 {% set derived_metrics = var('derived_metrics') %}
