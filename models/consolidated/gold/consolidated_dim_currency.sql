@@ -10,8 +10,8 @@
     select
         HASH(DIM_PERIOD_ID, '{{ c.name }}','{{ c.source }}') AS DIM_PERIOD_ID,
         DIM_PERIOD_ID AS PERIOD_ID,
-        FROM_SUBSIDIARY_ID,
-        TO_SUBSIDIARY_ID,
+        HASH(FROM_SUBSIDIARY_ID, '{{ c.name }}','{{ c.source }}') AS FROM_SUBSIDIARY_ID,
+        HASH(TO_SUBSIDIARY_ID, '{{ c.name }}','{{ c.source }}') AS TO_SUBSIDIARY_ID ,
         FROM_CURRENCY_ID,
         TO_CURRENCY_ID,
         HISTORICALRATE,

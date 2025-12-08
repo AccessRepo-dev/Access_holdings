@@ -1,10 +1,13 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') | lower == 'netsuite') }}
+{% set company = var('company', 'wagway') | lower %}
+{{ config(enabled = var('sourcesystem', 'netsuite') | lower == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
     materialized = 'table',
-    alias = 'fact_transaction'
+    alias = 'fact_transaction',
+    pre_hook=[
+        "{% if is_incremental() %}DELETE FROM {{ this }} WHERE TRANSACTIONS_UNIQUE_ID LIKE 'ADJ-%'{% endif %}"
+    ]
 ) }}
 
 
@@ -86,24 +89,24 @@ with source as (
         NULL AS ADJ_TYPE,
         t.LASTMODIFIEDDATE
         
-    FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_TRANSACTIONLINE') }} tl
-    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_TRANSACTION') }} t
+    FROM {{ ref('netsuite_transactionline') }} tl
+    LEFT JOIN {{ ref('netsuite_transaction') }} t
         ON t.ID = tl.TRANSACTION
-    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_TRANSACTIONACCOUNTINGLINE') }} tal
+    LEFT JOIN {{ ref('netsuite_transactionaccountingline') }} tal
         ON tl.transaction = tal.transaction and tl.id = tal.transactionline
-    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_ACCOUNT') }} a
+    LEFT JOIN {{ ref('netsuite_account') }} a
         ON a.ID = tal.ACCOUNT
-    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_ACCOUNTINGPERIOD') }} per
+    LEFT JOIN {{ ref('netsuite_accountingperiod') }} per
         ON per.ID = t.POSTINGPERIOD
-    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_TRANSACTIONSTATUS') }} txs
+    LEFT JOIN {{ ref('netsuite_transactionstatus') }} txs
         ON txs.ID = t.status and txs.trantype = t.type and t.customtype = txs.trancustomtype
-    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_SUBSIDIARY') }} sub 
+    LEFT JOIN {{ ref('netsuite_subsidiary') }} sub 
         ON sub.ID=tl.SUBSIDIARY
-    LEFT JOIN {{ get_gold_source(company, 'DIM_CHART_OF_ACCOUNT') }} coa 
+    LEFT JOIN {{ ref('netsuite_dim_coa') }} coa 
         ON 
         HASH(tal.ACCOUNT, tl.SUBSIDIARY,tl.CLASS,tl.LOCATION,tl.DEPARTMENT,tl.ADDBACK_ID) = coa.DIM_CHART_OF_ACCOUNT_ID
             
-    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_CONSOLIDATEDEXCHANGERATE') }} cer
+    LEFT JOIN {{ ref('netsuite_consolidatedexchangerate') }} cer
         ON cer.POSTINGPERIOD = t.POSTINGPERIOD 
         AND cer.FROMSUBSIDIARY=tl.SUBSIDIARY
         AND cer.TOSUBSIDIARY=COALESCE(sub.PARENT,1)
@@ -129,7 +132,7 @@ adjustments AS (
         NULL AS ACCOUNT_TYPE,
         ACCOUNT_NAME,
         
-      COA_ID  AS DIM_CHART_OF_ACCOUNT_ID,
+        COA_ID AS DIM_CHART_OF_ACCOUNT_ID,
         
         CLASS_ID AS DIM_CLASS_ID,
         NULL AS DIM_PROJECT_ID,
@@ -182,13 +185,8 @@ adjustments AS (
         ADJ_TYPE, 
         CURRENT_TIMESTAMP AS LASTMODIFIEDDATE
      
-    FROM  {{ get_silver_source(company, 'netsuite_adjustments') }} tl
-    
-    {% if is_incremental() %}
-    -- First, remove old adjustment records
-    DELETE FROM {{ this }}
-    WHERE TRANSACTIONS_UNIQUE_ID LIKE 'ADJ-%';
-{% endif %}
+    FROM  {{ ref('adjustments') }} tl
+  
     WHERE dbt_valid_to IS NULL  
 )
 
@@ -197,6 +195,10 @@ SELECT * FROM source
         WHERE 
             COALESCE(lower(STATUS_NAME), '') <> 'rejected'
             AND IS_POSTING = TRUE
+            AND NOT  (ACCOUNT_NUMBER = 50100 AND  MEMO IN ('To Reclass Q1 FY26 Rights Fees Expenses to New Expense Accounts','To Reclass Q1 FY26 Rights Fees Expense to New Expense Accounts') ) 
+          
+        
+           
 {% endif %}
 
 UNION 

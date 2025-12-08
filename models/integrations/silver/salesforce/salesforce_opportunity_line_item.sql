@@ -18,11 +18,9 @@ select *
 from {{ source_snapshot_schema(company, 'SALESFORCE_OPPORTUNITY_LINE_ITEM') }}
     {% if is_incremental()%}
     where 
-        cast(LAST_MODIFIED_DATE as timestamp_ntz) > (
-            select dateadd(day, -1, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz))
-            from {{ this }}
-        )
-        or _FIVETRAN_DELETED = true
+        (cast(LAST_MODIFIED_DATE as timestamp_ntz) > (select dateadd(day, -3, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)) from {{ this }})
+    OR 
+        (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
     {% endif %}
 ),
 

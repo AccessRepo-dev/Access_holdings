@@ -1,10 +1,7 @@
-{% set company = var('company') %}
-
 {{ config(
-    enabled = (var('company') | lower) == 'wagway',
-    database = get_target_database(company),
+    database = get_target_database('wagway'),
     materialized = 'table',
-    alias = 'FACT_WAGWAY_LOCATION_CAPACITY'
+    alias = 'FACT_WAGWAY_CAPACITY_UTILISATION'
 ) }}
 
 WITH seq AS (
@@ -202,7 +199,8 @@ SELECT
              AND m.location_pattern IS NOT NULL
         THEN m.christmas_capacity
         ELSE 0
-    END AS christmas_capacity
+    END AS christmas_capacity,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
 
 FROM dates d
 LEFT JOIN special_date sd 

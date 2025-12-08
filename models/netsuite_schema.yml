@@ -6,162 +6,283 @@ sources:
     schema: netsuite        
     tables:
       - name: ACCOUNT
+        description: Contains the complete chart of accounts used for financial tracking and reporting.
       - name: ACCOUNTINGPERIOD
+        description: Defines fiscal periods used for financial close and reporting.
       - name: CLASSIFICATION
+        description: Stores financial classification metadata such as class, department, or cost centers.
       - name: CURRENCY
+        description: Master list of currencies used for transactions and reporting.
       - name: CONSOLIDATEDEXCHANGERATE
+        description: Exchange rates used to consolidate financial results across entities.
       - name: CURRENCYRATE
+        description: Daily or periodic currency exchange rates applied to financial transactions.
       - name: DEPARTMENT
+        description: Master list of corporate departments used for reporting and cost allocations.
       - name: EMPLOYEE
+        description: Employee records including workforce reference data used in HR and permissions.
       - name: ENTITY
+        description: Stores details of all business entities including vendors, customers, and partners.
       - name: ITEM
+        description: Product and service catalog including SKU-level definitions used in transactions.
       - name: LOCATION
+        description: Physical or logical business locations used for inventory, reporting, and tax purposes.
       - name: SUBSIDIARY
+        description: Legal entities configured within NetSuite representing business hierarchy.
       - name: TRANSACTION
+        description: Header-level financial and operational transaction records such as invoices and journal entries.
       - name: TRANSACTIONACCOUNTINGLINE
+        description: Detailed accounting ledger lines generated from business transactions.
       - name: TRANSACTIONLINE
+        description: Line-level transaction data including products, quantities, and financial amounts.
       - name: TRANSACTIONSTATUS
+        description: Reference table defining workflow status values for transactions.
       - name: BUDGETLEGACY
-      - name: BUDGETCATEGORY 
+        description: Stores historical budget versions used for planning and forecasting comparison.
+      - name: BUDGETCATEGORY
+        description: Category definitions used to group and manage budgeting inputs.
       - name: CLASSIFICATIONSUBSIDIARYMAP
+        description: Mapping of financial classifications to subsidiaries for reporting alignment.
       - name: ACCOUNTSUBSIDIARYMAP
+        description: Mapping of general ledger accounts to subsidiaries for financial governance.
       - name: CUSTOMRECORD_CSEG1
+        description: Custom segment used for financial reporting and tracking of business dimensions.
       - name: CUSTOMRECORD_CSEG_CP_STORE_LOC
+        description: Custom segment storing store-level financial tagging for reporting.
       - name: CUSTOMLIST_STORE_LOC_CATEGORY
+        description: Custom list defining store-level categorization for business use cases.
 
   - name: playfly_netsuite_raw
     database: playfly_raw
     schema: netsuite
     tables:
       - name: ACCOUNT
+        description: Contains the chart of accounts for the Playfly NetSuite environment.
       - name: ACCOUNTINGPERIOD
+        description: Fiscal periods configured for accounting close and reporting.
       - name: CLASSIFICATION
+        description: Classification metadata such as departments, classes, or reporting segments.
       - name: CURRENCY
+        description: List of supported currencies.
       - name: CONSOLIDATEDEXCHANGERATE
+        description: Consolidated exchange rate values for multi-entity reporting.
       - name: CURRENCYRATE
+        description: Currency exchange rate values applicable to transactions.
       - name: DEPARTMENT
+        description: Department master data for cost allocation and tracking.
       - name: EMPLOYEE
+        description: Employee records including HR and identity attributes.
       - name: ENTITY
+        description: Details of customers, vendors, partners, and related entity types.
       - name: ITEM
+        description: Master product and service list with SKUs and operational definitions.
       - name: LOCATION
+        description: Physical or logical business locations used throughout the system.
       - name: SUBSIDIARY
+        description: Legal and reporting company entities configured for Playfly.
       - name: TRANSACTION
+        description: Header-level transaction information spanning financial and operational events.
       - name: TRANSACTIONACCOUNTINGLINE
+        description: Ledger-level accounting breakdown for transactions.
       - name: TRANSACTIONLINE
+        description: Line-level details for transactions including amounts and classifications.
       - name: TRANSACTIONSTATUS
+        description: Status reference table defining transaction lifecycle states.
       - name: BUDGETLEGACY
-      - name: BUDGETCATEGORY 
+        description: Historical budget planning and comparison records.
+      - name: BUDGETCATEGORY
+        description: Categorization used in the budgeting structure.
       - name: CLASSIFICATIONSUBSIDIARYMAP
+        description: Mapping between classifications and subsidiaries.
       - name: ACCOUNTSUBSIDIARYMAP
+        description: Mapping between general ledger accounts and subsidiaries.
       - name: CUSTOMRECORD_CSEG1
+        description: Custom reporting and tracking segment for Playfly.
       - name: CUSTOMRECORD_CSEG2
+        description: Additional custom segment for operational and financial reporting.
 
   - name: wagway_silver
     database: "{{ env_var('DBT_WAGWAY') }}"
     schema: silver
     tables:
       - name: NETSUITE_ACCOUNT
+        description: Cleaned and standardized chart of accounts sourced from NetSuite.
       - name: NETSUITE_ACCOUNTINGPERIOD
+        description: Standardized fiscal calendar reference.
       - name: NETSUITE_CLASSIFICATION
+        description: Refined classification hierarchy.
       - name: NETSUITE_CURRENCYRATE
+        description: Standardized exchange rate values.
       - name: NETSUITE_CURRENCY
+        description: Currency dimension table.
       - name: NETSUITE_CONSOLIDATEDEXCHANGERATE
+        description: Consolidation exchange rate values.
       - name: NETSUITE_DEPARTMENT
+        description: Standardized department reference list.
       - name: NETSUITE_EMPLOYEE
+        description: Cleansed employee reference set.
       - name: NETSUITE_ENTITY
+        description: Harmonized customer/vendor/entity reference.
       - name: NETSUITE_ITEM
+        description: Standardized product and service catalog.
       - name: NETSUITE_LOCATION
+        description: Cleansed business location definitions.
       - name: NETSUITE_SUBSIDIARY
+        description: Standardized subsidiary records used for reporting.
       - name: NETSUITE_TRANSACTION
+        description: Standardized NetSuite transaction header-level records.
       - name: NETSUITE_TRANSACTIONACCOUNTINGLINE
+        description: Standardized ledger-level accounting lines.
       - name: NETSUITE_TRANSACTIONLINE
+        description: Normalized transaction line-level data.
       - name: NETSUITE_TRANSACTIONSTATUS
-      - name: NETSUITE_BUDGETLEGACY 
+        description: Status lookup values for standardized workflows.
+      - name: NETSUITE_BUDGETLEGACY
+        description: Standardized budget historical records.
       - name: NETSUITE_BUDGETCATEGORY
+        description: Standardized budgeting category structure.
       - name: NETSUITE_CLASSIFICATIONSUBSIDIARYMAP
+        description: Mapped classification and legal entity structure.
       - name: NETSUITE_ACCOUNTSUBSIDIARYMAP
-    
+        description: Mapped account and subsidiary association.
       - name: wagway_COA_MAPPING
+        description: Mapping between NetSuite and reporting chart of accounts.
       - name: wagway_addbacks 
+        description: Addback adjustments for reporting and reconciliation.
       - name: NETSUITE_CUSTOMRECORD_CSEG1
-
+        description: Cleaned and harmonized custom reporting segment.
       - name: hubspot_pawville_deal
+        description: Standardized HubSpot deal data.
       - name: hubspot_pawville_deal_contact
+        description: Relationship mapping between deals and contacts in HubSpot.
       - name: hubspot_pawville_contact
+        description: Standardized HubSpot contact records.
       - name: hubspot_pawville_deal_pipeline_stage
+        description: HubSpot stage-level pipeline metadata for Pawville.
       - name: hubspot_pawville_deal_pipeline
+        description: Pipeline structure definition for HubSpot Pawville workspace.
       - name: hubspot_pawville_owner
+        description: Owner records mapped to HubSpot users.
       - name: hubspot_deal
+        description: Standardized HubSpot deals table.
       - name: hubspot_deal_contact
+        description: Deal-to-contact relationship mapping.
       - name: hubspot_contact
+        description: Standardized HubSpot contact records.
       - name: hubspot_deal_pipeline_stage
+        description: Stage definitions within HubSpot sales pipelines.
       - name: hubspot_deal_pipeline
+        description: HubSpot pipeline metadata.
       - name: hubspot_owner
+        description: Owner-level metadata defining assignment within HubSpot.
       - name: hubspot_owner_team
+        description: Relationship between HubSpot users and teams.
       - name: hubspot_team
-
+        description: HubSpot team metadata.
       - name: ringcentral_account_call_log
+        description: Call logs captured from RingCentral phone systems.
       - name: ringcentral_company_directory_phone_number
+        description: Directory of phone numbers associated with RingCentral users.
       - name: ringcentral_company_directory
+        description: Directory-level user and organization records.
       - name: ringcentral_sms
+        description: Standardized RingCentral SMS message dataset.
       - name: ringcentral_sms_to
+        description: Receiver-level metadata associated with RingCentral SMS messages.
       - name: ringcentral_message
+        description: Message-level logs from RingCentral communications.
       - name: ringcentral_message_to
-      - name: ringcentral_user_business_hour_range 
-
+        description: Recipient-level attributes for RingCentral message metadata.
+      - name: ringcentral_user_business_hour_range
+        description: Business hour configuration for users associated with RingCentral telephony.
       - name: gingr_owners
+        description: Gingr customer/owner master data.
       - name: gingr_pos_transactions
+        description: Transaction-level dataset from Gingr POS.
       - name: gingr_pos_transaction_items_audit
+        description: Audit layer records for Gingr POS item-level changes.
       - name: gingr_account_codes
+        description: Account mapping reference from Gingr to financial reporting.
       - name: gingr_pos_transaction_items
-
+        description: Item-level dataset from Gingr POS transactions.
       - name: wagway_location_capacity_mapping
+        description: Mapping between business locations and capacity attributes.
       - name: netsuite_coa
+        description: Combined chart of accounts reference for systems harmonization.
       - name: netsuite_adjustments
-
-
+        description: Manual or system-based financial adjustments.
 
   - name: playfly_silver
     database: "{{ env_var('DBT_PLAYFLY') }}"
     schema: silver
     tables:
       - name: NETSUITE_ACCOUNT
+        description: Clean, standardized list of chart of accounts from NetSuite.
       - name: NETSUITE_ACCOUNTINGPERIOD
+        description: Standardized calendar for Playfly accounting periods.
       - name: NETSUITE_CLASSIFICATION
+        description: Normalized segmentation hierarchy for reporting.
       - name: NETSUITE_CURRENCYRATE
+        description: Standardized currency conversion values.
       - name: NETSUITE_CURRENCY
+        description: Currency reference dimension.
       - name: NETSUITE_CONSOLIDATEDEXCHANGERATE
+        description: Consolidation exchange rate mapping.
       - name: NETSUITE_DEPARTMENT
+        description: Standard department master reference.
       - name: NETSUITE_EMPLOYEE
+        description: Refined employee-level records.
       - name: NETSUITE_ENTITY
+        description: Customer, vendor, and partner master harmonized set.
       - name: NETSUITE_ITEM
+        description: Product and service catalog standardized for reporting.
       - name: NETSUITE_LOCATION
+        description: Harmonized business location registry.
       - name: NETSUITE_SUBSIDIARY
+        description: Subsidiary dimension standardized for Playfly reporting.
       - name: NETSUITE_TRANSACTION
+        description: Standard transaction header records.
       - name: NETSUITE_TRANSACTIONACCOUNTINGLINE
+        description: Normalized transaction-level accounting ledger.
       - name: NETSUITE_TRANSACTIONLINE
+        description: Standardized transaction line-level attributes.
       - name: NETSUITE_TRANSACTIONSTATUS
+        description: Workflow state representation for transactions.
       - name: NETSUITE_BUDGETLEGACY
+        description: Historical budget structure for Playfly.
       - name: NETSUITE_BUDGETCATEGORY
+        description: Categorization used for Playfly budgeting processes.
       - name: NETSUITE_CLASSIFICATIONSUBSIDIARYMAP
+        description: Mapping from classification hierarchy to subsidiaries.
       - name: NETSUITE_ACCOUNTSUBSIDIARYMAP
+        description: Account-to-subsidiary association.
       - name: playfly_COA_MAPPING
+        description: Mapping from internal chart of accounts to reporting standards.
       - name: playfly_addbacks 
+        description: Record of adjustments and addbacks used in financial reconciliation.
       - name: NETSUITE_CUSTOMRECORD_CSEG1
+        description: First custom reporting segment dimension.
       - name: NETSUITE_CUSTOMRECORD_CSEG2
+        description: Second custom reporting segmentation layer.
       - name: netsuite_coa
+        description: Standardized NetSuite chart of accounts for Playfly.
       - name: netsuite_adjustments
-  
+        description: Manual or computed financial adjustments for accuracy.
+
   - name: wagway_gold
     database: "{{ env_var('DBT_WAGWAY') }}"
     schema: gold
     tables:
       - name: FACT_TRANSACTION
+        description: Final fact table containing enriched and fully mapped transaction records.
       - name: DIM_CHART_OF_ACCOUNT
+        description: Final reporting chart of accounts dimension used in analytics.
 
   - name: playfly_gold
     database: "{{ env_var('DBT_PLAYFLY') }}"
     schema: gold
     tables:
       - name: FACT_TRANSACTION
+        description: Fully conformed transaction fact used in reporting.
       - name: DIM_CHART_OF_ACCOUNT
+        description: Analytics-ready chart of accounts dimension for Playfly.

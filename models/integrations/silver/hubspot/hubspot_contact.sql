@@ -16,13 +16,10 @@ WITH raw AS (
     from {{ source_snapshot_schema(company, sourcesystem ~ '_CONTACT') }}
 
     {% if is_incremental() %}
-        WHERE PROPERTY_LASTMODIFIEDDATE > (
-            select dateadd(day, -1, coalesce(max(PROPERTY_LASTMODIFIEDDATE), '1900-01-01'))
-            FROM {{ this }}
-        )
-       -- AND 1 = 1
-    {% else %}
-        WHERE 1 = 1
+        WHERE
+        PROPERTY_LASTMODIFIEDDATE > (SELECT COALESCE(MAX(PROPERTY_LASTMODIFIEDDATE), '1900-01-01') FROM {{ this }})
+        OR 
+        dbt_valid_to > (SELECT COALESCE(MAX(dbt_valid_to), '1900-01-01') FROM {{ this }})
     {% endif %}
 
 ),

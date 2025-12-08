@@ -1,8 +1,5 @@
-{% set company = var('company') %}
-
 {{ config(
-    enabled = (var('company') | lower) == 'wagway',
-    database = get_target_database(company),
+    database = get_target_database('wagway'),
     materialized = 'table',
     alias = 'FACT_WAGWAY_DEALS'
 ) }}
@@ -28,6 +25,7 @@ WITH CTE AS (
         NULL AS SERVICE_CATEGORY,
         PROPERTY_HS_PROJECTED_AMOUNT,
         CONCAT(PROPERTY_INVOICE_ID, '-pawville') AS PROPERTY_INVOICE_ID,
+        PROPERTY_SERVICE_CATEGORY,
         'Pawville' AS COMPANY
     FROM {{ get_silver_source('wagway', 'hubspot_pawville_deal') }}
     WHERE IS_ACTIVE = 1
@@ -76,6 +74,7 @@ WITH CTE AS (
         END AS SERVICE_CATEGORY,
         PROPERTY_HS_PROJECTED_AMOUNT,
         CONCAT(PROPERTY_INVOICE_ID, '-pupspetclub') AS PROPERTY_INVOICE_ID,
+        PROPERTY_SERVICE_CATEGORY,
         'PUPS Pet Club' AS COMPANY
     FROM {{ get_silver_source('wagway', 'hubspot_deal') }}
     WHERE IS_ACTIVE = 1
@@ -161,7 +160,7 @@ final_enriched AS (
         f.property_hs_projected_amount,
         f.property_invoice_id,
         f.company,
-        COALESCE(
+        COALESCE(f.PROPERTY_SERVICE_CATEGORY,
             CASE 
                 WHEN f.service_type IS NULL AND f.property_invoice_id IS NOT NULL THEN
                     CASE 
@@ -265,10 +264,12 @@ CTE_DEAL_STAGE AS
                 THEN fe.property_invoice_id 
             ELSE NULL 
         END AS max_revenue_invoice_id,
+        ds.label,
+        ds.probability,
 		CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
     FROM final_enriched fe
     LEFT JOIN CTE_DEAL_STAGE ds 
-        ON fe.deal_pipeline_stage_id = ds.label
+        ON fe.deal_pipeline_stage_id = ds.stage_id
 )
 
 SELECT DISTINCT *

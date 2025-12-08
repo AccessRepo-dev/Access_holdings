@@ -1,7 +1,7 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{% set sourcesystem = var('sourcesystem') %}
+{% set company = var('company', 'spotless') | lower %}
+{% set sourcesystem = var('sourcesystem','sage') %}
 {{ config(
-    enabled = var('sourcesystem') |lower == 'sage' ,
+    enabled = var('sourcesystem','sage') |lower == 'sage' ,
     database = get_target_database(company),
     alias = 'dim_chart_of_account',
     unique_key = 'DIM_CHART_OF_ACCOUNT_ID',
@@ -48,9 +48,9 @@ WITH source AS (
     
    
 
-    FROM {{ get_silver_source(company, sourcesystem ~ '_coa') }} coa
+    FROM {{ ref('coa_mapping') }} coa
     {% if company == 'spotless' %}
-    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_CLASS') }} c ON c.RECORDNO =  coa.CLASS_ID
+    LEFT JOIN {{ ref('sage_class') }} c ON c.RECORDNO =  coa.CLASS_ID
     {% endif %}
     WHERE dbt_valid_to IS NULL  -- Only get active records from snapshot
 )

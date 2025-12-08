@@ -1,8 +1,5 @@
-{% set company = var('company') %}
-
 {{ config(
-    enabled = (var('company') | lower) == 'wagway',
-    database = get_target_database(company),
+    database = get_target_database('wagway'),
     materialized = 'table',
     alias = 'FACT_WAGWAY_TRANSACTION'
 ) }}
@@ -15,24 +12,24 @@ SELECT
     b.owner_id,
     b.total,
     b.payment_amount,
-    TO_TIMESTAMP(b.create_stamp) AS order_date,
+    b.create_stamp AS order_date,
     CONCAT(b.location_id, '-', b.source_db) AS sk_location_id,
 
-    MIN(TO_TIMESTAMP(b.create_stamp)) OVER (PARTITION BY b.owner_id) AS acquisition_date,
+    MIN(b.create_stamp) OVER (PARTITION BY b.owner_id) AS acquisition_date,
 
     DATEDIFF(
         month,
-        MIN(TO_TIMESTAMP(b.create_stamp)) OVER (PARTITION BY b.owner_id),
-        TO_TIMESTAMP(b.create_stamp)
+        MIN(b.create_stamp) OVER (PARTITION BY b.owner_id),
+        b.create_stamp
     ) AS months_since_acquisition,
 
     DATEDIFF(
         month,
-        LAG(TO_TIMESTAMP(b.create_stamp)) OVER (PARTITION BY b.owner_id ORDER BY TO_TIMESTAMP(b.create_stamp)),
-        TO_TIMESTAMP(b.create_stamp)
+        LAG(b.create_stamp) OVER (PARTITION BY b.owner_id ORDER BY b.create_stamp),
+        b.create_stamp
     ) AS diff_between_orders,
 
-    MAX(TO_TIMESTAMP(b.create_stamp)) OVER (PARTITION BY b.owner_id) AS last_order_date,
+    MAX(b.create_stamp) OVER (PARTITION BY b.owner_id) AS last_order_date,
     c.code,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
     

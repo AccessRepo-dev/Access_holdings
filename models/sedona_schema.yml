@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  
+  - name: zeus_silver
+    database: "{{ env_var('DBT_ZEUS') }}"
+    schema: silver
+    tables:
+      - name: sedona_coa
+      - name: sedona_adjustments
+  
+  

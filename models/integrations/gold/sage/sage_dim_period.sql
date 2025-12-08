@@ -1,6 +1,6 @@
 
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
+{% set company = var('company', 'spotless') | lower %}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
 
 {{ config(
     database = get_target_database(company),
@@ -20,7 +20,7 @@ with source as (
         STATUS AS IS_INACTIVE,
         WHENMODIFIED AS LAST_MODIFIED_DATE
 
-    FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_REPORTING_PERIOD') }}
+    FROM {{ ref('sage_reporting_period') }}
     
     {% if is_incremental() %}
     WHERE WHENMODIFIED > (

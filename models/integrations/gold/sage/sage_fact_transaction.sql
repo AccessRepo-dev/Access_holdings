@@ -1,11 +1,14 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
+{% set company = var('company', 'spotless') | lower %}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
  
 {{ config(
     database = get_target_database(company),
     alias = 'fact_transaction',
     materialized = 'table',
-    unique_key = 'TRANSACTIONS_UNIQUE_ID'
+    unique_key = 'TRANSACTIONS_UNIQUE_ID',
+    pre_hook=[
+        "{% if is_incremental() %} DELETE FROM {{ this }} WHERE TRANSACTIONS_UNIQUE_ID LIKE 'ADJ-%'{% endif %}"
+    ]
 ) }}
  
 
@@ -75,14 +78,14 @@ with source as (
     NULL AS ADJ_TYPE,
     e.WHENMODIFIED AS LASTMODIFIEDDATE
  
-FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_ENTRY') }}  e
+FROM {{ ref('sage_gl_entry') }}  e
 
-LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_BATCH') }}  b
+LEFT JOIN {{ ref('sage_gl_batch') }}  b
     ON e.batchno = b.recordno
-LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_ACCOUNT') }} acc
+LEFT JOIN {{ ref('sage_gl_account') }} acc
     ON e.ACCOUNTKEY  = acc.RECORDNO
  
-LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_REPORTING_PERIOD') }} per
+LEFT JOIN {{ ref('sage_reporting_period') }} per
 ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
     
 
@@ -110,10 +113,8 @@ adjustments AS (
         NULL ACCOUNT_NUMBER,
         NULL AS ACCOUNT_TYPE,
         ACCOUNT_NAME,
-        CASE WHEN ADJ_TYPE = 'Lender Adjustment' THEN -18
-        WHEN ADJ_TYPE = 'Pro-Forma Adjustment' THEN -19 
-        ELSE COA_ID 
-        END AS DIM_CHART_OF_ACCOUNT_ID,
+       
+        COA_ID AS DIM_CHART_OF_ACCOUNT_ID,
         
         CLASS_ID AS DIM_CLASS_ID,
         NULL AS DIM_PROJECT_ID,
@@ -164,12 +165,9 @@ adjustments AS (
         ADJ_TYPE ,
         CURRENT_TIMESTAMP AS LASTMODIFIEDDATE
      
-    FROM  {{ get_silver_source(company, 'sage_adjustments') }} tl
+    FROM  {{ ref('adjustments') }} tl
     
-{% if is_incremental() %}
-    DELETE FROM {{ this }}
-    WHERE TRANSACTIONS_UNIQUE_ID LIKE 'ADJ-%';
-{% endif %}
+
     WHERE dbt_valid_to IS NULL  
 )
 
@@ -177,13 +175,13 @@ SELECT * FROM source
 {% if company | lower  == 'amh' %}
     WHERE TRANSACTION_LINE_ID NOT IN 
         (select distinct GLENTRYKEY 
-        from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_DETAIL') }}
+        from {{ ref('sage_gl_detail') }}
         WHERE SYMBOL = 'QB_HISTORY' and 
             batch_date between '2022-01-01' and '2022-08-31')
 {% elif company | lower  == 'spotless' %}
     WHERE (TRANSACTION_LINE_ID NOT IN 
         (select distinct GLENTRYKEY 
-        from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_DETAIL') }}
+        from {{ ref('sage_gl_detail') }}
         WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ'))) OR TRANSACTION_LINE_ID IS NULL 
 {% endif %}
 UNION 

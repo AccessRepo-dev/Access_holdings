@@ -19,11 +19,9 @@ with
         from {{ source_snapshot_schema(company, sourcesystem ~ "_DEAL") }}
         {% if is_incremental() %}
             where
-                property_hs_lastmodifieddate > (
-                    select
-                        dateadd(day, -1, coalesce(max(property_hs_lastmodifieddate), '1900-01-01'))
-                    from {{ this }}
-                )
+                (property_hs_lastmodifieddate > (select dateadd(day, -3, coalesce(max(property_hs_lastmodifieddate), '1900-01-01')) from {{ this }}) 
+            OR 
+                (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
         {% else %} where 1 = 1
         {% endif %}
     ),
@@ -68,10 +66,13 @@ with
             {% endif %}
             PROPERTY_HS_IS_CLOSED_WON,
             {% if sourcesystem == "HUBSPOT_PAWVILLE" %}
-                null as property_club_c, null as property_service_type,
+                null as property_club_c, 
+                null as property_service_type,
+                null as property_service_category,
             {% elif company | lower == "wagway" and sourcesystem == "HUBSPOT" %}
                 trim(property_club_c) as property_club_c,
                 trim(property_service_type) as property_service_type,
+                trim(property_service_category) as property_service_category,
             {% endif %}
 
             trim(property_hs_analytics_source) as property_hs_analytics_source,

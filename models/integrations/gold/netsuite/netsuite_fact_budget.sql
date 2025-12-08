@@ -1,5 +1,5 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') | lower == 'netsuite') }}
+{% set company = var('company', 'wagway') | lower %}
+{{ config(enabled = var('sourcesystem', 'netsuite') | lower == 'netsuite') }}
 
 {{ config(
     database = get_target_database(company),
@@ -40,17 +40,30 @@ with source as (
         BUDGET.LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
 
 
-    from {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_BUDGETLEGACY') }} AS BUDGET
-    LEFT JOIN {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_ACCOUNTINGPERIOD') }} per 
+    from {{ ref('netsuite_budgetlegacy') }} AS BUDGET
+    LEFT JOIN {{ ref('netsuite_accountingperiod') }} per 
         ON BUDGET.PERIOD = per.ID
-   
+
     {% if is_incremental() %}
       where BUDGET.LASTMODIFIEDDATE > (
           select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
           from {{ this }}
       )
     {% endif %}
+),
+coa as 
+(
+    SELECT *,
+    CASE 
+        WHEN METRIC_L1 IN ('COGS', 'Operating Expenses', 'Field Corporate Expenses', 'Corporate Expenses', 'Amortization', 'Depreciation', 'Taxes') OR METRIC_L2 IN ('Interest Expense', 'Other Expense')
+            THEN -1
+        ELSE 1
+    END AS TYPE 
+    FROM 
+    {{ ref('netsuite_dim_coa') }} coa 
+        
 )
+select s.*,coa.TYPE , coa.TYPE * s.AMOUNT AS ACTUAL_AMOUNT
+from source s
+left join coa on coa.DIM_CHART_OF_ACCOUNT_ID = s.DIM_CHART_OF_ACCOUNT_ID 
 
-select *
-from source

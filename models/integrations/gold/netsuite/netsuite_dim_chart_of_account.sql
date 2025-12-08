@@ -1,4 +1,4 @@
-{% set company = var('company', 'Unknown company') | lower %}
+{% set company = var('company', 'wagway') | lower %}
 
 {{ config(
     enabled = false,

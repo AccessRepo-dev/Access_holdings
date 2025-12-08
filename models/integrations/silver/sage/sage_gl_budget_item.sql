@@ -1,6 +1,6 @@
-{% set company = var('company', 'unknown_company') | lower %}
-{% set sourcesystem = var('sourcesystem', 'unknown_source') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
+{% set company = var('company', 'spotless') | lower %}
+{% set sourcesystem = var('sourcesystem', 'sage') | lower %}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
 
 {{ config(
     database = get_target_database(company),
@@ -35,6 +35,7 @@ cleaned as (
         PSTARTDATE,
         COALESCE(PROJECTDIMKEY,0) AS PROJECTDIMKEY,
         CAST(WHENMODIFIED AS TIMESTAMP_NTZ) AS WHENMODIFIED,
+        NORMALBALANCE,
         _FIVETRAN_DELETED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
     from source_data

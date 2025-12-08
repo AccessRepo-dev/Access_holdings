@@ -1,41 +1,92 @@
-service_id,service_name,service_to_map
-1,Boarding,Boarding
-1,Boarding,Dog Boarding
-2,Daycare,Daycare
-3,General,Food/Treat Add-Ons
-3,General,Other
-3,General,Packages
-3,General,Retail
-3,General,General
-4,Gingr Sign Up,Gingr Sign Up
-5,Grooming,Bath
-5,Grooming,Groom
-5,Grooming,Grooming & Bathing
-5,Grooming,Grooming
-6,Invoiced,Fees
-6,Invoiced,POS
-6,Invoiced,Tips
-6,Invoiced,INVOICED
-7,Membership,Membership
-7,Membership,Memberships
-8,New Lead,New Lead
-9,Overnight,Overnight
-9,Overnight,Overnights
-10,Pet Sitting,Pet Sitting
-10,Pet Sitting,Petsitting
-10,Pet Sitting,Pet-Sitting
-11,PlayCare,Activities
-11,PlayCare,Playcare
-11,PlayCare,Puppy Play Care
-11,PlayCare,Puppy Playcare
-12,Training,Boot Camp
-12,Training,Private Training
-12,Training,Training
-13,Transport,Transportation
-13,Transport,Transport
-14,Veterinary,Vet
-14,Veterinary,Veterinary
-15,Walking,Walking
-16,Well Care,Well Care
-16,Well Care,Wellcare
-17,Wellness,Wellness
+CODE,MAPPING
+A La Carte,General
+Activities,Activities
+Add On,Add On
+Additional Services,Add On
+Additional Services | Additional Services,Add On
+Add-Ons,Add On
+Adopt an Angel,Adopt an Angel
+Bath,Grooming
+Bathing/ Grooming Add Ons,Grooming
+Baths,Grooming
+Boarding,Boarding
+Boarding - Add-ons,Boarding
+Boarding - Reservations,Boarding
+Boarding | Cat Boarding,Boarding
+Boarding | Dog Boarding,Boarding
+Boarding | Other Animal Boarding,Boarding
+Boot Camp,Boot Camp
+Cat Boarding,Boarding
+Cat Boarding | Condos,Boarding
+Cat Boarding | Townhomes,Boarding
+Cat Boarding | Villas,Boarding
+Condo,Condo
+Day BOARDING,Boarding
+Daycare,Daycare
+Daycare - Add-ons,Daycare
+Daycare | Full Day,Daycare
+Daycare | Half Day,Daycare
+Dog Boarding,Boarding
+Dog Boarding | Condos,Boarding
+Dog Boarding | Day Boarding,Boarding
+Dog Boarding | General Room Type,Boarding
+Dog Boarding | Pet Sitting,Boarding
+Dog Boarding | Townhomes,Boarding
+Dog Boarding | Villas / Cottages,Boarding
+Feed,Food
+Fees,Fees
+Food/Treat Add-Ons,Food
+General,General
+Gingr Sign Up,Gingr Sign Up
+Groom,Grooming
+Grooming,Grooming
+Grooming & Bathing,Grooming
+Grooming & Bathing - Reservations,Grooming
+Grooming & Bathing | A la Carte,Grooming
+Grooming & Bathing | Bath,Grooming
+Grooming & Bathing | Groom,Grooming
+Holiday Deposits,Boarding
+Invoiced,Invoiced
+Membership,Membership
+Memberships,Membership
+Memberships / Subscriptions,Membership
+Midtown Grooming,Grooming
+New Lead,Other
+No Show/Cancellation,Cancelled
+Other,Other
+Other | Deposits,Other
+Other | Fees,Other
+Other | Pawville Vet Clinic Visit,Veterinary
+Other deal,Other
+Overnights,Overnights
+Packages,Packages
+Packages | Boarding,Boarding
+Packages | Daycare,Daycare
+Packages | Grooming & Bathing,Grooming
+Packages | Training,Training
+Pawville Plus Membership,Membership
+Pet Sitting,Daycare
+Play Park,Daycare
+Playcare,Daycare
+POS,General
+Premium,Premium
+Private Training,Training
+Puppy Playcare,Daycare
+Retail,Retail
+Retail | Retail,Retail
+Self Service Dog Wash,Grooming
+Store Credit,Store Credit
+Surf City Villa,Villas
+Tip,General
+Tips,General
+Tips | Tips,General
+Training,Training
+Training - Add-ons,Training
+Training | Private Training,Training
+Transport,Transportation
+Transportation,Transportation
+Veterinary,Veterinary
+Villas,Villas
+Waggin' Wagon,Villas
+Walking,Walking
+Wellness,Wellness

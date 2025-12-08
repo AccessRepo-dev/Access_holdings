@@ -51,6 +51,8 @@ vars:
     - 'Cash EBITDA'
     - 'Signing Bonus Amortization'
     - 'Cash EBITDA Margin'
+    - 'Operating Profit'
+    - 'Adjusted EBITDA TTM'
 
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
@@ -127,6 +129,9 @@ models:
           +schema: GOLD
           +materialized: table 
         sage:
+          +schema: GOLD
+          +materialized: table
+        sedona:
           +schema: GOLD
           +materialized: table
         macro:

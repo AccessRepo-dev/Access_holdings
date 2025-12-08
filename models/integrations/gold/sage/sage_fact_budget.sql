@@ -1,5 +1,5 @@
-{% set company = var('company', 'Unknown company') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'sage') }}
+{% set company = var('company', 'spotless') | lower %}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
 
 {{ config(
     database = get_target_database(company),
@@ -31,10 +31,12 @@ with source as (
         (HASH(b.ACCOUNTKEY, b.LOCATIONKEY,b.DEPTKEY,b.PROJECTDIMKEY,b.CLASSDIMKEY)) AS DIM_CHART_OF_ACCOUNT_ID,
         b.PROJECTDIMKEY AS DIM_PROJECT_ID,
         b.AMOUNT AS AMOUNT,
+        NORMALBALANCE AS TYPE,
+        b.AMOUNT * NORMALBALANCE * -1 AS ACTUAL_AMOUNT,
         -- Metadata
         b.WHENMODIFIED AS LAST_MODIFIED_DATE
 
-FROM {{ get_silver_source(company, (var('sourcesystem') | upper) ~ '_GL_BUDGET_ITEM') }} b
+FROM {{ ref('sage_gl_budget_item') }} b
 
 
     {% if is_incremental() %}
