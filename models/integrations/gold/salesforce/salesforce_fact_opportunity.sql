@@ -18,7 +18,6 @@ with hashed as (
         STAGE_NAME,
         INSTALL_AMOUNT_C,
         OWNER_ID,
-        LEAD_SOURCE,
         CLOSE_DATE,
         IS_CLOSED,
         IS_WON,
@@ -29,7 +28,6 @@ with hashed as (
             coalesce(ACCOUNT_ID,'') || '|' ||
             coalesce(INSTALL_AMOUNT_C::string,'') || '|' ||
             coalesce(OWNER_ID,'') || '|' ||
-            coalesce(LEAD_SOURCE,'') || '|' ||
             coalesce(CLOSE_DATE::string,'') || '|' ||
             coalesce(IS_WON::string,'') || '|' ||
             coalesce(IS_CLOSED,'')
@@ -45,7 +43,6 @@ with hashed as (
         OWNER_ID,
         STAGE_NAME as OLD_STAGE,
         INSTALL_AMOUNT_C as AMOUNT,
-        LEAD_SOURCE,
         CLOSE_DATE,
         IS_CLOSED,
         IS_WON,
