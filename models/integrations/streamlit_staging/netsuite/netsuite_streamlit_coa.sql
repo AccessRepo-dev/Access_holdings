@@ -169,7 +169,9 @@ SELECT DISTINCT  a.*,
     b.CASHFLOW_L2,
     b.CASHFLOW_L3,
     b.IS_BS,
-    b.DEBT_MAPPING
+    b.DEBT_MAPPING,
+    NULL AS LAST_UPDATED_BY,
+    NULL AS LAST_UPDATED_AT
     FROM combined a
 
 {%if company == 'wagway'%}

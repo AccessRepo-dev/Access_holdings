@@ -14,8 +14,10 @@
         alias = sourcesystem ~ '_COA', 
         unique_key = 'coa_id',
         strategy = 'check',
-        check_cols = ['METRIC_L1', 'METRIC_L2', 'METRIC_L3', 'METRIC_L4', 'METRIC_L5', 'METRIC_L6', 'CASHFLOW_L1', 'CASHFLOW_L2', 'CASHFLOW_L3', 'IS_BS', 'DEBT_MAPPING'],
-        invalidate_hard_deletes = True
+        check_cols = ['METRIC_L1', 'METRIC_L2', 'METRIC_L3', 'METRIC_L4', 'METRIC_L5', 'METRIC_L6', 'CASHFLOW_L1', 'CASHFLOW_L2', 'CASHFLOW_L3', 'IS_BS', 'DEBT_MAPPING', 'LAST_UPDATED_AT',
+    'LAST_UPDATED_BY'],
+        invalidate_hard_deletes = True,
+        on_schema_change='append_new_columns'
     )
 }}
 
@@ -53,6 +55,8 @@ SELECT
     CASHFLOW_L2,
     CASHFLOW_L3,
     IS_BS,
+    LAST_UPDATED_AT,
+    LAST_UPDATED_BY,
     DEBT_MAPPING,
     DATA_LOADED_AT
 FROM {{ source(src, src_table) }}

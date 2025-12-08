@@ -13,7 +13,7 @@
         target_schema = 'silver',
         alias = sourcesystem ~ '_Adjustments', 
         strategy = 'check',
-        check_cols = ['AMOUNT'],
+        check_cols = ['AMOUNT','LAST_UPDATED_AT','LAST_UPDATED_BY'],
         invalidate_hard_deletes = True
     )
 }}
@@ -41,7 +41,11 @@ SELECT
     COA_ID,
     ADJ_TYPE,
     PERIOD,
-    AMOUNT
+    AMOUNT,
+    CREATED_AT,
+    CREATED_BY,
+    LAST_UPDATED_AT,
+    LAST_UPDATED_BY
     
 FROM {{ source(src, src_table) }}
 {%else%}
@@ -74,7 +78,11 @@ SELECT
     {%endif%}
     ADJ_TYPE,
     PERIOD,
-    AMOUNT
+    AMOUNT,
+    CREATED_AT,
+    CREATED_BY,
+    LAST_UPDATED_AT,
+    LAST_UPDATED_BY
 
 FROM {{ source(src, src_table) }}
 {%endif%}
