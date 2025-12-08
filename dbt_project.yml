@@ -162,6 +162,9 @@ seeds:
     sage:
       +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
       +schema: SILVER
+    salesforce:
+      +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
+      +schema: SILVER
 
     macro_economic:
       +database: "{{env_var('DBT_ACCESS')}}"

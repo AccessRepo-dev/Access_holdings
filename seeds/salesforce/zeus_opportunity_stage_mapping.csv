@@ -1,0 +1,27 @@
+Old_Stage,New_Stage,Probability
+Identified Opportunity,Lead,0
+Unqualified,Lead,0
+Initial Screening,Qualified Lead,0
+Nurturing,Qualified Lead,0
+Opportunity Screened,Qualified Lead,0
+Secure Proposal Opportunity,Qualified Lead,0
+Engagement,Contacted,0
+Next Steps Scheduled,Contacted,0
+Sales Checklist,Contacted,0
+Completed Onsight / MP,Opportunity,0
+Demo Conducted,Opportunity,0
+Design,Opportunity,0
+Diligence,Opportunity,0
+Legal Review,Opportunity,0
+NDA Secured,Opportunity,0
+Preparing LOI,Proposal Requested,0
+Contract Sent,Proposal Sent,0
+Proposal Delivered,Proposal Sent,0
+Proposal Submitted,Proposal Sent,0
+Verbal Authorization,Proposal Sent,0
+Negotiation,Negotiation,0
+Negotiations,Negotiation,0
+Quote Negotiation / Review,Negotiation,0
+Closed Won,Closed-won,0
+Completed,Closed-won,0
+Closed Lost,Closed-lost,0

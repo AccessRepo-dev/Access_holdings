@@ -5,8 +5,9 @@
 {{ config(
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'fact_lead',
     incremental_strategy = 'merge',
-    unique_key = 'LEAD_ID'
+    unique_key = 'ID_DATE_KEY'
 ) }}
 
 with source as (
@@ -16,17 +17,20 @@ with source as (
         sl.ID_DATE_KEY,
         sl.LEAD_ID,
         sl.CREATED_DATE AS LEAD_DATE,
-        du.id AS OWNER_ID,
+        sl.owner_id AS OWNER_ID,
         sl.COMPANY,
         sl.STATUS,
         sl.IS_ACTIVE,
-        fo.id AS CONVERTED_OPPORTUNITY_KEY,
+        sl.converted_opportunity_id AS CONVERTED_OPPORTUNITY_KEY,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     FROM {{ get_silver_source(company, 'SALESFORCE_LEAD') }} sl
-    LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_USER') }} du 
-           ON sl.owner_id = du.id AND du.IS_ACTIVE = 1
-    LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }} fo
-           ON sl.converted_opportunity_id = fo.id AND fo.IS_ACTIVE = 1
+
+    {% if is_incremental() %}
+        WHERE LAST_MODIFIED_DATE > (
+            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
+            from {{ this }}
+        )
+    {% endif %}
 
 
 )
