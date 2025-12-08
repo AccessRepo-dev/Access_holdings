@@ -179,32 +179,6 @@ sources:
         description: Relationship between HubSpot users and teams.
       - name: hubspot_team
         description: HubSpot team metadata.
-      - name: ringcentral_account_call_log
-        description: Call logs captured from RingCentral phone systems.
-      - name: ringcentral_company_directory_phone_number
-        description: Directory of phone numbers associated with RingCentral users.
-      - name: ringcentral_company_directory
-        description: Directory-level user and organization records.
-      - name: ringcentral_sms
-        description: Standardized RingCentral SMS message dataset.
-      - name: ringcentral_sms_to
-        description: Receiver-level metadata associated with RingCentral SMS messages.
-      - name: ringcentral_message
-        description: Message-level logs from RingCentral communications.
-      - name: ringcentral_message_to
-        description: Recipient-level attributes for RingCentral message metadata.
-      - name: ringcentral_user_business_hour_range
-        description: Business hour configuration for users associated with RingCentral telephony.
-      - name: gingr_owners
-        description: Gingr customer/owner master data.
-      - name: gingr_pos_transactions
-        description: Transaction-level dataset from Gingr POS.
-      - name: gingr_pos_transaction_items_audit
-        description: Audit layer records for Gingr POS item-level changes.
-      - name: gingr_account_codes
-        description: Account mapping reference from Gingr to financial reporting.
-      - name: gingr_pos_transaction_items
-        description: Item-level dataset from Gingr POS transactions.
       - name: wagway_location_capacity_mapping
         description: Mapping between business locations and capacity attributes.
       - name: netsuite_coa

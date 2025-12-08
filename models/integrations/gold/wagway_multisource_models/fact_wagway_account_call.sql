@@ -1,7 +1,7 @@
 {{ config(
     database = get_target_database('wagway'),
     materialized = 'table',
-    alias = 'FACT_RINGCENTRAL'
+    alias = 'FACT_WAGWAY_ACCOUNT_CALL_LOG'
 ) }}
 
 ----------------------------------------------------------
@@ -51,7 +51,7 @@ cte2 AS (
     SELECT DISTINCT
         a.id,
         a.start_time,
-        DAYNAME(a.start_time) AS week_day,
+        UPPER(DAYNAME(a.start_time)) AS week_day,
         a.duration,
         a.duration_ms,
         a.type,
@@ -152,7 +152,6 @@ cte2 AS (
             WHEN DATE(g.acquisition_date) < DATE(a.start_time) THEN 'Existing Customers'
             ELSE 'Leads'
         END AS new_customer_flag,
-
         RANK() OVER (PARTITION BY a.id ORDER BY g.acquisition_date DESC) AS rnk
 
     FROM {{ get_silver_source('wagway', 'ringcentral_account_call_log') }} a
@@ -235,7 +234,8 @@ SELECT DISTINCT
           AND TO_TIMESTAMP(h.create_stamp) >= a.start_time
           AND TO_TIMESTAMP(h.create_stamp) <= DATEADD(day, 7, a.start_time)
           AND h.delete_indicator = 0
-    ) AS service_cnt_gingr_nxt_7days
+    ) AS service_cnt_gingr_nxt_7days,
+    CONVERT_TIMEZONE('Asia/Kolkata', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS LAST_REFRESH_DATE
 
 FROM cte2 a
 WHERE rnk = 1
