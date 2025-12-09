@@ -200,7 +200,7 @@ SELECT
         THEN m.christmas_capacity
         ELSE 0
     END AS christmas_capacity,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
+    CONVERT_TIMEZONE('Asia/Kolkata', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS LAST_REFRESH_DATE
 
 FROM dates d
 LEFT JOIN special_date sd 
