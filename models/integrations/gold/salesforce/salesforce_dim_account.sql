@@ -3,8 +3,10 @@
 {{ config(enabled = var('company', 'none') == 'zeus') }}
 
 {{ config(
+    enabled = false,
     database = get_target_database(company),
     materialized = 'incremental',
+    alias = 'dim_account',
     incremental_strategy = 'merge',
     unique_key = 'ID_DATE_KEY'
 ) }}
