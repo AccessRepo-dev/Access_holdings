@@ -92,8 +92,9 @@ ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
  {% if company == 'spotless' %}
     WHERE e.BATCHTITLE not in ('VIE Depreciation & Amortization','record VIE transactions')
     AND LOCATIONKEY <> 492
+{% elif company == 'amh' %}
+    WHERE NOT (e.BATCHTITLE  ILIKE '%Elimination Entry Rev and Exp%' and e.LOCATIONKEY=144 AND CAST(COALESCE(acc.ACCOUNTNO,E.ACCOUNTNO) AS VARCHAR) IN (20000,23005))
 {% endif %}
-
 ),
 adjustments AS (
     SELECT
