@@ -16,7 +16,6 @@ select
     a.CREATION_TIME,
     CONVERT_TIMEZONE('Asia/Kolkata', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS LAST_REFRESH_DATE
 
-from {{ ref('ringcentral_message') }} a
-left join {{ ref('ringcentral_message_to') }} b
-    on a.id = b.message_id
+from {{ get_silver_source('wagway', 'ringcentral_message') }} a
+left join {{ get_silver_source('wagway', 'ringcentral_message_to') }} b
 where a.type = 'SMS'
