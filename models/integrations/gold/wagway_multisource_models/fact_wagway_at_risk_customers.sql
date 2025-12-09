@@ -79,9 +79,7 @@ SELECT
         WHEN i.days_since_invoice > a.avg_days_between_invoices THEN TRUE
         ELSE FALSE
     END AS is_at_risk,
-    CONVERT_TIMEZONE('Asia/Kolkata', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS LAST_REFRESH_DATE
-
-
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
 FROM intervals i
 LEFT JOIN avg_calc a
     ON a.owner_id = i.owner_id

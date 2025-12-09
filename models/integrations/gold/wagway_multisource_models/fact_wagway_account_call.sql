@@ -1,7 +1,7 @@
 {{ config(
     database = get_target_database('wagway'),
     materialized = 'table',
-    alias = 'FACT_WAGWAY_ACCOUNT_CALL_LOG'
+    alias = 'FACT_RINGCENTRAL'
 ) }}
 
 ----------------------------------------------------------
@@ -36,7 +36,7 @@ WITH cte1 AS (
             )
         END AS clean_number,
         a.id AS owner_id,
-        MIN(CONVERT_TIMEZONE('America/New_York', b.create_stamp) ) OVER (PARTITION BY b.owner_id) AS acquisition_date
+        MIN(b.create_stamp) OVER (PARTITION BY b.owner_id) AS acquisition_date
     FROM {{ get_silver_source('wagway', 'gingr_owners') }} a
     INNER JOIN {{ get_silver_source('wagway', 'gingr_pos_transactions') }} b
         ON a.id = b.owner_id
@@ -50,8 +50,8 @@ WITH cte1 AS (
 cte2 AS (
     SELECT DISTINCT
         a.id,
-        CONVERT_TIMEZONE('America/New_York', a.start_time) AS start_time,
-        UPPER(DAYNAME(DATE(CONVERT_TIMEZONE('America/New_York', a.start_time)))) AS week_day,
+        a.start_time,
+        DAYNAME(a.start_time) AS week_day,
         a.duration,
         a.duration_ms,
         a.type,
@@ -139,19 +139,20 @@ cte2 AS (
             THEN 1 ELSE 0
         END AS forwarded,
 
-        /*MIN(e.property_club_c) OVER (
+        MIN(e.property_club_c) OVER (
             PARTITION BY property_phone_number
             ORDER BY f.property_createdate
-        ) AS property_club_c,*/
+        ) AS property_club_c,
 
         g.owner_id AS customer_id,
         g.acquisition_date,
 
         CASE
-            WHEN DATE(g.acquisition_date) = DATE(CONVERT_TIMEZONE('America/New_York', a.start_time)) THEN 'New Customers'
-            WHEN DATE(g.acquisition_date) < DATE(CONVERT_TIMEZONE('America/New_York', a.start_time)) THEN 'Existing Customers'
-            ELSE 'Leads'
+            WHEN DATE(g.acquisition_date) = DATE(a.start_time) THEN 'New Customer'
+            WHEN DATE(g.acquisition_date) < DATE(a.start_time) THEN 'Existing Customer'
+            ELSE NULL
         END AS new_customer_flag,
+
         RANK() OVER (PARTITION BY a.id ORDER BY g.acquisition_date DESC) AS rnk
 
     FROM {{ get_silver_source('wagway', 'ringcentral_account_call_log') }} a
@@ -205,8 +206,8 @@ SELECT DISTINCT
             ON h.id = g.pos_transaction_id
            AND g.delete_indicator = 0
         WHERE a.customer_id = h.owner_id
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp)  >= CONVERT_TIMEZONE('America/New_York', a.start_time) 
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp) <= DATEADD(day, 7, CONVERT_TIMEZONE('America/New_York', a.start_time) )
+          AND TO_TIMESTAMP(h.create_stamp) >= a.start_time
+          AND TO_TIMESTAMP(h.create_stamp) <= DATEADD(day, 7, a.start_time)
           AND h.delete_indicator = 0
     ) AS revenue_from_gingr_7,
 
@@ -218,8 +219,8 @@ SELECT DISTINCT
             ON h.id = g.pos_transaction_id
            AND g.delete_indicator = 0
         WHERE a.customer_id = h.owner_id
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp)  >= CONVERT_TIMEZONE('America/New_York', a.start_time) 
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp) <= DATEADD(day, 7, CONVERT_TIMEZONE('America/New_York', a.start_time) )
+          AND TO_TIMESTAMP(h.create_stamp) >= a.start_time
+          AND TO_TIMESTAMP(h.create_stamp) <= DATEADD(day, 7, a.start_time)
           AND h.delete_indicator = 0
     ) AS transaction_from_gingr_7,
 
@@ -231,11 +232,10 @@ SELECT DISTINCT
             ON h.id = g.pos_transaction_id
            AND g.delete_indicator = 0
         WHERE a.customer_id = h.owner_id
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp) >= CONVERT_TIMEZONE('America/New_York', a.start_time) 
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp) <= DATEADD(day, 7, CONVERT_TIMEZONE('America/New_York', a.start_time) )
+          AND TO_TIMESTAMP(h.create_stamp) >= a.start_time
+          AND TO_TIMESTAMP(h.create_stamp) <= DATEADD(day, 7, a.start_time)
           AND h.delete_indicator = 0
-    ) AS service_cnt_gingr_nxt_7days,
-    CONVERT_TIMEZONE('Asia/Kolkata', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS LAST_REFRESH_DATE
+    ) AS service_cnt_gingr_nxt_7days
 
 FROM cte2 a
 WHERE rnk = 1
