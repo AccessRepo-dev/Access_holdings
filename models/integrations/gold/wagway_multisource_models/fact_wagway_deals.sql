@@ -264,8 +264,6 @@ CTE_DEAL_STAGE AS
                 THEN fe.property_invoice_id 
             ELSE NULL 
         END AS max_revenue_invoice_id,
-        FIRST_VALUE(fe.service_type) OVER (PARTITION BY fe.contact_id ORDER BY fe.property_hs_projected_amount DESC NULLS LAST, fe.property_closedate) AS lead_service_type,
-        FIRST_VALUE(fe.service_type) OVER (PARTITION BY fe.contact_id ORDER BY fe.property_hs_projected_amount DESC NULLS LAST, fe.property_closedate) AS lead_sk_location_id,
         ds.label,
         ds.probability,
 		CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
@@ -274,39 +272,5 @@ CTE_DEAL_STAGE AS
         ON fe.deal_pipeline_stage_id = ds.stage_id
 )
 
-SELECT DISTINCT
-      DEAL_ID,
-      PROPERTY_DEALNAME,
-      CONTACT_ID,
-      PROPERTY_AMOUNT,
-      DEAL_PIPELINE_ID,
-      DEAL_PIPELINE_STAGE_ID,
-      PROPERTY_HS_IS_CLOSED_WON,
-      CONVERT_TIMEZONE('America/New_York', PROPERTY_CLOSEDATE) AS PROPERTY_CLOSEDATE,
-      CONVERT_TIMEZONE('America/New_York', PROPERTY_CREATEDATE) AS PROPERTY_CREATEDATE,
-      OWNER_ID,
-      PHONE_NUMBER,
-      PROPERTY_HS_ALL_OWNER_IDS,
-      PROPERTY_DEALTYPE,
-      PROPERTY_HS_FORECAST_AMOUNT,
-      PROPERTY_HS_DEAL_STAGE_PROBABILITY,
-      PROPERTY_DESCRIPTION,
-      SK_LOCATION_ID,
-      SERVICE_CATEGORY,
-      PROPERTY_HS_PROJECTED_AMOUNT,
-      PROPERTY_INVOICE_ID,
-      COMPANY,
-      SERVICE_TYPE,
-      GROUPED_SERVICE_TYPE,
-      ACQUISITION_DATE,
-      CONTACT_DATE,
-      MAX_REVENUE_INVOICE_ID,
-      LABEL,
-      LEAD_SERVICE_TYPE,
-      LEAD_SK_LOCATION_ID,
-      PROBABILITY,
-      CONVERT_TIMEZONE('Asia/Kolkata', PROPERTY_CLOSEDATE) AS PROPERTY_CLOSEDATE_IND,
-      CONVERT_TIMEZONE('Asia/Kolkata', PROPERTY_CREATEDATE) AS PROPERTY_CREATEDATE_IND,
-      CONVERT_TIMEZONE('Asia/Kolkata', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS LAST_REFRESH_DATE
-      
+SELECT DISTINCT *
 FROM cte2

@@ -1,10 +1,10 @@
-{% set company = var('company','wagway') %}
-{% set sourcesystem = var('sourcesystem','gingr') %}
+{% set company = var('company') %}
+{% set sourcesystem = var('sourcesystem') %}
 
-{{ config(enabled =  (var('sourcesystem','gingr')| lower) == 'gingr') }}
+{{ config(enabled = (var('company') | lower) ==  'wagway' and (var('sourcesystem')| lower) == 'gingr') }}
 
 {{ config(
-    database=get_target_database(var('company','wagway')),
+    database=get_target_database(var('company')),
     materialized = 'table',
     unique_key = ['ID','SOURCE_DB']
 ) }}
@@ -24,6 +24,7 @@ cleaned as
 	TRIM(LABEL) AS LABEL,
 	CAST(PARENT_ID AS INT) AS PARENT_ID,
 	CAST(TRIM(IS_DELETED) AS BOOLEAN) AS IS_DELETED,
+	TRIM(MD5_HASH) AS MD5_HASH,
 	CAST(TRIM(ODS_LAST_UPDATE_DATE) AS TIMESTAMP_NTZ) AS ODS_LAST_UPDATE_DATE,
 	TRIM(DELETE_INDICATOR) AS DELETE_INDICATOR,
 	CAST(TRIM(_FIVETRAN_DELETED) AS BOOLEAN) AS _FIVETRAN_DELETED,

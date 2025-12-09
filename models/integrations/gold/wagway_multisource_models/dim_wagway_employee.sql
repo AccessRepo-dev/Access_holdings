@@ -39,7 +39,7 @@ SELECT DISTINCT
       rng.id AS emp_extension_id,
       rng_phn.phone_number AS emp_phone_number,
       rng.site_name AS emp_location,
-      CONVERT_TIMEZONE('Asia/Kolkata', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS LAST_REFRESH_DATE
+      CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
 
 FROM email_all ded
 

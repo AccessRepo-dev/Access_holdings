@@ -1,10 +1,10 @@
-{% set company = var('company', 'wagway') | lower %}
-{% set sourcesystem  = var('sourcesystem', 'ringcentral') | lower %}
+{% set company = var('company') %}
+{% set sourcesystem = var('sourcesystem') %}
 
-{{ config(enabled = var('sourcesystem', 'ringcentral') == 'ringcentral') }}
+{{ config(enabled =(var('company') | lower) ==  'wagway' and (var('sourcesystem')| lower) =='ringcentral') }}
 
 {{ config(
-    database=get_target_database(var('company','wagway')),
+    database=get_target_database(var('company')),
     materialized = 'table',
     unique_key = ['MESSAGE_ID', '_FIVETRAN_ID']
 ) }}

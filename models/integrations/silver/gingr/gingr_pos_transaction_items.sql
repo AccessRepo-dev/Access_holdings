@@ -1,10 +1,13 @@
-{% set company = var('company','wagway') %}
-{% set sourcesystem = var('sourcesystem','gingr') %}
-
-{{ config(enabled =  (var('sourcesystem','gingr')| lower) == 'gingr') }}
+{% set company = var('company') %}
+{% set sourcesystem = var('sourcesystem') %}
 
 {{ config(
-    database = get_target_database(var('company','wagway')),
+    enabled = (var('company') | lower) == 'wagway'
+        and (var('sourcesystem') | lower) == 'gingr'
+) }}
+
+{{ config(
+    database = get_target_database(var('company')),
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = ['ID','SOURCE_DB']
@@ -51,6 +54,7 @@ cleaned as
         CAST(TYPE_ID AS INT) AS TYPE_ID,
         CAST(ACCOUNT_CODE_ID AS INT) AS ACCOUNT_CODE_ID,
         CAST(VOID_ID AS INT) AS VOID_ID,
+        TRIM(MD5_HASH) AS MD5_HASH,
         TRIM(DELETE_INDICATOR) AS DELETE_INDICATOR,
         CAST(TRIM(_FIVETRAN_DELETED) AS BOOLEAN) AS _FIVETRAN_DELETED,
         CAST(TRIM(_FIVETRAN_SYNCED) AS TIMESTAMP_TZ) AS _FIVETRAN_SYNCED,
