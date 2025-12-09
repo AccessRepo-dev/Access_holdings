@@ -1,58 +1,73 @@
-{{ config(
-    database = get_target_database('wagway'),
-    materialized = 'table',
-    alias = 'FACT_WAGWAY_TRANSACTION'
-) }}
+{{
+    config(
+        database=get_target_database("wagway"),
+        materialized="table",
+        alias="FACT_WAGWAY_TRANSACTION",
+    )
+}}
 
-SELECT
-    a.pos_transaction_id AS invoice_id,
+select
+    a.pos_transaction_id as invoice_id,
     a.source_db,
-    a.price AS service_price,
+    a.price as service_price,
     a.account_code_id,
     b.owner_id,
     b.total,
     b.payment_amount,
-    CONVERT_TIMEZONE('America/New_York', b.create_stamp) AS order_date,
-    CONCAT(b.location_id, '-', b.source_db) AS sk_location_id,
+    convert_timezone('America/New_York', b.create_stamp) as order_date,
+    concat(b.location_id, '-', b.source_db) as sk_location_id,
 
-    MIN(CONVERT_TIMEZONE('America/New_York', b.create_stamp)) OVER (PARTITION BY b.owner_id) AS acquisition_date,
+    min(convert_timezone('America/New_York', b.create_stamp)) over (
+        partition by b.owner_id
+    ) as acquisition_date,
 
-    DATEDIFF(
+    datediff(
         month,
-        MIN(CONVERT_TIMEZONE('America/New_York', b.create_stamp)) OVER (PARTITION BY b.owner_id),
-        CONVERT_TIMEZONE('America/New_York', b.create_stamp)
-    ) AS months_since_acquisition,
+        min(convert_timezone('America/New_York', b.create_stamp)) over (
+            partition by b.owner_id
+        ),
+        convert_timezone('America/New_York', b.create_stamp)
+    ) as months_since_acquisition,
 
-    DATEDIFF(
+    datediff(
         month,
-        LAG(CONVERT_TIMEZONE('America/New_York', b.create_stamp)) OVER (PARTITION BY b.owner_id ORDER BY CONVERT_TIMEZONE('America/New_York', b.create_stamp)),
-        CONVERT_TIMEZONE('America/New_York', b.create_stamp)
-    ) AS diff_between_orders,
+        lag(convert_timezone('America/New_York', b.create_stamp)) over (
+            partition by b.owner_id
+            order by convert_timezone('America/New_York', b.create_stamp)
+        ),
+        convert_timezone('America/New_York', b.create_stamp)
+    ) as diff_between_orders,
 
-    MAX(CONVERT_TIMEZONE('America/New_York', b.create_stamp)) OVER (PARTITION BY b.owner_id) AS last_order_date,
+    max(convert_timezone('America/New_York', b.create_stamp)) over (
+        partition by b.owner_id
+    ) as last_order_date,
     c.code,
-    
-    CASE
-        WHEN d.cancel_stamp IS NOT NULL
-            THEN 'Cancelled'
-        WHEN d.confirmed_stamp IS NOT NULL
-            THEN 'Confirmed'
-        WHEN d.wait_list_stamp IS NOT NULL
-            THEN 'Waitlisted'
-        ELSE 'Waitlisted'
-    END AS current_status,
 
-    CONVERT_TIMEZONE('Asia/Kolkata', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS LAST_REFRESH_DATE
-    
-FROM {{ ref('gingr_pos_transaction_items') }} a
-LEFT JOIN {{ ref('gingr_pos_transactions') }}  b
-    ON CONCAT(a.pos_transaction_id, a.source_db) = CONCAT(b.id, b.source_db)
-    AND b.delete_indicator = 0
-LEFT JOIN {{ ref('gingr_account_codes') }} c
-    ON CONCAT(a.account_code_id, a.source_db) = CONCAT(c.id, c.source_db)
-    AND c.delete_indicator = 0
-LEFT JOIN {{ ref('gingr_reservations') }}
-    ON CONCAT(a.pos_transaction_id, a.source_db) = CONCAT(d.id, d.source_db)
-    AND d.delete_indicator = 0
-WHERE b.total = b.payment_amount
-  AND a.delete_indicator = 0
+    case
+        when d.cancel_stamp is not null
+        then 'Cancelled'
+        when d.confirmed_stamp is not null
+        then 'Confirmed'
+        when d.wait_list_stamp is not null
+        then 'Waitlisted'
+        else 'Waitlisted'
+    end as current_status,
+
+    convert_timezone(
+        'Asia/Kolkata', current_timestamp()::timestamp_ntz
+    ) as last_refresh_date
+
+from {{ ref("gingr_pos_transaction_items") }} a
+left join
+    {{ ref("gingr_pos_transactions") }} b
+    on concat(a.pos_transaction_id, a.source_db) = concat(b.id, b.source_db)
+    and b.delete_indicator = 0
+left join
+    {{ ref("gingr_account_codes") }} c
+    on concat(a.account_code_id, a.source_db) = concat(c.id, c.source_db)
+    and c.delete_indicator = 0
+left join
+    {{ ref("gingr_reservations") }} d
+    on concat(a.pos_transaction_id, a.source_db) = concat(d.id, d.source_db)
+    and d.delete_indicator = 0
+where b.total = b.payment_amount and a.delete_indicator = 0

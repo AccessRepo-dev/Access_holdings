@@ -1,52 +1,52 @@
-LOCATION,CODE
-Alec Staples,Alec Staples
-Bri Robb,Bri Robb
-Carly Newman,Carly Newman
-Christine Parisi,Christine Parisi
-Devan Reed,Devan Reed
-Dobro Club,DoBro Club
-Dylan Feulner,Dylan Feulner
-Elisa Giorgi,Elisa Giorgi
-Elise Roeder,Elise Roeder
-Emily Donado,Emily Donado
-Evan Sievers,Evan Sievers
-Frankie Jackson,Frankie Jackson
-Gold Coast Club,Gold Coast Club
-Harley Donegan,Harley Donegan
-Isaac Martinez,Isaac Martinez
-IT Service Account,IT Service Account
-Jenn Rhodes,Jenn Rhodes
-Jill Brown,Jill Brown
-Lakeshore East Club,Lakeshore
-Lakeview Club,Lakeview Club
-Lindsey Beckner,Lindsey Beckner
-Liz Silberman,Liz Silberman
-Luis Hernandez,Luis Hernandez
-Madalyn Royce,Madalyn Royce
-Maddisen Daly,Maddisen Daly
-Marisa Cascio,Marisa Cascio
-Matt Johl,Matt Johl
-Matthew Walsh,Matthew Walsh
-Maya McKnight,Maya McKnight
-Mika Carpenter,Mika Carpenter
-Pawville Citrus,Citrus
-Pawville Scotts Hill,Scotts Hill
-PUPS Dobro Club,DoBro Club
-PUPS Gold Coast,Gold Coast Club
-PUPS Lakeshore East,Lakeshore
-PUPS Lakeview Club,Lakeview Club
-PUPS River North,River North Club
-PUPS South Loop,South Loop Club
-PUPS Streeterville,Streeterville Club
-PUPS Wicker Park,Wicker Park Club
-PUPS Williamsburg,Williamsburg Club
-Raymond Steele,Raymond Steele
-Riley Simpson,Riley Simpson
-River North Club,River North Club
-Ryan Topf,Ryan Topf
-Samantha Wallace,Samantha Wallace
-Sarah Mahoney,Sarah Mahoney
-South Loop Club,South Loop Club
-Streeterville Club,Streeterville Club
-Wicker Park Club,Wicker Park Club
-Williamsburg Club,Williamsburg Club
+LOCATION,CODE,Company
+Alec Staples,Alec Staples,Main Site
+Bri Robb,Bri Robb,Main Site
+Carly Newman,Carly Newman,Main Site
+Christine Parisi,Christine Parisi,Main Site
+Devan Reed,Devan Reed,Main Site
+Dobro Club,DoBro Club,PUPS Pet Club
+Dylan Feulner,Dylan Feulner,Main Site
+Elisa Giorgi,Elisa Giorgi,Main Site
+Elise Roeder,Elise Roeder,Main Site
+Emily Donado,Emily Donado,Main Site
+Evan Sievers,Evan Sievers,Main Site
+Frankie Jackson,Frankie Jackson,Main Site
+Gold Coast Club,Gold Coast Club,PUPS Pet Club
+Harley Donegan,Harley Donegan,Main Site
+Isaac Martinez,Isaac Martinez,Main Site
+IT Service Account,IT Service Account,Main Site
+Jenn Rhodes,Jenn Rhodes,Main Site
+Jill Brown,Jill Brown,Main Site
+Lakeshore East Club,Lakeshore,PUPS Pet Club
+Lakeview Club,Lakeview Club,PUPS Pet Club
+Lindsey Beckner,Lindsey Beckner,Main Site
+Liz Silberman,Liz Silberman,Main Site
+Luis Hernandez,Luis Hernandez,Main Site
+Madalyn Royce,Madalyn Royce,Main Site
+Maddisen Daly,Maddisen Daly,Main Site
+Marisa Cascio,Marisa Cascio,Main Site
+Matt Johl,Matt Johl,Main Site
+Matthew Walsh,Matthew Walsh,Main Site
+Maya McKnight,Maya McKnight,Main Site
+Mika Carpenter,Mika Carpenter,Main Site
+Pawville Citrus,Citrus,Pawville
+Pawville Scotts Hill,Scotts Hill,Pawville
+PUPS Dobro Club,DoBro Club,PUPS Pet Club
+PUPS Gold Coast,Gold Coast Club,PUPS Pet Club
+PUPS Lakeshore East,Lakeshore,PUPS Pet Club
+PUPS Lakeview Club,Lakeview Club,PUPS Pet Club
+PUPS River North,River North Club,PUPS Pet Club
+PUPS South Loop,South Loop Club,PUPS Pet Club
+PUPS Streeterville,Streeterville Club,PUPS Pet Club
+PUPS Wicker Park,Wicker Park Club,PUPS Pet Club
+PUPS Williamsburg,Williamsburg Club,PUPS Pet Club
+Raymond Steele,Raymond Steele,Main Site
+Riley Simpson,Riley Simpson,Main Site
+River North Club,River North Club,PUPS Pet Club
+Ryan Topf,Ryan Topf,Main Site
+Samantha Wallace,Samantha Wallace,Main Site
+Sarah Mahoney,Sarah Mahoney,Main Site
+South Loop Club,South Loop Club,PUPS Pet Club
+Streeterville Club,Streeterville Club,PUPS Pet Club
+Wicker Park Club,Wicker Park Club,PUPS Pet Club
+Williamsburg Club,Williamsburg Club,PUPS Pet Club

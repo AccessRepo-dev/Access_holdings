@@ -1,13 +1,10 @@
-{% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') %}
+{% set company = var('company', 'wagway') | lower %}
+{% set sourcesystem  = var('sourcesystem', 'ringcentral') | lower %}
+
+{{ config(enabled =(var('sourcesystem','ringcentral')| lower) =='ringcentral') }}
 
 {{ config(
-    enabled = (var('company') | lower) == 'wagway'
-        and (var('sourcesystem') | lower) == 'ringcentral'
-) }}
-
-{{ config(
-    database = get_target_database(var('company')),
+    database = get_target_database(var('company','wagway')),
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'ID'
