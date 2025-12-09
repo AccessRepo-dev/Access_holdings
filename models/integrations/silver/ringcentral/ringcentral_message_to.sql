@@ -1,7 +1,7 @@
 {% set company = var('company', 'wagway') | lower %}
 {% set sourcesystem  = var('sourcesystem', 'ringcentral') | lower %}
 
-{{ config(enabled = var('sourcesystem', 'ringcentral') == 'ringcentral') }}
+{{ config(enabled =(var('sourcesystem','ringcentral')| lower) =='ringcentral') }}
 
 {{ config(
     database=get_target_database(var('company','wagway')),
