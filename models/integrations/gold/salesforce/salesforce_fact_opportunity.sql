@@ -21,6 +21,7 @@ with hashed as (
         CLOSE_DATE,
         IS_CLOSED,
         IS_WON,
+        PROBABILITY,
         DBT_VALID_FROM,
         DBT_VALID_TO,
         md5(
@@ -41,11 +42,12 @@ with hashed as (
         ID as OPPORTUNITY_ID,
         ACCOUNT_ID,
         OWNER_ID,
-        STAGE_NAME as OLD_STAGE,
+        STAGE_NAME,
         INSTALL_AMOUNT_C as AMOUNT,
         CLOSE_DATE,
         IS_CLOSED,
         IS_WON,
+        PROBABILITY,
         min(DBT_VALID_FROM) over (partition by ID, attr_hash) as DBT_VALID_FROM,
         case 
             when max(case when DBT_VALID_TO is null then 1 else 0 end) 
