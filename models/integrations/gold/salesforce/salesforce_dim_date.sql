@@ -1,7 +1,10 @@
 {% set company = var('company', 'unknown_company') | lower %}
+{{ config(enabled = var('sourcesystem', 'none') == 'salesforce') }}
+{{ config(enabled = var('company', 'none') == 'zeus') }}
+
 
 {{ config(
-    enabled = var('sourcesystem', 'none') == 'salesforce',
+    enabled=false,
     database = get_target_database(company),
     materialized = 'incremental',
     alias = 'dim_date',

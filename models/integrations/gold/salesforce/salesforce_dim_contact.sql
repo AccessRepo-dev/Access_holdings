@@ -3,6 +3,7 @@
 {{ config(enabled = var('company', 'none') == 'zeus') }}
 
 {{ config(
+    enabled=false,
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',

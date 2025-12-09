@@ -60,3 +60,12 @@ sources:
     - name: SALESFORCE_TASK
     - name: SALESFORCE_CAMPAIGN
     - name: SALESFORCE_QUOTE_LINE_ITEM
+    - name: zeus_OPPORTUNITY_STAGE_MAPPING
+
+
+  - name: zeus_gold
+    database: "{{ env_var('DBT_ZEUS') }}"     
+    schema: GOLD        
+    tables:
+    - name: SALESFORCE_FACT_OPPORTUNITY
+    - name: SALESFORCE_DIM_OPPORTUNITY

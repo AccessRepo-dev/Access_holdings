@@ -4,28 +4,59 @@
 
 {{ config(
     database = get_target_database(company),
+    alias = 'fact_opportunity',
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'ID_DATE_KEY'
 ) }}
 
-with source as (
 
+with hashed as (
     select
-        op.ID_DATE_KEY,
-        op.id as OPPORTUNITY_ID,
-        ac.ACCOUNT_ID,
-        u.ID AS USER_ID,
-        op.STAGE_NAME,
-        CAST(op.AMOUNT AS NUMBER) AS AMOUNT,
-        op.IS_ACTIVE,
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    FROM {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}  as op
-    LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }} as ac
-        ON op.account_id=ac.account_id AND ac.IS_ACTIVE = 1
-    LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_USER') }} u 
-        ON op.owner_id = u.id AND u.IS_ACTIVE = 1
+        ID,
+        ACCOUNT_ID,
+        STAGE_NAME,
+        INSTALL_AMOUNT_C,
+        OWNER_ID,
+        CLOSE_DATE,
+        IS_CLOSED,
+        IS_WON,
+        DBT_VALID_FROM,
+        DBT_VALID_TO,
+        md5(
+            coalesce(STAGE_NAME,'') || '|' ||
+            coalesce(ACCOUNT_ID,'') || '|' ||
+            coalesce(INSTALL_AMOUNT_C::string,'') || '|' ||
+            coalesce(OWNER_ID,'') || '|' ||
+            coalesce(CLOSE_DATE::string,'') || '|' ||
+            coalesce(IS_WON::string,'') || '|' ||
+            coalesce(IS_CLOSED,'')
+        ) as attr_hash
+    from {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}
 
 )
-select *
-from source
+, scd2 as (
+    select
+        CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
+        ID as OPPORTUNITY_ID,
+        ACCOUNT_ID,
+        OWNER_ID,
+        STAGE_NAME as OLD_STAGE,
+        INSTALL_AMOUNT_C as AMOUNT,
+        CLOSE_DATE,
+        IS_CLOSED,
+        IS_WON,
+        min(DBT_VALID_FROM) over (partition by ID, attr_hash) as DBT_VALID_FROM,
+        case 
+            when max(case when DBT_VALID_TO is null then 1 else 0 end) 
+                    over (partition by ID, attr_hash) = 1
+            then null
+            else max(DBT_VALID_TO) over (partition by ID, attr_hash)
+        end as DBT_VALID_TO,
+        max(case when DBT_VALID_TO is null then 1 else 0 end) 
+            over (partition by ID, attr_hash) as IS_ACTIVE,
+        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
+    from hashed
+    qualify row_number() over (partition by ID, attr_hash order by DBT_VALID_FROM) = 1
+)
+select * from scd2
