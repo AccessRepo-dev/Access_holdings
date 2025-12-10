@@ -45,6 +45,8 @@ where a.is_active = 1
 
 UNION ALL
 
+{% if company == 'wagway'%} 
+
 select
     distinct
         md5(
@@ -62,3 +64,5 @@ select
     LEFT JOIN deal_contacts_pawville B ON A.DEAL_ID = B.DEAL_ID
     LEFT JOIN {{ get_silver_source(company, "HUBSPOT_PAWVILLE_CONTACT") }} C ON c.id = B.contact_id and c.is_active = 1
 where a.is_active = 1
+
+{% endif %}
