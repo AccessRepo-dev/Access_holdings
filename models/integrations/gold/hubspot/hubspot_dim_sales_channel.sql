@@ -1,4 +1,4 @@
-{% set company = var("company") %}
+{% set company = var("company", "wagway") %}
 {{ config(enabled=var("sourcesystem", "hubspot") in ["hubspot", "hubspot_pawville"]) }}
 {{ config(enabled=var("company", "wagway") in ["wagway"]) }}
 {{
