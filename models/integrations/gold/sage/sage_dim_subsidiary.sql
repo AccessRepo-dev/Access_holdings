@@ -21,9 +21,10 @@ with source as (
         L.STATUS AS IS_INACTIVE,
         L.PARENTKEY AS PARENT_ID,
         L.WHENMODIFIED AS LAST_MODIFIED_DATE
-
+       
     FROM {{ ref('sage_location') }} AS L
     LEFT JOIN {{ ref('sage_location_entity') }} AS LE ON L.LOCATIONID = LE.LOCATIONID
+    WHERE  (L._FIVETRAN_DELETED  IS NULL OR  L._FIVETRAN_DELETED  = FALSE)
 )
 SELECT *
 FROM source

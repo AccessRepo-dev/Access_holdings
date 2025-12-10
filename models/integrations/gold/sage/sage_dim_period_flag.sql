@@ -15,7 +15,8 @@ with source as (
         RECORDNO AS DIM_PERIOD_ID,
         START_DATE
     FROM {{ ref('sage_reporting_period') }}
-    WHERE LOWER(SPLIT_PART(NAME, ' ', 3)) IN 
+    WHERE  _FIVETRAN_DELETED = FALSE OR _FIVETRAN_DELETED IS NULL  
+    AND LOWER(SPLIT_PART(NAME, ' ', 3)) IN 
     (
         'january','february','march','april','may','june',
         'july','august','september','october','november','december'

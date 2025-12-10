@@ -21,9 +21,9 @@ with source as (
         WHENMODIFIED AS LAST_MODIFIED_DATE
 
     FROM {{ ref('sage_reporting_period') }}
-    
+    WHERE (_FIVETRAN_DELETED = FALSE OR _FIVETRAN_DELETED IS NULL )
     {% if is_incremental() %}
-    WHERE WHENMODIFIED > (
+    AND WHENMODIFIED > (
         SELECT coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         FROM {{ this }}
     )

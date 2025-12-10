@@ -14,7 +14,7 @@ with source as (
         ISINACTIVE AS IS_INACTIVE
          
     from {{ref('netsuite_budgetcategory')}}
-   
+    WHERE (_FIVETRAN_DELETED = FALSE OR _FIVETRAN_DELETED IS NULL) 
 )
 
 select *
