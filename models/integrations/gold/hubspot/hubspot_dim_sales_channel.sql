@@ -29,6 +29,8 @@ select
 
 UNION ALL
 
+{% if company == 'wagway'%} 
+
 select
     distinct
         md5(   
@@ -42,3 +44,5 @@ select
         'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL") }} A
+
+{% endif %}
