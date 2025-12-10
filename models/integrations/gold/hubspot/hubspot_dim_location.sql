@@ -1,6 +1,6 @@
 {% set company = var("company") %}
 {{ config(enabled=var("sourcesystem", "hubspot") in ["hubspot", "hubspot_pawville"]) }}
-{{ config(enabled=var("company", "wagway") in ["wagway", "playfly", "amh"]) }}
+{{ config(enabled=var("company", "wagway") in ["wagway"]) }}
 {{
     config(
         database=get_target_database(company),
@@ -16,14 +16,18 @@ with deal_contacts as (
         FROM {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }}
         where is_active = 1
         group by 1
-        ),
+        )
 
-        deal_contacts_pawville as (
+{% if company == 'wagway'%} 
+        
+        ,deal_contacts_pawville as (
         SELECT distinct deal_id, max(contact_id) as contact_id
         FROM {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_CONTACT") }}
         where is_active = 1
         group by 1
         )
+
+{% endif %}
 
 select
     distinct
