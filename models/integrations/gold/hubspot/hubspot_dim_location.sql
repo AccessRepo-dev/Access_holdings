@@ -4,7 +4,7 @@
 {{
     config(
         database=get_target_database(company),
-        alias="dim_location",
+        alias="dim_crm_location",
         materialized="incremental",
         incremental_strategy="merge",
         unique_key="ID_DATE_KEY",
