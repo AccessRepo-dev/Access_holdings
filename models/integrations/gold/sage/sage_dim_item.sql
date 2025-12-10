@@ -50,8 +50,9 @@ with source as (
 
     from {{ ref('sage_item') }}
     
+    WHERE  (_FIVETRAN_DELETED = FALSE OR _FIVETRAN_DELETED IS NULL) 
     {% if is_incremental() %}
-    where WHENMODIFIED > (
+    AND WHENMODIFIED > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         from {{ this }}
     )

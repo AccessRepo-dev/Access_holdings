@@ -23,9 +23,9 @@ with source as (
 
     FROM {{ ref('sage_location') }} l
     LEFT JOIN {{ ref('sage_location_entity') }} le ON l.ENTITY = le.LOCATIONID 
-    
+    WHERE  (l._FIVETRAN_DELETED = FALSE OR l._FIVETRAN_DELETED IS NULL) 
     {% if is_incremental() %}
-    where l.WHENMODIFIED > (
+    AND l.WHENMODIFIED > (
         SELECT coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         FROM {{ this }}
     )

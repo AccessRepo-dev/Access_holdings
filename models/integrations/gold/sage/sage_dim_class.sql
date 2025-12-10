@@ -22,7 +22,7 @@ with source as (
         WHENMODIFIED AS LAST_MODIFIED_DATE
     from {{ref('sage_class')}}
     
-    where 1=1
+    where (_FIVETRAN_DELETED = FALSE OR _FIVETRAN_DELETED IS NULL) 
 
     {% if is_incremental() %}
         and WHENMODIFIED > (
