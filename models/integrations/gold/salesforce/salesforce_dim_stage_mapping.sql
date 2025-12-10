@@ -14,6 +14,6 @@
 SELECT 
     STAGE_NAME, 
     MAPPED_STAGE_NAME, 
-    sort_order as STAGE_ORDER,
+    CAST(sort_order as INT) as STAGE_ORDER,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
 FROM {{ get_silver_source(company, company ~ '_OPPORTUNITY_STAGE_MAPPING') }}
