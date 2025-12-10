@@ -13,7 +13,7 @@ with source as (
         NAME,
         {% if company == 'playfly'%}
         CASE 
-            WHEN NAME = 'SOH Canada'
+            WHEN NAME IN ('Legacy','SOH Canada')
             THEN 'Budget' ELSE  NAME 
         END AS GROUPED_HEADER,
         {%else%}
