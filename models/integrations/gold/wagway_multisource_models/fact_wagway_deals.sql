@@ -1,3 +1,5 @@
+{% set company = var("company","wagway") %}
+
 {{ config(
     database = get_target_database('wagway'),
     materialized = 'table',
@@ -265,7 +267,7 @@ CTE_DEAL_STAGE AS
             ELSE NULL 
         END AS max_revenue_invoice_id,
         FIRST_VALUE(fe.service_type) OVER (PARTITION BY fe.contact_id ORDER BY fe.property_hs_projected_amount DESC NULLS LAST, fe.property_closedate) AS lead_service_type,
-        FIRST_VALUE(fe.service_type) OVER (PARTITION BY fe.contact_id ORDER BY fe.property_hs_projected_amount DESC NULLS LAST, fe.property_closedate) AS lead_sk_location_id,
+        FIRST_VALUE(fe.sk_location_id) OVER (PARTITION BY fe.contact_id ORDER BY fe.property_hs_projected_amount DESC NULLS LAST, fe.property_closedate) AS lead_sk_location_id,
         ds.label,
         ds.probability,
 		CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_REFRESH_DATE
