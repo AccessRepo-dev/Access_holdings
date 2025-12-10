@@ -24,7 +24,7 @@ with source as (
         VENDORID AS VENDOR_ID
     from {{ ref('sage_vendor') }}
     
-    where 1=1
+    where  (_FIVETRAN_DELETED = FALSE OR _FIVETRAN_DELETED IS NULL )
 
     {% if is_incremental() %}
         and WHENMODIFIED > (

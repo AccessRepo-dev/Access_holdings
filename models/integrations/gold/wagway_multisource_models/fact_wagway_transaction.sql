@@ -14,47 +14,37 @@ select
     b.owner_id,
     b.total,
     b.payment_amount,
-    dateadd(hour, -2, dateadd(minute, -30, convert_timezone('America/New_York', b.create_stamp))) as order_date,
+    CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp)  as order_date,
     concat(b.location_id, '-', b.source_db) as sk_location_id,
 
-    min(dateadd(hour, -2, dateadd(minute, -30, convert_timezone('America/New_York', b.create_stamp)))) over (
+    min(CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) ) over (
         partition by b.owner_id
     ) as acquisition_date,
 
     datediff(
         month,
-        min(dateadd(hour, -2, dateadd(minute, -30, convert_timezone('America/New_York', b.create_stamp)))) over (
+        min(CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) ) over (
             partition by b.owner_id
         ),
-        dateadd(hour, -2, dateadd(minute, -30, convert_timezone('America/New_York', b.create_stamp)))
+        CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) 
     ) as months_since_acquisition,
 
     datediff(
         month,
-        lag(dateadd(hour, -2, dateadd(minute, -30, convert_timezone('America/New_York', b.create_stamp)))) over (
+        lag(CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) ) over (
             partition by b.owner_id
-            order by dateadd(hour, -2, dateadd(minute, -30, convert_timezone('America/New_York', b.create_stamp)))
+            order by CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) 
         ),
-        dateadd(hour, -2, dateadd(minute, -30, convert_timezone('America/New_York', b.create_stamp)))
+        CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) 
     ) as diff_between_orders,
 
-    max(dateadd(hour, -2, dateadd(minute, -30, convert_timezone('America/New_York', b.create_stamp)))) over (
+    max(CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) ) over (
         partition by b.owner_id
     ) as last_order_date,
     c.code,
 
-    case
-        when d.cancel_stamp is not null
-        then 'Cancelled'
-        when d.confirmed_stamp is not null
-        then 'Confirmed'
-        when d.wait_list_stamp is not null
-        then 'Waitlisted'
-        else 'Waitlisted'
-    end as current_status,
-
     convert_timezone(
-        'Asia/Kolkata', current_timestamp()::timestamp_ntz
+        'America/New_York', current_timestamp()::timestamp_ntz
     ) as last_refresh_date
 
 from {{ get_silver_source('wagway', 'gingr_pos_transaction_items') }}  a

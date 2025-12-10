@@ -37,10 +37,10 @@ with source as (
         b.WHENMODIFIED AS LAST_MODIFIED_DATE
 
 FROM {{ ref('sage_gl_budget_item') }} b
-
+    WHERE  (_FIVETRAN_DELETED = FALSE OR _FIVETRAN_DELETED IS NULL) 
 
     {% if is_incremental() %}
-    where b.WHENMODIFIED > (
+    AND  b.WHENMODIFIED > (
         select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
         from {{ this }}
     )

@@ -19,9 +19,12 @@ with source as (
     e.LOCATIONKEY AS FROM_SUBSIDIARY_ID,
     e.LOCATIONKEY AS TO_SUBSIDIARY_ID
 FROM {{ ref('sage_gl_entry') }}  e
+LEFT JOIN {{ ref('sage_gl_batch') }}  b
+    ON e.batchno = b.recordno
 LEFT JOIN {{ ref('sage_reporting_period') }} per
     ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
 
+WHERE (b._FIVETRAN_DELETED IS NULL OR b._FIVETRAN_DELETED = FALSE)
         
 
 )

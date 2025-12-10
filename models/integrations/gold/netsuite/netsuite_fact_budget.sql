@@ -35,7 +35,7 @@ with source as (
         {% endif %}
         CAST(NULL AS INT) AS DIM_PROJECT_ID,
         BUDGET.AMOUNT, 
-        
+       
         -- Metadata
         BUDGET.LASTMODIFIEDDATE AS LAST_MODIFIED_DATE,
 
@@ -44,8 +44,9 @@ with source as (
     LEFT JOIN {{ ref('netsuite_accountingperiod') }} per 
         ON BUDGET.PERIOD = per.ID
 
+    WHERE (BUDGET._FIVETRAN_DELETED = False or BUDGET._FIVETRAN_DELETED  IS NULL)
     {% if is_incremental() %}
-      where BUDGET.LASTMODIFIEDDATE > (
+      AND BUDGET.LASTMODIFIEDDATE > (
           select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
           from {{ this }}
       )
@@ -61,9 +62,11 @@ coa as
     END AS TYPE 
     FROM 
     {{ ref('netsuite_dim_coa') }} coa 
+    
         
 )
 select s.*,coa.TYPE , coa.TYPE * s.AMOUNT AS ACTUAL_AMOUNT
 from source s
 left join coa on coa.DIM_CHART_OF_ACCOUNT_ID = s.DIM_CHART_OF_ACCOUNT_ID 
+
 
