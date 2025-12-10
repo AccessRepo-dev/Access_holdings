@@ -1,27 +1,33 @@
-Old_Stage,New_Stage,Probability
-Identified Opportunity,Opportunity,0
-Unqualified,Opportunity,0
-Initial Screening,Opportunity,0
-Nurturing,Opportunity,0
-Opportunity Screened,Opportunity,0
-Secure Proposal Opportunity,Opportunity,0
-Engagement,Opportunity,0
-Next Steps Scheduled,Opportunity,0
-Sales Checklist,Opportunity,0
-Completed Onsite / MP,Opportunity,0
-Demo Conducted,Opportunity,0
-Design,Opportunity,0
-Diligence,Opportunity,0
-Legal Review,Opportunity,0
-NDA Secured,Opportunity,0
-Preparing LOI,Opportunity,0
-Contract Sent,Proposal Requested,0
-Quote Negotiation / Review,Proposal Requested,0
-Proposal Delivered,Proposal Sent,0
-Proposal Submitted,Proposal Sent,0
-Verbal Authorization,Negotiation,0
-Negotiation,Negotiation,0
-Negotiations,Negotiation,0
-Closed Won,Closed-won,0
-Completed,Closed-won,0
-Closed Lost,Closed-lost,0
+stage_name,mapped_stage_name,sort_order
+Initial Screening,Opportunity,1
+Identified Opportunity,Opportunity,2
+Opportunity Screened,Opportunity,3
+Sales Checklist,Opportunity,4
+NDA Secured,Opportunity,5
+Next Steps Scheduled,Opportunity,6
+Nurturing,Opportunity,7
+Demo Conducted,Opportunity,8
+Completed Onsight / MP,Opportunity,9
+Design,Opportunity,10
+Diligence,Opportunity,11
+Secure Proposal Opportunity,Opportunity,12
+Engagement,Opportunity,13
+Site Ramping,Opportunity,14
+Proposal Submitted,Proposal Requested,15
+Preparing LOI,Proposal Requested,16
+Proposal Delivered,Proposal Sent,17
+Quote Sent,Proposal Sent,18
+Quote Negotiation / Review,Negotiation,19
+Negotiation,Negotiation,20
+Negotiations,Negotiation,21
+Contract Under Negotiation,Negotiation,22
+Legal Review,Negotiation,23
+Contract Sent,Negotiation,24
+Verbal Authorization,Negotiation,25
+Executed LOI,Negotiation,26
+Completed,Closed-won,27
+Closed Won,Closed-won,28
+Closed Lost,Closed-lost,29
+Contract Lost,Closed-lost,30
+Eliminated,Closed-lost,31
+Unqualified,Closed-lost,32

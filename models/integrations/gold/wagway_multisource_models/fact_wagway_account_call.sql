@@ -36,7 +36,7 @@ WITH cte1 AS (
             )
         END AS clean_number,
         a.id AS owner_id,
-        MIN(CONVERT_TIMEZONE('America/New_York', b.create_stamp) ) OVER (PARTITION BY b.owner_id) AS acquisition_date
+        MIN(CONVERT_TIMEZONE('UTC','America/New_York', b.create_stamp) ) OVER (PARTITION BY b.owner_id) AS acquisition_date
     FROM {{ get_silver_source('wagway', 'gingr_owners') }} a
     INNER JOIN {{ get_silver_source('wagway', 'gingr_pos_transactions') }} b
         ON a.id = b.owner_id
@@ -50,8 +50,8 @@ WITH cte1 AS (
 cte2 AS (
     SELECT DISTINCT
         a.id,
-        CONVERT_TIMEZONE('America/New_York', a.start_time) AS start_time,
-        UPPER(DAYNAME(DATE(CONVERT_TIMEZONE('America/New_York', a.start_time)))) AS week_day,
+        CONVERT_TIMEZONE('UTC','America/New_York', a.start_time) AS start_time,
+        UPPER(DAYNAME(DATE(CONVERT_TIMEZONE('UTC','America/New_York', a.start_time)))) AS week_day,
         a.duration,
         a.duration_ms,
         a.type,
@@ -148,11 +148,12 @@ cte2 AS (
         g.acquisition_date,
 
         CASE
-            WHEN DATE(g.acquisition_date) = DATE(CONVERT_TIMEZONE('America/New_York', a.start_time)) THEN 'New Customers'
-            WHEN DATE(g.acquisition_date) < DATE(CONVERT_TIMEZONE('America/New_York', a.start_time)) THEN 'Existing Customers'
+            WHEN DATE(g.acquisition_date) = DATE(CONVERT_TIMEZONE('UTC','America/New_York', a.start_time)) THEN 'New Customers'
+            WHEN DATE(g.acquisition_date) < DATE(CONVERT_TIMEZONE('UTC','America/New_York', a.start_time)) THEN 'Existing Customers'
             ELSE 'Leads'
         END AS new_customer_flag,
-        RANK() OVER (PARTITION BY a.id ORDER BY g.acquisition_date DESC) AS rnk
+        RANK() OVER (PARTITION BY a.id ORDER BY g.acquisition_date DESC) AS rnk,
+        ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY DATE(CONVERT_TIMEZONE('UTC','America/New_York', a.start_time))) AS rn
 
     FROM {{ get_silver_source('wagway', 'ringcentral_account_call_log') }} a
 
@@ -193,22 +194,31 @@ cte2 AS (
 
 SELECT DISTINCT
     a.*
-    EXCLUDE (rnk),
+    EXCLUDE (rnk, rn),
 
     CASE WHEN a.customer_id IS NOT NULL THEN 1 ELSE 0 END AS is_in_gingr,
 
-    /* ---- 7-day revenue ---- */
     (
-        SELECT COALESCE(SUM(g.price), 0)
-        FROM {{ get_silver_source('wagway', 'gingr_pos_transactions') }} h
-        LEFT JOIN {{ get_silver_source('wagway', 'gingr_pos_transaction_items') }} g
-            ON h.id = g.pos_transaction_id
-           AND g.delete_indicator = 0
-        WHERE a.customer_id = h.owner_id
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp)  >= CONVERT_TIMEZONE('America/New_York', a.start_time) 
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp) <= DATEADD(day, 7, CONVERT_TIMEZONE('America/New_York', a.start_time) )
-          AND h.delete_indicator = 0
+        SELECT
+            SUM(g.price)
+            FROM {{ get_silver_source('wagway', 'gingr_pos_transactions') }} h
+            LEFT JOIN {{ get_silver_source('wagway', 'gingr_pos_transaction_items') }} g
+                ON h.id = g.pos_transaction_id AND g.delete_indicator = 0
+            WHERE a.customer_id = h.owner_id AND a.rn = 1
     ) AS revenue_from_gingr_7,
+
+    /* ---- 7-day revenue ---- */
+    -- (
+    --     SELECT COALESCE(SUM(g.price), 0)
+    --     FROM wagway_dev.silver.gingr_pos_transactions h
+    --     LEFT JOIN wagway_dev.silver.gingr_pos_transaction_items g
+    --         ON h.id = g.pos_transaction_id
+    --        AND g.delete_indicator = 0
+    --     WHERE a.customer_id = h.owner_id
+    --       AND CONVERT_TIMEZONE('UTC','America/New_York', h.create_stamp)  >= CONVERT_TIMEZONE('UTC','America/New_York', a.start_time) 
+    --       AND CONVERT_TIMEZONE('UTC','America/New_York', h.create_stamp) <= DATEADD(day, 7, CONVERT_TIMEZONE('UTC','America/New_York', a.start_time) )
+    --       AND h.delete_indicator = 0
+    -- ) AS revenue_from_gingr_7,
 
     /* ---- 7-day distinct transactions ---- */
     (
@@ -218,8 +228,8 @@ SELECT DISTINCT
             ON h.id = g.pos_transaction_id
            AND g.delete_indicator = 0
         WHERE a.customer_id = h.owner_id
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp)  >= CONVERT_TIMEZONE('America/New_York', a.start_time) 
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp) <= DATEADD(day, 7, CONVERT_TIMEZONE('America/New_York', a.start_time) )
+          AND CONVERT_TIMEZONE('UTC','America/New_York', h.create_stamp)  >= CONVERT_TIMEZONE('UTC','America/New_York', a.start_time) 
+          AND CONVERT_TIMEZONE('UTC','America/New_York', h.create_stamp) <= DATEADD(day, 7, CONVERT_TIMEZONE('UTC','America/New_York', a.start_time) )
           AND h.delete_indicator = 0
     ) AS transaction_from_gingr_7,
 
@@ -231,8 +241,8 @@ SELECT DISTINCT
             ON h.id = g.pos_transaction_id
            AND g.delete_indicator = 0
         WHERE a.customer_id = h.owner_id
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp) >= CONVERT_TIMEZONE('America/New_York', a.start_time) 
-          AND CONVERT_TIMEZONE('America/New_York', h.create_stamp) <= DATEADD(day, 7, CONVERT_TIMEZONE('America/New_York', a.start_time) )
+          AND CONVERT_TIMEZONE('UTC','America/New_York', h.create_stamp) >= CONVERT_TIMEZONE('UTC','America/New_York', a.start_time) 
+          AND CONVERT_TIMEZONE('UTC','America/New_York', h.create_stamp) <= DATEADD(day, 7, CONVERT_TIMEZONE('UTC','America/New_York', a.start_time) )
           AND h.delete_indicator = 0
     ) AS service_cnt_gingr_nxt_7days,
     CONVERT_TIMEZONE('Asia/Kolkata', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS LAST_REFRESH_DATE
