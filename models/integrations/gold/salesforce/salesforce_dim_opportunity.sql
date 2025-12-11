@@ -37,6 +37,7 @@ with source as (
     O.IS_WON as IS_WON,
     O.IS_CLOSED,
     O.LAST_MODIFIED_DATE,
+    CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     FROM {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}  as O
     LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_LEAD') }}  as L 

@@ -18,6 +18,7 @@ with source as (
         coalesce(L.INDUSTRY,'')
         ) as ID,
     CASE WHEN L.INDUSTRY IS NULL THEN 'Unknown' ELSE L.INDUSTRY END as PRODUCT_CATEGORY,
+    CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     FROM {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}  as O
     LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_LEAD') }}  as L 

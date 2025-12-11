@@ -14,7 +14,6 @@
 with hashed as (
     select
         ID,
-        ACCOUNT_ID,
         STAGE_NAME,
         INSTALL_AMOUNT_C,
         OWNER_ID,
@@ -26,7 +25,6 @@ with hashed as (
         DBT_VALID_TO,
         md5(
             coalesce(STAGE_NAME,'') || '|' ||
-            coalesce(ACCOUNT_ID,'') || '|' ||
             coalesce(INSTALL_AMOUNT_C::string,'') || '|' ||
             coalesce(OWNER_ID,'') || '|' ||
             coalesce(CLOSE_DATE::string,'') || '|' ||
@@ -40,7 +38,6 @@ with hashed as (
     select
         CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
         ID as OPPORTUNITY_ID,
-        ACCOUNT_ID,
         OWNER_ID,
         STAGE_NAME,
         INSTALL_AMOUNT_C as AMOUNT,
@@ -57,6 +54,7 @@ with hashed as (
         end as DBT_VALID_TO,
         max(case when DBT_VALID_TO is null then 1 else 0 end) 
             over (partition by ID, attr_hash) as IS_ACTIVE,
+        CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from hashed
     qualify row_number() over (partition by ID, attr_hash order by DBT_VALID_FROM) = 1

@@ -15,5 +15,6 @@ SELECT
     STAGE_NAME, 
     MAPPED_STAGE_NAME, 
     CAST(sort_order as INT) as STAGE_ORDER,
+    CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
 FROM {{ get_silver_source(company, company ~ '_OPPORTUNITY_STAGE_MAPPING') }}
