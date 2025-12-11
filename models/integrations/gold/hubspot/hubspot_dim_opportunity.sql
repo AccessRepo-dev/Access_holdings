@@ -36,13 +36,22 @@ select
         coalesce('HUBSPOT','')
         ) as SALES_CHANNEL_ID,
         -- A.property_hs_analytics_source as SALES_CHANNEL,
-        A.property_service_category as PRODUCT_CATEGORY,
+        -- A.property_service_category as PRODUCT_CATEGORY,
+         md5(   
+        coalesce(A.property_service_category,'') || '|' ||
+        coalesce('HUBSPOT','')
+        ) as PRODUCT_CATEGORY_ID,
         md5(
         coalesce(C.property_city,'') || '|' ||
         coalesce(C.property_state,'') || '|' ||
         coalesce(C.property_country,'') || '|' ||
         coalesce('HUBSPOT','')
         ) as LOCATION_ID,
+        A.property_closedate as CLOSE_DATE,
+        CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
+            WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = FALSE THEN 0
+        ELSE -1 END as IS_WON,
+        CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END AS IS_CLOSED,
         A.property_hs_lastmodifieddate as LAST_MODIFIED_DATE,
         'HUBSPOT' as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
@@ -64,13 +73,22 @@ select
         coalesce('HUBSPOT_PAWVILLE','')
         ) as SALES_CHANNEL_ID,
         -- A.property_hs_analytics_source as SALES_CHANNEL,
-        A.property_service_category as PRODUCT_CATEGORY,
+        -- A.property_service_category as PRODUCT_CATEGORY,
+         md5(   
+        coalesce(A.property_service_category,'') || '|' ||
+        coalesce('HUBSPOT_PAWVILLE','')
+        ) as PRODUCT_CATEGORY_ID,
         md5(
         coalesce(C.property_city,'') || '|' ||
         coalesce(C.property_state,'') || '|' ||
         coalesce(C.property_country,'') || '|' ||
         coalesce('HUBSPOT_PAWVILLE','')
         ) as LOCATION_ID,
+        A.property_closedate as CLOSE_DATE,
+        CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
+            WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = FALSE THEN 0
+        ELSE -1 END as IS_WON,
+        CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END AS IS_CLOSED,
         A.property_hs_lastmodifieddate as LAST_MODIFIED_DATE,
         'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
