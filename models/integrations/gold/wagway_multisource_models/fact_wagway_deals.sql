@@ -14,6 +14,7 @@ WITH CTE AS (
         DEAL_PIPELINE_ID,
         DEAL_PIPELINE_STAGE_ID,
         PROPERTY_HS_IS_CLOSED_WON,
+        PROPERTY_HS_IS_CLOSED_LOST,
         PROPERTY_CLOSEDATE,
         PROPERTY_CREATEDATE,
         PROPERTY_HS_CREATEDATE,
@@ -41,6 +42,7 @@ WITH CTE AS (
         DEAL_PIPELINE_ID,
         DEAL_PIPELINE_STAGE_ID,
         PROPERTY_HS_IS_CLOSED_WON,
+        PROPERTY_HS_IS_CLOSED_LOST,
         PROPERTY_CLOSEDATE,
         PROPERTY_CREATEDATE,
         PROPERTY_HS_CREATEDATE,
@@ -135,6 +137,7 @@ final_enriched AS (
         f.deal_pipeline_id,
         f.deal_pipeline_stage_id,
         f.property_hs_is_closed_won,
+        f.property_hs_is_closed_lost,
         f.property_closedate,
         CASE 
             WHEN f.property_createdate > f.property_closedate THEN f.property_closedate 
@@ -284,6 +287,7 @@ SELECT DISTINCT
       DEAL_PIPELINE_ID,
       DEAL_PIPELINE_STAGE_ID,
       PROPERTY_HS_IS_CLOSED_WON,
+      PROPERTY_HS_IS_CLOSED_LOST,
       CONVERT_TIMEZONE('UTC','America/New_York', PROPERTY_CLOSEDATE) AS PROPERTY_CLOSEDATE,
       CONVERT_TIMEZONE('UTC','America/New_York', PROPERTY_CREATEDATE) AS PROPERTY_CREATEDATE,
       OWNER_ID,
@@ -308,7 +312,7 @@ SELECT DISTINCT
       LEAD_SK_LOCATION_ID,
       PROBABILITY,
       CONVERT_TIMEZONE('UTC','Asia/Kolkata', PROPERTY_CLOSEDATE) AS PROPERTY_CLOSEDATE_IND,
-      CONVERT_TIMEZONE('UTC','Asia/Kolkata', PROPERTY_CLOSEDATE) AS PROPERTY_CREATEDATE_IND,
+      CONVERT_TIMEZONE('UTC','Asia/Kolkata', PROPERTY_CREATEDATE) AS PROPERTY_CREATEDATE_IND,
       CONVERT_TIMEZONE('UTC','Asia/Kolkata', CURRENT_TIMESTAMP()::TIMESTAMP_NTZ) AS LAST_REFRESH_DATE
       
 FROM cte2
