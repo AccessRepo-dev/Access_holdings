@@ -84,26 +84,45 @@ GROUP BY
     O.CLOSE_DATE,
     O.IS_WON as IS_WON,
     O.IS_CLOSED,
-    COALESCE(SO.proposal_requested_date,
+    CASE WHEN IS_WON = 1 THEN COALESCE(SO.proposal_requested_date,
              SO.proposal_sent_date,
              SO.negotiation_date,
              SO.closed_won_date,
+             O.CLOSE_DATE) 
+             ELSE 
+             COALESCE(SO.proposal_requested_date,
+             SO.proposal_sent_date,
+             SO.negotiation_date,
              SO.closed_lost_date,
-             O.CLOSE_DATE) AS proposal_requested_date,
-    COALESCE(SO.proposal_sent_date,
+             O.CLOSE_DATE) END
+             AS proposal_requested_date,
+    CASE WHEN IS_WON = 1 THEN COALESCE(
+             SO.proposal_sent_date,
              SO.negotiation_date,
              SO.closed_won_date,
+             O.CLOSE_DATE) 
+             ELSE 
+             COALESCE(
+             SO.proposal_sent_date,
+             SO.negotiation_date,
              SO.closed_lost_date,
-             O.CLOSE_DATE) AS proposal_sent_date,  
-    COALESCE(SO.negotiation_date,
+             O.CLOSE_DATE) END
+             AS proposal_sent_date,  
+    CASE WHEN IS_WON = 1 THEN COALESCE(
+             SO.negotiation_date,
              SO.closed_won_date,
+             O.CLOSE_DATE) 
+             ELSE 
+             COALESCE(
+             SO.negotiation_date,
              SO.closed_lost_date,
-             O.CLOSE_DATE) AS negotiation_date,
-    COALESCE(SO.closed_won_date,
-             SO.closed_lost_date,
-             O.CLOSE_DATE) AS closed_won_date,
-    COALESCE(SO.closed_lost_date,
-             O.CLOSE_DATE) AS closed_lost_date,
+             O.CLOSE_DATE) END
+             AS negotiation_date,
+
+    CASE WHEN IS_WON = 1 THEN COALESCE(SO.closed_won_date,
+             O.CLOSE_DATE) ELSE NULL END AS closed_won_date,
+    CASE WHEN IS_WON = 0 THEN COALESCE(SO.closed_lost_date,
+             O.CLOSE_DATE) ELSE NULL END AS closed_lost_date,
     O.LAST_MODIFIED_DATE,
     CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
