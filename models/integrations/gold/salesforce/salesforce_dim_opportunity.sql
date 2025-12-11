@@ -9,7 +9,55 @@
     alias = 'dim_opportunity',
 ) }}
 
-with source as (
+with stage_dates as (
+
+SELECT 
+opportunity_id,
+old_value,
+SO.MAPPED_STAGE_NAME as old_mapped_value,
+new_value,
+SN.MAPPED_STAGE_NAME as new_mapped_value,
+created_date 
+FROM ZEUS_RAW.SALESFORCE.OPPORTUNITY_FIELD_HISTORY O 
+LEFT JOIN ZEUS_DEV.GOLD.DIM_STAGE_MAPPING SO ON trim(O.OLD_VALUE) = SO.STAGE_NAME
+LEFT JOIN ZEUS_DEV.GOLD.DIM_STAGE_MAPPING SN ON trim(O.NEW_VALUE) = SN.STAGE_NAME
+where field = 'StageName'
+and old_mapped_value <> new_mapped_value
+order by opportunity_id, created_date
+)
+
+, stage_dates_by_opp as (
+SELECT
+    opportunity_id,
+
+    MIN(CASE WHEN new_mapped_value = 'Opportunity'
+             THEN created_date END) AS opportunity_date,
+
+    MIN(CASE WHEN new_mapped_value = 'Proposal Requested'
+             THEN created_date END) AS proposal_requested_date,
+
+    MIN(CASE WHEN new_mapped_value = 'Proposal Sent'
+             THEN created_date END) AS proposal_sent_date,
+
+    MIN(CASE WHEN new_mapped_value = 'Negotiation'
+             THEN created_date END) AS negotiation_date,
+
+    MIN(CASE WHEN new_mapped_value = 'Closed-won'
+             THEN created_date END) AS closed_won_date,
+
+    MIN(CASE WHEN new_mapped_value = 'Closed-lost'
+             THEN created_date END) AS closed_lost_date
+
+FROM
+    stage_dates
+GROUP BY
+    opportunity_id
+    )
+
+
+
+
+, source as (
 
     SELECT 
     O.ID as OPPORTUNITY_ID,
@@ -36,6 +84,26 @@ with source as (
     O.CLOSE_DATE,
     O.IS_WON as IS_WON,
     O.IS_CLOSED,
+    COALESCE(SO.proposal_requested_date,
+             SO.proposal_sent_date,
+             SO.negotiation_date,
+             SO.closed_won_date,
+             SO.closed_lost_date,
+             O.CLOSE_DATE) AS proposal_requested_date,
+    COALESCE(SO.proposal_sent_date,
+             SO.negotiation_date,
+             SO.closed_won_date,
+             SO.closed_lost_date,
+             O.CLOSE_DATE) AS proposal_sent_date,  
+    COALESCE(SO.negotiation_date,
+             SO.closed_won_date,
+             SO.closed_lost_date,
+             O.CLOSE_DATE) AS negotiation_date,
+    COALESCE(SO.closed_won_date,
+             SO.closed_lost_date,
+             O.CLOSE_DATE) AS closed_won_date,
+    COALESCE(SO.closed_lost_date,
+             O.CLOSE_DATE) AS closed_lost_date,
     O.LAST_MODIFIED_DATE,
     CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
@@ -45,6 +113,7 @@ with source as (
     LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}  A 
         ON A.ACCOUNT_ID = O.ACCOUNT_ID 
         and A.IS_ACTIVE = 1
+    LEFT JOIN stage_dates_by_opp SO ON SO.opportunity_id = O.ID
     where O.IS_ACTIVE = 1
 
 )
