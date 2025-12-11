@@ -14,7 +14,16 @@ SELECT
     ID,
     CONCAT(FIRST_NAME,LAST_NAME) AS NAME ,
     ROLE_ID,
-    'HUBSPOT' AS SOURCE_SCHEMA
+    
+    {% if company == "wagway" %}
+        'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+
+    {%else%}
+
+        CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+
+    {% endif %}
+
 FROM {{ get_silver_source(company , 'HUBSPOT_USERS') }} u
 
 {% if company == 'wagway'%} 
