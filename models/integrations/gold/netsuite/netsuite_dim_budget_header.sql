@@ -11,14 +11,8 @@ with source as (
         ID AS DIM_BUDGET_HEADER_ID,
         BUDGETTYPE AS BUDGET_TYPE,
         NAME,
-        {% if company == 'playfly'%}
-        CASE 
-            WHEN NAME IN ('Legacy','SOH Canada')
-            THEN 'Budget' ELSE  NAME 
-        END AS GROUPED_HEADER,
-        {%else%}
-        NAME AS GROUPED_HEADER ,
-        {%endif%}
+        NAME  AS GROUPED_HEADER,
+        
         ISINACTIVE AS IS_INACTIVE
          
     from {{ref('netsuite_budgetcategory')}}
