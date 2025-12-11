@@ -132,7 +132,7 @@ final_enriched AS (
     SELECT
         f.deal_id,
         f.property_dealname,
-        COALESCE(b.contact_id, d.contact_id) AS contact_id,
+        COALESCE(b.contact_id, d.contact_id, t.owner_id) AS contact_id,
         tia.price AS property_amount,
         f.deal_pipeline_id,
         f.deal_pipeline_stage_id,
@@ -264,11 +264,11 @@ CTE_DEAL_STAGE AS
             ) OVER (PARTITION BY fe.contact_id)
         END AS acquisition_date,
         MIN(fe.property_createdate) OVER (PARTITION BY fe.contact_id) AS contact_date,
-        CASE 
-            WHEN ROW_NUMBER() OVER (PARTITION BY fe.property_invoice_id ORDER BY fe.property_amount DESC) = 1 
-                THEN fe.property_invoice_id 
-            ELSE NULL 
-        END AS max_revenue_invoice_id,
+        -- CASE 
+        --     WHEN ROW_NUMBER() OVER (PARTITION BY fe.property_invoice_id ORDER BY fe.property_amount DESC) = 1 
+        --         THEN fe.property_invoice_id 
+        --     ELSE NULL 
+        -- END AS max_revenue_invoice_id,
         FIRST_VALUE(fe.service_type) OVER (PARTITION BY fe.contact_id ORDER BY fe.property_hs_projected_amount DESC NULLS LAST, fe.property_closedate) AS lead_service_type,
         FIRST_VALUE(fe.sk_location_id) OVER (PARTITION BY fe.contact_id ORDER BY fe.property_hs_projected_amount DESC NULLS LAST, fe.property_closedate) AS lead_sk_location_id,
         ds.label,
@@ -283,11 +283,19 @@ SELECT DISTINCT
       DEAL_ID,
       PROPERTY_DEALNAME,
       CONTACT_ID,
+      ACQUISITION_DATE,
       PROPERTY_AMOUNT,
       DEAL_PIPELINE_ID,
       DEAL_PIPELINE_STAGE_ID,
       PROPERTY_HS_IS_CLOSED_WON,
       PROPERTY_HS_IS_CLOSED_LOST,
+      CASE 
+        WHEN ACQUISITION_DATE IS NOT NULL
+            THEN 'Closed Won'
+        WHEN SUM(CASE WHEN PROPERTY_HS_IS_CLOSED_LOST = FALSE AND ACQUISITION_DATE IS NULL THEN 1 ELSE 0 END) OVER (PARTITION BY CONTACT_ID) > 0 
+            THEN 'Open Lead'
+        ELSE 'Closed Lost'
+      END AS LEAD_STATUS,
       CONVERT_TIMEZONE('UTC','America/New_York', PROPERTY_CLOSEDATE) AS PROPERTY_CLOSEDATE,
       CONVERT_TIMEZONE('UTC','America/New_York', PROPERTY_CREATEDATE) AS PROPERTY_CREATEDATE,
       OWNER_ID,
@@ -304,9 +312,8 @@ SELECT DISTINCT
       COMPANY,
       SERVICE_TYPE,
       GROUPED_SERVICE_TYPE,
-      ACQUISITION_DATE,
       CONTACT_DATE,
-      MAX_REVENUE_INVOICE_ID,
+    --   MAX_REVENUE_INVOICE_ID,
       LABEL,
       LEAD_SERVICE_TYPE,
       LEAD_SK_LOCATION_ID,
