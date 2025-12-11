@@ -132,7 +132,7 @@ final_enriched AS (
     SELECT
         f.deal_id,
         f.property_dealname,
-        COALESCE(b.contact_id, d.contact_id) AS contact_id,
+        COALESCE(b.contact_id, d.contact_id, t.owner_id) AS contact_id,
         tia.price AS property_amount,
         f.deal_pipeline_id,
         f.deal_pipeline_stage_id,
