@@ -65,6 +65,7 @@ with
                 trim(property_description) as property_description,
             {% endif %}
             PROPERTY_HS_IS_CLOSED_WON,
+            PROPERTY_HS_IS_CLOSED_LOST,
             {% if sourcesystem == "HUBSPOT_PAWVILLE" %}
                 null as property_club_c, 
                 null as property_service_type,

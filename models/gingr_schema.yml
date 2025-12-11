@@ -11,6 +11,7 @@ sources:
       - name: ACCOUNT_CODES
       - name: POS_TRANSACTION_ITEMS
       - name: RESERVATIONS
+      - name: RESERVATION_TYPES
 
 
   - name: wagway_silver
@@ -29,3 +30,5 @@ sources:
         description: Item-level dataset from Gingr POS transactions.
       - name: gingr_reservations
         description: Reservation records.
+      - name: gingr_reservation_types
+        description: Reservation type records
