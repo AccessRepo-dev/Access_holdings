@@ -13,11 +13,11 @@ with source as (
         NAME,
         {% if company == 'playfly'%}
         CASE 
-            WHEN NAME = 'SOH Canada'
+            WHEN NAME IN ('Legacy','SOH Canada')
             THEN 'Budget' ELSE  NAME 
-        END AS GROUPED_HEADER 
+        END AS GROUPED_HEADER,
         {%else%}
-        NAME AS GROUPED_HEADER 
+        NAME AS GROUPED_HEADER ,
         {%endif%}
         ISINACTIVE AS IS_INACTIVE
          
@@ -27,3 +27,9 @@ with source as (
 
 select *
 from source
+UNION 
+SELECT -1 AS ID , 
+NULL AS BUDGET_TYPE, 
+'Previous Year' AS NAME ,
+'Previous Year' AS GROUPED_HEADER ,  
+FALSE AS IS_INACTIVE 
