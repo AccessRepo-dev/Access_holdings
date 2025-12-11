@@ -1,5 +1,6 @@
 {% set company = var('company', 'spotless') | lower %}
-{% set sourcesystem = var('sourcesystem','sage') %}
+{{ config(enabled = var('company', 'spotless') in ['spotless', 'amh'] ) }}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
 {{ config(
     enabled = var('sourcesystem','sage') |lower == 'sage' ,
     database = get_target_database(company),
