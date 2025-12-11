@@ -159,6 +159,7 @@ cte2 AS (
     FROM {{ get_silver_source('wagway', 'ringcentral_account_call_log_leg') }} a
 
     LEFT JOIN {{ get_silver_source('wagway', 'ringcentral_account_call_log') }} acl
+        ON a.account_call_log_id = acl.id
 
     LEFT JOIN {{ get_silver_source('wagway', 'ringcentral_company_directory_phone_number') }} d
         ON d.phone_number =
