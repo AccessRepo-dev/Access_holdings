@@ -12,8 +12,8 @@
 with source as (
     select
         RECORDNO AS DIM_BUDGET_HEADER_ID,
-        BUDGETID AS BUDGET_TYPE,
-        DESCRIPTION AS NAME,
+        NULL AS BUDGET_TYPE,
+        BUDGETID AS NAME,
         {% if company == 'spotless'%}
         CASE 
             WHEN BUDGETID = 'Operating' THEN 'Budget' 
