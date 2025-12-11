@@ -49,7 +49,8 @@ WITH cte1 AS (
 
 cte2 AS (
     SELECT DISTINCT
-        a.id,
+        a.account_call_log_id AS id,
+        a.index,
         CONVERT_TIMEZONE('UTC','America/New_York', a.start_time) AS start_time,
         UPPER(DAYNAME(DATE(CONVERT_TIMEZONE('UTC','America/New_York', a.start_time)))) AS week_day,
         a.duration,
@@ -61,8 +62,8 @@ cte2 AS (
         a.result,
         a.reason,
         a.reason_description,
-        a.account_id,
-        a.session_id,
+        acl.account_id,
+        acl.session_id,
         br."FROM" AS time_from,
         br."TO" AS time_to,
 
@@ -122,7 +123,7 @@ cte2 AS (
                 OR (
                     a.direction = 'Inbound'
                     AND a.from_phone_number IS NULL
-                    AND REPLACE(from_name, ' ', '') IN (
+                    AND REPLACE(a.from_name, ' ', '') IN (
                         SELECT REPLACE(CONCAT(first_name, last_name), ' ', '')
                         FROM {{ get_silver_source('wagway', 'ringcentral_company_directory') }}
                     )
@@ -152,10 +153,12 @@ cte2 AS (
             WHEN DATE(g.acquisition_date) < DATE(CONVERT_TIMEZONE('UTC','America/New_York', a.start_time)) THEN 'Existing Customers'
             ELSE 'Leads'
         END AS new_customer_flag,
-        RANK() OVER (PARTITION BY a.id ORDER BY g.acquisition_date DESC) AS rnk,
+        RANK() OVER (PARTITION BY a.account_call_log_id ORDER BY g.acquisition_date DESC) AS rnk,
         ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY DATE(CONVERT_TIMEZONE('UTC','America/New_York', a.start_time))) AS rn
 
-    FROM {{ get_silver_source('wagway', 'ringcentral_account_call_log') }} a
+    FROM {{ get_silver_source('wagway', 'ringcentral_account_call_log_leg') }} a
+
+    LEFT JOIN {{ get_silver_source('wagway', 'ringcentral_account_call_log') }} acl
 
     LEFT JOIN {{ get_silver_source('wagway', 'ringcentral_company_directory_phone_number') }} d
         ON d.phone_number =

@@ -13,6 +13,7 @@ sources:
       - name: USER_BUSINESS_HOUR_RANGE
       - name: MESSAGE
       - name: MESSAGE_TO
+      - name: ACCOUNT_CALL_LOG_LEG
 
   - name: wagway_silver
     database: "{{ env_var('DBT_WAGWAY') }}"
@@ -34,3 +35,5 @@ sources:
         description: Recipient-level attributes for RingCentral message metadata.
       - name: ringcentral_user_business_hour_range
         description: Business hour configuration for users associated with RingCentral telephony.
+      - name: ringcentral_account_call_log_leg
+        description: Call logs captured from RingCentral phone systems including internal routed calls.
