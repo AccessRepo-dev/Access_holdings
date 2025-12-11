@@ -13,6 +13,7 @@
         DIM_BUDGET_HEADER_ID AS BUDGET_HEADER_ID,
         BUDGET_TYPE,
         NAME,
+        GROUPED_HEADER,
         IS_INACTIVE,
         '{{ c.source }}' as SOURCESYSTEM,
         '{{ c.name }}' as COMPANY,
