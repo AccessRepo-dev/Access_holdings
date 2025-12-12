@@ -11,7 +11,7 @@
     select
         HASH(BUDGET_ID, '{{ c.name }}',  '{{ c.source }}') as FACT_BUDGET_ID,
         BUDGET_ID,
-        DIM_BUDGET_HEADER_ID,
+        HASH(DIM_BUDGET_HEADER_ID, '{{ c.name }}','{{c.source}}') as DIM_BUDGET_HEADER_ID,
         HASH(DIM_SUBSIDIARY_ID, '{{ c.name }}',  '{{ c.source }}') as  DIM_SUBSIDIARY_ID,
         ACCOUNT_ID,
         HASH(DIM_CLASS_ID, '{{ c.name }}',  '{{ c.source }}') as DIM_CLASS_ID,
