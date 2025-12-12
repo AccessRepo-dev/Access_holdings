@@ -1,6 +1,5 @@
 {% set company = var("company","wagway") %}
-{{ config(enabled=var("sourcesystem", "hubspot") in ["hubspot", "hubspot_pawville"]) }}
-{{ config(enabled=var("company", "wagway") in ["wagway"]) }}
+{{ config(enabled = var('sourcesystem', 'hubspot') in ["hubspot", "hubspot_pawville"] and var('company','wagway') == 'wagway') }}
 {{
     config(
         database=get_target_database(company),

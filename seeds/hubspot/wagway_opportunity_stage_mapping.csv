@@ -1,0 +1,33 @@
+STAGE_NAME,MAPPED_STAGE_NAME,SORT_ORDER
+Invoiced,Closed-won,5
+New Opportunity,Opportunity,1
+Contacting,Opportunity,1
+In Discussion,Opportunity,1
+Grooming Appointment Set,Proposal Requested,2
+Grooming Appointment No Show / Canceled,Closed-lost,6
+Grooming Appointment Complete,Proposal Sent,3
+Duplicate,Closed-lost,6
+Closed Lost,Closed-lost,6
+Closed Won,Closed-won,5
+Spam,Closed-lost,6
+Trial Day Set,Proposal Requested,2
+Trial Day No Show,Closed-lost,6
+Trial Day Complete,Proposal Sent,3
+Daycare Package Purchased,Negotiation,4
+Initial Commitment,Negotiation,4
+Sales Offer Made,Negotiation,4
+Puppy Playcare Package Purchased,Negotiation,4
+New,Opportunity,1
+Contacted,Opportunity,1
+Pet Sitting Reservation Set,Proposal Requested,2
+Pet Sitting Reservation No Show / Canceled,Closed-lost,6
+Pet Sitting Reservation Completed,Proposal Sent,3
+PUPStart Set,Proposal Requested,2
+PUPStart No Show,Closed-lost,6
+PUPStart Complete,Proposal Sent,3
+Training Package Purchased,Negotiation,4
+Overnight Reservation Set,Proposal Requested,2
+Overnight No Show / Cancelled,Closed-lost,6
+Overnight Reservation Complete,Proposal Sent,3
+Membership Options Presented,Negotiation,4
+Membership Purchased,Negotiation,4

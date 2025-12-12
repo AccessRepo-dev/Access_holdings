@@ -40,7 +40,16 @@ select
         C.property_city as CITY,
         C.property_state as STATE,
         C.property_country as COUNTRY,
-        'HUBSPOT' as SOURCE_SCHEMA,
+
+        {% if company == "wagway" %}
+            'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+
+        {%else%}
+
+            CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+
+        {% endif %}
+
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, "HUBSPOT_DEAL") }} A
     LEFT JOIN deal_contacts B ON A.DEAL_ID = B.DEAL_ID

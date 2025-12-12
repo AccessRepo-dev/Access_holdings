@@ -7,7 +7,7 @@
         alias="dim_sales_channel",
         materialized="incremental",
         incremental_strategy="merge",
-        unique_key="ID",
+        unique_key=["ID", "SOURCE_SCHEMA"],
     )
 }}
 
@@ -23,7 +23,16 @@ select
             WHEN A.property_hs_analytics_source is null then 'UNKNOWN' 
                 else A.property_hs_analytics_source
         end as SALES_CHANNEL,
-        'HUBSPOT' as SOURCE_SCHEMA,
+
+        {% if company == "wagway" %}
+            'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+
+        {%else%}
+
+            CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+
+        {% endif %}
+
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, "HUBSPOT_DEAL") }} A
 
