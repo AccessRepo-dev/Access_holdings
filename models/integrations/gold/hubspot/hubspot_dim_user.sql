@@ -7,13 +7,18 @@
     alias = 'dim_user',
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = ['ID','SOURCE_SCHEMA']
+    unique_key = ['USER_ID']
 ) }}
 
 SELECT
-    ID,
+    ID_DATE_KEY,
+
+    md5(   
+        coalesce(nullif(cast(ID as string),''), '') || '|' ||
+        coalesce('HUBSPOT_PUPS','')
+        ) as USER_ID,
     CONCAT(FIRST_NAME,LAST_NAME) AS NAME ,
-    ROLE_ID,
+    is_active,
     
     {% if company == "wagway" %}
         'HUBSPOT_PUPS' as SOURCE_SCHEMA,
@@ -23,6 +28,7 @@ SELECT
         CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
 
     {% endif %}
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
 
 FROM {{ get_silver_source(company , 'HUBSPOT_USERS') }} u
 
@@ -31,9 +37,14 @@ FROM {{ get_silver_source(company , 'HUBSPOT_USERS') }} u
 UNION ALL 
 
 SELECT
-     ID,
+    ID_DATE_KEY,
+    md5(   
+        coalesce(nullif(cast(ID as string),''), '') || '|' ||
+        coalesce('HUBSPOT_PAWVILLE','')
+        ) as USER_ID,
     CONCAT(FIRST_NAME,LAST_NAME) AS NAME ,
-    ROLE_ID,
-    'HUBSPOT_PAWVILLE' AS SOURCE_SCHEMA
+    is_active,
+    'HUBSPOT_PAWVILLE' AS SOURCE_SCHEMA,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
 FROM {{ get_silver_source(company, 'HUBSPOT_PAWVILLE_USERS') }} u
 {% endif %}

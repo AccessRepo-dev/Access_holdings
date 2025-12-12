@@ -20,9 +20,9 @@ with source as (
         -- EMAIL,
         -- FIRST_NAME,
         -- LAST_NAME,
-        USER_IS_ACTIVE,
+        -- USER_IS_ACTIVE,
         -- USER_ROLE_ID,
-        LAST_MODIFIED_DATE,
+        -- LAST_MODIFIED_DATE,
         CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS IS_ACTIVE,
         CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE

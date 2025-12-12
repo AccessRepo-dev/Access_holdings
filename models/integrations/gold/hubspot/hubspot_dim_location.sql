@@ -32,15 +32,24 @@ with deal_contacts as (
 select
     distinct
         md5(
-        coalesce(C.property_city,'') || '|' ||
-        coalesce(C.property_state,'') || '|' ||
-        coalesce(C.property_country,'') || '|' ||
-        coalesce('HUBSPOT','')
+        coalesce(nullif(C.property_city,''), '') || '|' ||
+        coalesce(nullif(C.property_state,''), '') || '|' ||
+        coalesce(nullif(C.property_country,''), '') || '|' ||
+        coalesce('HUBSPOT_PUPS','')
         ) as ID,
-        C.property_city as CITY,
-        C.property_state as STATE,
-        C.property_country as COUNTRY,
-        'HUBSPOT' as SOURCE_SCHEMA,
+        coalesce(nullif(C.property_city,''), '') as CITY,
+        coalesce(nullif(C.property_state,''), '') as STATE,
+        coalesce(nullif(C.property_country,''), '') as COUNTRY,
+
+        {% if company == "wagway" %}
+            'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+
+        {%else%}
+
+            CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+
+        {% endif %}
+
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, "HUBSPOT_DEAL") }} A
     LEFT JOIN deal_contacts B ON A.DEAL_ID = B.DEAL_ID
@@ -54,14 +63,14 @@ UNION ALL
 select
     distinct
         md5(
-        coalesce(C.property_city,'') || '|' ||
-        coalesce(C.property_state,'') || '|' ||
-        coalesce(C.property_country,'') || '|' ||
+        coalesce(nullif(C.property_city,''), '') || '|' ||
+        coalesce(nullif(C.property_state,''), '') || '|' ||
+        coalesce(nullif(C.property_country,''), '') || '|' ||
         coalesce('HUBSPOT_PAWVILLE','')
         ) as ID,
-        C.property_city as CITY,
-        C.property_state as STATE,
-        C.property_country as COUNTRY,
+        coalesce(nullif(C.property_city,''), '') as CITY,
+        coalesce(nullif(C.property_state,''), '') as STATE,
+        coalesce(nullif(C.property_country,''), '') as COUNTRY,
         'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL") }} A

@@ -1,6 +1,5 @@
 {% set company = var("company","wagway") %}
-{{ config(enabled=var("sourcesystem", "hubspot") in ["hubspot", "hubspot_pawville"]) }}
-{{ config(enabled=var("company", "wagway") in ["wagway"]) }}
+{{ config(enabled = var('sourcesystem', 'hubspot') in ["hubspot", "hubspot_pawville"] and var('company','wagway') == 'wagway') }}
 {{
     config(
         database=get_target_database(company),
@@ -28,11 +27,12 @@ with deal_contacts as (
 {% endif %}
 
 select
+        distinct
         A.deal_id as OPPORTUNITY_ID,
         A.property_dealname as OPPORTUNITY_NAME,
         A.property_createdate as OPPORTUNITY_DATE,
         md5(   
-        coalesce(A.property_hs_analytics_source,'') || '|' ||
+        coalesce(nullif(A.property_hs_analytics_source,''), '') || '|' ||
         coalesce('HUBSPOT_PUPS','')
         ) as SALES_CHANNEL_ID,
          md5(   
@@ -40,15 +40,22 @@ select
         coalesce('HUBSPOT_PUPS','')
         ) as PRODUCT_CATEGORY_ID,
         md5(
-        coalesce(C.property_city,'') || '|' ||
-        coalesce(C.property_state,'') || '|' ||
-        coalesce(C.property_country,'') || '|' ||
+        coalesce(nullif(C.property_city,''), '') || '|' ||
+        coalesce(nullif(C.property_state,''), '') || '|' ||
+        coalesce(nullif(C.property_country,''), '') || '|' ||
         coalesce('HUBSPOT_PUPS','')
         ) as LOCATION_ID,
         A.property_closedate as CLOSE_DATE,
-        CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
-        ELSE 0 END as IS_WON,
-        CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END AS IS_CLOSED,
+        cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
+    ELSE 0 END as Boolean) as IS_WON,
+        cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
+
+        null as PROPOSAL_REQUESTED_DATE,
+        null as PROPOSAL_SENT_DATE,
+        null as NEGOTIATION_DATE,
+        null as CLOSED_WON_DATE,
+        null as CLOSED_LOST_DATE,   
+
         A.property_hs_lastmodifieddate as LAST_MODIFIED_DATE,
 
 
@@ -73,11 +80,12 @@ UNION ALL
 {% if company == 'wagway'%} 
 
 select
+        distinct
         A.deal_id as OPPORTUNITY_ID,
         A.property_dealname as OPPORTUNITY_NAME,
         A.property_createdate as OPPORTUNITY_DATE,
         md5(   
-        coalesce(A.property_hs_analytics_source,'') || '|' ||
+        coalesce(nullif(A.property_hs_analytics_source,''), '') || '|' ||
         coalesce('HUBSPOT_PAWVILLE','')
         ) as SALES_CHANNEL_ID,
          md5(   
@@ -85,15 +93,22 @@ select
         coalesce('HUBSPOT_PAWVILLE','')
         ) as PRODUCT_CATEGORY_ID,
         md5(
-        coalesce(C.property_city,'') || '|' ||
-        coalesce(C.property_state,'') || '|' ||
-        coalesce(C.property_country,'') || '|' ||
+        coalesce(nullif(C.property_city,''), '') || '|' ||
+        coalesce(nullif(C.property_state,''), '') || '|' ||
+        coalesce(nullif(C.property_country,''), '') || '|' ||
         coalesce('HUBSPOT_PAWVILLE','')
         ) as LOCATION_ID,
         A.property_closedate as CLOSE_DATE,
-        CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
-        ELSE 0 END as IS_WON,
-        CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END AS IS_CLOSED,
+        cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
+    ELSE 0 END as Boolean) as IS_WON,
+        cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
+
+        null as PROPOSAL_REQUESTED_DATE,
+        null as PROPOSAL_SENT_DATE,
+        null as NEGOTIATION_DATE,
+        null as CLOSED_WON_DATE,
+        null as CLOSED_LOST_DATE, 
+
         A.property_hs_lastmodifieddate as LAST_MODIFIED_DATE,
         'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE

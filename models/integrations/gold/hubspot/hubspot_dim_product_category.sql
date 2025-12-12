@@ -7,17 +7,27 @@
         alias="dim_product_category",
         materialized="incremental",
         incremental_strategy="merge",
-        unique_key="ID",
+        unique_key=["ID", "SOURCE_SCHEMA"],
     )
 }}
 
 select
+        distinct
         md5(   
         coalesce(A.property_service_category,'') || '|' ||
         coalesce('HUBSPOT','')
         ) as ID,
         A.property_service_category as PRODUCT_CATEGORY,
-        'HUBSPOT' as SOURCE_SCHEMA,
+
+         {% if company == "wagway" %}
+            'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+
+        {%else%}
+
+            CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+
+        {% endif %}
+
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, "HUBSPOT_DEAL") }} A
 where a.is_active = 1
@@ -27,6 +37,7 @@ UNION ALL
 {% if company == 'wagway'%} 
 
 select
+        distinct
         md5(   
         coalesce(A.property_service_category,'') || '|' ||
         coalesce('HUBSPOT_PAWVILLE','')
