@@ -22,6 +22,7 @@ with source as (
         sl.STATUS,
         sl.IS_ACTIVE,
         sl.converted_opportunity_id AS CONVERTED_OPPORTUNITY_KEY,
+        CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     FROM {{ get_silver_source(company, 'SALESFORCE_LEAD') }} sl
 

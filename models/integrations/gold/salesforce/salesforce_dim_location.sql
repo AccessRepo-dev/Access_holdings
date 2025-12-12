@@ -21,6 +21,7 @@ SELECT
     A.BILLING_CITY as CITY, 
     A.BILLING_STATE as STATE, 
     A.BILLING_COUNTRY as COUNTRY,
+    CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
 FROM {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}  as B 
     LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}  as A 
