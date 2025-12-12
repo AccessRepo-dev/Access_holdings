@@ -1,246 +1,231 @@
 CODE,MAPPING
-A La Carte,General
-Activities,Activities
-Add On,Add On
-Additional Services,Add On
-Additional Services | Additional Services,Add On
-Add-Ons,Add On
-Adopt an Angel,Adopt an Angel
-Bath,Grooming
-Bathing/ Grooming Add Ons,Grooming
-Baths,Grooming
-Boarding,Boarding
-Boarding - Add-ons,Boarding
-Boarding - Reservations,Boarding
-Boarding | Cat Boarding,Boarding
-Boarding | Dog Boarding,Boarding
-Boarding | Other Animal Boarding,Boarding
-Boot Camp,Boot Camp
-Cat Boarding,Boarding
-Cat Boarding | Condos,Boarding
-Cat Boarding | Townhomes,Boarding
-Cat Boarding | Villas,Boarding
-Condo,Condo
-Day BOARDING,Boarding
-Daycare,Daycare
-Daycare - Add-ons,Daycare
-Daycare | Full Day,Daycare
-Daycare | Half Day,Daycare
-Dog Boarding,Boarding
-Dog Boarding | Condos,Boarding
-Dog Boarding | Day Boarding,Boarding
-Dog Boarding | General Room Type,Boarding
-Dog Boarding | Pet Sitting,Boarding
-Dog Boarding | Townhomes,Boarding
-Dog Boarding | Villas / Cottages,Boarding
-Feed,Food
-Fees,Fees
-Food/Treat Add-Ons,Food
-General,General
-Gingr Sign Up,Gingr Sign Up
-Groom,Grooming
-Grooming,Grooming
-Grooming & Bathing,Grooming
-Grooming & Bathing - Reservations,Grooming
-Grooming & Bathing | A la Carte,Grooming
-Grooming & Bathing | Bath,Grooming
-Grooming & Bathing | Groom,Grooming
-Holiday Deposits,Boarding
-Invoiced,Invoiced
-Membership,Membership
-Memberships,Membership
-Memberships / Subscriptions,Membership
-Midtown Grooming,Grooming
-New Lead,Other
-No Show/Cancellation,Cancelled
-Other,Other
-Other | Deposits,Other
-Other | Fees,Other
-Other | Pawville Vet Clinic Visit,Veterinary
-Other deal,Other
-Overnights,Overnights
-Packages,Packages
-Packages | Boarding,Boarding
-Packages | Daycare,Daycare
-Packages | Grooming & Bathing,Grooming
-Packages | Training,Training
-Pawville Plus Membership,Membership
-Pet Sitting,Daycare
-Play Park,Daycare
-Playcare,Daycare
-POS,General
-Premium,Premium
-Private Training,Training
-Puppy Playcare,Daycare
-Retail,Retail
-Retail | Retail,Retail
-Self Service Dog Wash,Grooming
-Store Credit,Store Credit
-Surf City Villa,Villas
-Tip,General
-Tips,General
-Tips | Tips,General
-Training,Training
-Training - Add-ons,Training
-Training | Private Training,Training
-Transport,Transportation
-Transportation,Transportation
-Veterinary,Veterinary
-Villas,Villas
-Waggin' Wagon,Villas
-Walking,Walking
-Wellness,Wellness
-Boarding - Townhome ,Boarding
-Daycare ,Daycare
-Grooming Appts,Grooming
-Roxy Suite,Boarding
-Cattery Townhome,Boarding
-Kennel Bath,Grooming
-Cattery Villa ,Villas
-Critter Boarding,Boarding
-Roxy Suites,Boarding
-Jacksonville Cottages ,Boarding
-Villas - Surf City disabled,Villas
-Suite,Boarding
-Daycare | Full Day ,Daycare
-Sasha's Market (WebCam & TV) - Jax,Activities
-Training ,Training
-Condo ,Condo
-Condo - Boarding ,Condo
- DO NOT USE,Cancelled
-Cattery Condo,Condo
-North Shore Grooming ,Grooming
+(full day) daycare condo - boarding,Condo
+a la carte,General
+activities,Activities
+add on,Add On
+additional services,Add On
+additional services | additional services,Add On
+add-ons,Add On
+adopt an angel,Adopt an Angel
+adopt an angel boarding (2),Adopt an Angel
+bath,Grooming
+bath by appointment,Grooming
+bath by appointment only,Grooming
+bathing (donotuseyet),Cancelled
+bathing appt (booked with groomer),Grooming
+bathing appts,Grooming
+bathing/ grooming add ons,Grooming
+baths,Grooming
+boarding,Boarding
+boarding - add-ons,Boarding
+boarding - reservations,Boarding
+boarding - townhome,Boarding
+boarding - townhome covered,Boarding
+boarding - townhome with webcam,Boarding
+boarding | cat boarding,Boarding
+boarding | dog boarding,Boarding
+boarding | other animal boarding,Boarding
+boarding- townhome w/ webcam (shill),Boarding
+boarding transportation | drop-off gold coast,Transportation
+boarding transportation | drop-off river north,Transportation
+boarding transportation | drop-off wicker park,Transportation
+boot camp,Boot Camp
+cat boarding,Boarding
+cat boarding | condos,Boarding
+cat boarding | townhomes,Boarding
+cat boarding | villas,Boarding
+cat condo - pawleys,Condo
+cattery condo,Condo
+cattery condo - sh,Condo
+cattery condo -ns,Condo
+cattery townhome,Boarding
+cattery townhome - midtown,Boarding
+cattery villa,Villas
+cattery villa - north shore,Villas
+cattery villa - scotts hill,Villas
+clubhouse - all day play included (established players only),Activities
+condo,Condo
+condo - boarding,Condo
+condo boarding with 1/2 day daycare - scotts hill,Condo
+condo boarding with daycare - scotts hill,Condo
+condo with webcam,Condo
+cottage - standard,Boarding
+cottage - window view,Boarding
+critter boarding,Boarding
+day boarding,Daycare
+day boarding - half day,Daycare
+day boarding 1/2 day - citrus,Daycare
+day boarding full day - citrus,Daycare
+daycare,Daycare
+daycare - 1/2 day (north shore),Daycare
+daycare - 1/2 day (pawleys island),Daycare
+daycare - add-ons,Daycare
+daycare - full day (pawleys island),Daycare
+daycare - half day,Daycare
+daycare | 2 hour romps,Daycare
+daycare | full day,Daycare
+daycare | half day,Daycare
+daycare | puppy playcare | full day,Daycare
+daycare | puppy playcare | trial day,Daycare
+daycare | trial day,Daycare
+daycare 1/2 day - jacksonville,Daycare
+daycare 1/2 day - midtown,Daycare
+daycare 1/2 day - north chase,Daycare
+daycare 1/2 day - porters neck,Daycare
+daycare 1/2 day - scotts hill,Daycare
+daycare 1/2 day - surf city,Daycare
+daycare 1/2 day (winder),Daycare
+daycare condo,Daycare
+daycare evaluation,Daycare
+daycare room - all day play included (established players only),Activities
+daycare townhomes,Daycare
+do not use,Cancelled
+dog boarding,Boarding
+dog boarding | condos,Boarding
+dog boarding | day boarding,Boarding
+dog boarding | general room type,Boarding
+dog boarding | pet sitting,Boarding
+dog boarding | townhomes,Boarding
+dog boarding | villas / cottages,Boarding
+duchess condo - citrus,Condo
+evaluation (daycare) - citrus,Daycare
+family style condo,Condo
+family style cottage w/ webcam,Boarding
+family style townhome w/ webcam,Boarding
+family townhome,Boarding
+feed,Food
+fees,Fees
+food/treat add-ons,Food
+general,General
+gingr sign up,Gingr Sign Up
+groom,Grooming
+grooming,Grooming
+grooming - scotts hill,Grooming
+grooming & bathing,Grooming
+grooming & bathing - reservations,Grooming
+grooming & bathing | a la carte,Grooming
+grooming & bathing | bath,Grooming
+grooming & bathing | groom,Grooming
+grooming appts,Grooming
+"grooming quick-serve (paw pad, sanny, tail trim)",Grooming
+"grooming quick-serve (sanny,tail trim, paw pad trim)",Grooming
+group class,Training
+holiday deposits,Boarding
+inception | vip multipet boarding,Premium
+inception | vip multipet pet sitting,Premium
+invoiced,Invoiced
+jacksonville cottages,Boarding
+jacksonville villa with webcam,Villas
+kennel bath,Grooming
+kennel bath's,Grooming
+louie's lounge,Activities
+membership,Membership
+memberships,Membership
+memberships / subscriptions,Membership
+midtown grooming,Grooming
+mini groom,Grooming
+mini groom- surf city,Grooming
+nail grind + pawpad trim (midtown),Grooming
+new lead,Other
+no show/cancellation,Cancelled
+north shore grooming,Grooming
+onsite overnight boarding | coming soon to lakeshore (may 15th),Overnights
+other,Other
+other | deposits,Other
+other | fees,Other
+other | pawville vet clinic visit,Veterinary
+other deal,Other
+overnight boarding,Overnights
+overnight boarding | location transportation included,Overnights
+overnight boarding | transportation to lakeview included,Overnights
+overnight boarding | wicker park,Overnights
+overnight boarding in south loop | transportation included,Overnights
+overnight boarding transportation | drop-off to lakeshore east,Transportation
+overnight boarding transportation | drop-off to lakeview,Transportation
+overnight boarding transportation | drop-off to south loop,Transportation
+overnight pet sitting,Overnights
+overnight transportation pick-up | spa services,Transportation
+overnights,Overnights
+package | training | experienced trainer,Packages
+package | training | expert trainer,Packages
+package | training | home & train session,Packages
+package | training | play & train,Packages
+package | training | senior trainer,Packages
+package | training | stay & train session,Packages
+packages,Packages
+packages | boarding,Boarding
+packages | daycare,Daycare
+packages | grooming & bathing,Grooming
+packages | training,Training
+pawleys - condo,Condo
+pawrty time booking $150,Activities
+pawville plus membership,Membership
+pet sitting,Daycare
+play park,Daycare
+playcare,Daycare
 pn grooming,Grooming
-Daycare 1/2 Day - Porters Neck,Daycare
-Daycare 1/2 Day - Surf City,Daycare
-DO NOT USE,Cancelled
-Training & Boarding,Training
-Boarding - Townhome with WebCam,Boarding
-Townhome with WebCam,Boarding
-Jacksonville Villa with WebCam,Villas
-Porters Neck Villa,Villas
-Louie's Lounge,Activities
-The Roxy Suite,Boarding
-Villas ,Villas
-Daycare - 1/2 Day (North Shore),Daycare
-Daycare Condo,Daycare
-Cattery Condo -NS,Condo
-Cattery Townhome - Midtown,Boarding
-Cattery Villa - North Shore ,Villas
-Nail Grind + Pawpad Trim (Midtown),Grooming
-Daycare 1/2 DAY - Jacksonville,Daycare
-Waggin' Wagon,Transportation
-Daycare 1/2 Day - Scotts Hill,Daycare
-Training Condo - North Shore,Training
-Condo Boarding with Daycare - Scotts Hill,Condo
-Condo Boarding with 1/2 Day Daycare - Scotts Hill,Condo
-Daycare 1/2 day - Midtown,Daycare
-Daycare Townhomes ,Daycare
-Townhome w/ webcam - Jax ,Boarding
-Daycare EVALUATION  ,Daycare
-Boarding - Townhome COVERED,Boarding
-Pawleys - Condo,Condo
-Daycare - Full Day (Pawleys Island),Daycare
-Daycare - 1/2 day (Pawleys Island),Daycare
-Cat Condo - Pawleys ,Condo
-Mini Groom,Grooming
-Mini Groom ,Grooming
-Mini Groom- Surf City ,Grooming
-(Full Day) Daycare Condo - Boarding,Condo
-Clubhouse - All day play included (established players only) ,Activities
-Socialization- Daycare Training ,Training
-Boarding- Townhome w/ Webcam (Shill),Boarding
-Villas - Scotts Hill,Villas
-Family Townhome ,Boarding
-Cattery Condo - SH,Condo
-Cattery Villa - Scotts Hill ,Villas
-Training - Pawville ,Training
-Shill - grooming,Grooming
-Scotts Hill - Grooming,Grooming
-Grooming - Scotts Hill,Grooming
-Grooming - Scotts Hill ,Grooming
-Daycare 1/2 day - North Chase,Daycare
-Bathing Appt (booked with groomer),Grooming
-Day Boarding ,Daycare
-Day Boarding - Half Day ,Daycare
-Day Boarding 1/2 day - Citrus ,Daycare
-Day Boarding Full Day - Citrus ,Daycare
-Evaluation (daycare) - Citrus ,Daycare
-Daycare 1/2 day (Winder),Daycare
-Cottage - Standard,Boarding
-Cottage - Window View ,Boarding
-Family Style Townhome w/ webcam ,Boarding
-Family Style Cottage w/ webcam,Boarding
-Family Style Condo ,Condo
-Villas - Pawleys ,Villas
-zPackage Workaround | Half Day | Wilmington Locations (Please do not delete) ,Packages
-zPackage Workaround | Half Day | Jacksonville  (Please do not delete) ,Packages
-Condo With Webcam ,Condo
-BATH BY APPOINTMENT ,Grooming
-KENNEL BATH'S,Grooming
-BATH BY APPOINTMENT ONLY,Grooming
-Bathing (DONOTUSEYET),Cancelled
-Bathing Appts ,Grooming
-x Adopt an Angel boarding,Adopt an Angel
-x Adopt an Angel - Boarding ,Adopt an Angel
-x Adopt an Angel - BOARDING,Adopt an Angel
-WALK IN - Nails ,Grooming
-ADOPT AN ANGEL BOARDING (2),Adopt an Angel
-Premium Cat Villa $46,Premium
-Standard Cat Villa $42,Villas
-Villas - Northchase ,Villas
-Daycare - Half Day,Daycare
-Private Rental Space,Activities
-Daycare Room - All day play included (established players only),Activities
-Duchess Condo - Citrus ,Condo
-Yard Rental,Activities
-Pawrty Time Booking $150 ,Activities
-Raise The Woof Booking $250,Activities
-"Grooming Quick-Serve (sanny,tail trim, paw pad trim) ",Grooming
-"Grooming Quick-Serve (paw pad, sanny, tail trim) ",Grooming
-        Overnight Boarding,Overnights
-     Overnight Pet Sitting ,Overnights
-    Daycare | Trial Day ,Daycare
-   Daycare | Puppy Playcare | Trial Day ,Daycare
-   Daycare | Full Day ,Daycare
-  Daycare | Half Day ,Daycare
-   Daycare | Puppy Playcare | Full Day ,Daycare
-Training | Play & Train | 1 Week  (Part of a Package) ,Packages
-Spa Services | Bath Options ,Grooming
- Overnight Boarding Transportation | Drop-Off to Lakeshore East,Transportation
-Training | Pupstart,Training
- Spa Services | A La Carte Options,Grooming
-Spa Services | Full Groom Options,Grooming
-Group Class,Training
-Training | Boot Camp | 1 Week  (Part of a Package) ,Boot Camp
-Overnight Transportation Pick-up | Spa Services,Transportation
-Boarding Transportation | Drop-Off  Wicker Park,Transportation
-      Overnight Boarding | Location Transportation Included ,Overnights
-Boarding Transportation | Drop-Off River North,Transportation
-System Modifier | Package | Activity Fun Walk ,Packages
-System Modifier | Package | Private Training,Packages
-           Overnight Boarding in South Loop | Transportation Included,Overnights
-Daycare | 2 Hour Romps ,Daycare
-                      Overnight Boarding | Transportation to Lakeview Included,Overnights
- Overnight Boarding Transportation | Drop-Off to Lakeview,Transportation
- Overnight Boarding Transportation | Drop-Off to South Loop ,Transportation
-  Training | Private Lesson Options,Training
-Training | Private Lesson with Expert Trainer,Training
-Training | Private Lesson with Senior Trainer,Training
-Training | Boot Camp  | 1 Week (Part of a Package) ,Boot Camp
-Package | Training | Experienced Trainer,Packages
-Package | Training | Expert Trainer,Packages
-Package | Training | Home & Train Session,Packages
-Package | Training | Play & Train,Packages
-Package | Training | Senior Trainer ,Packages
-Package | Training | Stay & Train Session,Packages
-Overnight Boarding | Wicker Park,Overnights
-Boarding Transportation | Drop-Off Gold Coast,Transportation
-Onsite Overnight Boarding | Coming Soon to Lakeshore (May 15th) ,Overnights
-   Daycare | Half Day,Daycare
-Spa Services | No Show Fee,Fees
-Spa Services | Cat Groom - Business Only ,Grooming
-Inception | VIP Multipet Boarding,Premium
-Inception | VIP Multipet Pet Sitting,Premium
-PROMOTION $0 Daycare |HALF DAY WITH GROOM ,Packages
-PUP CUP ADD-ON,Add On
+porters neck villa,Villas
+pos,General
+premium,Premium
+premium cat villa $46,Premium
+private rental space,Activities
+private training,Training
+promotion $0 daycare |half day with groom,Packages
+pup cup add-on,Add On
+puppy playcare,Daycare
+raise the woof booking $250,Activities
+retail,Retail
+retail | retail,Retail
+roxy suite,Boarding
+roxy suites,Boarding
+sasha's market (webcam & tv) - jax,Activities
+scotts hill - grooming,Grooming
+self service dog wash,Grooming
+shill - grooming,Grooming
+socialization- daycare training,Training
+spa services | a la carte options,Grooming
+spa services | bath options,Grooming
+spa services | cat groom - business only,Grooming
+spa services | full groom options,Grooming
+spa services | no show fee,Fees
+standard cat villa $42,Villas
+store credit,Store Credit
+suite,Boarding
+surf city villa,Villas
+system modifier | package | activity fun walk,Activities
+system modifier | package | private training,Training
+the roxy suite,Boarding
+tip,Tips
+tips,Tips
+tips | tips,Tips
+townhome w/ webcam - jax,Boarding
+townhome with webcam,Boarding
+training,Training
+training - add-ons,Training
+training - pawville,Training
+training & boarding,Training
+training | boot camp | 1 week (part of a package),Training
+training | play & train | 1 week (part of a package),Training
+training | private lesson options,Training
+training | private lesson with expert trainer,Training
+training | private lesson with senior trainer,Training
+training | private training,Training
+training | pupstart,Training
+training condo - north shore,Training
+transport,Transportation
+transportation,Transportation
+veterinary,Veterinary
+villas,Villas
+villas - northchase,Villas
+villas - pawleys,Villas
+villas - scotts hill,Villas
+villas - surf city disabled,Villas
+waggin' wagon,Villas
+walk in - nails,Grooming
+walking,Walking
+wellness,Wellness
+x adopt an angel - boarding,Adopt an Angel
+x adopt an angel boarding,Adopt an Angel
+yard rental,Activities
+zpackage workaround | half day | jacksonville (please do not delete),Packages
+zpackage workaround | half day | wilmington locations (please do not delete),Packages
