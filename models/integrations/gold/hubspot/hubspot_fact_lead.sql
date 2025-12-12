@@ -11,6 +11,24 @@
     )
 }}
 
+with deal_contacts as (
+        SELECT distinct contact_id , max(deal_id) as deal_id
+        FROM {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }}
+        where is_active = 1
+        group by 1
+        )
+
+{% if company == 'wagway'%} 
+        ,deal_contacts_pawville as (
+        SELECT distinct contact_id , max(deal_id) as deal_id
+        FROM {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }}
+        where is_active = 1
+        group by 1
+        )
+{% endif %}
+
+
+
 select
     ID_DATE_KEY,
     ID as LEAD_ID,
@@ -19,10 +37,18 @@ select
     concat(property_firstname,' ',property_lastname) as COMPANY,
     PROPERTY_LIFECYCLESTAGE as STATUS,
     IS_ACTIVE,
-    null as CONVERTED_OPPORTUNITY_ID,
-    'HUBSPOT' as source_schema,
+    dc.deal_id as CONVERTED_OPPORTUNITY_KEY,
+    {% if company == "wagway" %}
+        'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+
+    {%else%}
+
+        CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+
+    {% endif %}
     current_timestamp()::timestamp_ntz as gold_load_date
-from {{ get_silver_source(company, "HUBSPOT_CONTACT") }}
+from {{ get_silver_source(company, "HUBSPOT_CONTACT") }} c 
+LEFT JOIN deal_contacts dc ON dc.contact_id = c.id
 
 {% if company == "wagway" %}
     union all
@@ -35,9 +61,10 @@ select
     concat(property_firstname,' ',property_lastname) as COMPANY,
     PROPERTY_LIFECYCLESTAGE as STATUS,
     IS_ACTIVE,
-    null as CONVERTED_OPPORTUNITY_ID,
+    dc.deal_id as CONVERTED_OPPORTUNITY_KEY,
     'HUBSPOT_PAWVILLE' as source_schema,
     current_timestamp()::timestamp_ntz as gold_load_date
-from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_CONTACT") }}
+from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_CONTACT") }} c 
+LEFT JOIN deal_contacts_pawville dc ON dc.contact_id = c.id
 
 {% endif %}

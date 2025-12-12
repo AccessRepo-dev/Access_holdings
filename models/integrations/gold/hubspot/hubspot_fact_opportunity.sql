@@ -19,9 +19,9 @@ select
     property_hs_all_owner_ids as OWNER_ID,
     A.property_amount as AMOUNT,
     A.property_closedate as CLOSE_DATE,
-    CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END AS IS_CLOSED,
-    CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
-    ELSE 0 END as IS_WON,
+    cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
+    cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
+    ELSE 0 END as Boolean) as IS_WON,
     property_hs_deal_stage_probability as PROBABILITY,
     A.DBT_VALID_FROM,
     A.DBT_VALID_TO,
@@ -52,9 +52,9 @@ join
         property_hs_all_owner_ids as OWNER_ID,
         A.property_amount as AMOUNT,
         A.property_closedate as CLOSE_DATE,
-        CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END AS IS_CLOSED,
-        CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
-        ELSE 0 END as IS_WON,
+        cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
+        cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
+        ELSE 0 END as Boolean) as IS_WON,
         property_hs_deal_stage_probability as PROBABILITY,
         A.DBT_VALID_FROM,
         A.DBT_VALID_TO,
@@ -80,7 +80,10 @@ join
 select
         CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
         ID as OPPORTUNITY_ID,
-        OWNER_ID,
+        md5(   
+        coalesce(nullif(cast(OWNER_ID as string),''), '') || '|' ||
+        coalesce('HUBSPOT_PUPS','')
+        ) as OWNER_ID,
         STAGE_NAME,
         AMOUNT,
         CLOSE_DATE,
@@ -114,7 +117,10 @@ select
     select
         CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
         ID as OPPORTUNITY_ID,
-        OWNER_ID,
+        md5(   
+        coalesce(nullif(cast(OWNER_ID as string),''), '') || '|' ||
+        coalesce('HUBSPOT_PAWVILLE','')
+        ) as OWNER_ID,
         STAGE_NAME,
         AMOUNT,
         CLOSE_DATE,

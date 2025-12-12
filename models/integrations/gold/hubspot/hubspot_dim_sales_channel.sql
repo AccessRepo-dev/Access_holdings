@@ -16,11 +16,11 @@
 select
     distinct
         md5(   
-        coalesce(A.property_hs_analytics_source,'') || '|' ||
-        coalesce('HUBSPOT','')
+        coalesce(nullif(A.property_hs_analytics_source,''), '') || '|' ||
+        coalesce('HUBSPOT_PUPS','')
         ) as ID,
         CASE 
-            WHEN A.property_hs_analytics_source is null then 'UNKNOWN' 
+            WHEN A.property_hs_analytics_source is null or A.property_hs_analytics_source = '' then 'UNKNOWN' 
                 else A.property_hs_analytics_source
         end as SALES_CHANNEL,
 
@@ -42,12 +42,12 @@ UNION ALL
 
 select
     distinct
-        md5(   
-        coalesce(A.property_hs_analytics_source,'') || '|' ||
+         md5(   
+        coalesce(nullif(A.property_hs_analytics_source,''), '') || '|' ||
         coalesce('HUBSPOT_PAWVILLE','')
         ) as ID,
         CASE 
-            WHEN A.property_hs_analytics_source is null then 'UNKNOWN' 
+            WHEN A.property_hs_analytics_source is null or A.property_hs_analytics_source = '' then 'UNKNOWN' 
                 else A.property_hs_analytics_source
         end as SALES_CHANNEL,
         'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
