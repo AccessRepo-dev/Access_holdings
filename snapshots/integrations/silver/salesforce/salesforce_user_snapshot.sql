@@ -4,6 +4,7 @@
 {% set company = var('company','zeus') %}
 {% set sourcesystem = var('sourcesystem','salesforce') %}
 {{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce') }}
+{{ config(enabled = var('company','zeus') == 'zeus') }}
 
 {{
     config(

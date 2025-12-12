@@ -24,6 +24,7 @@ with source as (
         -- USER_ROLE_ID,
         LAST_MODIFIED_DATE,
         CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS IS_ACTIVE,
+        CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, 'SALESFORCE_USER') }}
 

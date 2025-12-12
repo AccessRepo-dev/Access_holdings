@@ -1,6 +1,7 @@
-{% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') %}
-{{ config(enabled = var('sourcesystem', 'none') in ['salesforce']) }}
+{% set company = var('company','zeus') %}
+{% set sourcesystem = var('sourcesystem','salesforce') %}
+{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce') }}
+{{ config(enabled = var('company','zeus') == 'zeus') }}
 
 {{ config(
     

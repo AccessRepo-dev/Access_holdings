@@ -1,7 +1,7 @@
-{% if false %}
+{% set company = var("company", "wagway") %}
+{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]) }}
+{{ config(enabled=var("company", "none") in ["wagway"]) }}
 
-{% set company = var('company') %}
-{{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
 {{ config(
     database = get_target_database(company),
     alias = 'dim_user',
@@ -14,7 +14,16 @@ SELECT
     ID,
     CONCAT(FIRST_NAME,LAST_NAME) AS NAME ,
     ROLE_ID,
-    'HUBSPOT' AS SOURCE_SCHEMA
+    
+    {% if company == "wagway" %}
+        'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+
+    {%else%}
+
+        CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+
+    {% endif %}
+
 FROM {{ get_silver_source(company , 'HUBSPOT_USERS') }} u
 
 {% if company == 'wagway'%} 
@@ -27,6 +36,4 @@ SELECT
     ROLE_ID,
     'HUBSPOT_PAWVILLE' AS SOURCE_SCHEMA
 FROM {{ get_silver_source(company, 'HUBSPOT_PAWVILLE_USERS') }} u
-{% endif %}
-
 {% endif %}
