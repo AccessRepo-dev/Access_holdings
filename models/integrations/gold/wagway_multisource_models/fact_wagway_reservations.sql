@@ -21,6 +21,15 @@ WITH cte1 AS
         r.CONFIRMED_STAMP,
         r.WAIT_LIST_STAMP,
         r.WAIT_LIST_ACCEPTED_STAMP,
+        CASE
+            WHEN r.CANCEL_STAMP IS NOT NULL
+                THEN 'Cancelled'
+            WHEN r.CONFIRMED_STAMP IS NOT NULL
+                THEN 'Confirmed'
+            ELSE 'Waitlisted'
+        END AS RESERVATION_STATUS,
+        CONCAT(r.ID, r.SOURCE_DB) AS RESERVATION_ID,
+        CONCAT(r.LOCATION_ID, '-', r.SOURCE_DB) AS SK_LOCATION_ID,
         r.CHECK_IN_STAMP,
         r.CHECK_OUT_STAMP,
         r.DELETE_INDICATOR,
