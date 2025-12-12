@@ -180,7 +180,7 @@ SELECT * FROM source
         (select distinct GLENTRYKEY 
         from {{ ref('sage_gl_detail') }}
         WHERE SYMBOL = 'QB_HISTORY' and 
-            batch_date between '2022-01-01' and '2022-08-31')
+            batch_date <= '2022-08-31')
 {% elif company | lower  == 'spotless' %}
     WHERE (TRANSACTION_LINE_ID NOT IN 
         (select distinct GLENTRYKEY 

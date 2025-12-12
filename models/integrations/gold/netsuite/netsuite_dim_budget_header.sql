@@ -11,7 +11,13 @@ with source as (
         ID AS DIM_BUDGET_HEADER_ID,
         BUDGETTYPE AS BUDGET_TYPE,
         NAME,
+        {%if company == 'wagway'%}
+            case when NAME = 'FY 2025 Budget' THEN 'Budget'
+            ELSE NAME 
+            END AS  GROUPED_HEADER,
+        {%else%}
         NAME  AS GROUPED_HEADER,
+        {%endif%}
         
         ISINACTIVE AS IS_INACTIVE
          
