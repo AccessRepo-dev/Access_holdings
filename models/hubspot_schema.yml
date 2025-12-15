@@ -118,6 +118,7 @@ sources:
       - name: HUBSPOT_PAWVILLE_ROLE
       - name: HUBSPOT_PAWVILLE_DEAL_CONTACT
       - name: WAGWAY_OPPORTUNITY_STAGE_MAPPING
+      - name: WAGWAY_PAWVILLE_OPPORTUNITY_STAGE_MAPPING
 
 
 
@@ -231,6 +232,7 @@ sources:
       - name: HUBSPOT_DEAL_PIPELINE
       - name: HUBSPOT_LINE_ITEM
       - name: HUBSPOT_DEAL_COMPANY
+      - name: HUBSPOT_DEAL_CONTACT
       - name: HUBSPOT_CONTACT
       - name: HUBSPOT_DEAL_PIPELINE_STAGE
       - name: HUBSPOT_ENGAGEMENT
@@ -238,6 +240,7 @@ sources:
       - name: HUBSPOT_OWNER
       - name: HUBSPOT_TICKET
       - name: HUBSPOT_ROLE
+      - name: PLAYFLY_OPPORTUNITY_STAGE_MAPPING
 
 
 

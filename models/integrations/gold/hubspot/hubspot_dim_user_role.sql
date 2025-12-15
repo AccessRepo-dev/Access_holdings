@@ -1,8 +1,7 @@
-{% if false %}
-
 {% set company = var('company') %}
 {{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
 {{ config(
+    enabled = false,
     database = get_target_database(company),
     alias = 'dim_user_role',
     materialized = 'incremental',
@@ -25,6 +24,4 @@ SELECT
     NAME AS ROLE_NAME,
     'HUBSPOT_PAWVILLE' AS SOURCE_SCHEMA
 FROM {{ get_silver_source(company, 'HUBSPOT_PAWVILLE_ROLE') }} u
-{% endif %}
-
 {% endif %}

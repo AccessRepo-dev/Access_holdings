@@ -1,0 +1,19 @@
+STAGE_NAME,MAPPED_STAGE_NAME,SORT_ORDER
+New Opportunity,Opportunity,1
+Contacting,Opportunity,1
+In Discussion,Proposal Requested,2
+Trial Day Set,Proposal Sent,3
+Grooming Appointment Set,Proposal Sent,3
+Boarding Reservation Set,Proposal Sent,3
+Trial Day Complete,Negotiation,4
+Grooming Appointment Complete,Negotiation,4
+Boarding Reservation Complete,Negotiation,4
+Closed Won,Closed-Won,5
+Daycare Package Purchased,Closed-Won,5
+Invoiced,Closed-Won,5
+Closed Lost,Closed-Lost,6
+Spam,Closed-Lost,6
+Duplicate,Closed-Lost,6
+Trial Day No Show,Closed-Lost,6
+Grooming Appointment No Show / Cancelled,Closed-Lost,6
+Boarding No Show / Cancelled,Closed-Lost,6

@@ -1,0 +1,15 @@
+STAGE_NAME,MAPPED_STAGE_NAME,SORT_ORDER
+1 - Prospect,Opportunity,1
+Appointment Scheduled,Opportunity,1
+2 - In Contact,Opportunity,1
+Qualified To Buy,Opportunity,1
+Presentation Scheduled,Proposal Requested,2
+3 - Demo/Presentation Complete,Proposal Requested,2
+4 - Proposal Made,Proposal Sent,3
+Decision Maker Bought-In,Proposal Sent,3
+5 - Negotiating Terms,Negotiation,4
+Contract Sent,Negotiation,4
+6 - Contract Sent,Negotiation,4
+Closed Won,Closed-Won,5
+Closed Lost,Closed-Lost,6
+Rotting,Closed-Lost,6

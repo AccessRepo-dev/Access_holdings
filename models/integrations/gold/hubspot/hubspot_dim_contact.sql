@@ -2,6 +2,7 @@
 {{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville'])}}
 {{ config(enabled = var('company', 'none') in ['wagway', 'playfly', 'amh']) }}
 {{ config(
+    enabled = false,
     database = get_target_database(company),
     alias = 'dim_contact',
     materialized = 'incremental',

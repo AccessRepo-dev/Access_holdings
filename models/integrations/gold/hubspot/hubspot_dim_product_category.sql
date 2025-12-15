@@ -1,6 +1,7 @@
-{% set company = var("company","wagway") %}
-{{ config(enabled=var("sourcesystem", "hubspot") in ["hubspot", "hubspot_pawville"]) }}
-{{ config(enabled=var("company", "wagway") in ["wagway"]) }}
+{% set company = var("company", "wagway") %}
+{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly"]) }}
+
+
 {{
     config(
         database=get_target_database(company),
@@ -32,9 +33,10 @@ select
     from {{ get_silver_source(company, "HUBSPOT_DEAL") }} A
 where a.is_active = 1
 
-UNION ALL
-
 {% if company == 'wagway'%} 
+
+
+UNION ALL
 
 select
         distinct
