@@ -48,7 +48,7 @@ WITH cte1 AS
         OWNER_ID,
         SOURCE_DB,
         MIN(CONVERT_TIMEZONE('UTC', 'America/New_York', CREATE_STAMP) ) OVER (
-            PARTITION BY CONCAT(OWNER_ID, SOURCE_DB)
+            PARTITION BY OWNER_ID, SOURCE_DB
         ) as ACQUISITION_DATE,
     FROM {{ get_silver_source('wagway', 'gingr_pos_transactions') }}
 )
