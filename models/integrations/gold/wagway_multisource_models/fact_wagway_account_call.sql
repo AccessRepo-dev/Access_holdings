@@ -33,7 +33,7 @@ WITH cte1 AS (
         END AS clean_number,
         a.id AS owner_id,
         MIN(CONVERT_TIMEZONE('UTC','America/New_York', b.create_stamp) ) OVER (PARTITION BY b.owner_id) AS acquisition_date
-    FROM {{ get_silver_source('wagway', 'ginger_owners') }} a
+    FROM {{ get_silver_source('wagway', 'gingr_owners') }} a
     INNER JOIN {{ get_silver_source('wagway', 'gingr_pos_transactions') }} b
         ON a.id = b.owner_id
     WHERE b.delete_indicator = 0
@@ -217,4 +217,4 @@ LEFT JOIN cte3 b
     ON a.customer_id = b.owner_id
 LEFT JOIN cte4 c
     ON a.id= c.id
-WHERE a.rnk = 1;
+WHERE a.rnk = 1
