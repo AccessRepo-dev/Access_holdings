@@ -36,17 +36,29 @@ select
         A.property_createdate as OPPORTUNITY_DATE,
         md5(   
         coalesce(nullif(A.property_hs_analytics_source,''), '') || '|' ||
-        coalesce('HUBSPOT_PUPS','')
+        coalesce('HUBSPOT','')
         ) as SALES_CHANNEL_ID,
-         md5(   
-        coalesce(A.property_service_category,'') || '|' ||
-        coalesce('HUBSPOT_PUPS','')
-        ) as PRODUCT_CATEGORY_ID,
+        
+
+        {% if company == 'playfly'%} 
+            md5(   
+                coalesce(A.property_product_group,'') || '|' ||
+                coalesce('HUBSPOT','')
+                ) as PRODUCT_CATEGORY_ID,
+        {% else %}
+        
+            md5(   
+                coalesce(A.property_service_category,'') || '|' ||
+                coalesce('HUBSPOT','')
+                ) as PRODUCT_CATEGORY_ID,
+
+        {% endif %}
+        
         md5(
         coalesce(nullif(C.property_city,''), '') || '|' ||
         coalesce(nullif(C.property_state,''), '') || '|' ||
         coalesce(nullif(C.property_country,''), '') || '|' ||
-        coalesce('HUBSPOT_PUPS','')
+        coalesce('HUBSPOT','')
         ) as LOCATION_ID,
         A.property_closedate as CLOSE_DATE,
         cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1

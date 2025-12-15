@@ -84,14 +84,14 @@ select
         ID as OPPORTUNITY_ID,
         md5(   
         coalesce(nullif(cast(OWNER_ID as string),''), '') || '|' ||
-        coalesce('HUBSPOT_PUPS','')
+        coalesce('HUBSPOT','')
         ) as OWNER_ID,
         STAGE_NAME,
         AMOUNT,
         CLOSE_DATE,
         IS_CLOSED,
         IS_WON,
-        PROBABILITY,
+        PROBABILITY*100 as PROBABILITY,
         min(DBT_VALID_FROM) over (partition by ID, attr_hash) as DBT_VALID_FROM,
         case 
             when max(case when DBT_VALID_TO is null then 1 else 0 end) 
@@ -128,7 +128,7 @@ select
         CLOSE_DATE,
         IS_CLOSED,
         IS_WON,
-        PROBABILITY,
+        PROBABILITY*100 as PROBABILITY,
         min(DBT_VALID_FROM) over (partition by ID, attr_hash) as DBT_VALID_FROM,
         case 
             when max(case when DBT_VALID_TO is null then 1 else 0 end) 

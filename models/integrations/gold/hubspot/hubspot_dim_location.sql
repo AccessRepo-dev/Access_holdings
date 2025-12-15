@@ -37,7 +37,7 @@ select
         coalesce(nullif(C.property_city,''), '') || '|' ||
         coalesce(nullif(C.property_state,''), '') || '|' ||
         coalesce(nullif(C.property_country,''), '') || '|' ||
-        coalesce('HUBSPOT_PUPS','')
+        coalesce('HUBSPOT','')
         ) as ID,
         coalesce(nullif(C.property_city,''), '') as CITY,
         coalesce(nullif(C.property_state,''), '') as STATE,

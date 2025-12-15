@@ -14,10 +14,21 @@
 
 select
         distinct
-        md5(   
-        coalesce(A.property_service_category,'') || '|' ||
-        coalesce('HUBSPOT','')
-        ) as ID,
+               
+
+        {% if company == 'playfly'%} 
+            md5(   
+                coalesce(A.property_product_group,'') || '|' ||
+                coalesce('HUBSPOT','')
+                ) as ID,
+        {% else %}
+        
+            md5(   
+                coalesce(A.property_service_category,'') || '|' ||
+                coalesce('HUBSPOT','')
+                ) as ID,
+
+        {% endif %}
         A.property_service_category as PRODUCT_CATEGORY,
 
          {% if company == "wagway" %}

@@ -18,7 +18,7 @@ select
     distinct
         md5(   
         coalesce(nullif(A.property_hs_analytics_source,''), '') || '|' ||
-        coalesce('HUBSPOT_PUPS','')
+        coalesce('HUBSPOT','')
         ) as ID,
         CASE 
             WHEN A.property_hs_analytics_source is null or A.property_hs_analytics_source = '' then 'UNKNOWN' 

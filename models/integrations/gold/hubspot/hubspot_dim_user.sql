@@ -16,7 +16,7 @@ SELECT
 
     md5(   
         coalesce(nullif(cast(ID as string),''), '') || '|' ||
-        coalesce('HUBSPOT_PUPS','')
+        coalesce('HUBSPOT','')
         ) as USER_ID,
     CONCAT(FIRST_NAME,LAST_NAME) AS NAME ,
     is_active,
