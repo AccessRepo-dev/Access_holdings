@@ -21,15 +21,18 @@ select
                 coalesce(A.property_product_group,'') || '|' ||
                 coalesce('HUBSPOT','')
                 ) as ID,
+                A.property_product_group as PRODUCT_CATEGORY,
+
+                
         {% else %}
         
             md5(   
                 coalesce(A.property_service_category,'') || '|' ||
                 coalesce('HUBSPOT','')
                 ) as ID,
-
+                A.property_service_category as PRODUCT_CATEGORY,
         {% endif %}
-        A.property_service_category as PRODUCT_CATEGORY,
+        
 
          {% if company == "wagway" %}
             'HUBSPOT_PUPS' as SOURCE_SCHEMA,
