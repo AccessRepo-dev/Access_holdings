@@ -7,7 +7,7 @@
     database=get_target_database(var('company','wagway')),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'ACCOUNT_CALL_LOG_ID'
+    unique_key = ['ACCOUNT_CALL_LOG_ID', 'INDEX']
 ) }}
 
 with source_data as (
