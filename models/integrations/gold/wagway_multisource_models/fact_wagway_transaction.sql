@@ -18,13 +18,13 @@ select
     concat(b.location_id, '-', b.source_db) as sk_location_id,
 
     min(CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) ) over (
-        partition by concat(b.owner_id, b.source_db)
+        partition by b.owner_id, b.source_db
     ) as acquisition_date,
 
     datediff(
         month,
         min(CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) ) over (
-            partition by concat(b.owner_id, b.source_db)
+            partition by b.owner_id, b.source_db
         ),
         CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) 
     ) as months_since_acquisition,
@@ -32,14 +32,14 @@ select
     datediff(
         month,
         lag(CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) ) over (
-            partition by concat(b.owner_id, b.source_db)
+            partition by b.owner_id, b.source_db
             order by CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) 
         ),
         CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) 
     ) as diff_between_orders,
 
     max(CONVERT_TIMEZONE('UTC', 'America/New_York', b.create_stamp) ) over (
-        partition by concat(b.owner_id, b.source_db)
+        partition by b.owner_id, b.source_db
     ) as last_order_date,
     c.code,
 
