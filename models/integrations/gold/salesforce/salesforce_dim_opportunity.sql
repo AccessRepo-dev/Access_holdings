@@ -30,22 +30,22 @@ order by opportunity_id, created_date
 SELECT
     opportunity_id,
 
-    MIN(CASE WHEN new_mapped_value = 'Opportunity'
+    MIN(CASE WHEN lower(new_mapped_value) = 'opportunity'
              THEN created_date END) AS opportunity_date,
 
-    MIN(CASE WHEN new_mapped_value = 'Proposal Requested'
+    MIN(CASE WHEN lower(new_mapped_value) = 'proposal requested'
              THEN created_date END) AS proposal_requested_date,
 
-    MIN(CASE WHEN new_mapped_value = 'Proposal Sent'
+    MIN(CASE WHEN lower(new_mapped_value) = 'proposal sent'
              THEN created_date END) AS proposal_sent_date,
 
-    MIN(CASE WHEN new_mapped_value = 'Negotiation'
+    MIN(CASE WHEN lower(new_mapped_value) = 'negotiation'
              THEN created_date END) AS negotiation_date,
 
-    MIN(CASE WHEN new_mapped_value = 'Closed-won'
+    MIN(CASE WHEN lower(new_mapped_value) = 'closed won'
              THEN created_date END) AS closed_won_date,
 
-    MIN(CASE WHEN new_mapped_value = 'Closed-lost'
+    MIN(CASE WHEN lower(new_mapped_value) = 'closed lost'
              THEN created_date END) AS closed_lost_date
 
 FROM

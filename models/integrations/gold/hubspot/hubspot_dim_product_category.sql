@@ -1,5 +1,5 @@
 {% set company = var("company", "wagway") %}
-{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly"]) }}
+{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly", "amh"]) }}
 
 
 {{
@@ -14,27 +14,30 @@
 
 select
         distinct
-               
 
-        {% if company == 'playfly'%} 
-            md5(   
-                coalesce(A.property_product_group,'') || '|' ||
-                coalesce('HUBSPOT','')
-                ) as ID,
-                A.property_product_group as PRODUCT_CATEGORY,
 
-                
+        {% if company | lower == "playfly" %}
+            md5(
+                coalesce(a.property_product_group, '') || '|' || coalesce('HUBSPOT', '')
+            ) as ID,
+            A.property_product_group as PRODUCT_CATEGORY,
+
+        {% elif company | lower  == "wagway" %}
+            md5(
+                coalesce(a.property_service_category, '') || '|' || coalesce('HUBSPOT', '')
+            ) as ID,
+            A.property_service_category as PRODUCT_CATEGORY,
+
         {% else %}
-        
-            md5(   
-                coalesce(A.property_service_category,'') || '|' ||
-                coalesce('HUBSPOT','')
-                ) as ID,
-                A.property_service_category as PRODUCT_CATEGORY,
+            md5(
+                coalesce(a.property_service_request, '') || '|' || coalesce('HUBSPOT', '')
+            ) as ID,
+            a.property_service_request as PRODUCT_CATEGORY,
+
         {% endif %}
         
 
-         {% if company == "wagway" %}
+        {% if company | lower  == "wagway" %}
             'HUBSPOT_PUPS' as SOURCE_SCHEMA,
 
         {%else%}
@@ -47,7 +50,7 @@ select
     from {{ get_silver_source(company, "HUBSPOT_DEAL") }} A
 where a.is_active = 1
 
-{% if company == 'wagway'%} 
+{% if company | lower == 'wagway'%} 
 
 
 UNION ALL

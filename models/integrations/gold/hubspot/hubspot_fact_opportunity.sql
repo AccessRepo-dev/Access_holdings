@@ -1,5 +1,5 @@
 {% set company = var("company", "wagway") %}
-{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly"]) }}
+{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly","amh"]) }}
 
 
 
@@ -78,7 +78,7 @@ join
 
 {% endif %}
 
-
+, final as (
 select
         CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
         ID as OPPORTUNITY_ID,
@@ -144,3 +144,10 @@ select
     qualify row_number() over (partition by ID, attr_hash order by DBT_VALID_FROM) = 1
 
 {% endif %}
+
+)
+
+SELECT 
+*
+, row_number() over(partition by opportunity_id, source_schema order by DBT_VALID_FROM) as rank
+FROM final

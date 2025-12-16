@@ -59,4 +59,8 @@ with hashed as (
     from hashed
     qualify row_number() over (partition by ID, attr_hash order by DBT_VALID_FROM) = 1
 )
-select * from scd2
+select 
+
+*
+, row_number() over(partition by OPPORTUNITY_ID order by DBT_VALID_FROM) as rank
+ from scd2

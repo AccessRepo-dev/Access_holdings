@@ -8,12 +8,12 @@ Boarding Reservation Set,Proposal Sent,3
 Trial Day Complete,Negotiation,4
 Grooming Appointment Complete,Negotiation,4
 Boarding Reservation Complete,Negotiation,4
-Closed Won,Closed-Won,5
-Daycare Package Purchased,Closed-Won,5
-Invoiced,Closed-Won,5
-Closed Lost,Closed-Lost,6
-Spam,Closed-Lost,6
-Duplicate,Closed-Lost,6
-Trial Day No Show,Closed-Lost,6
-Grooming Appointment No Show / Cancelled,Closed-Lost,6
-Boarding No Show / Cancelled,Closed-Lost,6
+Closed Won,Closed Won,5
+Daycare Package Purchased,Closed Won,5
+Invoiced,Closed Won,5
+Closed Lost,Closed Lost,6
+Spam,Closed Lost,6
+Duplicate,Closed Lost,6
+Trial Day No Show,Closed Lost,6
+Grooming Appointment No Show / Cancelled,Closed Lost,6
+Boarding No Show / Cancelled,Closed Lost,6

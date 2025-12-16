@@ -22,6 +22,7 @@ sources:
       - name: DEAL_CONTACT
       - name: TEAM
       - name: OWNER_TEAM
+      - name: DEAL_STAGE
       
       
   - name: wagway_hubspot_pawville_raw
@@ -42,6 +43,7 @@ sources:
       - name: ROLE
       - name: DEAL_CONTACT
       - name: PUPS_PRODUCTS
+      - name: DEAL_STAGE
 
   - name: wagway_snapshots
     database: wagway_raw     
@@ -142,6 +144,7 @@ sources:
       - name: ROLE
       - name: QUOTE
       - name: DEAL_CONTACT
+      - name: DEAL_STAGE
 
 
   - name: amh_snapshots
@@ -179,6 +182,8 @@ sources:
       - name: HUBSPOT_OWNER
       - name: HUBSPOT_TICKET
       - name: HUBSPOT_ROLE
+      - name: HUBSPOT_DEAL_CONTACT
+      - name: AMH_OPPORTUNITY_STAGE_MAPPING
 
 
   - name: playfly_hubspot_raw
@@ -200,6 +205,7 @@ sources:
       - name: TICKET
       - name: ROLE
       - name: DEAL_CONTACT
+      - name: DEAL_STAGE
 
 
   - name: playfly_snapshots

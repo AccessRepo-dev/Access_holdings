@@ -2,7 +2,7 @@
 {{
     config(
         enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]
-        and var("company", "none") in ["wagway"]
+        and var("company", "none") in ["wagway", "playfly", "amh"]
     )
 }}
 
@@ -32,14 +32,25 @@ with
             dps.label as stage_name,
             dsm.mapped_stage_name,
             cast(ds.date_entered as date) as date_entered
-        from wagway_raw.hubspot.deal_stage ds
+
+        {% if company == "wagway" %} from WAGWAY_RAW.HUBSPOT.DEAL_STAGE ds
+
+        {% elif company == "playfly"%} from PLAYFLY_RAW.HUBSPOT.DEAL_STAGE ds
+
+        {% else %} from AMH_RAW.HUBSPOT.DEAL_STAGE ds
+
+        {% endif %}
         left join
             {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE_STAGE") }} dps
             on dps.stage_id = ds.value
         left join
             {{ ref("hubspot_dim_stage_mapping") }} dsm
             on dps.label = dsm.stage_name
-            and source_schema = 'HUBSPOT_PUPS'
+            {% if company == "wagway" %} and source_schema = 'HUBSPOT_PUPS'
+
+            {% else %} and source_schema = concat('HUBSPOT_', '{{company | upper}}')
+
+            {% endif %}
     ),
     stage_dates_by_opp as (
 
@@ -48,27 +59,27 @@ with
 
             /* ---- Final standardized funnel dates ---- */
             min(
-                case when mapped_stage_name = 'Opportunity' then date_entered end
+                case when lower(mapped_stage_name) = 'opportunity' then date_entered end
             ) as opportunity_date,
 
             min(
-                case when mapped_stage_name = 'Proposal Requested' then date_entered end
+                case when lower(mapped_stage_name) = 'proposal requested' then date_entered end
             ) as proposal_requested_date,
 
             min(
-                case when mapped_stage_name = 'Proposal Sent' then date_entered end
+                case when lower(mapped_stage_name) = 'proposal sent' then date_entered end
             ) as proposal_sent_date,
 
             min(
-                case when mapped_stage_name = 'Negotiation' then date_entered end
+                case when lower(mapped_stage_name) = 'negotiation' then date_entered end
             ) as negotiation_date,
 
             min(
-                case when mapped_stage_name = 'Closed-Won' then date_entered end
+                case when lower(mapped_stage_name) = 'closed won' then date_entered end
             ) as closed_won_date,
 
             min(
-                case when mapped_stage_name = 'Closed-Lost' then date_entered end
+                case when lower(mapped_stage_name) = 'closed lost' then date_entered end
             ) as closed_lost_date
 
         from stage_dates
@@ -107,29 +118,27 @@ with
 
                 /* ---- Final standardized funnel dates ---- */
                 min(
-                    case when mapped_stage_name = 'Opportunity' then date_entered end
+                case when lower(mapped_stage_name) = 'opportunity' then date_entered end
                 ) as opportunity_date,
 
                 min(
-                    case
-                        when mapped_stage_name = 'Proposal Requested' then date_entered
-                    end
+                    case when lower(mapped_stage_name) = 'proposal requested' then date_entered end
                 ) as proposal_requested_date,
 
                 min(
-                    case when mapped_stage_name = 'Proposal Sent' then date_entered end
+                    case when lower(mapped_stage_name) = 'proposal sent' then date_entered end
                 ) as proposal_sent_date,
 
                 min(
-                    case when mapped_stage_name = 'Negotiation' then date_entered end
+                    case when lower(mapped_stage_name) = 'negotiation' then date_entered end
                 ) as negotiation_date,
 
                 min(
-                    case when mapped_stage_name = 'Closed-Won' then date_entered end
+                    case when lower(mapped_stage_name) = 'closed won' then date_entered end
                 ) as closed_won_date,
 
                 min(
-                    case when mapped_stage_name = 'Closed-Lost' then date_entered end
+                    case when lower(mapped_stage_name) = 'closed lost' then date_entered end
                 ) as closed_lost_date
 
             from stage_dates_pawville
@@ -152,10 +161,15 @@ select distinct
         md5(
             coalesce(a.property_product_group, '') || '|' || coalesce('HUBSPOT', '')
         ) as product_category_id,
-    {% else %}
 
+    {% elif company == "wagway" %}
         md5(
             coalesce(a.property_service_category, '') || '|' || coalesce('HUBSPOT', '')
+        ) as product_category_id,
+
+    {% else %}
+        md5(
+            coalesce(a.property_service_request, '') || '|' || coalesce('HUBSPOT', '')
         ) as product_category_id,
 
     {% endif %}

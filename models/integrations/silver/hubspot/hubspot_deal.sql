@@ -68,6 +68,9 @@ with
             {% if company | lower != "amh" %}
                 trim(property_description) as property_description,
             {% endif %}
+            {% if company | lower == "amh" %}
+                trim(property_service_request) as property_service_request,
+            {% endif %}
             PROPERTY_HS_IS_CLOSED_WON,
             PROPERTY_HS_IS_CLOSED_LOST,
             {% if sourcesystem == "HUBSPOT_PAWVILLE" %}

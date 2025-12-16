@@ -10,6 +10,6 @@ Decision Maker Bought-In,Proposal Sent,3
 5 - Negotiating Terms,Negotiation,4
 Contract Sent,Negotiation,4
 6 - Contract Sent,Negotiation,4
-Closed Won,Closed-Won,5
-Closed Lost,Closed-Lost,6
-Rotting,Closed-Lost,6
+Closed Won,Closed Won,5
+Closed Lost,Closed Lost,6
+Rotting,Closed Lost,6
