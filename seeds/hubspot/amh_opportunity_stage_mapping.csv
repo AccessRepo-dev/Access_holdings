@@ -1,58 +1,28 @@
 STAGE_NAME,MAPPED_STAGE_NAME,SORT_ORDER
-Qualified To Buy,Opportunity,1
-New,Opportunity,1
-Contract/Proposal Sent,Proposal Sent,3
-Decision Maker Bought-In,Opportunity,1
-In Process,Opportunity,1
-Closed Lost,Closed Lost,6
-Attempted To Contact,Opportunity,1
-Closed lost,Closed Lost,6
-Booked Meeting/Tour,Opportunity,1
-Closed Lost,Closed Lost,6
-New,Opportunity,1
-In process,Opportunity,1
-Closed won,Closed Won,5
-Contract Sent,Proposal Sent,3
-Prospect,Opportunity,1
-Closed Won,Closed Won,5
-Negotiation,Negotiation,4
-Proposal Sent,Proposal Sent,3
-Closed Won,Closed Won,5
-Site Tour scheduled,Opportunity,1
-Contract Sent,Proposal Sent,3
-Definite,Closed Won,5
-Contract sent,Proposal Sent,3
-Appointment Scheduled,Opportunity,1
-Closed Won,Closed Won,5
-Presentation Scheduled,Opportunity,1
-Closed,Closed Won,5
-Tentative,Opportunity,1
-Closed Lost,Closed Lost,6
-New,Opportunity,1
-Closed Lost,Closed Lost,6
-Closed Won,Closed Won,5
-Contract/Proposal Sent,Proposal Sent,3
-Confirmed,Closed Won,5
-Attempted To Contact,Opportunity,1
-Pending,Closed Won,5
-Checked Out,Closed Won,5
-Booked Meeting/Tour,Opportunity,1
-On Leave,Closed Won,5
-In Process,Opportunity,1
-Cancelled,Closed Lost,6
-Checked In,Closed Won,5
-Contract/Proposal Sent,Proposal Sent,3
-Checked In,Closed Won,5
-Closed Won,Closed Won,5
-Booked Meeting/Tour,Opportunity,1
-Cancelled,Closed Lost,6
-Checked Out,Closed Won,5
-Pending,Opportunity,1
-On Leave,Closed Won,5
-In Process,Opportunity,1
-Attempted To Contact,Opportunity,1
-Closed Lost,Closed Lost,6
-New,Opportunity,1
-Confirmed,Closed Won,5
-Lost,Closed Lost,6
-New,Opportunity,1
+Lead,Lead,1
+New,Opportunity,2
+Prospect,Opportunity,3
+Attempted To Contact,Opportunity,4
+Checked In,Opportunity,5
+On Leave,Opportunity,6
+Cancelled,Closed Lost,7
+Appointment Scheduled,Opportunity,8
+Booked Meeting/Tour,Opportunity,9
+Site Tour scheduled,Opportunity,10
+Presentation Scheduled,Proposal Requested,11
+Qualified To Buy,Proposal Requested,12
+Decision Maker Bought-In,Proposal Requested,13
+Tentative,Opportunity,14
+Definite,Closed Won,15
+Confirmed,Closed Won,16
+Proposal Sent,Proposal Sent,17
+Contract/Proposal Sent,Proposal Sent,18
+Contract Sent,Proposal Sent,19
+Pending,Proposal Sent,20
+Negotiation,Negotiation,21
+In Process,Negotiation,22
+Closed Won,Closed Won,23
+Closed,Closed Won,24
+Closed Lost,Closed Lost,25
+Lost,Closed Lost,26
+Checked Out,Closed Won,27
