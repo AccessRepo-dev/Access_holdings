@@ -30,7 +30,7 @@ WITH CTE AS (
         CONCAT(PROPERTY_INVOICE_ID, '-pawville') AS PROPERTY_INVOICE_ID,
         PROPERTY_SERVICE_CATEGORY,
         'Pawville' AS COMPANY
-    FROM {{ get_silver_source('wagway', 'hubspot_pawville_deal') }}
+    FROM {{ get_silver_source('wagway', 'HUBSPOT_PAWVILLE_DEAL') }}
     WHERE IS_ACTIVE = 1
 
     UNION ALL
@@ -80,7 +80,7 @@ WITH CTE AS (
         CONCAT(PROPERTY_INVOICE_ID, '-pupspetclub') AS PROPERTY_INVOICE_ID,
         PROPERTY_SERVICE_CATEGORY,
         'PUPS Pet Club' AS COMPANY
-    FROM {{ get_silver_source('wagway', 'hubspot_deal') }}
+    FROM {{ get_silver_source('wagway', 'HUBSPOT_DEAL') }}
     WHERE IS_ACTIVE = 1
 ),
 
@@ -184,16 +184,16 @@ final_enriched AS (
         'Invoiced') AS service_type,
         f.grouped_service_type
     FROM services AS f
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_deal_contact') }} AS b
+    LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_DEAL_CONTACT') }} AS b
         ON f.deal_id = b.deal_id
         AND b.is_active = 1
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_contact') }}  AS c
+    LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_CONTACT') }}  AS c
         ON c.id = b.contact_id
         AND c.is_active = 1
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_deal_contact') }} AS d
+    LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_PAWVILLE_DEAL_CONTACT') }} AS d
         ON f.deal_id = d.deal_id
         AND d.is_active = 1
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_contact') }} AS e
+    LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_PAWVILLE_CONTACT') }} AS e
         ON e.id = d.contact_id
         AND e.is_active = 1
     LEFT JOIN (
@@ -227,8 +227,8 @@ CTE_DEAL_STAGE AS
         DPS.IS_CLOSED,
         DPS.PROBABILITY,
         'PUPS Pet Club' AS COMPANY
-    FROM {{ get_silver_source('wagway', 'hubspot_deal_pipeline_stage') }} DPS
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_deal_pipeline') }} DP 
+    FROM {{ get_silver_source('wagway', 'HUBSPOT_DEAL_PIPELINE_STAGE') }} DPS
+    LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_DEAL_PIPELINE') }} DP 
         ON DP.PIPELINE_ID = DPS.PIPELINE_ID AND DP.IS_ACTIVE=1
     WHERE DPS.IS_ACTIVE=1
 
@@ -246,8 +246,8 @@ CTE_DEAL_STAGE AS
         DPS.IS_CLOSED,
         DPS.PROBABILITY,
         'PAWVILLE' AS COMPANY
-    FROM {{ get_silver_source('wagway', 'hubspot_pawville_deal_pipeline_stage') }} DPS
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_deal_pipeline') }}DP 
+    FROM {{ get_silver_source('wagway', 'HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE') }} DPS
+    LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_PAWVILLE_DEAL_PIPELINE') }}DP 
         ON DP.PIPELINE_ID = DPS.PIPELINE_ID
 )
 
