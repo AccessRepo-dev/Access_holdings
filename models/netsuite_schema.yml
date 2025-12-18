@@ -151,34 +151,7 @@ sources:
         description: Addback adjustments for reporting and reconciliation.
       - name: NETSUITE_CUSTOMRECORD_CSEG1
         description: Cleaned and harmonized custom reporting segment.
-      - name: hubspot_pawville_deal
-        description: Standardized HubSpot deal data.
-      - name: hubspot_pawville_deal_contact
-        description: Relationship mapping between deals and contacts in HubSpot.
-      - name: hubspot_pawville_contact
-        description: Standardized HubSpot contact records.
-      - name: hubspot_pawville_deal_pipeline_stage
-        description: HubSpot stage-level pipeline metadata for Pawville.
-      - name: hubspot_pawville_deal_pipeline
-        description: Pipeline structure definition for HubSpot Pawville workspace.
-      - name: hubspot_pawville_owner
-        description: Owner records mapped to HubSpot users.
-      - name: hubspot_deal
-        description: Standardized HubSpot deals table.
-      - name: hubspot_deal_contact
-        description: Deal-to-contact relationship mapping.
-      - name: hubspot_contact
-        description: Standardized HubSpot contact records.
-      - name: hubspot_deal_pipeline_stage
-        description: Stage definitions within HubSpot sales pipelines.
-      - name: hubspot_deal_pipeline
-        description: HubSpot pipeline metadata.
-      - name: hubspot_owner
-        description: Owner-level metadata defining assignment within HubSpot.
-      - name: hubspot_owner_team
-        description: Relationship between HubSpot users and teams.
-      - name: hubspot_team
-        description: HubSpot team metadata.
+
       - name: wagway_location_capacity_mapping
         description: Mapping between business locations and capacity attributes.
       - name: netsuite_coa
