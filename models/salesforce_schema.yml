@@ -19,6 +19,7 @@ sources:
       - name: QUOTE
       - name: QUOTE_LINE_ITEM
       - name: TASK
+      - name: OPPORTUNITY_FIELD_HISTORY
 
    
 

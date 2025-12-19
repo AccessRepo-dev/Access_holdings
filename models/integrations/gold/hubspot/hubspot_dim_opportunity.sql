@@ -13,7 +13,7 @@
         alias="dim_opportunity",
         materialized="incremental",
         incremental_strategy="merge",
-        unique_key="ID_DATE_KEY",
+        unique_key="OPPORTUNITY_ID",
     )
 }}
 
@@ -33,19 +33,18 @@ with
             dsm.mapped_stage_name,
             cast(ds.date_entered as date) as date_entered
 
-        {% if company == "wagway" %} from WAGWAY_RAW.HUBSPOT.DEAL_STAGE ds
+        {% if company == "wagway" %} from wagway_raw.hubspot.deal_stage ds
 
-        {% elif company == "playfly"%} from PLAYFLY_RAW.HUBSPOT.DEAL_STAGE ds
+        {% elif company == "playfly" %} from playfly_raw.hubspot.deal_stage ds
 
-        {% else %} from AMH_RAW.HUBSPOT.DEAL_STAGE ds
+        {% else %} from amh_raw.hubspot.deal_stage ds
 
         {% endif %}
         left join
             {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE_STAGE") }} dps
             on dps.stage_id = ds.value
         left join
-            {{ ref("hubspot_dim_stage_mapping") }} dsm
-            on dps.label = dsm.stage_name
+            {{ ref("hubspot_dim_stage_mapping") }} dsm on dps.label = dsm.stage_name
             {% if company == "wagway" %} and source_schema = 'HUBSPOT_PUPS'
 
             {% else %} and source_schema = concat('HUBSPOT_', '{{company | upper}}')
@@ -63,11 +62,16 @@ with
             ) as opportunity_date,
 
             min(
-                case when lower(mapped_stage_name) = 'proposal requested' then date_entered end
+                case
+                    when lower(mapped_stage_name) = 'proposal requested'
+                    then date_entered
+                end
             ) as proposal_requested_date,
 
             min(
-                case when lower(mapped_stage_name) = 'proposal sent' then date_entered end
+                case
+                    when lower(mapped_stage_name) = 'proposal sent' then date_entered
+                end
             ) as proposal_sent_date,
 
             min(
@@ -93,9 +97,8 @@ with
             from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_CONTACT") }}
             where is_active = 1
             group by 1
-        )
-
-        ,stage_dates_pawville as (
+        ),
+        stage_dates_pawville as (
 
             select
                 ds.deal_id,
@@ -118,27 +121,41 @@ with
 
                 /* ---- Final standardized funnel dates ---- */
                 min(
-                case when lower(mapped_stage_name) = 'opportunity' then date_entered end
+                    case
+                        when lower(mapped_stage_name) = 'opportunity' then date_entered
+                    end
                 ) as opportunity_date,
 
                 min(
-                    case when lower(mapped_stage_name) = 'proposal requested' then date_entered end
+                    case
+                        when lower(mapped_stage_name) = 'proposal requested'
+                        then date_entered
+                    end
                 ) as proposal_requested_date,
 
                 min(
-                    case when lower(mapped_stage_name) = 'proposal sent' then date_entered end
+                    case
+                        when lower(mapped_stage_name) = 'proposal sent'
+                        then date_entered
+                    end
                 ) as proposal_sent_date,
 
                 min(
-                    case when lower(mapped_stage_name) = 'negotiation' then date_entered end
+                    case
+                        when lower(mapped_stage_name) = 'negotiation' then date_entered
+                    end
                 ) as negotiation_date,
 
                 min(
-                    case when lower(mapped_stage_name) = 'closed won' then date_entered end
+                    case
+                        when lower(mapped_stage_name) = 'closed won' then date_entered
+                    end
                 ) as closed_won_date,
 
                 min(
-                    case when lower(mapped_stage_name) = 'closed lost' then date_entered end
+                    case
+                        when lower(mapped_stage_name) = 'closed lost' then date_entered
+                    end
                 ) as closed_lost_date
 
             from stage_dates_pawville
@@ -246,6 +263,7 @@ select distinct
     case
         when is_won = 0 then coalesce(so.closed_lost_date, close_date) else null
     end as closed_lost_date,
+    dp.label as pipeline_name,
 
     a.property_hs_lastmodifieddate as last_modified_date,
 
@@ -263,6 +281,10 @@ left join
     on c.id = b.contact_id
     and c.is_active = 1
 left join stage_dates_by_opp so on so.deal_id = a.deal_id
+left join
+    {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE") }} dp
+    on dp.pipeline_id = a.deal_pipeline_id
+    and dp.is_active = 1
 where a.is_active = 1
 
 {% if company == "wagway" %}
@@ -358,6 +380,7 @@ where a.is_active = 1
         case
             when is_won = 0 then coalesce(so.closed_lost_date, close_date) else null
         end as closed_lost_date,
+        dp.label as pipeline_name,
 
         a.property_hs_lastmodifieddate as last_modified_date,
         'HUBSPOT_PAWVILLE' as source_schema,
@@ -369,6 +392,10 @@ where a.is_active = 1
         on c.id = b.contact_id
         and c.is_active = 1
     left join stage_dates_by_opp_pawville so on so.deal_id = a.deal_id
+    left join
+        {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE") }} dp
+        on dp.pipeline_id = a.deal_pipeline_id
+        and dp.is_active = 1
     where a.is_active = 1
 
 {% endif %}

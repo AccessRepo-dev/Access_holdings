@@ -1,33 +1,34 @@
 STAGE_NAME,MAPPED_STAGE_NAME,SORT_ORDER
-Invoiced,Closed Won,5
-New Opportunity,Opportunity,1
-Contacting,Opportunity,1
-In Discussion,Opportunity,1
-Grooming Appointment Set,Proposal Requested,2
-Grooming Appointment No Show / Canceled,Closed Lost,6
-Grooming Appointment Complete,Proposal Sent,3
-Duplicate,Closed Lost,6
-Closed Lost,Closed Lost,6
-Closed Won,Closed Won,5
-Spam,Closed Lost,6
-Trial Day Set,Proposal Requested,2
-Trial Day No Show,Closed Lost,6
-Trial Day Complete,Proposal Sent,3
-Daycare Package Purchased,Negotiation,4
-Initial Commitment,Negotiation,4
-Sales Offer Made,Negotiation,4
-Puppy Playcare Package Purchased,Negotiation,4
-New,Opportunity,1
-Contacted,Opportunity,1
-Pet Sitting Reservation Set,Proposal Requested,2
-Pet Sitting Reservation No Show / Canceled,Closed Lost,6
-Pet Sitting Reservation Completed,Proposal Sent,3
-PUPStart Set,Proposal Requested,2
-PUPStart No Show,Closed Lost,6
-PUPStart Complete,Proposal Sent,3
-Training Package Purchased,Negotiation,4
-Overnight Reservation Set,Proposal Requested,2
-Overnight No Show / Cancelled,Closed Lost,6
-Overnight Reservation Complete,Proposal Sent,3
-Membership Options Presented,Negotiation,4
-Membership Purchased,Negotiation,4
+Lead,Lead,1
+New Opportunity,Opportunity,2
+New,Opportunity,3
+Contacted,Opportunity,4
+Contacting,Opportunity,5
+In Discussion,Opportunity,6
+Grooming Appointment Set,Proposal Requested,7
+Overnight Reservation Set,Proposal Requested,8
+Trial Day Set,Proposal Requested,9
+PUPStart Set,Proposal Requested,10
+Pet Sitting Reservation Set,Proposal Requested,11
+Grooming Appointment Complete,Proposal Sent,12
+Overnight Reservation Complete,Proposal Sent,13
+Trial Day Complete,Proposal Sent,14
+PUPStart Complete,Proposal Sent,15
+Pet Sitting Reservation Completed,Proposal Sent,16
+Membership Options Presented,Negotiation,17
+Sales Offer Made,Negotiation,18
+Initial Commitment,Negotiation,19
+Training Package Purchased,Negotiation,20
+Membership Purchased,Negotiation,21
+Puppy Playcare Package Purchased,Negotiation,22
+Daycare Package Purchased,Negotiation,23
+Invoiced,Closed Won,24
+Closed Won,Closed Won,25
+Pet Sitting Reservation No Show / Canceled,Closed Lost,26
+Trial Day No Show,Closed Lost,27
+PUPStart No Show,Closed Lost,28
+Overnight No Show / Cancelled,Closed Lost,29
+Grooming Appointment No Show / Canceled,Closed Lost,30
+Spam,Closed Lost,31
+Duplicate,Closed Lost,32
+Closed Lost,Closed Lost,33
