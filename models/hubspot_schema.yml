@@ -568,7 +568,6 @@ sources:
 
       - name: HUBSPOT_DEAL_COMPANY
       - name: HUBSPOT_DEAL_CONTACT
-      - name: HUBSPOT_CONTACT
       - name: HUBSPOT_DEAL_PIPELINE_STAGE
       - name: HUBSPOT_ENGAGEMENT
       - name: HUBSPOT_LEAD
