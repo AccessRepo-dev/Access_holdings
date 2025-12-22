@@ -7,45 +7,191 @@ sources:
     tables:
        # ADP tables
       - name: ADP_PAYINSIGHTS
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
+
       - name: ADP_EMPLOYMENT
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
 
       # BEA tables
       - name: BEA_GDP_INDUSTRY
+      # Annual but no proper date column is present, hence no default test can be written directly Ex: 2000,2001
+      
       - name: BEA_GDP_NOMINAL
+      # Quarterly but no proper date column is present, hence no default test can be written directly Ex: 2000Q1,2000Q2
+
       - name: BEA_GDP_REAL
+      # Quarterly but no proper date column is present, hence no default test can be written directly Ex: 2000Q1,2000Q2
+
       - name: BEA_GDP_REGION
+      # Annual but no proper date column is present, hence no default test can be written directly Ex: 2000,2001
+
       - name: BEA_INDUSTRY_CODE
+      # Master data and hence freshness not applicable
 
       # BLS tables
       - name: BLS_CPI
+      # Annual but no proper date column is present, hence no default test can be written directly Ex: year: 2000,2001 and month: M01,M02
+
       - name: BLS_EMPLOYMENT
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
+
       - name: BLS_UNEMPLOYMENT
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
 
       - name: BLS_PPI
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
 
       # Housing tables
       - name: CENSUS_HOUSING_COMPLETED
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
+
       - name: CENSUS_HOUSING_STARTS
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
+            
       - name: FHFA_HOUSING
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
+
       - name: NAHB_HOUSING
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
 
       # BOT tables
       - name: BOT_TRANSPORT_INDEX
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
 
       # UMICH tables
       - name: UMICH_SENT
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
 
       # WEATHER tables
       - name: WEATHER_DAILY_OBS
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
+
       - name: DEV_WEATHER_DAILY_OBS
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
+
       - name: DEV_WEATHER_FORECAST
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
 
       # Federal Reserve
       - name: FRED
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
       
   - name: macro_silver
     database: access_dev    
     schema: silver        
     tables:
       - name: location
+        loaded_at_field: date
+        freshness:
+          warn_after:
+            count: 30
+            period: day
+          error_after:
+            count: 32
+            period: day
 

@@ -6,14 +6,41 @@ sources:
     schema: ringcentral        
     tables:
       - name: ACCOUNT_CALL_LOG
+        <<: &freshness_ringcentral_defaults
+          loaded_at_field: _FIVETRAN_SYNCED
+          config:
+            freshness:
+              warn_after:
+                count: 24
+                period: hour
+              error_after:
+                count: 36
+                period: hour
+
       - name: SMS
+        <<: *freshness_ringcentral_defaults
+
       - name: SMS_TO
+        <<: *freshness_ringcentral_defaults
+
       - name: COMPANY_DIRECTORY_PHONE_NUMBER
+        <<: *freshness_ringcentral_defaults
+
       - name: COMPANY_DIRECTORY
+        <<: *freshness_ringcentral_defaults
+
       - name: USER_BUSINESS_HOUR_RANGE
+        <<: *freshness_ringcentral_defaults
+
       - name: MESSAGE
+        <<: *freshness_ringcentral_defaults
+
       - name: MESSAGE_TO
+        <<: *freshness_ringcentral_defaults
+
       - name: ACCOUNT_CALL_LOG_LEG
+        <<: *freshness_ringcentral_defaults
+
 
   - name: wagway_silver
     database: "{{ env_var('DBT_WAGWAY') }}"
@@ -21,19 +48,37 @@ sources:
     tables:
       - name: ringcentral_account_call_log
         description: Call logs captured from RingCentral phone systems.
+        <<: *freshness_ringcentral_defaults
+
       - name: ringcentral_company_directory_phone_number
         description: Directory of phone numbers associated with RingCentral users.
+        <<: *freshness_ringcentral_defaults
+
       - name: ringcentral_company_directory
         description: Directory-level user and organization records.
+        <<: *freshness_ringcentral_defaults
+
       - name: ringcentral_sms
         description: Standardized RingCentral SMS message dataset.
+        <<: *freshness_ringcentral_defaults
+
       - name: ringcentral_sms_to
         description: Receiver-level metadata associated with RingCentral SMS messages.
+        <<: *freshness_ringcentral_defaults
+
       - name: ringcentral_message
         description: Message-level logs from RingCentral communications.
+        <<: *freshness_ringcentral_defaults
+
       - name: ringcentral_message_to
         description: Recipient-level attributes for RingCentral message metadata.
+        <<: *freshness_ringcentral_defaults
+
       - name: ringcentral_user_business_hour_range
         description: Business hour configuration for users associated with RingCentral telephony.
+        <<: *freshness_ringcentral_defaults
+
       - name: ringcentral_account_call_log_leg
         description: Call logs captured from RingCentral phone systems including internal routed calls.
+        <<: *freshness_ringcentral_defaults
+

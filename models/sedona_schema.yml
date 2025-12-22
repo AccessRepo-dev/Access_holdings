@@ -7,6 +7,18 @@ sources:
     schema: silver
     tables:
       - name: sedona_coa
+        <<: &freshness_sedona_defaults
+          loaded_at_field: _FIVETRAN_SYNCED
+          config:
+            freshness:
+              warn_after:
+                count: 24
+                period: hour
+              error_after:
+                count: 36
+                period: hour
+
       - name: sedona_adjustments
+        <<: *freshness_sedona_defaults
   
   
