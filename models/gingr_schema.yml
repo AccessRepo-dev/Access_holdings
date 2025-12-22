@@ -6,12 +6,34 @@ sources:
     schema: gingr_pups_gingr_ods_prod   
     tables:
       - name: OWNERS
+        <<: &freshness_gingr_defaults
+          loaded_at_field: _FIVETRAN_SYNCED
+          config:
+            freshness:
+              warn_after:
+                count: 24
+                period: hour
+              error_after:
+                count: 36
+                period: hour
+
       - name: POS_TRANSACTIONS
+        <<: *freshness_gingr_defaults
+
       - name: POS_TRANSACTION_ITEMS_AUDIT
+        <<: *freshness_gingr_defaults
+
       - name: ACCOUNT_CODES
+        <<: *freshness_gingr_defaults
+
       - name: POS_TRANSACTION_ITEMS
+        <<: *freshness_gingr_defaults
+
       - name: RESERVATIONS
+        <<: *freshness_gingr_defaults
+
       - name: RESERVATION_TYPES
+        <<: *freshness_gingr_defaults
 
 
   - name: wagway_silver
@@ -20,15 +42,28 @@ sources:
     tables:
       - name: gingr_owners
         description: Gingr customer/owner master data.
+        <<: *freshness_gingr_defaults
+
       - name: gingr_pos_transactions
         description: Transaction-level dataset from Gingr POS.
+        <<: *freshness_gingr_defaults
+
       - name: gingr_pos_transaction_items_audit
         description: Audit layer records for Gingr POS item-level changes.
+        <<: *freshness_gingr_defaults
+
       - name: gingr_account_codes
         description: Account mapping reference from Gingr to financial reporting.
+        <<: *freshness_gingr_defaults
+
       - name: gingr_pos_transaction_items
         description: Item-level dataset from Gingr POS transactions.
+        <<: *freshness_gingr_defaults
+
       - name: gingr_reservations
         description: Reservation records.
+        <<: *freshness_gingr_defaults
+
       - name: gingr_reservation_types
         description: Reservation type records
+        <<: *freshness_gingr_defaults
