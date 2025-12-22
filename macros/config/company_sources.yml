@@ -2,10 +2,11 @@ version: 2
 
 sources:
   - name: finance
-    meta:
-      company_sources:
-        wagway:
-          - netsuite
-          - sage
-        playfly:
-          - netsuite
+    config:
+      meta:
+        company_sources:
+          wagway:
+            - netsuite
+            - sage
+          playfly:
+            - netsuite
