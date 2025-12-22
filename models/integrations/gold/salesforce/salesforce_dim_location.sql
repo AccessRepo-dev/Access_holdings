@@ -1,6 +1,5 @@
 {% set company = var('company', 'zeus') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'salesforce') }}
-{{ config(enabled = var('company', 'none') == 'zeus') }}
+{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
 
 {{ config(
     database = get_target_database(company),

@@ -1,10 +1,8 @@
-{% if false %}
-
-{% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') %}
+{% set company = var("company", "wagway") %}
+{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly"]) }}
 
 {{ config(
-    enabled = (var('company', 'none') in ('AMH')) and (var('sourcesystem', 'none') == 'hubspot'),
+    enabled = false,
     materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'HS_QUOTE_ID',
@@ -46,7 +44,4 @@ from source
 
 {% if is_incremental() %}
     where HS_QUOTE_ID not in (select HS_QUOTE_ID from {{ this }})
-{% endif %}
-
-
 {% endif %}

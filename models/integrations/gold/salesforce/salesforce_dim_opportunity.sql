@@ -1,140 +1,222 @@
-{% set company = var('company', 'zeus') | lower %}
-{{ config(enabled = var('sourcesystem', 'none') == 'salesforce') }}
-{{ config(enabled = var('company', 'none') == 'zeus') }}
+{% set company = var("company", "zeus") | lower %}
 
-{{ config(
-    database = get_target_database(company),
-    materialized = 'incremental',
-    incremental_strategy = 'merge',
-    alias = 'dim_opportunity',
-) }}
+{{
+    config(
+        enabled=var("sourcesystem", "salesforce") == "salesforce"
+        and var("company", "zeus") == "zeus",
+        database=get_target_database(company),
+        materialized="incremental",
+        incremental_strategy="merge",
+        unique_key="opportunity_id",
+        alias="dim_opportunity",
+    )
+}}
 
-with stage_dates as (
+with
+    hist_stage_dates as (
 
-SELECT 
-opportunity_id,
-old_value,
-SO.MAPPED_STAGE_NAME as old_mapped_value,
-new_value,
-SN.MAPPED_STAGE_NAME as new_mapped_value,
-created_date 
-FROM ZEUS_RAW.SALESFORCE.OPPORTUNITY_FIELD_HISTORY O 
-LEFT JOIN ZEUS_DEV.GOLD.DIM_STAGE_MAPPING SO ON trim(O.OLD_VALUE) = SO.STAGE_NAME
-LEFT JOIN ZEUS_DEV.GOLD.DIM_STAGE_MAPPING SN ON trim(O.NEW_VALUE) = SN.STAGE_NAME
-where field = 'StageName'
-and old_mapped_value <> new_mapped_value
-order by opportunity_id, created_date
-)
+        select opportunity_id, sn.mapped_stage_name as mapped_stage_name, created_date
+        from zeus_raw.salesforce.opportunity_field_history o
+        left join
+            {{ ref('salesforce_dim_stage_mapping') }} sn on trim(o.new_value) = sn.stage_name
+        where o.field = 'StageName'
 
-, stage_dates_by_opp as (
-SELECT
-    opportunity_id,
+    ),
 
-    MIN(CASE WHEN new_mapped_value = 'Opportunity'
-             THEN created_date END) AS opportunity_date,
+    hist_stage_dates_by_opp as (
 
-    MIN(CASE WHEN new_mapped_value = 'Proposal Requested'
-             THEN created_date END) AS proposal_requested_date,
+        select
+            opportunity_id,
+            min(
+                case when lower(mapped_stage_name) = 'opportunity' then created_date end
+            ) as opportunity_date,
+            min(
+                case
+                    when lower(mapped_stage_name) = 'proposal requested'
+                    then created_date
+                end
+            ) as proposal_requested_date,
+            min(
+                case
+                    when lower(mapped_stage_name) = 'proposal sent' then created_date
+                end
+            ) as proposal_sent_date,
+            min(
+                case when lower(mapped_stage_name) = 'negotiation' then created_date end
+            ) as negotiation_date,
+            min(
+                case when lower(mapped_stage_name) = 'closed won' then created_date end
+            ) as closed_won_date,
+            min(
+                case when lower(mapped_stage_name) = 'closed lost' then created_date end
+            ) as closed_lost_date
+        from hist_stage_dates
+        group by opportunity_id
 
-    MIN(CASE WHEN new_mapped_value = 'Proposal Sent'
-             THEN created_date END) AS proposal_sent_date,
+    ),
 
-    MIN(CASE WHEN new_mapped_value = 'Negotiation'
-             THEN created_date END) AS negotiation_date,
+    stage_dates as (
 
-    MIN(CASE WHEN new_mapped_value = 'Closed-won'
-             THEN created_date END) AS closed_won_date,
+        select a.opportunity_id, b.mapped_stage_name, a.dbt_valid_from as created_date
+        from {{ ref("salesforce_fact_opportunity") }} a
+        left join
+            {{ ref("salesforce_dim_stage_mapping") }} b on a.stage_name = b.stage_name
 
-    MIN(CASE WHEN new_mapped_value = 'Closed-lost'
-             THEN created_date END) AS closed_lost_date
+    ),
 
-FROM
-    stage_dates
-GROUP BY
-    opportunity_id
+    stage_dates_by_opp as (
+
+        select
+            opportunity_id,
+            min(
+                case when lower(mapped_stage_name) = 'opportunity' then created_date end
+            ) as opportunity_date,
+            min(
+                case
+                    when lower(mapped_stage_name) = 'proposal requested'
+                    then created_date
+                end
+            ) as proposal_requested_date,
+            min(
+                case
+                    when lower(mapped_stage_name) = 'proposal sent' then created_date
+                end
+            ) as proposal_sent_date,
+            min(
+                case when lower(mapped_stage_name) = 'negotiation' then created_date end
+            ) as negotiation_date,
+            min(
+                case when lower(mapped_stage_name) = 'closed won' then created_date end
+            ) as closed_won_date,
+            min(
+                case when lower(mapped_stage_name) = 'closed lost' then created_date end
+            ) as closed_lost_date
+        from stage_dates
+        group by opportunity_id
+
+    ),
+
+    base_opportunity as (
+
+        select
+            o.id as opportunity_id,
+            o.name as opportunity_name,
+            o.created_date as opportunity_date,
+            a.record_type_name_c as hub,
+            md5(coalesce(o.lead_source, '')) as sales_channel_id,
+            md5(coalesce(l.industry, '')) as product_category_id,
+            md5(
+                coalesce(a.billing_city, '')
+                || '|'
+                || coalesce(a.billing_state, '')
+                || '|'
+                || coalesce(a.billing_country, '')
+            ) as location_id,
+            o.close_date,
+            case when o.stage_name ilike 'close%' and is_won = 1 then 1 else 0 end as is_won,
+            case when o.stage_name ilike 'close%' then 1 else 0 end as is_closed,
+            -- o.is_won,
+            -- o.is_closed,
+            hs.opportunity_date as opp_date,
+            hs.proposal_requested_date as proposal_requested_date,
+            hs.proposal_sent_date as proposal_sent_date,
+            hs.negotiation_date as negotiation_date,
+            hs.closed_won_date as closed_won_date,
+            hs.closed_lost_date as closed_lost_date,
+            -- coalesce(hs.opportunity_date, cs.opportunity_date) as opp_date,
+            -- coalesce(
+            --     hs.proposal_requested_date, cs.proposal_requested_date
+            -- ) as proposal_requested_date,
+            -- coalesce(
+            --     hs.proposal_sent_date, cs.proposal_sent_date
+            -- ) as proposal_sent_date,
+            -- coalesce(hs.negotiation_date, cs.negotiation_date) as negotiation_date,
+            -- coalesce(hs.closed_won_date, cs.closed_won_date) as closed_won_date,
+            -- coalesce(hs.closed_lost_date, cs.closed_lost_date) as closed_lost_date,
+            o.last_modified_date
+        from {{ get_silver_source(company, "SALESFORCE_OPPORTUNITY") }} o
+        left join
+            {{ get_silver_source(company, "SALESFORCE_LEAD") }} l
+            on l.converted_opportunity_id = o.id
+            and l.is_active = 1
+        left join
+            {{ get_silver_source(company, "SALESFORCE_ACCOUNT") }} a
+            on a.account_id = o.account_id
+            and a.is_active = 1
+        left join
+            hist_stage_dates_by_opp hs
+            on hs.opportunity_id = o.id
+        --     and o.created_date <= '2025-11-01' 
+        -- left join
+        --     stage_dates_by_opp cs
+        --     on o.created_date > '2025-11-01'
+        --     and cs.opportunity_id = o.id
+        where
+            o.is_active = 1
+
+            {% if is_incremental() %}
+                and o.last_modified_date
+                > (select max(last_modified_date) from {{ this }})
+            {% endif %}
+
     )
 
+select
+    opportunity_id,
+    opportunity_name,
+    opportunity_date,
+    hub,
+    sales_channel_id,
+    product_category_id,
+    location_id,
+    close_date,
+    cast(is_won as Boolean) as is_won,
+    cast(is_closed as Boolean) as is_closed,
 
+    case
+        when is_won = 1
+        then
+            coalesce(
+                proposal_requested_date,
+                proposal_sent_date,
+                negotiation_date,
+                closed_won_date,
+                close_date
+            )
+        else
+            coalesce(
+                proposal_requested_date,
+                proposal_sent_date,
+                negotiation_date,
+                closed_lost_date,
+                close_date
+            )
+    end as proposal_requested_date,
 
+    case
+        when is_won = 1
+        then coalesce(proposal_sent_date, negotiation_date, closed_won_date, close_date)
+        else
+            coalesce(proposal_sent_date, negotiation_date, closed_lost_date, close_date)
+    end as proposal_sent_date,
 
-, source as (
+    case
+        when is_won = 1
+        then coalesce(negotiation_date, closed_won_date, close_date)
+        else coalesce(negotiation_date, closed_lost_date, close_date)
+    end as negotiation_date,
 
-    SELECT 
-    O.ID as OPPORTUNITY_ID,
-    O.NAME AS OPPORTUNITY_NAME,
-    O.CREATED_DATE as OPPORTUNITY_DATE,
-    -- B.STAGE_NAME as STAGE_NAME,
-    md5(
-        coalesce(O.LEAD_SOURCE,'')
-        ) as SALES_CHANNEL_ID,
-    -- O.LEAD_SOURCE as SALES_CHANNEL,
-    md5(
-        coalesce(L.INDUSTRY,'')
-        ) as PRODUCT_CATEGORY_ID,
-    -- L.INDUSTRY as PRODUCT_CATEGORY,
-    md5(
-        coalesce(A.BILLING_CITY,'') || '|' ||
-        coalesce(A.BILLING_STATE,'') || '|' ||
-        coalesce(A.BILLING_COUNTRY,'')
-        ) as LOCATION_ID,
-    -- A.OWNER_ID as MANAGER,
-    -- NULL AS SALES_ESTIMATE,
-    -- B.AMOUNT as AMOUNT,
-    -- B.PROBABILITY,
-    O.CLOSE_DATE,
-    O.IS_WON as IS_WON,
-    O.IS_CLOSED,
-    CASE WHEN IS_WON = 1 THEN COALESCE(SO.proposal_requested_date,
-             SO.proposal_sent_date,
-             SO.negotiation_date,
-             SO.closed_won_date,
-             O.CLOSE_DATE) 
-             ELSE 
-             COALESCE(SO.proposal_requested_date,
-             SO.proposal_sent_date,
-             SO.negotiation_date,
-             SO.closed_lost_date,
-             O.CLOSE_DATE) END
-             AS proposal_requested_date,
-    CASE WHEN IS_WON = 1 THEN COALESCE(
-             SO.proposal_sent_date,
-             SO.negotiation_date,
-             SO.closed_won_date,
-             O.CLOSE_DATE) 
-             ELSE 
-             COALESCE(
-             SO.proposal_sent_date,
-             SO.negotiation_date,
-             SO.closed_lost_date,
-             O.CLOSE_DATE) END
-             AS proposal_sent_date,  
-    CASE WHEN IS_WON = 1 THEN COALESCE(
-             SO.negotiation_date,
-             SO.closed_won_date,
-             O.CLOSE_DATE) 
-             ELSE 
-             COALESCE(
-             SO.negotiation_date,
-             SO.closed_lost_date,
-             O.CLOSE_DATE) END
-             AS negotiation_date,
+    case
+        when is_won = 1 then coalesce(closed_won_date, close_date)
+    end as closed_won_date,
 
-    CASE WHEN IS_WON = 1 THEN COALESCE(SO.closed_won_date,
-             O.CLOSE_DATE) ELSE NULL END AS closed_won_date,
-    CASE WHEN IS_WON = 0 THEN COALESCE(SO.closed_lost_date,
-             O.CLOSE_DATE) ELSE NULL END AS closed_lost_date,
-    O.LAST_MODIFIED_DATE,
-    CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    FROM {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}  as O
-    LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_LEAD') }}  as L 
-        ON L.CONVERTED_OPPORTUNITY_ID = O.ID and  L.IS_ACTIVE = 1
-    LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}  A 
-        ON A.ACCOUNT_ID = O.ACCOUNT_ID 
-        and A.IS_ACTIVE = 1
-    LEFT JOIN stage_dates_by_opp SO ON SO.opportunity_id = O.ID
-    where O.IS_ACTIVE = 1
+    case
+        when is_won = 0 then coalesce(closed_lost_date, close_date)
+    end as closed_lost_date,
 
-)
-select *
-from source
+    'Zeus' as pipeline_name,
+    last_modified_date,
+    concat('SALESFORCE_', '{{ company | upper }}') as source_schema,
+    current_timestamp()::timestamp_ntz as gold_load_date
+
+from base_opportunity

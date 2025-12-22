@@ -63,6 +63,7 @@ sources:
         <<: *freshness_hubspot_defaults
 
       - name: OWNER_TEAM
+      - name: DEAL_STAGE
         <<: *freshness_hubspot_defaults
 
       
@@ -109,6 +110,7 @@ sources:
         <<: *freshness_hubspot_defaults
 
       - name: PUPS_PRODUCTS
+      - name: DEAL_STAGE
         <<: *freshness_hubspot_defaults
 
 
@@ -299,6 +301,8 @@ sources:
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_PAWVILLE_DEAL_CONTACT
+      - name: WAGWAY_OPPORTUNITY_STAGE_MAPPING
+      - name: WAGWAY_PAWVILLE_OPPORTUNITY_STAGE_MAPPING
         <<: *freshness_hubspot_defaults
 
       - name: WAGWAY_OPPORTUNITY_STAGE_MAPPING
@@ -355,6 +359,7 @@ sources:
         <<: *freshness_hubspot_defaults
 
       - name: DEAL_CONTACT
+      - name: DEAL_STAGE
         <<: *freshness_hubspot_defaults
 
 
@@ -441,6 +446,8 @@ sources:
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_ROLE
+      - name: HUBSPOT_DEAL_CONTACT
+      - name: AMH_OPPORTUNITY_STAGE_MAPPING
         <<: *freshness_hubspot_defaults
 
 
@@ -491,6 +498,7 @@ sources:
         <<: *freshness_hubspot_defaults
 
       - name: DEAL_CONTACT
+      - name: DEAL_STAGE
         <<: *freshness_hubspot_defaults
 
 
@@ -562,6 +570,15 @@ sources:
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_DEAL_COMPANY
+      - name: HUBSPOT_DEAL_CONTACT
+      - name: HUBSPOT_CONTACT
+      - name: HUBSPOT_DEAL_PIPELINE_STAGE
+      - name: HUBSPOT_ENGAGEMENT
+      - name: HUBSPOT_LEAD
+      - name: HUBSPOT_OWNER
+      - name: HUBSPOT_TICKET
+      - name: HUBSPOT_ROLE
+      - name: PLAYFLY_OPPORTUNITY_STAGE_MAPPING
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_CONTACT

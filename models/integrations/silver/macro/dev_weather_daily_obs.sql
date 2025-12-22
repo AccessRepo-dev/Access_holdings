@@ -18,7 +18,6 @@ select
     round("WINDSPEED_MPH", 2) as WIND_AVG_24H_MPH,
     TRIM(CONDITIONS) as CONDITIONS,
     TRIM(SOURCE) as SOURCE,
-    HOUR,
+    cast(left(hour,2) as int) as HOUR,
     round("TEMP", 2) as TEMP
 from source
-where lower(source) = 'daily'

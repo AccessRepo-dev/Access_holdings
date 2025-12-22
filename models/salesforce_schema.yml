@@ -54,6 +54,7 @@ sources:
         <<: *freshness_salesforce_defaults
 
       - name: TASK
+      - name: OPPORTUNITY_FIELD_HISTORY
         <<: *freshness_salesforce_defaults
 
 

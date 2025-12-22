@@ -1,8 +1,7 @@
-{% if false %}
-
 {% set company = var('company') %}
 {{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
 {{ config(
+    enabled = false,
     database = get_target_database(company),
     alias = 'dim_deal_pipeline_stage',
     materialized = 'incremental',
@@ -29,9 +28,4 @@ SELECT
     PROBABILITY,
     'HUBSPOT_PAWVILLE' AS SOURCE_SCHEMA
 FROM {{ get_silver_source(company, 'HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE') }} 
-{% endif %}
-
-
-
-
 {% endif %}

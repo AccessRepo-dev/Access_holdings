@@ -1,33 +1,36 @@
-stage_name,mapped_stage_name,sort_order
+STAGE_NAME,MAPPED_STAGE_NAME,SORT_ORDER
 Initial Screening,Opportunity,1
 Identified Opportunity,Opportunity,2
-Opportunity Screened,Opportunity,3
-Sales Checklist,Opportunity,4
-NDA Secured,Opportunity,5
-Next Steps Scheduled,Opportunity,6
-Nurturing,Opportunity,7
-Demo Conducted,Opportunity,8
-Completed Onsight / MP,Opportunity,9
-Design,Opportunity,10
-Diligence,Opportunity,11
-Secure Proposal Opportunity,Opportunity,12
-Engagement,Opportunity,13
-Site Ramping,Opportunity,14
-Proposal Submitted,Proposal Requested,15
-Preparing LOI,Proposal Requested,16
-Proposal Delivered,Proposal Sent,17
-Quote Sent,Proposal Sent,18
-Quote Negotiation / Review,Negotiation,19
-Negotiation,Negotiation,20
-Negotiations,Negotiation,21
-Contract Under Negotiation,Negotiation,22
-Legal Review,Negotiation,23
-Contract Sent,Negotiation,24
-Verbal Authorization,Negotiation,25
-Executed LOI,Negotiation,26
-Completed,Closed-won,27
-Closed Won,Closed-won,28
-Closed Lost,Closed-lost,29
-Contract Lost,Closed-lost,30
-Eliminated,Closed-lost,31
-Unqualified,Closed-lost,32
+Site Identified,Opportunity,3
+Opportunity Screened,Opportunity,4
+Sales Checklist,Opportunity,5
+NDA Secured,Opportunity,6
+Next Steps Scheduled,Opportunity,7
+Nurturing,Opportunity,8
+Demo Conducted,Opportunity,9
+Completed Onsight / MP,Opportunity,10
+Design,Opportunity,11
+Design/Permitting,Opportunity,12
+Diligence,Opportunity,13
+Secure Proposal Opportunity,Opportunity,14
+Engagement,Opportunity,15
+Site Ramping,Opportunity,16
+Proposal Submitted,Proposal Requested,17
+Preparing LOI,Proposal Requested,18
+Proposal Delivered,Proposal Sent,19
+Quote Sent,Proposal Sent,20
+Quote Negotiation / Review,Negotiation,21
+Negotiation,Negotiation,22
+Negotiations,Negotiation,23
+Contract Under Negotiation,Negotiation,24
+Legal Review,Negotiation,25
+Contract Sent,Negotiation,26
+Verbal Authorization,Negotiation,27
+LOI Process,Negotiation,28
+Executed LOI,Negotiation,29
+Completed,Closed Won,30
+Closed Won,Closed Won,31
+Closed Lost,Closed Lost,32
+Contract Lost,Closed Lost,33
+Eliminated,Closed Lost,34
+Unqualified,Closed Lost,35

@@ -1,6 +1,7 @@
 {% set company = var("company", "wagway") %}
-{{ config(enabled=var("sourcesystem", "hubspot") in ["hubspot", "hubspot_pawville"]) }}
-{{ config(enabled=var("company", "wagway") in ["wagway"]) }}
+{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly", "amh"]) }}
+
+
 {{
     config(
         database=get_target_database(company),
@@ -17,7 +18,7 @@ select
     distinct
         md5(   
         coalesce(nullif(A.property_hs_analytics_source,''), '') || '|' ||
-        coalesce('HUBSPOT_PUPS','')
+        coalesce('HUBSPOT','')
         ) as ID,
         CASE 
             WHEN A.property_hs_analytics_source is null or A.property_hs_analytics_source = '' then 'UNKNOWN' 
@@ -36,9 +37,11 @@ select
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, "HUBSPOT_DEAL") }} A
 
-UNION ALL
+
 
 {% if company == 'wagway'%} 
+
+UNION ALL
 
 select
     distinct

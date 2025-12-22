@@ -18,8 +18,10 @@ with hashed as (
         INSTALL_AMOUNT_C,
         OWNER_ID,
         CLOSE_DATE,
-        IS_CLOSED,
-        IS_WON,
+        case when o.stage_name ilike 'close%' and IS_WON = 1 then 1 else 0 end as IS_WON_N,
+        case when o.stage_name ilike 'close%' then 1 else 0 end as IS_CLOSED_N,
+        -- IS_CLOSED,
+        -- IS_WON,
         PROBABILITY,
         DBT_VALID_FROM,
         DBT_VALID_TO,
@@ -28,10 +30,10 @@ with hashed as (
             coalesce(INSTALL_AMOUNT_C::string,'') || '|' ||
             coalesce(OWNER_ID,'') || '|' ||
             coalesce(CLOSE_DATE::string,'') || '|' ||
-            coalesce(IS_WON::string,'') || '|' ||
-            coalesce(IS_CLOSED,'')
+            coalesce(IS_WON_N::string,'') || '|' ||
+            coalesce(IS_CLOSED_N,'')
         ) as attr_hash
-    from {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}
+    from {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }} o
 
 )
 , scd2 as (
@@ -42,8 +44,8 @@ with hashed as (
         STAGE_NAME,
         INSTALL_AMOUNT_C as AMOUNT,
         CLOSE_DATE,
-        IS_CLOSED,
-        IS_WON,
+        cast(IS_CLOSED_N as Boolean) as IS_CLOSED,
+        cast(IS_WON_N as Boolean) as IS_WON,
         PROBABILITY,
         min(DBT_VALID_FROM) over (partition by ID, attr_hash) as DBT_VALID_FROM,
         case 
@@ -59,4 +61,8 @@ with hashed as (
     from hashed
     qualify row_number() over (partition by ID, attr_hash order by DBT_VALID_FROM) = 1
 )
-select * from scd2
+select 
+
+*
+, row_number() over(partition by OPPORTUNITY_ID order by DBT_VALID_FROM) as rank
+ from scd2

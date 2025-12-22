@@ -1,6 +1,7 @@
 {% set company = var("company", "wagway") %}
-{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]) }}
-{{ config(enabled=var("company", "none") in ["wagway"]) }}
+{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly", "amh"]) }}
+
+
 
 {{ config(
     database = get_target_database(company),
@@ -15,9 +16,9 @@ SELECT
 
     md5(   
         coalesce(nullif(cast(ID as string),''), '') || '|' ||
-        coalesce('HUBSPOT_PUPS','')
+        coalesce('HUBSPOT','')
         ) as USER_ID,
-    CONCAT(FIRST_NAME,LAST_NAME) AS NAME ,
+    case when CONCAT(FIRST_NAME,LAST_NAME) = '' or CONCAT(FIRST_NAME,LAST_NAME) is null then 'Unknown' else CONCAT(FIRST_NAME,' ',LAST_NAME) end AS NAME ,
     is_active,
     
     {% if company == "wagway" %}
@@ -42,7 +43,7 @@ SELECT
         coalesce(nullif(cast(ID as string),''), '') || '|' ||
         coalesce('HUBSPOT_PAWVILLE','')
         ) as USER_ID,
-    CONCAT(FIRST_NAME,LAST_NAME) AS NAME ,
+    case when CONCAT(FIRST_NAME,LAST_NAME) = '' or CONCAT(FIRST_NAME,LAST_NAME) is null then 'Unknown' else CONCAT(FIRST_NAME,' ',LAST_NAME) end AS NAME ,
     is_active,
     'HUBSPOT_PAWVILLE' AS SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE

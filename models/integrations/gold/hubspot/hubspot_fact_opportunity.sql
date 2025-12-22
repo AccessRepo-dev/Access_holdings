@@ -1,6 +1,8 @@
 {% set company = var("company", "wagway") %}
-{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]) }}
-{{ config(enabled=var("company", "none") in ["wagway"]) }}
+{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly","amh"]) }}
+
+
+
 {{
     config(
         database=get_target_database(company),
@@ -76,20 +78,20 @@ join
 
 {% endif %}
 
-
+, final as (
 select
         CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
         ID as OPPORTUNITY_ID,
         md5(   
         coalesce(nullif(cast(OWNER_ID as string),''), '') || '|' ||
-        coalesce('HUBSPOT_PUPS','')
+        coalesce('HUBSPOT','')
         ) as OWNER_ID,
         STAGE_NAME,
         AMOUNT,
         CLOSE_DATE,
         IS_CLOSED,
         IS_WON,
-        PROBABILITY,
+        PROBABILITY*100 as PROBABILITY,
         min(DBT_VALID_FROM) over (partition by ID, attr_hash) as DBT_VALID_FROM,
         case 
             when max(case when DBT_VALID_TO is null then 1 else 0 end) 
@@ -126,7 +128,7 @@ select
         CLOSE_DATE,
         IS_CLOSED,
         IS_WON,
-        PROBABILITY,
+        PROBABILITY*100 as PROBABILITY,
         min(DBT_VALID_FROM) over (partition by ID, attr_hash) as DBT_VALID_FROM,
         case 
             when max(case when DBT_VALID_TO is null then 1 else 0 end) 
@@ -142,3 +144,10 @@ select
     qualify row_number() over (partition by ID, attr_hash order by DBT_VALID_FROM) = 1
 
 {% endif %}
+
+)
+
+SELECT 
+*
+, row_number() over(partition by opportunity_id, source_schema order by DBT_VALID_FROM) as rank
+FROM final

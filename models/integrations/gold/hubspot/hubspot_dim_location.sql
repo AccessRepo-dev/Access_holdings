@@ -1,6 +1,8 @@
-{% set company = var("company","wagway") %}
-{{ config(enabled=var("sourcesystem", "hubspot") in ["hubspot", "hubspot_pawville"]) }}
-{{ config(enabled=var("company", "wagway") in ["wagway"]) }}
+{% set company = var("company", "wagway") %}
+{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly","amh"]) }}
+
+
+
 {{
     config(
         database=get_target_database(company),
@@ -35,7 +37,7 @@ select
         coalesce(nullif(C.property_city,''), '') || '|' ||
         coalesce(nullif(C.property_state,''), '') || '|' ||
         coalesce(nullif(C.property_country,''), '') || '|' ||
-        coalesce('HUBSPOT_PUPS','')
+        coalesce('HUBSPOT','')
         ) as ID,
         coalesce(nullif(C.property_city,''), '') as CITY,
         coalesce(nullif(C.property_state,''), '') as STATE,
@@ -56,9 +58,9 @@ select
     LEFT JOIN {{ get_silver_source(company, "HUBSPOT_CONTACT") }} C ON c.id = B.contact_id and c.is_active = 1
 where a.is_active = 1
 
-UNION ALL
-
 {% if company == 'wagway'%} 
+
+UNION ALL
 
 select
     distinct
