@@ -7,8 +7,8 @@ sources:
     tables:
       - name: OWNERS
         <<: &freshness_gingr_defaults
-          loaded_at_field: _FIVETRAN_SYNCED
           config:
+            loaded_at_field: _FIVETRAN_SYNCED
             freshness:
               warn_after:
                 count: 24
@@ -19,6 +19,7 @@ sources:
 
       - name: POS_TRANSACTIONS
         <<: *freshness_gingr_defaults
+
 
       - name: POS_TRANSACTION_ITEMS_AUDIT
         <<: *freshness_gingr_defaults
