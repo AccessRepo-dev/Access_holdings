@@ -6,22 +6,65 @@ sources:
     schema: hubspot        
     tables:
       - name: COMPANY
+        <<: &freshness_hubspot_defaults
+          loaded_at_field: _FIVETRAN_SYNCED
+          config:
+            freshness:
+              warn_after:
+                count: 24
+                period: hour
+              error_after:
+                count: 36
+                period: hour
+
       - name: USERS
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
       - name: LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_COMPANY
+        <<: *freshness_hubspot_defaults
+
       - name: PUPS_PRODUCTS
+        <<: *freshness_hubspot_defaults
+
       - name: CONTACT
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
       - name: ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
       - name: LEAD
+        <<: *freshness_hubspot_defaults
+
       - name: OWNER
+        <<: *freshness_hubspot_defaults
+
       - name: TICKET
+        <<: *freshness_hubspot_defaults
+
       - name: ROLE
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_CONTACT
+        <<: *freshness_hubspot_defaults
+
       - name: TEAM
+        <<: *freshness_hubspot_defaults
+
       - name: OWNER_TEAM
+        <<: *freshness_hubspot_defaults
+
       
       
   - name: wagway_hubspot_pawville_raw
@@ -29,59 +72,142 @@ sources:
     schema: hubspot_pawville       
     tables:
       - name: COMPANY
+        <<: *freshness_hubspot_defaults
+
       - name: USERS
       - name: DEAL
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
       - name: LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_COMPANY
+        <<: *freshness_hubspot_defaults
+
       - name: CONTACT
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
       - name: ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
       - name: LEAD
+        <<: *freshness_hubspot_defaults
+
       - name: OWNER
+        <<: *freshness_hubspot_defaults
+
       - name: ROLE
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_CONTACT
+        <<: *freshness_hubspot_defaults
+
       - name: PUPS_PRODUCTS
+        <<: *freshness_hubspot_defaults
+
 
   - name: wagway_snapshots
     database: wagway_raw     
     schema: HUBSPOT_SNAPSHOTS        
     tables: 
-    - name : HUBSPOT_COMPANY
-    - name : HUBSPOT_CONTACT
-    - name : HUBSPOT_DEAL_COMPANY
-    - name : HUBSPOT_DEAL_PIPELINE
-    - name : HUBSPOT_DEAL_PIPELINE_STAGE
-    - name : HUBSPOT_DEAL
-    - name : HUBSPOT_ENGAGEMENT
-    - name : HUBSPOT_LEAD
-    - name : HUBSPOT_LINE_ITEM
-    - name : HUBSPOT_OWNER
-    - name : HUBSPOT_PUPS_PRODUCTS
-    - name : HUBSPOT_TICKET
-    - name : HUBSPOT_USERS
-    - name : HUBSPOT_ROLE
-    - name: HUBSPOT_DEAL_CONTACT
-    - name: HUBSPOT_TEAM
-    - name: HUBSPOT_OWNER_TEAM
+      - name : HUBSPOT_COMPANY
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_CONTACT
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL_COMPANY
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_LEAD
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_OWNER
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_PUPS_PRODUCTS
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_TICKET
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_USERS
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_ROLE
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_DEAL_CONTACT
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_TEAM
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_OWNER_TEAM
+        <<: *freshness_hubspot_defaults
 
   
   - name: wagway_snapshots
     database: wagway_raw     
     schema: HUBSPOT_PAWVILLE_SNAPSHOTS        
     tables: 
-    - name : HUBSPOT_PAWVILLE_COMPANY
-    - name : HUBSPOT_PAWVILLE_CONTACT
-    - name : HUBSPOT_PAWVILLE_DEAL_PIPELINE
-    - name : HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE
-    - name : HUBSPOT_PAWVILLE_DEAL
-    - name : HUBSPOT_PAWVILLE_ENGAGEMENT
-    - name : HUBSPOT_PAWVILLE_LINE_ITEM
-    - name : HUBSPOT_PAWVILLE_OWNER
-    - name : HUBSPOT_PAWVILLE_USERS
-    - name : HUBSPOT_PAWVILLE_ROLE
-    - name : HUBSPOT_PAWVILLE_LEAD
-    - name: HUBSPOT_PAWVILLE_DEAL_CONTACT
+      - name : HUBSPOT_PAWVILLE_COMPANY
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_PAWVILLE_CONTACT
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_PAWVILLE_DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_PAWVILLE_DEAL
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_PAWVILLE_ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_PAWVILLE_LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_PAWVILLE_OWNER
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_PAWVILLE_USERS
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_PAWVILLE_ROLE
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_PAWVILLE_LEAD
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_DEAL_CONTACT
+        <<: *freshness_hubspot_defaults
+
 
 
   - name: wagway_silver
@@ -89,36 +215,94 @@ sources:
     schema: SILVER        
     tables:
       - name: HUBSPOT_COMPANY
-      - name: HUBSPOT_USERS
-      - name: HUBSPOT_DEAL
-      - name: HUBSPOT_DEAL_PIPELINE
-      - name: HUBSPOT_LINE_ITEM
-      - name: HUBSPOT_DEAL_COMPANY
-      - name: HUBSPOT_CONTACT
-      - name: HUBSPOT_DEAL_PIPELINE_STAGE
-      - name: HUBSPOT_ENGAGEMENT
-      - name: HUBSPOT_LEAD
-      - name: HUBSPOT_OWNER
-      - name: HUBSPOT_TICKET
-      - name: HUBSPOT_ROLE
-      - name: HUBSPOT_DEAL_CONTACT
-      - name: HUBSPOT_TEAM
-      - name: HUBSPOT_OWNER_TEAM
-      - name: HUBSPOT_PAWVILLE_COMPANY
-      - name: HUBSPOT_PAWVILLE_USERS
-      - name: HUBSPOT_PAWVILLE_DEAL
-      - name: HUBSPOT_PAWVILLE_DEAL_PIPELINE
-      - name: HUBSPOT_PAWVILLE_LINE_ITEM
-      - name: HUBSPOT_PAWVILLE_DEAL_COMPANY
-      - name: HUBSPOT_PAWVILLE_CONTACT
-      - name: HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE
-      - name: HUBSPOT_PAWVILLE_ENGAGEMENT
-      - name: HUBSPOT_PAWVILLE_OWNER
-      - name: HUBSPOT_PAWVILLE_TICKET
-      - name: HUBSPOT_PAWVILLE_ROLE
-      - name: HUBSPOT_PAWVILLE_DEAL_CONTACT
-      - name: WAGWAY_OPPORTUNITY_STAGE_MAPPING
+        <<: *freshness_hubspot_defaults
 
+      - name: HUBSPOT_USERS
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_DEAL
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_DEAL_COMPANY
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_CONTACT
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_LEAD
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_OWNER
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_TICKET
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_ROLE
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_DEAL_CONTACT
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_TEAM
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_OWNER_TEAM
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_COMPANY
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_USERS
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_DEAL
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_DEAL_COMPANY
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_CONTACT
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_OWNER
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_TICKET
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_ROLE
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_PAWVILLE_DEAL_CONTACT
+        <<: *freshness_hubspot_defaults
+
+      - name: WAGWAY_OPPORTUNITY_STAGE_MAPPING
+        <<: *freshness_hubspot_defaults
 
 
   - name: amh_hubspot_raw
@@ -126,39 +310,94 @@ sources:
     schema: hubspot        
     tables:
       - name: COMPANY
+        <<: *freshness_hubspot_defaults
+
       - name: USERS
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
       - name: LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_COMPANY
+        <<: *freshness_hubspot_defaults
+
       - name: PUPS_PRODUCTS
+        <<: *freshness_hubspot_defaults
+
       - name: CONTACT
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
       - name: ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
       - name: LEAD
+        <<: *freshness_hubspot_defaults
+
       - name: OWNER
+        <<: *freshness_hubspot_defaults
+
       - name: TICKET
+        <<: *freshness_hubspot_defaults
+
       - name: ROLE
+        <<: *freshness_hubspot_defaults
+
       - name: QUOTE
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_CONTACT
+        <<: *freshness_hubspot_defaults
+
 
 
   - name: amh_snapshots
     database: amh_raw    
     schema: HUBSPOT_SNAPSHOTS        
     tables: 
-    - name : HUBSPOT_CONTACT
-    - name : HUBSPOT_DEAL_COMPANY
-    - name : HUBSPOT_DEAL_PIPELINE
-    - name : HUBSPOT_DEAL_PIPELINE_STAGE
-    - name : HUBSPOT_DEAL
-    - name : HUBSPOT_ENGAGEMENT
-    - name : HUBSPOT_LINE_ITEM
-    - name : HUBSPOT_OWNER
-    - name : HUBSPOT_QUOTE
-    - name : HUBSPOT_USERS
-    - name : HUBSPOT_ROLE
-    - name: HUBSPOT_DEAL_CONTACT
+      - name : HUBSPOT_CONTACT
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL_COMPANY
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_OWNER
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_QUOTE
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_USERS
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_ROLE
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_DEAL_CONTACT
+        <<: *freshness_hubspot_defaults
 
 
   - name: amh_silver
@@ -166,18 +405,43 @@ sources:
     schema: SILVER        
     tables:
       - name: HUBSPOT_COMPANY
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_USERS
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_DEAL
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_DEAL_COMPANY
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_CONTACT
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_LEAD
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_OWNER
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_TICKET
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_ROLE
+        <<: *freshness_hubspot_defaults
 
 
   - name: playfly_hubspot_raw
@@ -185,40 +449,97 @@ sources:
     schema: hubspot        
     tables:
       - name: COMPANY
+        <<: *freshness_hubspot_defaults
+
       - name: USERS
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
       - name: LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_COMPANY
+        <<: *freshness_hubspot_defaults
+
       - name: PUPS_PRODUCTS
+        <<: *freshness_hubspot_defaults
+
       - name: CONTACT
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
       - name: ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
       - name: LEAD
+        <<: *freshness_hubspot_defaults
+
       - name: OWNER
+        <<: *freshness_hubspot_defaults
+
       - name: TICKET
+        <<: *freshness_hubspot_defaults
+
       - name: ROLE
+        <<: *freshness_hubspot_defaults
+
       - name: DEAL_CONTACT
+        <<: *freshness_hubspot_defaults
+
 
 
   - name: playfly_snapshots
     database: playfly_raw  
     schema: HUBSPOT_SNAPSHOTS        
     tables: 
-    - name : HUBSPOT_COMPANY
-    - name : HUBSPOT_CONTACT
-    - name : HUBSPOT_DEAL_COMPANY
-    - name : HUBSPOT_DEAL_PIPELINE
-    - name : HUBSPOT_DEAL_PIPELINE_STAGE
-    - name : HUBSPOT_DEAL
-    - name : HUBSPOT_ENGAGEMENT
-    - name : HUBSPOT_LEAD
-    - name : HUBSPOT_LINE_ITEM
-    - name : HUBSPOT_OWNER
-    - name : HUBSPOT_TICKET
-    - name : HUBSPOT_USERS
-    - name : HUBSPOT_ROLE
-    - name: HUBSPOT_DEAL_CONTACT
+      - name : HUBSPOT_COMPANY
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_CONTACT
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL_COMPANY
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_DEAL
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_LEAD
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_OWNER
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_TICKET
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_USERS
+        <<: *freshness_hubspot_defaults
+
+      - name : HUBSPOT_ROLE
+        <<: *freshness_hubspot_defaults
+
+      - name: HUBSPOT_DEAL_CONTACT
+        <<: *freshness_hubspot_defaults
 
 
   - name: playfly_silver
@@ -226,24 +547,41 @@ sources:
     schema: SILVER        
     tables:
       - name: HUBSPOT_COMPANY
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_USERS
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_DEAL
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_DEAL_PIPELINE
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_LINE_ITEM
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_DEAL_COMPANY
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_CONTACT
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_DEAL_PIPELINE_STAGE
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_ENGAGEMENT
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_LEAD
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_OWNER
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_TICKET
+        <<: *freshness_hubspot_defaults
+
       - name: HUBSPOT_ROLE
+        <<: *freshness_hubspot_defaults
 
-
-
-
-
-
-      
-
-  

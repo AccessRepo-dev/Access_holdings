@@ -2,55 +2,109 @@ version: 2
 
 sources:
   - name: wagway_netsuite_raw
-    database: wagway_raw     
-    schema: netsuite        
+    database: wagway_raw
+    schema: netsuite
+
     tables:
       - name: ACCOUNT
         description: Contains the complete chart of accounts used for financial tracking and reporting.
+        <<: &freshness_netsuite_defaults
+          loaded_at_field: _FIVETRAN_SYNCED
+          config:
+            freshness:
+              warn_after:
+                count: 24
+                period: hour
+              error_after:
+                count: 36
+                period: hour
       - name: ACCOUNTINGPERIOD
         description: Defines fiscal periods used for financial close and reporting.
+        <<: *freshness_netsuite_defaults
+
       - name: CLASSIFICATION
         description: Stores financial classification metadata such as class, department, or cost centers.
+        <<: *freshness_netsuite_defaults
+
       - name: CURRENCY
         description: Master list of currencies used for transactions and reporting.
+        <<: *freshness_netsuite_defaults
+        
       - name: CONSOLIDATEDEXCHANGERATE
         description: Exchange rates used to consolidate financial results across entities.
+        <<: *freshness_netsuite_defaults
+
       - name: CURRENCYRATE
         description: Daily or periodic currency exchange rates applied to financial transactions.
+        <<: *freshness_netsuite_defaults
+
       - name: DEPARTMENT
         description: Master list of corporate departments used for reporting and cost allocations.
+
       - name: EMPLOYEE
         description: Employee records including workforce reference data used in HR and permissions.
+        <<: *freshness_netsuite_defaults
+
       - name: ENTITY
         description: Stores details of all business entities including vendors, customers, and partners.
+        <<: *freshness_netsuite_defaults
+
       - name: ITEM
         description: Product and service catalog including SKU-level definitions used in transactions.
+        <<: *freshness_netsuite_defaults
+
       - name: LOCATION
         description: Physical or logical business locations used for inventory, reporting, and tax purposes.
+        <<: *freshness_netsuite_defaults
+
       - name: SUBSIDIARY
         description: Legal entities configured within NetSuite representing business hierarchy.
+        <<: *freshness_netsuite_defaults
+
       - name: TRANSACTION
         description: Header-level financial and operational transaction records such as invoices and journal entries.
+        <<: *freshness_netsuite_defaults
+
       - name: TRANSACTIONACCOUNTINGLINE
         description: Detailed accounting ledger lines generated from business transactions.
+        <<: *freshness_netsuite_defaults
+
       - name: TRANSACTIONLINE
         description: Line-level transaction data including products, quantities, and financial amounts.
+        <<: *freshness_netsuite_defaults
+
       - name: TRANSACTIONSTATUS
         description: Reference table defining workflow status values for transactions.
+        <<: *freshness_netsuite_defaults
+
       - name: BUDGETLEGACY
         description: Stores historical budget versions used for planning and forecasting comparison.
+        <<: *freshness_netsuite_defaults
+
       - name: BUDGETCATEGORY
         description: Category definitions used to group and manage budgeting inputs.
+        <<: *freshness_netsuite_defaults
+
       - name: CLASSIFICATIONSUBSIDIARYMAP
         description: Mapping of financial classifications to subsidiaries for reporting alignment.
+        <<: *freshness_netsuite_defaults
+
       - name: ACCOUNTSUBSIDIARYMAP
         description: Mapping of general ledger accounts to subsidiaries for financial governance.
+        <<: *freshness_netsuite_defaults
+
       - name: CUSTOMRECORD_CSEG1
         description: Custom segment used for financial reporting and tracking of business dimensions.
+        <<: *freshness_netsuite_defaults
+
       - name: CUSTOMRECORD_CSEG_CP_STORE_LOC
         description: Custom segment storing store-level financial tagging for reporting.
+        <<: *freshness_netsuite_defaults
+
       - name: CUSTOMLIST_STORE_LOC_CATEGORY
         description: Custom list defining store-level categorization for business use cases.
+        <<: *freshness_netsuite_defaults
+        
 
   - name: playfly_netsuite_raw
     database: playfly_raw
@@ -58,48 +112,92 @@ sources:
     tables:
       - name: ACCOUNT
         description: Contains the chart of accounts for the Playfly NetSuite environment.
+        <<: *freshness_netsuite_defaults
+
       - name: ACCOUNTINGPERIOD
         description: Fiscal periods configured for accounting close and reporting.
+        <<: *freshness_netsuite_defaults
+
       - name: CLASSIFICATION
         description: Classification metadata such as departments, classes, or reporting segments.
+        <<: *freshness_netsuite_defaults
+        
       - name: CURRENCY
         description: List of supported currencies.
+        <<: *freshness_netsuite_defaults
+
       - name: CONSOLIDATEDEXCHANGERATE
         description: Consolidated exchange rate values for multi-entity reporting.
+        <<: *freshness_netsuite_defaults
+        
       - name: CURRENCYRATE
         description: Currency exchange rate values applicable to transactions.
+        <<: *freshness_netsuite_defaults
+        
       - name: DEPARTMENT
         description: Department master data for cost allocation and tracking.
+        <<: *freshness_netsuite_defaults
+        
       - name: EMPLOYEE
         description: Employee records including HR and identity attributes.
+        <<: *freshness_netsuite_defaults
+        
       - name: ENTITY
         description: Details of customers, vendors, partners, and related entity types.
+        <<: *freshness_netsuite_defaults
+        
       - name: ITEM
         description: Master product and service list with SKUs and operational definitions.
+        <<: *freshness_netsuite_defaults
+        
       - name: LOCATION
         description: Physical or logical business locations used throughout the system.
+        <<: *freshness_netsuite_defaults
+        
       - name: SUBSIDIARY
         description: Legal and reporting company entities configured for Playfly.
+        <<: *freshness_netsuite_defaults
+        
       - name: TRANSACTION
         description: Header-level transaction information spanning financial and operational events.
+        <<: *freshness_netsuite_defaults
+        
       - name: TRANSACTIONACCOUNTINGLINE
         description: Ledger-level accounting breakdown for transactions.
+        <<: *freshness_netsuite_defaults
+        
       - name: TRANSACTIONLINE
         description: Line-level details for transactions including amounts and classifications.
+        <<: *freshness_netsuite_defaults
+        
       - name: TRANSACTIONSTATUS
         description: Status reference table defining transaction lifecycle states.
+        <<: *freshness_netsuite_defaults
+        
       - name: BUDGETLEGACY
         description: Historical budget planning and comparison records.
+        <<: *freshness_netsuite_defaults
+        
       - name: BUDGETCATEGORY
         description: Categorization used in the budgeting structure.
+        <<: *freshness_netsuite_defaults
+        
       - name: CLASSIFICATIONSUBSIDIARYMAP
         description: Mapping between classifications and subsidiaries.
+        <<: *freshness_netsuite_defaults
+        
       - name: ACCOUNTSUBSIDIARYMAP
         description: Mapping between general ledger accounts and subsidiaries.
+        <<: *freshness_netsuite_defaults
+        
       - name: CUSTOMRECORD_CSEG1
         description: Custom reporting and tracking segment for Playfly.
+        <<: *freshness_netsuite_defaults
+        
       - name: CUSTOMRECORD_CSEG2
         description: Additional custom segment for operational and financial reporting.
+        <<: *freshness_netsuite_defaults
+        
 
   - name: wagway_silver
     database: "{{ env_var('DBT_WAGWAY') }}"
@@ -107,84 +205,164 @@ sources:
     tables:
       - name: NETSUITE_ACCOUNT
         description: Cleaned and standardized chart of accounts sourced from NetSuite.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_ACCOUNTINGPERIOD
         description: Standardized fiscal calendar reference.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_CLASSIFICATION
         description: Refined classification hierarchy.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_CURRENCYRATE
         description: Standardized exchange rate values.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_CURRENCY
         description: Currency dimension table.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_CONSOLIDATEDEXCHANGERATE
         description: Consolidation exchange rate values.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_DEPARTMENT
         description: Standardized department reference list.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_EMPLOYEE
         description: Cleansed employee reference set.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_ENTITY
         description: Harmonized customer/vendor/entity reference.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_ITEM
         description: Standardized product and service catalog.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_LOCATION
         description: Cleansed business location definitions.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_SUBSIDIARY
         description: Standardized subsidiary records used for reporting.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_TRANSACTION
         description: Standardized NetSuite transaction header-level records.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_TRANSACTIONACCOUNTINGLINE
         description: Standardized ledger-level accounting lines.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_TRANSACTIONLINE
         description: Normalized transaction line-level data.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_TRANSACTIONSTATUS
         description: Status lookup values for standardized workflows.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_BUDGETLEGACY
         description: Standardized budget historical records.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_BUDGETCATEGORY
         description: Standardized budgeting category structure.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_CLASSIFICATIONSUBSIDIARYMAP
         description: Mapped classification and legal entity structure.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_ACCOUNTSUBSIDIARYMAP
         description: Mapped account and subsidiary association.
+        <<: *freshness_netsuite_defaults
+        
       - name: wagway_COA_MAPPING
         description: Mapping between NetSuite and reporting chart of accounts.
-      - name: wagway_addbacks 
+        <<: *freshness_netsuite_defaults
+        
+      - name: wagway_addbacks
         description: Addback adjustments for reporting and reconciliation.
+        <<: *freshness_netsuite_defaults
+        
       - name: NETSUITE_CUSTOMRECORD_CSEG1
         description: Cleaned and harmonized custom reporting segment.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_pawville_deal
         description: Standardized HubSpot deal data.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_pawville_deal_contact
         description: Relationship mapping between deals and contacts in HubSpot.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_pawville_contact
         description: Standardized HubSpot contact records.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_pawville_deal_pipeline_stage
         description: HubSpot stage-level pipeline metadata for Pawville.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_pawville_deal_pipeline
         description: Pipeline structure definition for HubSpot Pawville workspace.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_pawville_owner
         description: Owner records mapped to HubSpot users.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_deal
         description: Standardized HubSpot deals table.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_deal_contact
         description: Deal-to-contact relationship mapping.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_contact
         description: Standardized HubSpot contact records.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_deal_pipeline_stage
         description: Stage definitions within HubSpot sales pipelines.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_deal_pipeline
         description: HubSpot pipeline metadata.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_owner
         description: Owner-level metadata defining assignment within HubSpot.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_owner_team
         description: Relationship between HubSpot users and teams.
+        <<: *freshness_netsuite_defaults
+        
       - name: hubspot_team
         description: HubSpot team metadata.
+        <<: *freshness_netsuite_defaults
+        
       - name: wagway_location_capacity_mapping
         description: Mapping between business locations and capacity attributes.
+        <<: *freshness_netsuite_defaults
+        
       - name: netsuite_coa
         description: Combined chart of accounts reference for systems harmonization.
+        <<: *freshness_netsuite_defaults
+        
       - name: netsuite_adjustments
         description: Manual or system-based financial adjustments.
+        <<: *freshness_netsuite_defaults
+        
 
   - name: playfly_silver
     database: "{{ env_var('DBT_PLAYFLY') }}"
@@ -192,56 +370,108 @@ sources:
     tables:
       - name: NETSUITE_ACCOUNT
         description: Clean, standardized list of chart of accounts from NetSuite.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_ACCOUNTINGPERIOD
         description: Standardized calendar for Playfly accounting periods.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_CLASSIFICATION
         description: Normalized segmentation hierarchy for reporting.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_CURRENCYRATE
         description: Standardized currency conversion values.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_CURRENCY
         description: Currency reference dimension.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_CONSOLIDATEDEXCHANGERATE
         description: Consolidation exchange rate mapping.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_DEPARTMENT
         description: Standard department master reference.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_EMPLOYEE
         description: Refined employee-level records.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_ENTITY
         description: Customer, vendor, and partner master harmonized set.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_ITEM
         description: Product and service catalog standardized for reporting.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_LOCATION
         description: Harmonized business location registry.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_SUBSIDIARY
         description: Subsidiary dimension standardized for Playfly reporting.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_TRANSACTION
         description: Standard transaction header records.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_TRANSACTIONACCOUNTINGLINE
         description: Normalized transaction-level accounting ledger.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_TRANSACTIONLINE
         description: Standardized transaction line-level attributes.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_TRANSACTIONSTATUS
         description: Workflow state representation for transactions.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_BUDGETLEGACY
         description: Historical budget structure for Playfly.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_BUDGETCATEGORY
         description: Categorization used for Playfly budgeting processes.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_CLASSIFICATIONSUBSIDIARYMAP
         description: Mapping from classification hierarchy to subsidiaries.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_ACCOUNTSUBSIDIARYMAP
         description: Account-to-subsidiary association.
+        <<: *freshness_netsuite_defaults
+
       - name: playfly_COA_MAPPING
         description: Mapping from internal chart of accounts to reporting standards.
-      - name: playfly_addbacks 
+        <<: *freshness_netsuite_defaults
+
+      - name: playfly_addbacks
         description: Record of adjustments and addbacks used in financial reconciliation.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_CUSTOMRECORD_CSEG1
         description: First custom reporting segment dimension.
+        <<: *freshness_netsuite_defaults
+
       - name: NETSUITE_CUSTOMRECORD_CSEG2
         description: Second custom reporting segmentation layer.
+        <<: *freshness_netsuite_defaults
+
       - name: netsuite_coa
         description: Standardized NetSuite chart of accounts for Playfly.
+        <<: *freshness_netsuite_defaults
+
       - name: netsuite_adjustments
         description: Manual or computed financial adjustments for accuracy.
+        <<: *freshness_netsuite_defaults
+
 
   - name: wagway_gold
     database: "{{ env_var('DBT_WAGWAY') }}"
@@ -249,8 +479,19 @@ sources:
     tables:
       - name: FACT_TRANSACTION
         description: Final fact table containing enriched and fully mapped transaction records.
+        loaded_at_field: created_at
+        freshness:
+          warn_after:
+            count: 24
+            period: hour
+
       - name: DIM_CHART_OF_ACCOUNT
         description: Final reporting chart of accounts dimension used in analytics.
+        loaded_at_field: LASTMODIFIEDDATE
+        freshness:
+          warn_after:
+            count: 24
+            period: hour
 
   - name: playfly_gold
     database: "{{ env_var('DBT_PLAYFLY') }}"
@@ -258,5 +499,16 @@ sources:
     tables:
       - name: FACT_TRANSACTION
         description: Fully conformed transaction fact used in reporting.
+        loaded_at_field: LASTMODIFIEDDATE
+        freshness:
+          warn_after:
+            count: 24
+            period: hour
+
       - name: DIM_CHART_OF_ACCOUNT
         description: Analytics-ready chart of accounts dimension for Playfly.
+        loaded_at_field: LASTMODIFIEDDATE
+        freshness:
+          warn_after:
+            count: 24
+            period: hour
