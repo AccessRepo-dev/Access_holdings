@@ -264,7 +264,7 @@ select distinct
         when is_won = 0 then coalesce(so.closed_lost_date, close_date) else null
     end as closed_lost_date,
     dp.label as pipeline_name,
-
+    NULL AS HUB,
     a.property_hs_lastmodifieddate as last_modified_date,
 
     {% if company == "wagway" %} 'HUBSPOT_PUPS' as source_schema,
@@ -381,7 +381,7 @@ where a.is_active = 1
             when is_won = 0 then coalesce(so.closed_lost_date, close_date) else null
         end as closed_lost_date,
         dp.label as pipeline_name,
-
+        NULL AS HUB,
         a.property_hs_lastmodifieddate as last_modified_date,
         'HUBSPOT_PAWVILLE' as source_schema,
         current_timestamp()::timestamp_ntz as gold_load_date
