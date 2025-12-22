@@ -305,9 +305,6 @@ sources:
       - name: WAGWAY_PAWVILLE_OPPORTUNITY_STAGE_MAPPING
         <<: *freshness_hubspot_defaults
 
-      - name: WAGWAY_OPPORTUNITY_STAGE_MAPPING
-        <<: *freshness_hubspot_defaults
-
 
   - name: amh_hubspot_raw
     database: amh_raw     
