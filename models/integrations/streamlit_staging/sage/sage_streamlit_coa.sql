@@ -42,7 +42,7 @@ FROM {{ source(src, 'GL_ENTRY') }} e
             batch_date between '2022-01-01' and '2022-08-31'
         )
 {% elif company | lower  == 'spotless' %}
-    WHERE e.BATCHTITLE not in ('VIE Depreciation & Amortization','record VIE transactions') AND LOCATIONKEY <> 492 
+    WHERE e.BATCHTITLE not in ('VIE Depreciation & Amortization','record VIE transactions') 
     AND 
     e.RECORDNO NOT IN 
         (select 

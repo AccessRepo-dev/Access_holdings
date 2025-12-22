@@ -159,16 +159,16 @@ cte2 AS (
         ON employee_extension_id = br.extension_id
        AND week_day = LEFT(UPPER(br.day), 3)
  
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_contact') }} e
+    LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_CONTACT') }} e
         ON COALESCE(e.property_hs_calculated_phone_number, e.property_hs_calculated_mobile_number) =
            CASE WHEN a.direction = 'Outbound' THEN a.to_phone_number ELSE a.from_phone_number END
        AND e.is_active = 1
  
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_deal_contact') }} b
+    LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_DEAL_CONTACT') }} b
         ON e.id = b.contact_id
        AND b.is_active = 1
  
-    LEFT JOIN {{ get_silver_source('wagway', 'hubspot_deal') }} f
+    LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_DEAL') }} f
         ON b.deal_id = f.deal_id
        AND f.is_active = 1
  

@@ -11,13 +11,13 @@ WITH email_all AS (
     UNION
 
     SELECT DISTINCT email
-    FROM  {{ get_silver_source('wagway', 'hubspot_owner') }}
+    FROM  {{ get_silver_source('wagway', 'HUBSPOT_OWNER') }}
     WHERE is_active = 1
 
     UNION 
 
     SELECT DISTINCT email
-    FROM {{ get_silver_source('wagway', 'hubspot_pawville_owner') }}
+    FROM {{ get_silver_source('wagway', 'HUBSPOT_PAWVILLE_OWNER') }}
     WHERE is_active = 1
 )
 
@@ -49,26 +49,26 @@ LEFT JOIN {{ get_silver_source('wagway', 'ringcentral_company_directory') }} rng
 LEFT JOIN {{ get_silver_source('wagway', 'ringcentral_company_directory_phone_number') }} rng_phn
     ON rng.id = rng_phn.company_directory_id
 
-LEFT JOIN {{ get_silver_source('wagway', 'hubspot_owner') }} hbs
+LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_OWNER') }} hbs
     ON ded.email = hbs.email
    AND hbs.is_active = 1
 
-LEFT JOIN {{ get_silver_source('wagway', 'hubspot_deal') }}  hbs_dl
+LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_DEAL') }}  hbs_dl
     ON hbs.owner_id = hbs_dl.owner_id
    AND hbs_dl.is_active = 1
 
-LEFT JOIN {{ get_silver_source('wagway', 'hubspot_owner_team') }}  hbs_otm
+LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_OWNER_TEAM') }}  hbs_otm
     ON hbs.owner_id = hbs_otm.owner_id
    AND hbs_otm.is_active = 1
 
-LEFT JOIN {{ get_silver_source('wagway', 'hubspot_team') }} hbs_tm
+LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_TEAM') }} hbs_tm
     ON hbs_otm.team_id = hbs_tm.id
    AND hbs_tm.is_active = 1
 
-LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_owner') }}  hbpw
+LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_PAWVILLE_OWNER') }}  hbpw
     ON ded.email = hbpw.email
    AND hbpw.is_active = 1
 
-LEFT JOIN {{ get_silver_source('wagway', 'hubspot_pawville_deal') }} hbpw_dl
+LEFT JOIN {{ get_silver_source('wagway', 'HUBSPOT_PAWVILLE_DEAL') }} hbpw_dl
     ON hbpw.owner_id = hbpw_dl.owner_id
    AND hbpw_dl.is_active = 1
