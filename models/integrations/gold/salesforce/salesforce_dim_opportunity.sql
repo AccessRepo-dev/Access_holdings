@@ -2,8 +2,7 @@
 
 {{
     config(
-        enabled=var("sourcesystem", "salesforce") == "salesforce"
-        and var("company", "zeus") == "zeus",
+        enabled=var("sourcesystem", "salesforce") == "salesforce" and var("company", "zeus") == "zeus",
         database=get_target_database(company),
         materialized="incremental",
         incremental_strategy="merge",
