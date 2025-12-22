@@ -568,8 +568,6 @@ sources:
 
       - name: HUBSPOT_DEAL_COMPANY
       - name: HUBSPOT_DEAL_CONTACT
-      - name: HUBSPOT_TICKET
-      - name: HUBSPOT_ROLE
       - name: PLAYFLY_OPPORTUNITY_STAGE_MAPPING
         <<: *freshness_hubspot_defaults
 
