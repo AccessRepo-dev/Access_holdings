@@ -9,7 +9,7 @@
         alias="dim_crm_location",
         materialized="incremental",
         incremental_strategy="merge",
-        unique_key="ID_DATE_KEY",
+        unique_key="ID",
     )
 }}
 

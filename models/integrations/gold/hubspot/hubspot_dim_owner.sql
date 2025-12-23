@@ -1,8 +1,13 @@
-{% set company = var('company') %}
-{{ config(enabled = var('sourcesystem', 'none') in ['hubspot', 'hubspot_pawville']) }}
+{% set company = var("company", "wagway") %}
+
+{{
+    config(
+        enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]
+        and company in ["wagway", "playfly", "amh"]
+    )
+}}
 
 {{ config(
-    enabled = false,
     database = get_target_database(company),
     alias = 'dim_owner',
     materialized = 'incremental',
@@ -11,10 +16,14 @@
 ) }}
 
 SELECT
-    OWNER_ID,
-    FIRST_NAME,
-    LAST_NAME,
+    ID_DATE_KEY,
+    md5(   
+        coalesce(nullif(cast(OWNER_ID as string),''), '') || '|' ||
+        'HUBSPOT'
+        ) as OWNER_ID,
+    case when CONCAT(FIRST_NAME,LAST_NAME) = '' or CONCAT(FIRST_NAME,LAST_NAME) is null then 'Unknown' else CONCAT(FIRST_NAME,' ',LAST_NAME) end AS NAME ,
     EMAIL,
+    is_active,
     'HUBSPOT' AS SOURCE_SCHEMA
 FROM {{ get_silver_source(company , 'HUBSPOT_OWNER') }} 
 
@@ -23,10 +32,14 @@ FROM {{ get_silver_source(company , 'HUBSPOT_OWNER') }}
 UNION ALL 
 
 SELECT
-    OWNER_ID,
-    FIRST_NAME,
-    LAST_NAME,
+    ID_DATE_KEY,
+    md5(   
+        coalesce(nullif(cast(OWNER_ID as string),''), '') || '|' ||
+        'HUBSPOT_PAWVILLE'
+        ) as OWNER_ID,
+    case when CONCAT(FIRST_NAME,LAST_NAME) = '' or CONCAT(FIRST_NAME,LAST_NAME) is null then 'Unknown' else CONCAT(FIRST_NAME,' ',LAST_NAME) end AS NAME ,
     EMAIL,
+    is_active,
     'HUBSPOT_PAWVILLE' AS SOURCE_SCHEMA
 FROM {{ get_silver_source(company, 'HUBSPOT_PAWVILLE_OWNER') }} 
 {% endif %}
