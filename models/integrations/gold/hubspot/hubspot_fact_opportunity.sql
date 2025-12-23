@@ -59,9 +59,11 @@ select
     property_hs_all_owner_ids as OWNER_ID,
     A.property_amount as AMOUNT,
     A.property_closedate as CLOSE_DATE,
-    cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
-    cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
-    ELSE 0 END as Boolean) as IS_WON,
+    case when a.stage_name ilike 'close%' and a.stage_name ilike '%won' then 1 else 0 end as IS_WON_N,
+    case when a.stage_name ilike 'close%' then 1 else 0 end as IS_CLOSED_N,
+    -- cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
+    -- cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
+    -- ELSE 0 END as Boolean) as IS_WON,
     property_hs_deal_stage_probability as PROBABILITY,
     A.DBT_VALID_FROM,
     A.DBT_VALID_TO,
@@ -112,9 +114,11 @@ left join
         property_hs_all_owner_ids as OWNER_ID,
         A.property_amount as AMOUNT,
         A.property_closedate as CLOSE_DATE,
-        cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
-        cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
-        ELSE 0 END as Boolean) as IS_WON,
+        case when a.stage_name ilike 'close%' and a.stage_name ilike '%won' then 1 else 0 end as IS_WON_N,
+        case when a.stage_name ilike 'close%' then 1 else 0 end as IS_CLOSED_N,
+        -- cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
+        -- cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
+        -- ELSE 0 END as Boolean) as IS_WON,
         property_hs_deal_stage_probability as PROBABILITY,
         A.DBT_VALID_FROM,
         A.DBT_VALID_TO,
@@ -149,8 +153,8 @@ select
         STAGE_NAME,
         AMOUNT,
         CLOSE_DATE,
-        IS_CLOSED,
-        IS_WON,
+        CAST(IS_CLOSED_N as Boolean) as IS_CLOSED,
+        CAST(IS_WON_N as Boolean) as IS_WON,
         PROBABILITY*100 as PROBABILITY,
          CASE 
         WHEN ACQUISITION_DATE IS NOT NULL
@@ -201,8 +205,8 @@ select
         STAGE_NAME,
         AMOUNT,
         CLOSE_DATE,
-        IS_CLOSED,
-        IS_WON,
+        CAST(IS_CLOSED_N as Boolean) as IS_CLOSED,
+        CAST(IS_WON_N as Boolean) as IS_WON,
         PROBABILITY*100 as PROBABILITY,
      CASE 
         WHEN ACQUISITION_DATE IS NOT NULL
