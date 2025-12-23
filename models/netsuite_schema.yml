@@ -9,8 +9,8 @@ sources:
       - name: ACCOUNT
         description: Contains the complete chart of accounts used for financial tracking and reporting.
         <<: &freshness_netsuite_defaults
-          loaded_at_field: _FIVETRAN_SYNCED
           config:
+            loaded_at_field: _FIVETRAN_SYNCED
             freshness:
               warn_after:
                 count: 24
@@ -18,9 +18,11 @@ sources:
               error_after:
                 count: 36
                 period: hour
+
       - name: ACCOUNTINGPERIOD
         description: Defines fiscal periods used for financial close and reporting.
         <<: *freshness_netsuite_defaults
+
 
       - name: CLASSIFICATION
         description: Stores financial classification metadata such as class, department, or cost centers.
@@ -421,19 +423,22 @@ sources:
     tables:
       - name: FACT_TRANSACTION
         description: Final fact table containing enriched and fully mapped transaction records.
-        loaded_at_field: created_at
-        freshness:
-          warn_after:
-            count: 24
-            period: hour
+        config:
+          loaded_at_field: created_at
+          freshness:
+            warn_after:
+              count: 24
+              period: hour
+
 
       - name: DIM_CHART_OF_ACCOUNT
         description: Final reporting chart of accounts dimension used in analytics.
-        loaded_at_field: LASTMODIFIEDDATE
-        freshness:
-          warn_after:
-            count: 24
-            period: hour
+        config:
+          loaded_at_field: LASTMODIFIEDDATE
+          freshness:
+            warn_after:
+              count: 24
+              period: hour
 
   - name: playfly_gold
     database: "{{ env_var('DBT_PLAYFLY') }}"
@@ -441,16 +446,18 @@ sources:
     tables:
       - name: FACT_TRANSACTION
         description: Fully conformed transaction fact used in reporting.
-        loaded_at_field: LASTMODIFIEDDATE
-        freshness:
-          warn_after:
-            count: 24
-            period: hour
+        config:
+          loaded_at_field: LASTMODIFIEDDATE
+          freshness:
+            warn_after:
+              count: 24
+              period: hour
 
       - name: DIM_CHART_OF_ACCOUNT
         description: Analytics-ready chart of accounts dimension for Playfly.
-        loaded_at_field: LASTMODIFIEDDATE
-        freshness:
-          warn_after:
-            count: 24
-            period: hour
+        config:
+          loaded_at_field: LASTMODIFIEDDATE
+          freshness:
+            warn_after:
+              count: 24
+              period: hour

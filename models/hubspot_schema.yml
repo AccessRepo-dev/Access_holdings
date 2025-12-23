@@ -7,8 +7,8 @@ sources:
     tables:
       - name: COMPANY
         <<: &freshness_hubspot_defaults
-          loaded_at_field: _FIVETRAN_SYNCED
           config:
+            loaded_at_field: _FIVETRAN_SYNCED
             freshness:
               warn_after:
                 count: 24
