@@ -38,8 +38,8 @@ select
     owner_id as OWNER_ID,
     A.property_amount as AMOUNT,
     A.property_closedate as CLOSE_DATE,
-    case when b.label ilike 'close%' and b.label ilike '%won' then 1 else 0 end as IS_WON_N,
-    case when b.label ilike 'close%' then 1 else 0 end as IS_CLOSED_N,
+    case when dsm.mapped_stage_name ilike 'close%' and dsm.mapped_stage_name ilike '%won' then 1 else 0 end as IS_WON_N,
+    case when dsm.mapped_stage_name ilike 'close%' then 1 else 0 end as IS_CLOSED_N,
     -- cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
     -- cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
     -- ELSE 0 END as Boolean) as IS_WON,
@@ -62,6 +62,11 @@ left join
     {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE_STAGE") }} b
     on b.stage_id = a.deal_pipeline_stage_id
     and b.is_active = 1
+left join
+        {{ ref("hubspot_dim_stage_mapping") }} dsm on b.label = dsm.stage_name
+        {% if company == "wagway" %} and dsm.source_schema = 'HUBSPOT_PUPS'
+        {% else %} and dsm.source_schema = concat('HUBSPOT_', '{{ company | upper }}')
+        {% endif %}
 
 )
 {% if company == "wagway" %}
@@ -91,8 +96,8 @@ left join
         owner_id as OWNER_ID,
         A.property_amount as AMOUNT,
         A.property_closedate as CLOSE_DATE,
-        case when b.label ilike 'close%' and b.label ilike '%won' then 1 else 0 end as IS_WON_N,
-        case when b.label ilike 'close%' then 1 else 0 end as IS_CLOSED_N,
+        case when dsmm.mapped_stage_name ilike 'close%' and dsmm.mapped_stage_name ilike '%won' then 1 else 0 end as IS_WON_N,
+        case when dsmm.mapped_stage_name ilike 'close%' then 1 else 0 end as IS_CLOSED_N,
         -- cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
         -- cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
         -- ELSE 0 END as Boolean) as IS_WON,
@@ -110,10 +115,13 @@ left join
     from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL") }} a
     left join {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_CONTACT") }} c
     on a.DEAL_ID = c.DEAL_ID
-    join
+    left join
         {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE") }} b
         on b.stage_id = a.deal_pipeline_stage_id
         and b.is_active = 1
+    left join
+        {{ ref("hubspot_dim_stage_mapping") }} dsmm
+        on b.label = dsmm.stage_name and dsmm.source_schema = 'HUBSPOT_PAWVILLE'
 
     )
 

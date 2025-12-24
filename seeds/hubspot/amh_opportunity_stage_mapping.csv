@@ -12,17 +12,19 @@ Site Tour scheduled,Opportunity,10
 Presentation Scheduled,Proposal Requested,11
 Qualified To Buy,Proposal Requested,12
 Decision Maker Bought-In,Proposal Requested,13
-Tentative,Opportunity,14
-Definite,Closed Won,15
-Confirmed,Closed Won,16
-Proposal Sent,Proposal Sent,17
-Contract/Proposal Sent,Proposal Sent,18
-Contract Sent,Proposal Sent,19
-Pending,Proposal Sent,20
+Pending,Proposal Requested,14
+Tentative,Opportunity,15
+Definite,Closed Won,16
+Confirmed,Closed Won,17
+Proposal Sent,Proposal Sent,18
+Contract/Proposal Sent,Proposal Sent,19
+Contract Sent,Proposal Sent,20
 Negotiation,Negotiation,21
 In Process,Negotiation,22
 Closed Won,Closed Won,23
-Closed,Closed Won,24
-Closed Lost,Closed Lost,25
-Lost,Closed Lost,26
-Checked Out,Closed Won,27
+Closed won,Closed Won,24
+Closed,Closed Won,25
+Closed Lost,Closed Lost,26
+Closed lost,Closed Lost,27
+Lost,Closed Lost,28
+Checked Out,Closed Won,29
