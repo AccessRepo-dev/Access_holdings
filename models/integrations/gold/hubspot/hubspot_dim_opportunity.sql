@@ -169,6 +169,7 @@ with
             a.property_invoice_id,
             b.label as stage_name,
             {% if company == "wagway" %} a.PROPERTY_CLUB_C as hub,
+            {% elif company == "amh" %} a.property_property_source as hub,
             {% else %} 'Unknown' as hub,
             {% endif %}
             a.property_hs_is_closed_lost,
