@@ -96,6 +96,7 @@ with
             current_timestamp()::timestamp_ntz as silver_load_date,
             cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
             cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,
+            _FIVETRAN_SYNCED,
             case when dbt_valid_to is null then 1 else 0 end as is_active
 
         from source

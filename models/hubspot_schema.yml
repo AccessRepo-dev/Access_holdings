@@ -328,9 +328,6 @@ sources:
       - name: DEAL_COMPANY
         <<: *freshness_hubspot_defaults
 
-      - name: PUPS_PRODUCTS
-        <<: *freshness_hubspot_defaults
-
       - name: CONTACT
         <<: *freshness_hubspot_defaults
 
@@ -340,13 +337,7 @@ sources:
       - name: ENGAGEMENT
         <<: *freshness_hubspot_defaults
 
-      - name: LEAD
-        <<: *freshness_hubspot_defaults
-
       - name: OWNER
-        <<: *freshness_hubspot_defaults
-
-      - name: TICKET
         <<: *freshness_hubspot_defaults
 
       - name: ROLE
@@ -406,9 +397,6 @@ sources:
     database: "{{ env_var('DBT_AMH') }}"     
     schema: SILVER        
     tables:
-      - name: HUBSPOT_COMPANY
-        <<: *freshness_hubspot_defaults
-
       - name: HUBSPOT_USERS
         <<: *freshness_hubspot_defaults
 
@@ -433,19 +421,11 @@ sources:
       - name: HUBSPOT_ENGAGEMENT
         <<: *freshness_hubspot_defaults
 
-      - name: HUBSPOT_LEAD
-        <<: *freshness_hubspot_defaults
-
       - name: HUBSPOT_OWNER
-        <<: *freshness_hubspot_defaults
-
-      - name: HUBSPOT_TICKET
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_ROLE
       - name: HUBSPOT_DEAL_CONTACT
-      - name: AMH_OPPORTUNITY_STAGE_MAPPING
-        <<: *freshness_hubspot_defaults
 
 
   - name: playfly_hubspot_raw
