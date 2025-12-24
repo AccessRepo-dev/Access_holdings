@@ -113,7 +113,7 @@ adjustments AS (
         -- Chart of accounts
         ACCOUNT_ID,
         TRUE AS IS_POSTING,
-        NULL ACCOUNT_NUMBER,
+        ACCOUNT_NUMBER,
         NULL AS ACCOUNT_TYPE,
         ACCOUNT_NAME,
        

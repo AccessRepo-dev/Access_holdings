@@ -20,5 +20,11 @@ sources:
 
       - name: sedona_adjustments
         <<: *freshness_sedona_defaults
+      
+  - name: zeus_gold
+    database: "{{ env_var('DBT_ZEUS') }}"
+    schema: gold
+    tables:
+      - name: dim_period
   
   
