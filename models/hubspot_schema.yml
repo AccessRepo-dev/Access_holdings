@@ -303,7 +303,6 @@ sources:
       - name: HUBSPOT_PAWVILLE_DEAL_CONTACT
       - name: WAGWAY_OPPORTUNITY_STAGE_MAPPING
       - name: WAGWAY_PAWVILLE_OPPORTUNITY_STAGE_MAPPING
-        <<: *freshness_hubspot_defaults
 
 
   - name: amh_hubspot_raw
@@ -426,6 +425,7 @@ sources:
 
       - name: HUBSPOT_ROLE
       - name: HUBSPOT_DEAL_CONTACT
+      - name: AMH_OPPORTUNITY_STAGE_MAPPING
 
 
   - name: playfly_hubspot_raw
@@ -549,7 +549,6 @@ sources:
       - name: HUBSPOT_DEAL_COMPANY
       - name: HUBSPOT_DEAL_CONTACT
       - name: PLAYFLY_OPPORTUNITY_STAGE_MAPPING
-        <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_CONTACT
         <<: *freshness_hubspot_defaults
