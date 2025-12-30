@@ -56,8 +56,10 @@ cleaned as (
 
     {% if company in ['amh'] %}
         LOWER(TRIM(PROPERTY_HS_PRODUCT_TYPE)) AS product_type,
+        TRIM(PROPERTY_HS_FOLDER_ID) AS PROPERTY_HS_FOLDER_ID,
     {% elif company == 'playfly' %}
         LOWER(TRIM(PROPERTY_PRODUCT_CATEGORY)) AS product_type,
+        CAST(NULL AS INT) PROPERTY_HS_FOLDER_ID,
     {% else %}
         CAST(NULL AS VARCHAR) AS product_type,
     {% endif %}

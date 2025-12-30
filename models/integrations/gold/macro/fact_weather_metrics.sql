@@ -12,7 +12,7 @@ WITH day_level_forecast as (
     AVG(CLOUD_AVG_24H_PCT) as CLOUD_AVG_DAY_PCT,
     AVG(WIND_AVG_24H_MPH) as WIND_AVG_DAY_MPH,
     AVG(HUMIDITY_AVG_24H_PCT) as HUMIDITY_AVG_DAY_PCT
-FROM {{ ref('dev_weather_forecast') }}
+FROM {{ ref('weather_forecast_visualcrossing') }} 
 where lower(source) = 'hourly' and HOUR between 9 and 18 
 GROUP BY date, datekey, city, state
 
@@ -32,7 +32,7 @@ GROUP BY date, datekey, city, state
     AVG(CLOUD_AVG_24H_PCT) as CLOUD_AVG_DAY_PCT,
     AVG(WIND_AVG_24H_MPH) as WIND_AVG_DAY_MPH,
     AVG(HUMIDITY_AVG_24H_PCT) as HUMIDITY_AVG_DAY_PCT
-FROM {{ ref('dev_weather_daily_obs') }}
+FROM {{ ref('weather_daily_obs_visualcrossing') }} 
 where lower(source) = 'hourly' and HOUR between 9 and 18 
 GROUP BY date, datekey, city, state
 
@@ -45,7 +45,7 @@ SELECT
     'WEATHER_DAILY_OBS' AS DATASET,
     'WEATHER' AS DATASOURCE
 
-FROM {{ ref('dev_weather_forecast') }}
+FROM {{ ref('weather_forecast_visualcrossing') }}
 where lower(source) = 'daily'
 )
 
@@ -55,7 +55,7 @@ where lower(source) = 'daily'
     'WEATHER_DAILY_OBS' AS DATASET,
     'WEATHER' AS DATASOURCE
 
-FROM {{ ref('dev_weather_daily_obs') }}
+FROM {{ ref('weather_daily_obs_visualcrossing') }}
 where lower(source) = 'daily'
 )
     

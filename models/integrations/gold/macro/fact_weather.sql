@@ -1,4 +1,4 @@
-
+{{ config(enabled=false) }}
 WITH SOURCE AS 
 (
 SELECT 

@@ -1,3 +1,4 @@
+{{ config(enabled=false) }}
 with source as (
     select *
     from {{ source('macro_raw', 'WEATHER_DAILY_OBS') }}
