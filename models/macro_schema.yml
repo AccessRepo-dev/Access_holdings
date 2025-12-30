@@ -162,7 +162,7 @@ sources:
               count: 32
               period: day
 
-      - name: DEV_WEATHER_DAILY_OBS
+      - name: WEATHER_DAILY_OBS_VISUALCROSSING
         config:
           loaded_at_field: date
           freshness:
@@ -173,7 +173,7 @@ sources:
               count: 32
               period: day
 
-      - name: DEV_WEATHER_FORECAST
+      - name:  WEATHER_FORECAST_VISUALCROSSING
         config:
           loaded_at_field: date
           freshness:

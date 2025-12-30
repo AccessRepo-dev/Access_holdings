@@ -1,6 +1,6 @@
 with source as (
     select *
-    from {{ source('macro_raw', 'DEV_WEATHER_DAILY_OBS') }}
+    from {{ source('macro_raw', 'WEATHER_DAILY_OBS_VISUALCROSSING') }}
 )
 
 select
