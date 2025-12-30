@@ -38,6 +38,13 @@ select
     PROPERTY_HUBSPOT_OWNER_ID as OWNER_ID,
     concat(property_firstname,' ',property_lastname) as COMPANY,
     PROPERTY_LIFECYCLESTAGE as STATUS,
+    {%if company == 'playfly' %}
+    CASE WHEN PROPERTY_LIFECYCLESTAGE IN ('subscriber','salesqualifiedlead','customer','opportunity','marketingqualifiedlead') THEN 'Qualified Lead'
+     WHEN  PROPERTY_LIFECYCLESTAGE IN ('evangelist','other','lead') THEN 'Lead'
+    END AS MAPPED_LEADSTAGE,
+    {%else%}
+    CAST(NULL AS VARCHAR) AS MAPPED_LEADSTAGE,
+    {%endif%}
     IS_ACTIVE,
     dc.deal_id as CONVERTED_OPPORTUNITY_KEY,
     {% if company == "wagway" %}
@@ -62,6 +69,7 @@ select
     PROPERTY_HUBSPOT_OWNER_ID as OWNER_ID,
     concat(property_firstname,' ',property_lastname) as COMPANY,
     PROPERTY_LIFECYCLESTAGE as STATUS,
+    CAST(NULL AS VARCHAR) AS MAPPED_LEADSTAGE,
     IS_ACTIVE,
     dc.deal_id as CONVERTED_OPPORTUNITY_KEY,
     'HUBSPOT_PAWVILLE' as source_schema,

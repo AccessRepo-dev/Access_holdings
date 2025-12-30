@@ -82,7 +82,8 @@ with
                 || coalesce(is_won_n::string, '')
                 || '|'
                 || coalesce(is_closed_n::string, '')
-            ) as attr_hash
+            ) as attr_hash,
+            company_id,
         from {{ get_silver_source(company, "HUBSPOT_DEAL") }} a
         left join
             {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }} c
@@ -92,6 +93,10 @@ with
             {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE_STAGE") }} b
             on b.stage_id = a.deal_pipeline_stage_id
             and b.is_active = 1
+        LEFT JOIN 
+         {{  get_silver_source(company, "HUBSPOT_DEAL_COMPANY")}} d
+          on a.DEAL_ID = d.DEAL_ID
+
         left join
             {{ ref("hubspot_dim_stage_mapping") }} dsm on b.label = dsm.stage_name
             {% if company == "wagway" %} and dsm.source_schema = 'HUBSPOT_PUPS'
@@ -167,7 +172,8 @@ with
                     || coalesce(is_won_n::string, '')
                     || '|'
                     || coalesce(is_closed_n::string, '')
-                ) as attr_hash
+                ) as attr_hash,
+                company_id,
             from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL") }} a
             left join
                 {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_CONTACT") }} c
@@ -176,6 +182,9 @@ with
                 {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE") }} b
                 on b.stage_id = a.deal_pipeline_stage_id
                 and b.is_active = 1
+             LEFT JOIN 
+                {{  get_silver_source(company, "HUBSPOT_DEAL_COMPANY")}} d
+                on a.DEAL_ID = d.DEAL_ID
             left join
                 {{ ref("hubspot_dim_stage_mapping") }} dsmm
                 on b.label = dsmm.stage_name
@@ -225,6 +234,7 @@ with
                 concat('HUBSPOT_', '{{company | upper}}') as source_schema,
 
             {% endif %}
+            company_id as dim_company_id,
             current_timestamp()::timestamp_ntz as gold_load_date
         from pups_hashed
         qualify
@@ -264,7 +274,9 @@ with
                     partition by id, attr_hash
                 ) as is_active,
                 md5(coalesce(stage_name, '') || '|HUBSPOT_PAWVILLE') as stage_key,
+             
                 'HUBSPOT_PAWVILLE' as source_schema,
+                company_id as dim_company_id,
                 current_timestamp()::timestamp_ntz as gold_load_date
             from pawville_hashed
             qualify
@@ -280,5 +292,5 @@ select
     *,
     row_number() over (
         partition by opportunity_id, source_schema order by dbt_valid_from
-    ) as rank,
+    ) as rank
 from services

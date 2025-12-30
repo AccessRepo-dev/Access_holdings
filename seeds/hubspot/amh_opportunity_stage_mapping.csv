@@ -1,26 +1,26 @@
 STAGE_NAME,MAPPED_STAGE_NAME,SORT_ORDER
 Lead,Lead,1
-New,Opportunity,2
-Prospect,Opportunity,3
-Attempted To Contact,Opportunity,4
-Checked In,Opportunity,5
-On Leave,Opportunity,6
+New,Lead,2
+Prospect,Lead,3
+Attempted To Contact,Lead,4
+Checked In,Lead,5
+On Leave,Lead,6
 Cancelled,Closed Lost,7
-Appointment Scheduled,Opportunity,8
-Booked Meeting/Tour,Opportunity,9
-Site Tour scheduled,Opportunity,10
-Presentation Scheduled,Proposal Requested,11
-Qualified To Buy,Proposal Requested,12
-Decision Maker Bought-In,Proposal Requested,13
-Pending,Proposal Requested,14
-Tentative,Opportunity,15
+Appointment Scheduled,Lead,8
+Booked Meeting/Tour,Lead,9
+Site Tour scheduled,Lead,10
+Presentation Scheduled,Qualified Lead,11
+Qualified To Buy,Qualified Lead,12
+Decision Maker Bought-In,Qualified Lead,13
+Pending,Qualified Lead,14
+Tentative,Lead,15
 Definite,Closed Won,16
 Confirmed,Closed Won,17
-Proposal Sent,Proposal Sent,18
-Contract/Proposal Sent,Proposal Sent,19
-Contract Sent,Proposal Sent,20
-Negotiation,Negotiation,21
-In Process,Negotiation,22
+Proposal Sent,Contacted,18
+Contract/Proposal Sent,Contacted,19
+Contract Sent,Contacted,20
+Negotiation,Contacted,21
+In Process,Contacted,22
 Closed Won,Closed Won,23
 Closed won,Closed Won,24
 Closed,Closed Won,25

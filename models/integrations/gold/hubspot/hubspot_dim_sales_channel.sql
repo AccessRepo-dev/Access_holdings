@@ -22,7 +22,7 @@ select
         ) as ID,
         CASE 
             WHEN A.property_hs_analytics_source is null or A.property_hs_analytics_source = '' then 'UNKNOWN' 
-                else A.property_hs_analytics_source
+                else REPLACE(A.property_hs_analytics_source,'_',' ')
         end as SALES_CHANNEL,
 
         {% if company == "wagway" %}

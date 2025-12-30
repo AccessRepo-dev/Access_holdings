@@ -59,7 +59,8 @@ with
             {% endif %}
     ),
 
-    stage_dates_by_opp as (
+    {%if company == 'playfly'%}
+     stage_dates_by_opp as (
         select
             deal_id,
             min(
@@ -88,6 +89,34 @@ with
         from stage_dates
         group by deal_id
     ),
+    {%else%}
+    stage_dates_by_opp as (
+        select
+            deal_id,
+            min(
+                case when lower(mapped_stage_name) = 'Lead' then date_entered end
+            ) as lead_date,
+            min(
+                case
+                    when lower(mapped_stage_name) = 'Qualified Lead'
+                    then date_entered
+                end
+            ) as qualified_lead_date,
+            min(
+                case
+                    when lower(mapped_stage_name) = 'Contacted' then date_entered
+                end
+            ) as contacted_date,
+            min(
+                case when lower(mapped_stage_name) = 'closed won' then date_entered end
+            ) as closed_won_date,
+            min(
+                case when lower(mapped_stage_name) = 'closed lost' then date_entered end
+            ) as closed_lost_date
+        from stage_dates
+        group by deal_id
+    ),
+    {%endif%}
 
     {% if company == "wagway" %}
         stage_dates_pawville as (
@@ -110,26 +139,22 @@ with
                 deal_id,
                 min(
                     case
-                        when lower(mapped_stage_name) = 'opportunity' then date_entered
+                        when lower(mapped_stage_name) = 'Lead' then date_entered
                     end
-                ) as opportunity_date,
+                ) as lead_date,
                 min(
                     case
-                        when lower(mapped_stage_name) = 'proposal requested'
+                        when lower(mapped_stage_name) = 'Qualified Lead'
                         then date_entered
                     end
-                ) as proposal_requested_date,
+                ) as qualified_lead_date,
                 min(
                     case
-                        when lower(mapped_stage_name) = 'proposal sent'
+                        when lower(mapped_stage_name) = 'Contacted'
                         then date_entered
                     end
-                ) as proposal_sent_date,
-                min(
-                    case
-                        when lower(mapped_stage_name) = 'negotiation' then date_entered
-                    end
-                ) as negotiation_date,
+                ) as contacted_date,
+              
                 min(
                     case
                         when lower(mapped_stage_name) = 'closed won' then date_entered
@@ -171,9 +196,31 @@ with
             a.property_invoice_id,
             b.label as stage_name,
             dsm.mapped_stage_name,
-            {% if company == "wagway" %} a.property_club_c as hub,
+            {% if company == "wagway" %} 'Pups' as hub,
+                CONCAT(
+                COALESCE(
+                    TRIM(CAST(PROPERTY_LOCATION_ID AS VARCHAR)),
+                    TRIM(
+                        CASE 
+                            WHEN a.PROPERTY_CLUB_C ILIKE '%Lakeview%' THEN '1'
+                            WHEN a.PROPERTY_CLUB_C ILIKE '%Gold Coast%' THEN '2'
+                            WHEN a.PROPERTY_CLUB_C ILIKE '%River North%' THEN '3'
+                            WHEN a.PROPERTY_CLUB_C ILIKE '%Wicker Park%' THEN '4'
+                            WHEN a.PROPERTY_CLUB_C ILIKE '%South Loop%' THEN '5'
+                            WHEN a.PROPERTY_CLUB_C ILIKE '%Streeterville%' THEN '6'
+                            WHEN a.PROPERTY_CLUB_C ILIKE '%Lakeshore East%' THEN '7'
+                            WHEN a.PROPERTY_CLUB_C ILIKE '%DoBro%' THEN '8'
+                            WHEN a.PROPERTY_CLUB_C ILIKE '%Williamsburg%' THEN '9'
+                            ELSE NULL
+                        END
+                    )
+                ),
+                '-pupspetclub'
+            ) AS SK_LOCATION_ID,
             {% elif company == "amh" %} a.property_property_source as hub,
+            CAST(NULL AS VARCHAR) AS SK_LOCATION_ID ,
             {% else %} 'Unknown' as hub,
+            CAST(NULL AS VARCHAR) AS SK_LOCATION_ID ,
             {% endif %}
             a.property_hs_is_closed_lost,
 
@@ -328,7 +375,8 @@ with
                 a.property_invoice_id,
                 b.label as stage_name,
                 dsm.mapped_stage_name,
-                'Unknown' as hub,
+                'Pawville' as hub,
+                CONCAT(TRIM(CAST(PROPERTY_LOCATION_ID AS VARCHAR)), '-pawville') AS SK_LOCATION_ID,
                 a.property_hs_is_closed_lost,
 
                 cast(
@@ -462,9 +510,9 @@ with
                 {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE") }} b
                 on b.stage_id = a.deal_pipeline_stage_id
                 and b.is_active = 1
-            left join deal_contacts dc on dc.deal_id = a.deal_id
+            left join deal_contacts_pawville dc on dc.deal_id = a.deal_id
             left join
-                {{ get_silver_source(company, "HUBSPOT_CONTACT") }} c
+                {{ get_silver_source(company, "HUBSPOT_PAWVILLE_CONTACT") }} c
                 on c.id = dc.contact_id
                 and c.is_active = 1
             left join
@@ -494,6 +542,7 @@ with
             bd.sales_channel_id,
             bd.product_category_id,
             bd.location_id,
+            bd.sk_location_id,
             bd.close_date,
             bd.is_closed,
             bd.is_won,
@@ -501,6 +550,7 @@ with
                 partition by contact_id
             ) as contact_date,
 
+            {%if company == 'playfly'%}
             case
                 when bd.is_won = 1
                 then
@@ -544,6 +594,44 @@ with
                 then coalesce(so.negotiation_date, so.closed_won_date, bd.close_date)
                 else coalesce(so.negotiation_date, so.closed_lost_date, bd.close_date)
             end as negotiation_date,
+            {% else %}
+            case
+                when bd.is_won = 1
+                then
+                    coalesce(
+                        so.qualified_lead_date,
+                        so.contacted_date,
+                        so.closed_won_date,
+                        bd.close_date
+                    )
+                else
+                    coalesce(
+                        so.qualified_lead_date,
+                        so.contacted_date,
+                        so.closed_lost_date,
+                        bd.close_date
+                    )
+            end as qualified_lead_date,
+
+            case
+                when bd.is_won = 1
+                then
+                    coalesce(
+                        so.contacted_date,
+                    
+                        so.closed_won_date,
+                        bd.close_date
+                    )
+                else
+                    coalesce(
+                        so.contacted_date,
+                  
+                        so.closed_lost_date,
+                        bd.close_date
+                    )
+            end as contacted_date,
+
+           {% endif%}
 
             case
                 when bd.is_won = 1 then coalesce(so.closed_won_date, bd.close_date)
@@ -581,14 +669,15 @@ with
                 bd.sales_channel_id,
                 bd.product_category_id,
                 bd.location_id,
+                bd.sk_location_id,
                 bd.close_date,
                 bd.is_closed,
                 bd.is_won,
                 min(bd.property_createdate_new) over (
                     partition by contact_id
                 ) as contact_date,
-
-                case
+                {%if company == 'playfly'%}
+                  case
                     when bd.is_won = 1
                     then
                         coalesce(
@@ -635,6 +724,46 @@ with
                             so.negotiation_date, so.closed_lost_date, bd.close_date
                         )
                 end as negotiation_date,
+                {%else%}
+                case
+                    when bd.is_won = 1
+                    then
+                        coalesce(
+                            so.qualified_lead_date,
+                            so.contacted_date,
+                     
+                            so.closed_won_date,
+                            bd.close_date
+                        )
+                    else
+                        coalesce(
+                            so.qualified_lead_date,
+                            so.contacted_date,
+                         
+                            so.closed_lost_date,
+                            bd.close_date
+                        )
+                end as qualified_lead_date,
+
+                case
+                    when bd.is_won = 1
+                    then
+                        coalesce(
+                            so.contacted_date,
+                          
+                            so.closed_won_date,
+                            bd.close_date
+                        )
+                    else
+                        coalesce(
+                            so.contacted_date,
+                            
+                            so.closed_lost_date,
+                            bd.close_date
+                        )
+                end as contacted_date,
+
+            {%endif%}    
 
                 case
                     when bd.is_won = 1 then coalesce(so.closed_won_date, bd.close_date)
@@ -666,14 +795,20 @@ select distinct
     sales_channel_id,
     product_category_id,
     location_id,
+    sk_location_id,
     contact_id,
     close_date,
     is_closed,
     is_won,
     contact_date,
+    {% if company == 'playfly'%}
     proposal_requested_date,
     proposal_sent_date,
     negotiation_date,
+    {%else%}
+    qualified_lead_date,
+    contacted_date,
+    {%endif%}
     closed_won_date,
     closed_lost_date,
     case
@@ -707,7 +842,9 @@ select distinct
       THEN 'Closed Lost'
 
     ELSE
+     {%if company == 'playfly'%}
       DECODE(
+       
         MAX(
           CASE mapped_stage_name
             WHEN 'Opportunity' THEN 1
@@ -723,6 +860,22 @@ select distinct
         4, 'Negotiation'
       )
   END AS lead_stage,
+  {%else%}
+   DECODE(
+        MAX(
+          CASE mapped_stage_name
+            WHEN 'Lead' THEN 1
+            WHEN 'Qualified Lead' THEN 2
+            WHEN 'Contacted' THEN 3
+            ELSE NULL
+          END
+        ) OVER (PARTITION BY contact_id),
+        1, 'Lead',
+        2, 'Qualified Lead',
+        3, 'Contacted'
+      )
+  END AS lead_stage,
+  {%endif%}
     -- case
     --     when stage_name ilike 'closed%' and stage_name ilike '%won'
     --     then 'Closed Won'
