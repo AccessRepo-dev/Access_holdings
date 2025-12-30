@@ -17,7 +17,7 @@ with hashed as (
         INSTALL_AMOUNT_C,
         OWNER_ID,
         CLOSE_DATE,
-        case when o.stage_name ilike 'close%' and IS_WON = 1 then 1 else 0 end as IS_WON_N,
+        case when o.stage_name ilike 'close%' and o.stage_name ilike '%won' then 1 else 0 end as IS_WON_N,
         case when o.stage_name ilike 'close%' then 1 else 0 end as IS_CLOSED_N,
         -- IS_CLOSED,
         -- IS_WON,

@@ -207,105 +207,112 @@ sources:
     tables:
       - name: NETSUITE_ACCOUNT
         description: Cleaned and standardized chart of accounts sourced from NetSuite.
-        <<: *freshness_netsuite_defaults
+        <<: &freshness_netsuite_silver_defaults
+          config:
+            loaded_at_field: SILVER_LOAD_DATE
+            freshness:
+              warn_after:
+                count: 24
+                period: hour
+              error_after:
+                count: 36
+                period: hour
 
       - name: NETSUITE_ACCOUNTINGPERIOD
         description: Standardized fiscal calendar reference.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_CLASSIFICATION
         description: Refined classification hierarchy.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_CURRENCYRATE
         description: Standardized exchange rate values.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_CURRENCY
         description: Currency dimension table.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_CONSOLIDATEDEXCHANGERATE
         description: Consolidation exchange rate values.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_DEPARTMENT
         description: Standardized department reference list.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_EMPLOYEE
         description: Cleansed employee reference set.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_ENTITY
         description: Harmonized customer/vendor/entity reference.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_ITEM
         description: Standardized product and service catalog.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_LOCATION
         description: Cleansed business location definitions.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_SUBSIDIARY
         description: Standardized subsidiary records used for reporting.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_TRANSACTION
         description: Standardized NetSuite transaction header-level records.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_TRANSACTIONACCOUNTINGLINE
         description: Standardized ledger-level accounting lines.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_TRANSACTIONLINE
         description: Normalized transaction line-level data.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_TRANSACTIONSTATUS
         description: Status lookup values for standardized workflows.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_BUDGETLEGACY
         description: Standardized budget historical records.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_BUDGETCATEGORY
         description: Standardized budgeting category structure.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_CLASSIFICATIONSUBSIDIARYMAP
         description: Mapped classification and legal entity structure.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: NETSUITE_ACCOUNTSUBSIDIARYMAP
         description: Mapped account and subsidiary association.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
       - name: wagway_COA_MAPPING
         description: Mapping between NetSuite and reporting chart of accounts.
-        <<: *freshness_netsuite_defaults
         
       - name: wagway_addbacks
         description: Addback adjustments for reporting and reconciliation.
-        <<: *freshness_netsuite_defaults
         
       - name: NETSUITE_CUSTOMRECORD_CSEG1
         description: Cleaned and harmonized custom reporting segment.
+        <<: *freshness_netsuite_silver_defaults
+
       - name: wagway_location_capacity_mapping
         description: Mapping between business locations and capacity attributes.
-        <<: *freshness_netsuite_defaults
         
       - name: netsuite_coa
         description: Combined chart of accounts reference for systems harmonization.
-        <<: *freshness_netsuite_defaults
         
       - name: netsuite_adjustments
         description: Manual or system-based financial adjustments.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
         
 
   - name: playfly_silver
@@ -314,107 +321,103 @@ sources:
     tables:
       - name: NETSUITE_ACCOUNT
         description: Clean, standardized list of chart of accounts from NetSuite.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_ACCOUNTINGPERIOD
         description: Standardized calendar for Playfly accounting periods.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_CLASSIFICATION
         description: Normalized segmentation hierarchy for reporting.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_CURRENCYRATE
         description: Standardized currency conversion values.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_CURRENCY
         description: Currency reference dimension.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_CONSOLIDATEDEXCHANGERATE
         description: Consolidation exchange rate mapping.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_DEPARTMENT
         description: Standard department master reference.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_EMPLOYEE
         description: Refined employee-level records.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_ENTITY
         description: Customer, vendor, and partner master harmonized set.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_ITEM
         description: Product and service catalog standardized for reporting.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_LOCATION
         description: Harmonized business location registry.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_SUBSIDIARY
         description: Subsidiary dimension standardized for Playfly reporting.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_TRANSACTION
         description: Standard transaction header records.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_TRANSACTIONACCOUNTINGLINE
         description: Normalized transaction-level accounting ledger.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_TRANSACTIONLINE
         description: Standardized transaction line-level attributes.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_TRANSACTIONSTATUS
         description: Workflow state representation for transactions.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_BUDGETLEGACY
         description: Historical budget structure for Playfly.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_BUDGETCATEGORY
         description: Categorization used for Playfly budgeting processes.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_CLASSIFICATIONSUBSIDIARYMAP
         description: Mapping from classification hierarchy to subsidiaries.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_ACCOUNTSUBSIDIARYMAP
         description: Account-to-subsidiary association.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: playfly_COA_MAPPING
         description: Mapping from internal chart of accounts to reporting standards.
-        <<: *freshness_netsuite_defaults
 
       - name: playfly_addbacks
         description: Record of adjustments and addbacks used in financial reconciliation.
-        <<: *freshness_netsuite_defaults
 
       - name: NETSUITE_CUSTOMRECORD_CSEG1
         description: First custom reporting segment dimension.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: NETSUITE_CUSTOMRECORD_CSEG2
         description: Second custom reporting segmentation layer.
-        <<: *freshness_netsuite_defaults
+        <<: *freshness_netsuite_silver_defaults
 
       - name: netsuite_coa
         description: Standardized NetSuite chart of accounts for Playfly.
-        <<: *freshness_netsuite_defaults
 
       - name: netsuite_adjustments
         description: Manual or computed financial adjustments for accuracy.
-        <<: *freshness_netsuite_defaults
 
 
   - name: wagway_gold

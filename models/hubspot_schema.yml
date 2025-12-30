@@ -28,6 +28,8 @@ sources:
 
       - name: LINE_ITEM
         <<: *freshness_hubspot_defaults
+      - name: LINE_ITEM_DEAL
+        <<: *freshness_hubspot_defaults
 
       - name: DEAL_COMPANY
         <<: *freshness_hubspot_defaults
@@ -84,7 +86,8 @@ sources:
 
       - name: LINE_ITEM
         <<: *freshness_hubspot_defaults
-
+      - name: LINE_ITEM_DEAL
+        <<: *freshness_hubspot_defaults
       - name: DEAL_COMPANY
         <<: *freshness_hubspot_defaults
 
@@ -109,7 +112,7 @@ sources:
       - name: DEAL_CONTACT
         <<: *freshness_hubspot_defaults
 
-      - name: PUPS_PRODUCTS
+     
       - name: DEAL_STAGE
         <<: *freshness_hubspot_defaults
 
@@ -144,11 +147,13 @@ sources:
 
       - name : HUBSPOT_LINE_ITEM
         <<: *freshness_hubspot_defaults
+      - name : HUBSPOT_LINE_ITEM_DEAL
+        <<: *freshness_hubspot_defaults
 
       - name : HUBSPOT_OWNER
         <<: *freshness_hubspot_defaults
 
-      - name : HUBSPOT_PUPS_PRODUCTS
+      - name : HUBSPOT_PRODUCT
         <<: *freshness_hubspot_defaults
 
       - name : HUBSPOT_TICKET
@@ -194,6 +199,8 @@ sources:
 
       - name : HUBSPOT_PAWVILLE_LINE_ITEM
         <<: *freshness_hubspot_defaults
+      - name : HUBSPOT_PAWVILLE_LINE_ITEM_DEAL
+        <<: *freshness_hubspot_defaults
 
       - name : HUBSPOT_PAWVILLE_OWNER
         <<: *freshness_hubspot_defaults
@@ -230,6 +237,8 @@ sources:
 
       - name: HUBSPOT_LINE_ITEM
         <<: *freshness_hubspot_defaults
+      - name: HUBSPOT_LINE_ITEM_DEAL
+        <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_DEAL_COMPANY
         <<: *freshness_hubspot_defaults
@@ -260,10 +269,14 @@ sources:
 
       - name: HUBSPOT_TEAM
         <<: *freshness_hubspot_defaults
+      - name: HUBSPOT_PRODUCT
+        <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_OWNER_TEAM
         <<: *freshness_hubspot_defaults
 
+      - name: HUBSPOT_PAWVILLE_PRODUCT
+        <<: *freshness_hubspot_defaults
       - name: HUBSPOT_PAWVILLE_COMPANY
         <<: *freshness_hubspot_defaults
 
@@ -277,6 +290,8 @@ sources:
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_PAWVILLE_LINE_ITEM
+        <<: *freshness_hubspot_defaults
+      - name: HUBSPOT_PAWVILLE_LINE_ITEM_DEAL
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_PAWVILLE_DEAL_COMPANY
@@ -303,7 +318,7 @@ sources:
       - name: HUBSPOT_PAWVILLE_DEAL_CONTACT
       - name: WAGWAY_OPPORTUNITY_STAGE_MAPPING
       - name: WAGWAY_PAWVILLE_OPPORTUNITY_STAGE_MAPPING
-        <<: *freshness_hubspot_defaults
+      
 
 
   - name: amh_hubspot_raw
@@ -324,11 +339,10 @@ sources:
 
       - name: LINE_ITEM
         <<: *freshness_hubspot_defaults
-
-      - name: DEAL_COMPANY
+      - name: LINE_ITEM_DEAL
         <<: *freshness_hubspot_defaults
 
-      - name: PUPS_PRODUCTS
+      - name: DEAL_COMPANY
         <<: *freshness_hubspot_defaults
 
       - name: CONTACT
@@ -340,13 +354,7 @@ sources:
       - name: ENGAGEMENT
         <<: *freshness_hubspot_defaults
 
-      - name: LEAD
-        <<: *freshness_hubspot_defaults
-
       - name: OWNER
-        <<: *freshness_hubspot_defaults
-
-      - name: TICKET
         <<: *freshness_hubspot_defaults
 
       - name: ROLE
@@ -358,6 +366,7 @@ sources:
       - name: DEAL_CONTACT
       - name: DEAL_STAGE
         <<: *freshness_hubspot_defaults
+      - name: PRODUCT
 
 
 
@@ -385,6 +394,8 @@ sources:
 
       - name : HUBSPOT_LINE_ITEM
         <<: *freshness_hubspot_defaults
+      - name : HUBSPOT_LINE_ITEM_DEAL
+        <<: *freshness_hubspot_defaults
 
       - name : HUBSPOT_OWNER
         <<: *freshness_hubspot_defaults
@@ -400,15 +411,13 @@ sources:
 
       - name: HUBSPOT_DEAL_CONTACT
         <<: *freshness_hubspot_defaults
+      - name: HUBSPOT_PRODUCT
 
 
   - name: amh_silver
     database: "{{ env_var('DBT_AMH') }}"     
     schema: SILVER        
     tables:
-      - name: HUBSPOT_COMPANY
-        <<: *freshness_hubspot_defaults
-
       - name: HUBSPOT_USERS
         <<: *freshness_hubspot_defaults
 
@@ -419,6 +428,8 @@ sources:
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_LINE_ITEM
+        <<: *freshness_hubspot_defaults
+      - name: HUBSPOT_LINE_ITEM_DEAL
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_DEAL_COMPANY
@@ -433,19 +444,13 @@ sources:
       - name: HUBSPOT_ENGAGEMENT
         <<: *freshness_hubspot_defaults
 
-      - name: HUBSPOT_LEAD
-        <<: *freshness_hubspot_defaults
-
       - name: HUBSPOT_OWNER
-        <<: *freshness_hubspot_defaults
-
-      - name: HUBSPOT_TICKET
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_ROLE
       - name: HUBSPOT_DEAL_CONTACT
       - name: AMH_OPPORTUNITY_STAGE_MAPPING
-        <<: *freshness_hubspot_defaults
+      - name: HUBSPOT_PRODUCT
 
 
   - name: playfly_hubspot_raw
@@ -466,11 +471,13 @@ sources:
 
       - name: LINE_ITEM
         <<: *freshness_hubspot_defaults
+      - name: LINE_ITEM_DEAL
+        <<: *freshness_hubspot_defaults
 
       - name: DEAL_COMPANY
         <<: *freshness_hubspot_defaults
 
-      - name: PUPS_PRODUCTS
+      - name: PRODUCT
         <<: *freshness_hubspot_defaults
 
       - name: CONTACT
@@ -530,6 +537,8 @@ sources:
 
       - name : HUBSPOT_LINE_ITEM
         <<: *freshness_hubspot_defaults
+      - name : HUBSPOT_LINE_ITEM_DEAL
+        <<: *freshness_hubspot_defaults
 
       - name : HUBSPOT_OWNER
         <<: *freshness_hubspot_defaults
@@ -544,6 +553,8 @@ sources:
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_DEAL_CONTACT
+        <<: *freshness_hubspot_defaults
+      - name:  HUBSPOT_PRODUCT
         <<: *freshness_hubspot_defaults
 
 
@@ -565,11 +576,12 @@ sources:
 
       - name: HUBSPOT_LINE_ITEM
         <<: *freshness_hubspot_defaults
+      - name: HUBSPOT_LINE_ITEM_DEAL
+        <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_DEAL_COMPANY
       - name: HUBSPOT_DEAL_CONTACT
       - name: PLAYFLY_OPPORTUNITY_STAGE_MAPPING
-        <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_CONTACT
         <<: *freshness_hubspot_defaults
@@ -590,5 +602,7 @@ sources:
         <<: *freshness_hubspot_defaults
 
       - name: HUBSPOT_ROLE
+        <<: *freshness_hubspot_defaults
+      - name: HUBSPOT_PRODUCT
         <<: *freshness_hubspot_defaults
 

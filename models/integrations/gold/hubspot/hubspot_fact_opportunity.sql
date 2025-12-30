@@ -1,6 +1,10 @@
 {% set company = var("company", "wagway") %}
-{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly","amh"]) }}
-
+{{
+    config(
+        enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]
+        and var("company", "none") in ["wagway", "playfly", "amh"]
+    )
+}}
 
 
 {{
@@ -13,141 +17,280 @@
     )
 }}
 
-with pups_hashed as (
+with
+    pups_hashed as (
 
-select
-    A.deal_id as ID,
-    b.label as STAGE_NAME,
-    property_hs_all_owner_ids as OWNER_ID,
-    A.property_amount as AMOUNT,
-    A.property_closedate as CLOSE_DATE,
-    cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
-    cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
-    ELSE 0 END as Boolean) as IS_WON,
-    property_hs_deal_stage_probability as PROBABILITY,
-    A.DBT_VALID_FROM,
-    A.DBT_VALID_TO,
-    md5(
-        coalesce(STAGE_NAME,'') || '|' ||
-        coalesce(property_amount::string,'') || '|' ||
-        coalesce(OWNER_ID::string,'') || '|' ||
-        coalesce(CLOSE_DATE::string,'') || '|' ||
-        coalesce(IS_WON::string,'') || '|' ||
-        coalesce(IS_CLOSED::string,'')
-    ) as attr_hash
-from {{ get_silver_source(company, "HUBSPOT_DEAL") }} a
-join
-    {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE_STAGE") }} b
-    on b.stage_id = a.deal_pipeline_stage_id
-    and b.is_active = 1
+        select
+            a.deal_id as id,
+            property_dealname,
+            contact_id,
+            case
+                when contact_id is null
+                then null
+                else
+                    min(
+                        case
+                            when
+                                (
+                                    property_invoice_id is not null
+                                    or label ilike '%purchase%'
+                                )
+                            then least(property_closedate, property_createdate)
+                        end
+                    ) over (partition by contact_id)
+            end as acquisition_date,
+            property_hs_is_closed_lost,
+            case
+                when property_createdate > property_closedate
+                then property_closedate
+                else property_createdate
+            end as property_createdate,
+            min(property_createdate) over (partition by contact_id) as contact_date,
+            b.label as stage_name,
+            owner_id as owner_id,
+            a.property_amount as amount,
+            a.property_closedate as close_date,
+            case
+                when
+                    dsm.mapped_stage_name ilike 'close%'
+                    and dsm.mapped_stage_name ilike '%won'
+                then 1
+                else 0
+            end as is_won_n,
+            case
+                when dsm.mapped_stage_name ilike 'close%' then 1 else 0
+            end as is_closed_n,
+            -- cast(CASE WHEN A.property_closedate <
+            -- CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS
+            -- IS_CLOSED,
+            -- cast(CASE WHEN A.property_closedate <
+            -- CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won =
+            -- TRUE THEN 1
+            -- ELSE 0 END as Boolean) as IS_WON,
+            property_hs_deal_stage_probability as probability,
+            a.dbt_valid_from,
+            a.dbt_valid_to,
+            md5(
+                coalesce(stage_name, '')
+                || '|'
+                || coalesce(property_amount::string, '')
+                || '|'
+                || coalesce(owner_id::string, '')
+                || '|'
+                || coalesce(close_date::string, '')
+                || '|'
+                || coalesce(is_won_n::string, '')
+                || '|'
+                || coalesce(is_closed_n::string, '')
+            ) as attr_hash,
+            company_id,
+        from {{ get_silver_source(company, "HUBSPOT_DEAL") }} a
+        left join
+            {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }} c
+            on a.deal_id = c.deal_id
 
-)
+        left join
+            {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE_STAGE") }} b
+            on b.stage_id = a.deal_pipeline_stage_id
+            and b.is_active = 1
+        LEFT JOIN 
+         {{  get_silver_source(company, "HUBSPOT_DEAL_COMPANY")}} d
+          on a.DEAL_ID = d.DEAL_ID
 
-
-{% if company == "wagway" %}
-
-    ,pawville_hashed as (
-
-    select
-        A.deal_id as ID,
-        b.label as STAGE_NAME,
-        property_hs_all_owner_ids as OWNER_ID,
-        A.property_amount as AMOUNT,
-        A.property_closedate as CLOSE_DATE,
-        cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS IS_CLOSED,
-        cast(CASE WHEN A.property_closedate < CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won = TRUE THEN 1
-        ELSE 0 END as Boolean) as IS_WON,
-        property_hs_deal_stage_probability as PROBABILITY,
-        A.DBT_VALID_FROM,
-        A.DBT_VALID_TO,
-        md5(
-            coalesce(STAGE_NAME,'') || '|' ||
-            coalesce(property_amount::string,'') || '|' ||
-            coalesce(OWNER_ID::string,'') || '|' ||
-            coalesce(CLOSE_DATE::string,'') || '|' ||
-            coalesce(IS_WON::string,'') || '|' ||
-            coalesce(IS_CLOSED::string,'')
-        ) as attr_hash
-    from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL") }} a
-    join
-        {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE") }} b
-        on b.stage_id = a.deal_pipeline_stage_id
-        and b.is_active = 1
+        left join
+            {{ ref("hubspot_dim_stage_mapping") }} dsm on b.label = dsm.stage_name
+            {% if company == "wagway" %} and dsm.source_schema = 'HUBSPOT_PUPS'
+            {% else %}
+                and dsm.source_schema = concat('HUBSPOT_', '{{ company | upper }}')
+            {% endif %}
 
     )
+    {% if company == "wagway" %}
 
-{% endif %}
+        ,
+        pawville_hashed as (
 
-, final as (
-select
-        CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
-        ID as OPPORTUNITY_ID,
-        md5(   
-        coalesce(nullif(cast(OWNER_ID as string),''), '') || '|' ||
-        coalesce('HUBSPOT','')
-        ) as OWNER_ID,
-        STAGE_NAME,
-        AMOUNT,
-        CLOSE_DATE,
-        IS_CLOSED,
-        IS_WON,
-        PROBABILITY*100 as PROBABILITY,
-        min(DBT_VALID_FROM) over (partition by ID, attr_hash) as DBT_VALID_FROM,
-        case 
-            when max(case when DBT_VALID_TO is null then 1 else 0 end) 
-                    over (partition by ID, attr_hash) = 1
-            then null
-            else max(DBT_VALID_TO) over (partition by ID, attr_hash)
-        end as DBT_VALID_TO,
-        max(case when DBT_VALID_TO is null then 1 else 0 end) 
-            over (partition by ID, attr_hash) as IS_ACTIVE,
+            select
+                a.deal_id as id,
+                property_dealname,
+                contact_id,
+                case
+                    when contact_id is null
+                    then null
+                    else
+                        min(
+                            case
+                                when
+                                    (
+                                        property_invoice_id is not null
+                                        or label ilike '%purchase%'
+                                    )
+                                then least(property_closedate, property_createdate)
+                            end
+                        ) over (partition by contact_id)
+                end as acquisition_date,
+                property_hs_is_closed_lost,
+                case
+                    when property_createdate > property_closedate
+                    then property_closedate
+                    else property_createdate
+                end as property_createdate,
+                min(property_createdate) over (partition by contact_id) as contact_date,
+                b.label as stage_name,
+                owner_id as owner_id,
+                a.property_amount as amount,
+                a.property_closedate as close_date,
+                case
+                    when
+                        dsmm.mapped_stage_name ilike 'close%'
+                        and dsmm.mapped_stage_name ilike '%won'
+                    then 1
+                    else 0
+                end as is_won_n,
+                case
+                    when dsmm.mapped_stage_name ilike 'close%' then 1 else 0
+                end as is_closed_n,
+                -- cast(CASE WHEN A.property_closedate <
+                -- CURRENT_TIMESTAMP()::TIMESTAMP_NTZ THEN 1 ELSE 0 END as Boolean) AS
+                -- IS_CLOSED,
+                -- cast(CASE WHEN A.property_closedate <
+                -- CURRENT_TIMESTAMP()::TIMESTAMP_NTZ and A.property_hs_is_closed_won
+                -- = TRUE THEN 1
+                -- ELSE 0 END as Boolean) as IS_WON,
+                property_hs_deal_stage_probability as probability,
+                a.dbt_valid_from,
+                a.dbt_valid_to,
+                md5(
+                    coalesce(stage_name, '')
+                    || '|'
+                    || coalesce(property_amount::string, '')
+                    || '|'
+                    || coalesce(owner_id::string, '')
+                    || '|'
+                    || coalesce(close_date::string, '')
+                    || '|'
+                    || coalesce(is_won_n::string, '')
+                    || '|'
+                    || coalesce(is_closed_n::string, '')
+                ) as attr_hash,
+                company_id,
+            from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL") }} a
+            left join
+                {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_CONTACT") }} c
+                on a.deal_id = c.deal_id
+            left join
+                {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE") }} b
+                on b.stage_id = a.deal_pipeline_stage_id
+                and b.is_active = 1
+             LEFT JOIN 
+                {{  get_silver_source(company, "HUBSPOT_DEAL_COMPANY")}} d
+                on a.DEAL_ID = d.DEAL_ID
+            left join
+                {{ ref("hubspot_dim_stage_mapping") }} dsmm
+                on b.label = dsmm.stage_name
+                and dsmm.source_schema = 'HUBSPOT_PAWVILLE'
+
+        )
+
+    {% endif %},
+    final as (
+        select
+            concat(
+                id, '_', to_varchar(dbt_valid_from, 'YYYYMMDDHH24MISSFF3')
+            ) as id_date_key,
+            id as opportunity_id,
+            md5(
+                coalesce(nullif(cast(owner_id as string), ''), '') || '|' || 'HUBSPOT'
+            ) as owner_id,
+            stage_name,
+            amount,
+            close_date,
+            cast(is_closed_n as boolean) as is_closed,
+            cast(is_won_n as boolean) as is_won,
+            probability * 100 as probability,
+            min(dbt_valid_from) over (partition by id, attr_hash) as dbt_valid_from,
+            case
+                when
+                    max(case when dbt_valid_to is null then 1 else 0 end) over (
+                        partition by id, attr_hash
+                    )
+                    = 1
+                then null
+                else max(dbt_valid_to) over (partition by id, attr_hash)
+            end as dbt_valid_to,
+            max(case when dbt_valid_to is null then 1 else 0 end) over (
+                partition by id, attr_hash
+            ) as is_active,
+
+            {% if company == "wagway" %}
+                md5(coalesce(stage_name, '') || '|HUBSPOT_PUPS') as stage_key,
+                'HUBSPOT_PUPS' as source_schema,
+
+            {% else %}
+                md5(
+                    coalesce(stage_name, '')
+                    || concat('HUBSPOT_', '{{company | upper}}')
+                ) as stage_key,
+                concat('HUBSPOT_', '{{company | upper}}') as source_schema,
+
+            {% endif %}
+            company_id as dim_company_id,
+            current_timestamp()::timestamp_ntz as gold_load_date
+        from pups_hashed
+        qualify
+            row_number() over (partition by id, attr_hash order by dbt_valid_from) = 1
+
         {% if company == "wagway" %}
-            'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+            union all
 
-        {%else%}
+            select
+                concat(
+                    id, '_', to_varchar(dbt_valid_from, 'YYYYMMDDHH24MISSFF3')
+                ) as id_date_key,
+                id as opportunity_id,
+                md5(
+                    coalesce(nullif(cast(owner_id as string), ''), '')
+                    || '|'
+                    || 'HUBSPOT_PAWVILLE'
+                ) as owner_id,
+                stage_name,
+                amount,
+                close_date,
+                cast(is_closed_n as boolean) as is_closed,
+                cast(is_won_n as boolean) as is_won,
+                probability * 100 as probability,
 
-        CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+                min(dbt_valid_from) over (partition by id, attr_hash) as dbt_valid_from,
+                case
+                    when
+                        max(case when dbt_valid_to is null then 1 else 0 end) over (
+                            partition by id, attr_hash
+                        )
+                        = 1
+                    then null
+                    else max(dbt_valid_to) over (partition by id, attr_hash)
+                end as dbt_valid_to,
+                max(case when dbt_valid_to is null then 1 else 0 end) over (
+                    partition by id, attr_hash
+                ) as is_active,
+                md5(coalesce(stage_name, '') || '|HUBSPOT_PAWVILLE') as stage_key,
+             
+                'HUBSPOT_PAWVILLE' as source_schema,
+                company_id as dim_company_id,
+                current_timestamp()::timestamp_ntz as gold_load_date
+            from pawville_hashed
+            qualify
+                row_number() over (partition by id, attr_hash order by dbt_valid_from)
+                = 1
 
         {% endif %}
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    from pups_hashed
-    qualify row_number() over (partition by ID, attr_hash order by DBT_VALID_FROM) = 1
 
-{% if company == "wagway" %}
-    union all
-
-    select
-        CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
-        ID as OPPORTUNITY_ID,
-        md5(   
-        coalesce(nullif(cast(OWNER_ID as string),''), '') || '|' ||
-        coalesce('HUBSPOT_PAWVILLE','')
-        ) as OWNER_ID,
-        STAGE_NAME,
-        AMOUNT,
-        CLOSE_DATE,
-        IS_CLOSED,
-        IS_WON,
-        PROBABILITY*100 as PROBABILITY,
-        min(DBT_VALID_FROM) over (partition by ID, attr_hash) as DBT_VALID_FROM,
-        case 
-            when max(case when DBT_VALID_TO is null then 1 else 0 end) 
-                    over (partition by ID, attr_hash) = 1
-            then null
-            else max(DBT_VALID_TO) over (partition by ID, attr_hash)
-        end as DBT_VALID_TO,
-        max(case when DBT_VALID_TO is null then 1 else 0 end) 
-            over (partition by ID, attr_hash) as IS_ACTIVE,
-        'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    from pawville_hashed
-    qualify row_number() over (partition by ID, attr_hash order by DBT_VALID_FROM) = 1
-
-{% endif %}
-
-)
-
-SELECT 
-*
-, row_number() over(partition by opportunity_id, source_schema order by DBT_VALID_FROM) as rank
-FROM final
+    ),
+    base as (select * from final),
+    services as (select * from base)
+select
+    *,
+    row_number() over (
+        partition by opportunity_id, source_schema order by dbt_valid_from
+    ) as rank
+from services

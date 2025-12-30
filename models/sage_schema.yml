@@ -95,91 +95,101 @@ sources:
     schema: silver
     tables:
       - name: SAGE_ASSET
-        <<: *freshness_sage_defaults
+        <<: &freshness_sage_silver_defaults
+          config:
+            loaded_at_field: SILVER_LOAD_DATE
+            freshness:
+              warn_after:
+                count: 24
+                period: hour
+              error_after:
+                count: 36
+                period: hour
+
 
       - name: SAGE_BANKACCOUNT
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_CLASS
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_CURRENCY
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_CUSTOMER
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_DEPARTMENT
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_DEPRECIATION_SUMMARY
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_EMPLOYEE
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_ENTITYACCTDEFAULT
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_ACCOUNT
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_ACCT_GRP
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_ACCT_GRP_MEMBER
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_BATCH
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_BUDGET_HEADER
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_BUDGET_ITEM
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_COA_CAT_MEMBER
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_DETAIL
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_ENTRY
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GLACCTGRPHIERARCHY
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_ITEM
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_LOCATION
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_LOCATION_ENTITY
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_PROJECT
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_REPORTING_PERIOD
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: spotless_COA_MAPPING
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: spotless_addbacks 
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_VENDOR
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: sage_coa
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: sage_adjustments
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
 
 
@@ -187,9 +197,6 @@ sources:
     database: amh_raw
     schema: sage
     tables:
-      - name: ASSET
-        <<: *freshness_sage_defaults
-
       - name: BANKACCOUNT
         <<: *freshness_sage_defaults
 
@@ -203,9 +210,6 @@ sources:
         <<: *freshness_sage_defaults
 
       - name: DEPARTMENT
-        <<: *freshness_sage_defaults
-
-      - name: DEPRECIATION_SUMMARY
         <<: *freshness_sage_defaults
 
       - name: EMPLOYEE
@@ -230,9 +234,6 @@ sources:
         <<: *freshness_sage_defaults
 
       - name: GL_BUDGET_ITEM
-        <<: *freshness_sage_defaults
-
-      - name: GL_COA_CAT_MEMBER
         <<: *freshness_sage_defaults
 
       - name: GL_DETAIL
@@ -268,92 +269,86 @@ sources:
     database: "{{ env_var('DBT_AMH') }}"
     schema: silver
     tables:
-      - name: SAGE_ASSET
-        <<: *freshness_sage_defaults
-
-      - name: SAGE_BANKACCOUNT
-        <<: *freshness_sage_defaults
-
       - name: SAGE_CLASS
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_CURRENCY
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_CUSTOMER
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_DEPARTMENT
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_DEPRECIATION_SUMMARY
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_EMPLOYEE
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_ENTITYACCTDEFAULT
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_ACCOUNT
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_ACCT_GRP
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_ACCT_GRP_MEMBER
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_BATCH
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_BUDGET_HEADER
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_BUDGET_ITEM
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_COA_CAT_MEMBER
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_DETAIL
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GL_ENTRY
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_GLACCTGRPHIERARCHY
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_ITEM
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_LOCATION
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_LOCATION_ENTITY
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_PROJECT
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_REPORTING_PERIOD
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: amh_COA_MAPPING
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: amh_addbacks 
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: SAGE_VENDOR
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: sage_coa
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
       - name: sage_adjustments
-        <<: *freshness_sage_defaults
+        <<: *freshness_sage_silver_defaults
 
 
   - name: spotless_gold
@@ -362,7 +357,7 @@ sources:
     tables:
       - name: FACT_TRANSACTION
         config:
-          loaded_at_field: created_at
+          loaded_at_field: LASTMODIFIEDDATE
           freshness:
             warn_after:
               count: 24
@@ -374,7 +369,7 @@ sources:
     tables:
       - name: FACT_TRANSACTION
         config:
-          loaded_at_field: created_at
+          loaded_at_field: LASTMODIFIEDDATE
           freshness:
             warn_after:
               count: 24

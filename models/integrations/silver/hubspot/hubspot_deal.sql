@@ -64,12 +64,13 @@ with
             cast(
                 trim(property_hs_deal_stage_probability) as float
             ) as property_hs_deal_stage_probability,
-
-            {% if company | lower != "amh" %}
-                trim(property_description) as property_description,
-            {% endif %}
             {% if company | lower == "amh" %}
                 trim(property_service_request) as property_service_request,
+                trim(PROPERTY_PROPERTY_SOURCE) as property_property_source,
+            {% else %}
+                null as property_service_request,
+                null as property_property_source,
+                trim(property_description) as property_description,
             {% endif %}
             PROPERTY_HS_IS_CLOSED_WON,
             PROPERTY_HS_IS_CLOSED_LOST,
@@ -96,6 +97,7 @@ with
             current_timestamp()::timestamp_ntz as silver_load_date,
             cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
             cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,
+            _FIVETRAN_SYNCED,
             case when dbt_valid_to is null then 1 else 0 end as is_active
 
         from source

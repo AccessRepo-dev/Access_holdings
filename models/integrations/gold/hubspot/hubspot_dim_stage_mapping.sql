@@ -1,83 +1,66 @@
 {% set company = var("company", "wagway") %}
-{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly", "amh"]) }}
+{{
+    config(
+        enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]
+        and var("company", "none") in ["wagway", "playfly", "amh"]
+    )
+}}
 
 
+{{
+    config(
+        database=get_target_database(company),
+        alias="dim_stage_mapping",
+        materialized="incremental",
+        incremental_strategy="merge",
+    )
+}}
 
-{{ config(
-    database = get_target_database(company),
-    alias = 'dim_stage_mapping',
-    materialized = 'incremental',
-    incremental_strategy = 'merge',
-) }}
+{% set derived_metrics = var("derived_metrics") %}
 
-{% set derived_metrics = var('derived_metrics') %}
-
-SELECT 
-    STAGE_NAME, 
-    MAPPED_STAGE_NAME, 
-    CAST(sort_order as INT)+1 as STAGE_ORDER,
+select
+    stage_name,
+    mapped_stage_name,
+    cast(sort_order as int) + 1 as stage_order,
 
     {% if company == "wagway" %}
-        'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+        md5(coalesce(stage_name, '') || '|HUBSPOT_PUPS') as stage_key,
+        'HUBSPOT_PUPS' as source_schema,
 
-    {%else%}
-
-        CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+    {% else %}
+        md5(
+            coalesce(stage_name, '') || concat('HUBSPOT_', '{{company | upper}}')
+        ) as stage_key,
+        concat('HUBSPOT_', '{{company | upper}}') as source_schema,
 
     {% endif %}
 
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-FROM {{ get_silver_source(company, company| upper ~ '_OPPORTUNITY_STAGE_MAPPING') }}
+    current_timestamp()::timestamp_ntz as gold_load_date
+from {{ get_silver_source(company, company | upper ~ "_OPPORTUNITY_STAGE_MAPPING") }}
 
-{% if company != 'amh'%} 
-union 
 
-SELECT 
-    'Lead' as STAGE_NAME, 
-    'Lead' as MAPPED_STAGE_NAME, 
-    1 as STAGE_ORDER,
-    {% if company == "wagway" %}
-        'HUBSPOT_PUPS' as SOURCE_SCHEMA,
 
-    {%else%}
+{% if company == "wagway" %}
 
-        CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+    union all
 
-    {% endif %}
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-FROM {{ get_silver_source(company, company| upper ~ '_OPPORTUNITY_STAGE_MAPPING') }}
+    select
+        stage_name,
+        mapped_stage_name,
+        cast(sort_order as int) + 1 as stage_order,
 
-{% endif %}
+        {% if company == "wagway" %}
+            md5(coalesce(stage_name, '') || '|HUBSPOT_PAWVILLE') as stage_key,
+            'HUBSPOT_PAWVILLE' as source_schema,
 
-{% if company == 'wagway'%} 
+        {% else %}
+            md5(
+                coalesce(stage_name, '') || concat('HUBSPOT_', '{{company | upper}}')
+            ) as stage_key,
+            concat('HUBSPOT_', '{{company | upper}}') as source_schema,
 
-UNION ALL
-
-SELECT 
-    STAGE_NAME, 
-    MAPPED_STAGE_NAME, 
-    CAST(sort_order as INT)+1 as STAGE_ORDER,
-
-    {% if company == "wagway" %}
-        'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
-
-    {%else%}
-
-        CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
-
-    {% endif %}
-
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-FROM {{ get_silver_source(company, 'WAGWAY_PAWVILLE_OPPORTUNITY_STAGE_MAPPING') }}
-
-union 
-
-SELECT 
-    'Lead' as STAGE_NAME, 
-    'Lead' as MAPPED_STAGE_NAME, 
-    1 as STAGE_ORDER,
-    'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-FROM {{ get_silver_source(company, 'WAGWAY_PAWVILLE_OPPORTUNITY_STAGE_MAPPING') }}
+        {% endif %}
+        current_timestamp()::timestamp_ntz as gold_load_date
+    from {{ get_silver_source(company, "WAGWAY_PAWVILLE_OPPORTUNITY_STAGE_MAPPING") }}
 
 {% endif %}

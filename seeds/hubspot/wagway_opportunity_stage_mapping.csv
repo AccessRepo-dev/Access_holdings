@@ -1,27 +1,27 @@
 STAGE_NAME,MAPPED_STAGE_NAME,SORT_ORDER
 Lead,Lead,1
-New Opportunity,Opportunity,2
-New,Opportunity,3
-Contacted,Opportunity,4
-Contacting,Opportunity,5
-In Discussion,Opportunity,6
-Grooming Appointment Set,Proposal Requested,7
-Overnight Reservation Set,Proposal Requested,8
-Trial Day Set,Proposal Requested,9
-PUPStart Set,Proposal Requested,10
-Pet Sitting Reservation Set,Proposal Requested,11
-Grooming Appointment Complete,Proposal Sent,12
-Overnight Reservation Complete,Proposal Sent,13
-Trial Day Complete,Proposal Sent,14
-PUPStart Complete,Proposal Sent,15
-Pet Sitting Reservation Completed,Proposal Sent,16
-Membership Options Presented,Negotiation,17
-Sales Offer Made,Negotiation,18
-Initial Commitment,Negotiation,19
-Training Package Purchased,Negotiation,20
-Membership Purchased,Negotiation,21
-Puppy Playcare Package Purchased,Negotiation,22
-Daycare Package Purchased,Negotiation,23
+New Opportunity,Lead,2
+New,Lead,3
+Contacted,Lead,4
+Contacting,Lead,5
+In Discussion,Lead,6
+Grooming Appointment Set,Qualified Lead,7
+Overnight Reservation Set,Qualified Lead,8
+Trial Day Set,Qualified Lead,9
+PUPStart Set,Qualified Lead,10
+Pet Sitting Reservation Set,Qualified Lead,11
+Grooming Appointment Complete,Contacted,12
+Overnight Reservation Complete,Contacted,13
+Trial Day Complete,Contacted,14
+PUPStart Complete,Contacted,15
+Pet Sitting Reservation Completed,Contacted,16
+Membership Options Presented,Contacted,17
+Sales Offer Made,Contacted,18
+Initial Commitment,Contacted,19
+Training Package Purchased,Contacted,20
+Membership Purchased,Contacted,21
+Puppy Playcare Package Purchased,Contacted,22
+Daycare Package Purchased,Contacted,23
 Invoiced,Closed Won,24
 Closed Won,Closed Won,25
 Pet Sitting Reservation No Show / Canceled,Closed Lost,26

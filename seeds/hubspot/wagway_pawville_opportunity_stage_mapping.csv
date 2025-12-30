@@ -1,14 +1,14 @@
 STAGE_NAME,MAPPED_STAGE_NAME,SORT_ORDER
 Lead,Lead,1
-Contacting,Opportunity,2
-New Opportunity,Opportunity,3
-In Discussion,Proposal Requested,4
-Trial Day Set,Proposal Sent,5
-Grooming Appointment Set,Proposal Sent,6
-Boarding Reservation Set,Proposal Sent,7
-Trial Day Complete,Negotiation,8
-Grooming Appointment Complete,Negotiation,9
-Boarding Reservation Complete,Negotiation,10
+Contacting,Lead,2
+New Opportunity,Lead,3
+In Discussion,Qualified Lead,4
+Trial Day Set,Contacted,5
+Grooming Appointment Set,Contacted,6
+Boarding Reservation Set,Contacted,7
+Trial Day Complete,Contacted,8
+Grooming Appointment Complete,Contacted,9
+Boarding Reservation Complete,Contacted,10
 Daycare Package Purchased,Closed Won,11
 Invoiced,Closed Won,12
 Closed Won,Closed Won,13
