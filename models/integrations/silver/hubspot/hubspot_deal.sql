@@ -84,7 +84,7 @@ with
                 trim(property_service_category) as property_service_category,
             {% endif %}
 
-            trim(property_hs_analytics_source) as property_hs_analytics_source,
+            REPLACE(trim(property_hs_analytics_source),'_',' ') as property_hs_analytics_source,
             cast(
                 trim(property_hs_projected_amount) as float
             ) as property_hs_projected_amount,
