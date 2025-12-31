@@ -83,6 +83,7 @@ with
                 || '|'
                 || coalesce(is_closed_n::string, '')
             ) as attr_hash,
+            property_hs_projected_amount,
             company_id,
         from {{ get_silver_source(company, "HUBSPOT_DEAL") }} a
         left join
@@ -173,6 +174,7 @@ with
                     || '|'
                     || coalesce(is_closed_n::string, '')
                 ) as attr_hash,
+                property_hs_projected_amount,
                 company_id,
             from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL") }} a
             left join
@@ -235,6 +237,7 @@ with
 
             {% endif %}
             company_id as dim_company_id,
+            property_hs_projected_amount,
             current_timestamp()::timestamp_ntz as gold_load_date
         from pups_hashed
         qualify
@@ -277,6 +280,7 @@ with
              
                 'HUBSPOT_PAWVILLE' as source_schema,
                 company_id as dim_company_id,
+                property_hs_projected_amount,
                 current_timestamp()::timestamp_ntz as gold_load_date
             from pawville_hashed
             qualify
