@@ -1,9 +1,7 @@
-{{ config(
-    materialized = 'incremental',
-    alias ='dim_currency',
-    incremental_strategy = 'table'
-) }}
 
+{{ config(
+    alias = 'dim_currency',
+) }}
 {% set companies = var('companies') %}
 
 {% for c in companies %}
