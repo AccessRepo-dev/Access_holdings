@@ -47,13 +47,12 @@ SELECT
         row_number() OVER (ORDER BY month_start) AS dim_period_id,
     {% endif %}
     'Month Ended ' || to_char(month_start, 'MMMM YYYY') AS PERIOD_NAME,
-    FALSE AS STATUS,
+    FALSE AS IS_INACTIVE,
     month_start AS start_date,
     to_number(to_char(month_start, 'YYYYMMDD')) AS datekey,
     last_day(month_start) AS end_date,
-    NULL AS WHENMODIFIED,
-    NULL AS _FIVETRAN_DELETED ,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
+    NULL AS CLOSED_ON_DATE,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS LAST_MODIFIED_DATE
 FROM
     {% if is_incremental() %}
         new_months
