@@ -46,7 +46,7 @@ SELECT
     {% else %}
         row_number() OVER (ORDER BY month_start) AS dim_period_id,
     {% endif %}
-    'Month Ended ' || to_char(month_start, 'MMMM YYYY') AS name,
+    'Month Ended ' || to_char(month_start, 'MMMM YYYY') AS PERIOD_NAME,
     FALSE AS STATUS,
     month_start AS start_date,
     to_number(to_char(month_start, 'YYYYMMDD')) AS datekey,
