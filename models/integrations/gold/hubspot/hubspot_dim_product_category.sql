@@ -1,14 +1,11 @@
-{% set company = var("company", "wagway") %}
-{{
-    config(
-        enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]
-        and var("company", "none") in ["wagway", "playfly", "amh"]
-    )
-}}
+{% set company = var("company") %}
+{% set sourcesystem = var("sourcesystem") | upper %}
 
 
 {{
     config(
+        enabled=(var("sourcesystem") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="dim_product_category",
         materialized="incremental",

@@ -1,23 +1,34 @@
-{% set company = var('company') %}
-{{ config(enabled = var('sourcesystem', 'none') | lower in ['hubspot', 'hubspot_pawville']) and
- (var('company', 'none') | lower in ['wagway', 'playfly','amh']) }}
-{{ config(
-    database = get_target_database(company),
-    alias = 'fact_opportunity_line',
-    materialized = 'incremental',
-    incremental_strategy = 'merge',
-    unique_key = 'ID_DATE_KEY'
-) }}
+{% set company = var("company") %}
+{% set sourcesystem = var("sourcesystem") | upper %}
 
-SELECT
-    *,
 
-FROM {{ get_silver_source(company , 'HUBSPOT_LINE_ITEM') }} 
-{% if company == 'wagway'%} 
+{{
+    config(
+        enabled=(var("sourcesystem") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company") | lower) in ["wagway", "playfly", "amh"],
+        database=get_target_database(company),
+        alias="fact_opportunity_line",
+        materialized="incremental",
+        incremental_strategy="merge",
+        unique_key="ID_DATE_KEY",
+    )
+}}
 
-UNION ALL 
+select *,
+    {% if company == "wagway" %} 'HUBSPOT_PUPS' as source_schema,
 
-SELECT
-    *
-FROM {{ get_silver_source(company, 'HUBSPOT_PAWVILLE_LINE_ITEM') }} u
+    {% else %} concat('HUBSPOT_', '{{company | upper}}') as source_schema,
+
+    {% endif %}
+
+    current_timestamp()::timestamp_ntz as gold_load_date
+from {{ get_silver_source(company, "HUBSPOT_LINE_ITEM") }}
+{% if company == "wagway" %}
+
+    union all
+
+    select *,
+        'HUBSPOT_PAWVILLE' as source_schema,
+        current_timestamp()::timestamp_ntz as gold_load_date
+    from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_LINE_ITEM") }} u
 {% endif %}

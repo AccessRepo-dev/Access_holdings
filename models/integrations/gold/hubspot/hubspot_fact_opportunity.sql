@@ -1,14 +1,11 @@
-{% set company = var("company", "wagway") %}
-{{
-    config(
-        enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]
-        and var("company", "none") in ["wagway", "playfly", "amh"]
-    )
-}}
+{% set company = var("company") %}
+{% set sourcesystem = var("sourcesystem") | upper %}
 
 
 {{
     config(
+        enabled=(var("sourcesystem") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="fact_opportunity",
         materialized="incremental",
@@ -94,9 +91,9 @@ with
             {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE_STAGE") }} b
             on b.stage_id = a.deal_pipeline_stage_id
             and b.is_active = 1
-        LEFT JOIN 
-         {{  get_silver_source(company, "HUBSPOT_DEAL_COMPANY")}} d
-          on a.DEAL_ID = d.DEAL_ID
+        left join
+            {{ get_silver_source(company, "HUBSPOT_DEAL_COMPANY") }} d
+            on a.deal_id = d.deal_id
 
         left join
             {{ ref("hubspot_dim_stage_mapping") }} dsm on b.label = dsm.stage_name
@@ -184,9 +181,9 @@ with
                 {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE") }} b
                 on b.stage_id = a.deal_pipeline_stage_id
                 and b.is_active = 1
-             LEFT JOIN 
-                {{  get_silver_source(company, "HUBSPOT_DEAL_COMPANY")}} d
-                on a.DEAL_ID = d.DEAL_ID
+            left join
+                {{ get_silver_source(company, "HUBSPOT_DEAL_COMPANY") }} d
+                on a.deal_id = d.deal_id
             left join
                 {{ ref("hubspot_dim_stage_mapping") }} dsmm
                 on b.label = dsmm.stage_name
@@ -277,7 +274,7 @@ with
                     partition by id, attr_hash
                 ) as is_active,
                 md5(coalesce(stage_name, '') || '|HUBSPOT_PAWVILLE') as stage_key,
-             
+
                 'HUBSPOT_PAWVILLE' as source_schema,
                 company_id as dim_company_id,
                 property_hs_projected_amount,

@@ -412,6 +412,7 @@ sources:
       - name: HUBSPOT_DEAL_CONTACT
         <<: *freshness_hubspot_defaults
       - name: HUBSPOT_PRODUCT
+      - name: HUBSPOT_COMPANY
 
 
   - name: amh_silver
@@ -451,6 +452,7 @@ sources:
       - name: HUBSPOT_DEAL_CONTACT
       - name: AMH_OPPORTUNITY_STAGE_MAPPING
       - name: HUBSPOT_PRODUCT
+      - name: HUBSPOT_COMPANY
 
 
   - name: playfly_hubspot_raw

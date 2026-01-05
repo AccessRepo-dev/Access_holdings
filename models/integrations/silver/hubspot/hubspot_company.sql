@@ -3,7 +3,7 @@
 
 {{ config(
     enabled = (var('sourcesystem') | lower) in ['hubspot', 'hubspot_pawville']
-             and (var('company') | lower) in ['wagway', 'playfly'],
+             and (var('company') | lower) in ['wagway', 'playfly', 'amh'],
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_COMPANY',
@@ -38,6 +38,7 @@ cleaned as (
             TRIM(PROPERTY_CITY) AS PROPERTY_CITY,
             TRIM(PROPERTY_STATE) AS PROPERTY_STATE,
             TRIM(PROPERTY_COUNTRY) AS PROPERTY_COUNTRY,
+            TRIM(PROPERTY_INDUSTRY) as PROPERTY_INDUSTRY,
             CAST(PROPERTY_HUBSPOT_OWNER_ID AS NUMBER) AS PROPERTY_HUBSPOT_OWNER_ID,
             CAST(PROPERTY_ANNUALREVENUE AS NUMBER) AS PROPERTY_ANNUALREVENUE,
         {% else %}
@@ -47,6 +48,7 @@ cleaned as (
             CAST(NULL AS VARCHAR) AS PROPERTY_CITY,
             CAST(NULL AS VARCHAR) AS PROPERTY_STATE,
             CAST(NULL AS VARCHAR) AS PROPERTY_COUNTRY,
+            CAST(NULL AS VARCHAR) AS PROPERTY_INDUSTRY,
             CAST(NULL AS NUMBER) AS PROPERTY_HUBSPOT_OWNER_ID,
             CAST(NULL AS NUMBER) AS PROPERTY_ANNUALREVENUE,
         {% endif %}

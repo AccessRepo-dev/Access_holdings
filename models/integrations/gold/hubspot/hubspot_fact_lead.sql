@@ -1,10 +1,11 @@
-{% set company = var("company", "wagway") %}
-{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly","amh"]) }}
-
+{% set company = var("company") %}
+{% set sourcesystem = var("sourcesystem") | upper %}
 
 
 {{
     config(
+        enabled=(var("sourcesystem") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="fact_lead",
         materialized="incremental",
@@ -13,68 +14,74 @@
     )
 }}
 
-with deal_contacts as (
-        SELECT distinct contact_id , max(deal_id) as deal_id
-        FROM {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }}
+with
+    deal_contacts as (
+        select distinct contact_id, max(deal_id) as deal_id
+        from {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }}
         where is_active = 1
         group by 1
+    )
+
+    {% if company == "wagway" %}
+        ,
+        deal_contacts_pawville as (
+            select distinct contact_id, max(deal_id) as deal_id
+            from {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }}
+            where is_active = 1
+            group by 1
         )
-
-{% if company == 'wagway'%} 
-        ,deal_contacts_pawville as (
-        SELECT distinct contact_id , max(deal_id) as deal_id
-        FROM {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }}
-        where is_active = 1
-        group by 1
-        )
-{% endif %}
-
-
+    {% endif %}
 
 select
-    ID_DATE_KEY,
-    ID as LEAD_ID,
-    PROPERTY_CREATEDATE as LEAD_DATE,
-    PROPERTY_HUBSPOT_OWNER_ID as OWNER_ID,
-    concat(property_firstname,' ',property_lastname) as COMPANY,
-    PROPERTY_LIFECYCLESTAGE as STATUS,
-    {%if company == 'playfly' %}
-    CASE WHEN PROPERTY_LIFECYCLESTAGE IN ('subscriber','salesqualifiedlead','customer','opportunity','marketingqualifiedlead') THEN 'Qualified Lead'
-     WHEN  PROPERTY_LIFECYCLESTAGE IN ('evangelist','other','lead') THEN 'Lead'
-    END AS MAPPED_LEADSTAGE,
-    {%else%}
-    CAST(NULL AS VARCHAR) AS MAPPED_LEADSTAGE,
-    {%endif%}
-    IS_ACTIVE,
-    dc.deal_id as CONVERTED_OPPORTUNITY_KEY,
-    {% if company == "wagway" %}
-        'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+    id_date_key,
+    id as lead_id,
+    property_createdate as lead_date,
+    property_hubspot_owner_id as owner_id,
+    concat(property_firstname, ' ', property_lastname) as company,
+    property_lifecyclestage as status,
+    {% if company == "playfly" %}
+        case
+            when
+                property_lifecyclestage in (
+                    'subscriber',
+                    'salesqualifiedlead',
+                    'customer',
+                    'opportunity',
+                    'marketingqualifiedlead'
+                )
+            then 'Qualified Lead'
+            when property_lifecyclestage in ('evangelist', 'other', 'lead')
+            then 'Lead'
+        end as mapped_leadstage,
+    {% else %} cast(null as varchar) as mapped_leadstage,
+    {% endif %}
+    is_active,
+    dc.deal_id as converted_opportunity_key,
+    {% if company == "wagway" %} 'HUBSPOT_PUPS' as source_schema,
 
-    {%else%}
-
-        CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+    {% else %} concat('HUBSPOT_', '{{company | upper}}') as source_schema,
 
     {% endif %}
     current_timestamp()::timestamp_ntz as gold_load_date
-from {{ get_silver_source(company, "HUBSPOT_CONTACT") }} c 
-LEFT JOIN deal_contacts dc ON dc.contact_id = c.id
+from {{ get_silver_source(company, "HUBSPOT_CONTACT") }} c
+left join deal_contacts dc on dc.contact_id = c.id
 
 {% if company == "wagway" %}
     union all
 
-select
-    ID_DATE_KEY,
-    ID as LEAD_ID,
-    PROPERTY_CREATEDATE as LEAD_DATE,
-    PROPERTY_HUBSPOT_OWNER_ID as OWNER_ID,
-    concat(property_firstname,' ',property_lastname) as COMPANY,
-    PROPERTY_LIFECYCLESTAGE as STATUS,
-    CAST(NULL AS VARCHAR) AS MAPPED_LEADSTAGE,
-    IS_ACTIVE,
-    dc.deal_id as CONVERTED_OPPORTUNITY_KEY,
-    'HUBSPOT_PAWVILLE' as source_schema,
-    current_timestamp()::timestamp_ntz as gold_load_date
-from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_CONTACT") }} c 
-LEFT JOIN deal_contacts_pawville dc ON dc.contact_id = c.id
+    select
+        id_date_key,
+        id as lead_id,
+        property_createdate as lead_date,
+        property_hubspot_owner_id as owner_id,
+        concat(property_firstname, ' ', property_lastname) as company,
+        property_lifecyclestage as status,
+        cast(null as varchar) as mapped_leadstage,
+        is_active,
+        dc.deal_id as converted_opportunity_key,
+        'HUBSPOT_PAWVILLE' as source_schema,
+        current_timestamp()::timestamp_ntz as gold_load_date
+    from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_CONTACT") }} c
+    left join deal_contacts_pawville dc on dc.contact_id = c.id
 
 {% endif %}

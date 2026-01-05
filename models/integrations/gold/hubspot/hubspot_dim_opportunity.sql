@@ -1,14 +1,11 @@
-{% set company = var("company", "wagway") %}
+{% set company = var("company") %}
+{% set sourcesystem = var("sourcesystem") | upper %}
+
 
 {{
     config(
-        enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]
-        and company in ["wagway", "playfly", "amh"]
-    )
-}}
-
-{{
-    config(
+        enabled=(var("sourcesystem") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company") | lower) in ["wagway", "playfly", "amh"],   
         database=get_target_database(company),
         alias="dim_opportunity",
         materialized="incremental",
@@ -594,7 +591,12 @@ with
                 then coalesce(so.negotiation_date, so.closed_won_date, bd.close_date)
                 else coalesce(so.negotiation_date, so.closed_lost_date, bd.close_date)
             end as negotiation_date,
+            null as qualified_lead_date,
+            null as contacted_date,
             {% else %}
+            null as proposal_requested_date,
+            null as proposal_sent_date,
+            null as negotiation_date,
             case
                 when bd.is_won = 1
                 then
@@ -641,7 +643,15 @@ with
             end as closed_lost_date,
 
             dp.label as pipeline_name,
-            property_hs_is_closed_lost
+            property_hs_is_closed_lost,
+            {% if company == "wagway" %}
+            'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+
+        {%else%}
+
+            CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+
+        {% endif %}
         from base_deals bd
         left join stage_dates_by_opp so on so.deal_id = bd.deal_id
         left join
@@ -724,7 +734,12 @@ with
                             so.negotiation_date, so.closed_lost_date, bd.close_date
                         )
                 end as negotiation_date,
+                null as qualified_lead_date,
+                null as contacted_date,
                 {%else%}
+                null as proposal_requested_date,
+                null as proposal_sent_date,
+                null as negotiation_date,
                 case
                     when bd.is_won = 1
                     then
@@ -774,7 +789,8 @@ with
                 end as closed_lost_date,
 
                 dp.label as pipeline_name,
-                property_hs_is_closed_lost
+                property_hs_is_closed_lost,
+                'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
 
             from base_deals_pawville bd
             left join stage_dates_by_opp_pawville so on so.deal_id = bd.deal_id
@@ -801,14 +817,11 @@ select distinct
     is_closed,
     is_won,
     contact_date,
-    {% if company == 'playfly'%}
     proposal_requested_date,
     proposal_sent_date,
     negotiation_date,
-    {%else%}
     qualified_lead_date,
     contacted_date,
-    {%endif%}
     closed_won_date,
     closed_lost_date,
     case
@@ -885,6 +898,7 @@ select distinct
     -- end as lead_status,
     pipeline_name,
     -- last_modified_date,
+    SOURCE_SCHEMA,
     current_timestamp()::timestamp_ntz as gold_load_date
 
 from final

@@ -1,18 +1,16 @@
-{% set company = var("company", "wagway") %}
-{{
-    config(
-        enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]
-        and var("company", "none") in ["wagway", "playfly", "amh"]
-    )
-}}
+{% set company = var("company") %}
+{% set sourcesystem = var("sourcesystem") | upper %}
 
 
 {{
     config(
+        enabled=(var("sourcesystem") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="dim_stage_mapping",
         materialized="incremental",
         incremental_strategy="merge",
+        unique_key="stage_key",
     )
 }}
 
@@ -21,7 +19,7 @@
 select
     stage_name,
     mapped_stage_name,
-    cast(sort_order as int) + 1 as stage_order,
+    cast(sort_order as int) as stage_order,
 
     {% if company == "wagway" %}
         md5(coalesce(stage_name, '') || '|HUBSPOT_PUPS') as stage_key,
@@ -38,8 +36,6 @@ select
     current_timestamp()::timestamp_ntz as gold_load_date
 from {{ get_silver_source(company, company | upper ~ "_OPPORTUNITY_STAGE_MAPPING") }}
 
-
-
 {% if company == "wagway" %}
 
     union all
@@ -47,7 +43,7 @@ from {{ get_silver_source(company, company | upper ~ "_OPPORTUNITY_STAGE_MAPPING
     select
         stage_name,
         mapped_stage_name,
-        cast(sort_order as int) + 1 as stage_order,
+        cast(sort_order as int) as stage_order,
 
         {% if company == "wagway" %}
             md5(coalesce(stage_name, '') || '|HUBSPOT_PAWVILLE') as stage_key,
