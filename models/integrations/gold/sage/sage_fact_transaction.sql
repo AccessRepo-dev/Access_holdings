@@ -91,12 +91,12 @@ ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
     
 
  {% if company == 'spotless' %}
-    WHERE e.BATCHTITLE not in ('VIE Depreciation & Amortization','record VIE transactions')
+    WHERE COALESCE(e.BATCHTITLE,'NONE') not in ('VIE Depreciation & Amortization','record VIE transactions')
     
 {% elif company == 'amh' %}
     WHERE NOT (e.BATCHTITLE  ILIKE '%Elimination Entry Rev and Exp%' and e.LOCATIONKEY=144 AND CAST(COALESCE(acc.ACCOUNTNO,E.ACCOUNTNO) AS VARCHAR) IN (20000,23005))
 {% endif %}
-    AND b._FIVETRAN_DELETED = TRUE
+    AND COALESCE(b._FIVETRAN_DELETED, true) = true
 ),
 adjustments AS (
     SELECT
@@ -182,10 +182,10 @@ SELECT * FROM source
         WHERE SYMBOL = 'QB_HISTORY' and 
             batch_date <= '2022-08-31')
 {% elif company | lower  == 'spotless' %}
-    WHERE (TRANSACTION_LINE_ID NOT IN 
+    WHERE (TRANSACTION_LINE_ID  IN 
         (select distinct GLENTRYKEY 
         from {{ ref('sage_gl_detail') }}
-        WHERE SYMBOL IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ'))) OR TRANSACTION_LINE_ID IS NULL 
+        WHERE SYMBOL IN ('APJ', 'ARJ', 'ASC 842', 'CDJ', 'CRJ', 'CAS', 'CCJ', 'DRB', 'EEDJ', 'EEJ', 'FAJ', 'GJ', 'GJH', 'IET', 'IJ', 'PYRJ', 'PEJ', 'PURCH', 'PJ', 'RRJ', 'SJ', 'UNB', 'PRO', 'SYN', 'ELIM'))) OR TRANSACTION_LINE_ID IS NOT NULL 
 {% endif %}
 UNION 
 SELECT * FROM adjustments
