@@ -96,7 +96,7 @@ ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
 {% elif company == 'amh' %}
     WHERE NOT (e.BATCHTITLE  ILIKE '%Elimination Entry Rev and Exp%' and e.LOCATIONKEY=144 AND CAST(COALESCE(acc.ACCOUNTNO,E.ACCOUNTNO) AS VARCHAR) IN (20000,23005))
 {% endif %}
-    AND b._FIVETRAN_DELETED = FALSE
+    AND b._FIVETRAN_DELETED = TRUE
 ),
 adjustments AS (
     SELECT
