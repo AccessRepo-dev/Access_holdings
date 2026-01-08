@@ -7,6 +7,7 @@
         enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
         and (var("company", "zeus") | lower) in ["zeus"],
     database=get_target_database(var('company')),
+    alias = sourcesystem ~ '_CASE',
     materialized = 'incremental',
     schema = 'silver',
     incremental_strategy = 'merge',

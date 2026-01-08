@@ -7,6 +7,7 @@
         enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
         and (var("company", "zeus") | lower) in ["zeus"],
         database=get_target_database(company),
+        alias = sourcesystem ~ '_ACCOUNT',
         schema="silver",
         unique_key="ID_DATE_KEY",
         materialized="incremental",

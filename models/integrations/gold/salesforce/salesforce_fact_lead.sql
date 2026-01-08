@@ -1,7 +1,11 @@
-{% set company = var('company', 'zeus') | lower %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
+{% set company = var("company", "zeus") %}
+{% set sourcesystem = var("sourcesystem", "salesforce") %}
 
-{{ config(
+
+{{
+    config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     materialized = 'incremental',
     alias = 'fact_lead',
@@ -23,7 +27,7 @@ with source as (
         sl.converted_opportunity_id AS CONVERTED_OPPORTUNITY_KEY,
         CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    FROM {{ get_silver_source(company, 'SALESFORCE_LEAD') }} sl
+    FROM {{ ref('salesforce_lead_current') }} sl
 
     {% if is_incremental() %}
         WHERE LAST_MODIFIED_DATE > (

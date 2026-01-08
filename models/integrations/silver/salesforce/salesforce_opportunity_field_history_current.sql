@@ -4,10 +4,10 @@
 
 {{
     config(
-        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce", "salesforce_access_holdings"]
         and (var("company", "zeus") | lower) in ["zeus"],
         database=get_target_database(company),
-        alias = sourcesystem ~ '_CAMPAIGN',
+        alias = sourcesystem ~ '_OPPORTUNITY_FIELD_HISTORY',
         schema="silver",
         unique_key="ID_DATE_KEY",
         materialized="incremental",
@@ -16,22 +16,17 @@
     )
 }}
 
-
 with
     raw as (
         select *
-        from {{ ref("salesforce_campaign_snapshot") }}
+        from {{ ref("salesforce_opportunity_field_history_snapshot") }}
         {% if is_incremental() %}
             where
                 (
-                    cast(last_modified_date as timestamp_ntz) > (
+                    _fivetran_synced > (
                         select
                             dateadd(
-                                day,
-                                -3,
-                                coalesce(
-                                    max(last_modified_date), '1900-01-01'::timestamp_ntz
-                                )
+                                day, -3, coalesce(max(_fivetran_synced), '1900-01-01')
                             )
                         from {{ this }}
                     )
@@ -52,25 +47,19 @@ with
     ),
 
     cleaned as (
-        select distinct
+        select
             concat(
                 id, '_', to_varchar(dbt_valid_from, 'YYYYMMDDHH24MISSFF3')
             ) as id_date_key,
-            trim(id) as campaign_id,
-            trim(name) as name,
-            trim(type) as type,
-            trim(status) as status,
-            cast(start_date as timestamp_ntz) as start_date,
-            cast(end_date as timestamp_ntz) as end_date,
-            cast(expected_revenue as number) as expected_revenue,
-            cast(budgeted_cost as number) as budgeted_cost,
-            cast(actual_cost as number) as actual_cost,
-            number_sent,
-            trim(owner_id) as owner_id,
-            trim(description) as description,
+            trim(id) as id,
+            trim(opportunity_id) as opportunity_id,
+            is_deleted,
+            trim(created_by_id) as created_by_id,
             cast(created_date as timestamp_ntz) as created_date,
-            cast(last_modified_date as timestamp_ntz) as last_modified_date,
-            _fivetran_deleted as _fivetran_deleted,
+            trim(field) as field,
+            trim(data_type) as data_type,
+            trim(old_value) as old_value,
+            trim(new_value) as new_value,
             current_timestamp()::timestamp_ntz as silver_load_date,
             cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
             cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,

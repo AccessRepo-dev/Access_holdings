@@ -1,8 +1,11 @@
-{% set company = var("company", "zeus") | lower %}
+{% set company = var("company", "zeus") %}
+{% set sourcesystem = var("sourcesystem", "salesforce") %}
+
 
 {{
     config(
-        enabled=var("sourcesystem", "salesforce") == "salesforce" and var("company", "zeus") == "zeus",
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
         database=get_target_database(company),
         materialized="incremental",
         incremental_strategy="merge",
@@ -15,7 +18,8 @@ with
     hist_stage_dates as (
 
         select opportunity_id, sn.mapped_stage_name as mapped_stage_name, created_date
-        from zeus_raw.salesforce.opportunity_field_history o
+        from 
+        {{ ref('salesforce_opportunity_field_history_current') }} o
         left join
             {{ ref('salesforce_dim_stage_mapping') }} sn on trim(o.new_value) = sn.stage_name
         where o.field = 'StageName'
@@ -133,13 +137,13 @@ with
             -- coalesce(hs.closed_won_date, cs.closed_won_date) as closed_won_date,
             -- coalesce(hs.closed_lost_date, cs.closed_lost_date) as closed_lost_date,
             o.last_modified_date
-        from {{ get_silver_source(company, "SALESFORCE_OPPORTUNITY") }} o
+        from {{ ref('salesforce_opportunity_current') }} o
         left join
-            {{ get_silver_source(company, "SALESFORCE_LEAD") }} l
+            {{ ref('salesforce_lead_current') }} l
             on l.converted_opportunity_id = o.id
             and l.is_active = 1
         left join
-            {{ get_silver_source(company, "SALESFORCE_ACCOUNT") }} a
+            {{ ref('salesforce_account_current') }} a
             on a.account_id = o.account_id
             and a.is_active = 1
         left join

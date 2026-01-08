@@ -1,7 +1,11 @@
-{% set company = var('company', 'zeus') | lower %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
+{% set company = var("company", "zeus") %}
+{% set sourcesystem = var("sourcesystem", "salesforce") %}
 
-{{ config(
+
+{{
+    config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     alias = 'dim_stage_mapping',
     materialized = 'incremental',

@@ -1,7 +1,11 @@
-{% set company = var('company', 'zeus') | lower %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
+{% set company = var("company", "zeus") %}
+{% set sourcesystem = var("sourcesystem", "salesforce") %}
 
-{{ config(
+
+{{
+    config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     materialized = 'incremental',
     alias = 'dim_user',
@@ -25,7 +29,7 @@ with source as (
         CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS IS_ACTIVE,
         CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    from {{ get_silver_source(company, 'SALESFORCE_USER') }}
+    from {{ ref('salesforce_user_current') }}
 
     {% if is_incremental() %}
         WHERE LAST_MODIFIED_DATE > (

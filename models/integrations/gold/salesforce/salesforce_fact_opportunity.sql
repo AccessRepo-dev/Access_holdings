@@ -32,7 +32,7 @@ with hashed as (
             coalesce(IS_WON_N::string,'') || '|' ||
             coalesce(IS_CLOSED_N,'')
         ) as attr_hash
-    from {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }} o
+    from {{ ref('salesforce_opportunity_current') }} o
 
 )
 , scd2 as (

@@ -8,6 +8,7 @@
         and (var("company", "zeus") | lower) in ["zeus"],
     database=get_target_database(var('company')),
     materialized = 'incremental',
+    alias = sourcesystem ~ '_LEAD',
     schema = 'silver',
     incremental_strategy = 'merge',
     unique_key = 'ID_DATE_KEY',

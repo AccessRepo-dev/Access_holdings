@@ -6,7 +6,7 @@
     enabled = false,
     database = get_target_database(company),
     materialized = 'incremental',
-    alias = 'dim_account',
+    alias = 'dim_company',
     incremental_strategy = 'merge',
     unique_key = 'ID_DATE_KEY'
 ) }}

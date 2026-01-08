@@ -7,7 +7,7 @@
 
 {{
     config(
-        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce", "salesforce_access_holdings"]
         and (var("company", "zeus") | lower) in ["zeus"],
         database = get_raw_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
