@@ -1,19 +1,22 @@
+{% set company = var("company", "wagway") | lower %}
+{% set sourcesystem = var("sourcesystem", "hubspot") | lower %}
 
-{% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') | upper %}
 
-{{ config(
-    enabled = var('sourcesystem') | lower in ['hubspot', 'hubspot_pawville'] and var('company') | lower in ['wagway', 'playfly','amh'],
+{{
+    config(
+        enabled=(var("sourcesystem", "hubspot") | lower)
+        in ["hubspot"]
+        and (var("company", "wagway") | lower) in ["wagway"],
     materialized = 'incremental',
     database = get_target_database(company),
-    alias = sourcesystem ~ '_USERS',
+    alias = sourcesystem ~ '_TEAM',
     incremental_strategy = 'merge',
     unique_key = 'ID_DATE_KEY'
 ) }}
 
 with source as (
     select *
-   from {{ source_snapshot_schema(company, sourcesystem ~ '_USERS') }}
+    from {{ ref('hubspot_team_snapshot') }}
     
     {% if is_incremental() %}
         where 
@@ -28,12 +31,10 @@ with source as (
 cleaned as (
     select
         CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,  
-        CAST(ID AS NUMBER) AS ID,
-        TRIM(EMAIL) AS EMAIL,
-        TRIM(FIRST_NAME) AS FIRST_NAME,
-        TRIM(LAST_NAME) AS LAST_NAME,
-        CAST(ROLE_ID AS INT) AS ROLE_ID,
-          _FIVETRAN_SYNCED,
+        CAST(TRIM(ID) AS BIGINT) AS ID,
+	    TRIM(NAME) AS NAME,
+	    CAST(TRIM(_FIVETRAN_DELETED) AS BOOLEAN) AS _FIVETRAN_DELETED,
+	    CAST(TRIM(_FIVETRAN_SYNCED) AS TIMESTAMP_TZ) AS _FIVETRAN_SYNCED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
         CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
         CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
@@ -42,4 +43,3 @@ cleaned as (
 )
 
 select * from cleaned
-

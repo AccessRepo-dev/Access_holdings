@@ -1,9 +1,12 @@
+{% set company = var("company", "wagway") | lower %}
+{% set sourcesystem = var("sourcesystem", "hubspot") | lower %}
 
-{% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') | upper %}
 
-{{ config(
-    enabled = var('sourcesystem') | lower in ['hubspot'] and var('company') | lower in ['wagway','playfly'],
+{{
+    config(
+        enabled=(var("sourcesystem", "hubspot") | lower)
+        in ["hubspot"]
+        and (var("company", "wagway") | lower) in ["wagway", "playfly"],
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_LEAD',
@@ -13,7 +16,7 @@
 
 with source as (
     select *
-    from {{ source_snapshot_schema(company, sourcesystem ~ '_LEAD') }}
+    from {{ ref('hubspot_lead_snapshot') }}
     
     {% if is_incremental() %}
         where 

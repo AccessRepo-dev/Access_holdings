@@ -1,11 +1,11 @@
-{% set company = var("company") %}
-{% set sourcesystem = var("sourcesystem") | upper %}
+{% set company = var('company', 'amh') | lower %}
+{% set sourcesystem = var('sourcesystem','hubspot') | lower %}
 
 
 {{
     config(
-        enabled=(var("sourcesystem") | lower) in ["hubspot", "hubspot_pawville"]
-        and (var("company") | lower) in ["wagway", "playfly", "amh"],
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="fact_lead",
         materialized="incremental",
@@ -17,7 +17,7 @@
 with
     deal_contacts as (
         select distinct contact_id, max(deal_id) as deal_id
-        from {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }}
+        from {{ ref('hubspot_deal_contact_current') }} 
         where is_active = 1
         group by 1
     )
@@ -63,7 +63,7 @@ select
 
     {% endif %}
     current_timestamp()::timestamp_ntz as gold_load_date
-from {{ get_silver_source(company, "HUBSPOT_CONTACT") }} c
+from {{ ref('hubspot_contact_current') }} c
 left join deal_contacts dc on dc.contact_id = c.id
 
 {% if company == "wagway" %}

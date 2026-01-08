@@ -1,18 +1,22 @@
-{% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') | upper %}
+{% set company = var("company", "amh") | lower %}
+{% set sourcesystem = var("sourcesystem", "hubspot") | lower %}
 
-{{ config(
-    enabled = var('sourcesystem') | lower in ['hubspot','hubspot_pawville'] and var('company') | lower in ['wagway', 'playfly','amh'],
+
+{{
+    config(
+        enabled=(var("sourcesystem", "hubspot") | lower)
+        in ["hubspot", "hubspot_pawville"]
+        and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
     materialized = 'incremental',
     database = get_target_database(company),
-    alias = sourcesystem ~ '_ENGAGEMENT',
+    alias = sourcesystem ~ '_USERS',
     incremental_strategy = 'merge',
     unique_key = 'ID_DATE_KEY'
 ) }}
 
 with source as (
     select *
-    from {{ source_snapshot_schema(company, sourcesystem ~ '_ENGAGEMENT') }}
+   from {{ ref('hubspot_users_snapshot') }}
     
     {% if is_incremental() %}
         where 
@@ -26,10 +30,13 @@ with source as (
 
 cleaned as (
     select
-        CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,        
-        CAST(ID AS INT) AS ID,
-        CAST(TYPE AS VARCHAR) AS TYPE,
-        _FIVETRAN_SYNCED,
+        CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,  
+        CAST(ID AS NUMBER) AS ID,
+        TRIM(EMAIL) AS EMAIL,
+        TRIM(FIRST_NAME) AS FIRST_NAME,
+        TRIM(LAST_NAME) AS LAST_NAME,
+        CAST(ROLE_ID AS INT) AS ROLE_ID,
+          _FIVETRAN_SYNCED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
         CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
         CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
@@ -38,3 +45,4 @@ cleaned as (
 )
 
 select * from cleaned
+

@@ -1,9 +1,11 @@
-{% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') | upper %}
+{% set company = var('company', 'amh') | lower %}
+{% set sourcesystem = var('sourcesystem','hubspot') | lower %}
 
-{{ config(
-    enabled = (var('sourcesystem') | lower) in ['hubspot', 'hubspot_pawville']
-             and (var('company') | lower) in ['wagway', 'playfly', 'amh'],
+
+{{
+    config(
+    enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+    and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_COMPANY',
@@ -13,7 +15,7 @@
 
 with source as (
     select *
-    from {{ source_snapshot_schema(company, sourcesystem ~ '_COMPANY') }}
+    from {{ ref('hubspot_company_snapshot') }}
     {% if is_incremental() %}
         where 
             (_FIVETRAN_SYNCED > (select dateadd(day, -3, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01')) from {{ this }})

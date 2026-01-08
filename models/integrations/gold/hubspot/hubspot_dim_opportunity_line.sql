@@ -1,11 +1,11 @@
-{% set company = var("company") %}
-{% set sourcesystem = var("sourcesystem") | upper %}
+{% set company = var('company', 'amh') | lower %}
+{% set sourcesystem = var('sourcesystem','hubspot') | lower %}
 
 
 {{
     config(
-        enabled=(var("sourcesystem") | lower) in ["hubspot", "hubspot_pawville"]
-        and (var("company") | lower) in ["wagway", "playfly", "amh"],
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="dim_opportunity_line",
         materialized="incremental",
@@ -24,7 +24,7 @@ select
 
     current_timestamp()::timestamp_ntz as gold_load_date
 
-from {{ get_silver_source(company, "HUBSPOT_LINE_ITEM_DEAL") }}
+from {{ ref('hubspot_line_item_deal_current') }}
 
 {% if company == "wagway" %}
 

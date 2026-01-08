@@ -1,9 +1,12 @@
-{% set company = var("company") | upper %}
-{% set sourcesystem = var("sourcesystem") | upper %}
+{% set company = var("company", "amh") | lower %}
+{% set sourcesystem = var("sourcesystem", "hubspot") | lower %}
+
 
 {{
     config(
-        enabled=var("sourcesystem") | lower in ["hubspot", "hubspot_pawville"],
+        enabled=(var("sourcesystem", "hubspot") | lower)
+        in ["hubspot", "hubspot_pawville"]
+        and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         materialized="incremental",
         database=get_target_database(company),
         alias=sourcesystem ~ "_DEAL",
@@ -16,12 +19,31 @@
 with
     source as (
         select *
-        from {{ source_snapshot_schema(company, sourcesystem ~ "_DEAL") }}
+        from {{ ref("hubspot_deal_snapshot") }}
         {% if is_incremental() %}
             where
-                (property_hs_lastmodifieddate > (select dateadd(day, -3, coalesce(max(property_hs_lastmodifieddate), '1900-01-01')) from {{ this }}) 
-            OR 
-                (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
+                (
+                    property_hs_lastmodifieddate > (
+                        select
+                            dateadd(
+                                day,
+                                -3,
+                                coalesce(
+                                    max(property_hs_lastmodifieddate), '1900-01-01'
+                                )
+                            )
+                        from {{ this }}
+                    )
+                    or (
+                        dbt_valid_to > (
+                            select
+                                dateadd(
+                                    day, -3, coalesce(max(dbt_valid_to), '1900-01-01')
+                                )
+                            from {{ this }}
+                        )
+                    )
+                )
         {% else %} where 1 = 1
         {% endif %}
     ),
@@ -66,16 +88,16 @@ with
             ) as property_hs_deal_stage_probability,
             {% if company | lower == "amh" %}
                 trim(property_service_request) as property_service_request,
-                trim(PROPERTY_PROPERTY_SOURCE) as property_property_source,
+                trim(property_property_source) as property_property_source,
             {% else %}
                 null as property_service_request,
                 null as property_property_source,
                 trim(property_description) as property_description,
             {% endif %}
-            PROPERTY_HS_IS_CLOSED_WON,
-            PROPERTY_HS_IS_CLOSED_LOST,
+            property_hs_is_closed_won,
+            property_hs_is_closed_lost,
             {% if sourcesystem == "HUBSPOT_PAWVILLE" %}
-                null as property_club_c, 
+                null as property_club_c,
                 null as property_service_type,
                 null as property_service_category,
             {% elif company | lower == "wagway" and sourcesystem == "HUBSPOT" %}
@@ -84,7 +106,9 @@ with
                 trim(property_service_category) as property_service_category,
             {% endif %}
 
-            REPLACE(trim(property_hs_analytics_source),'_',' ') as property_hs_analytics_source,
+            replace(
+                trim(property_hs_analytics_source), '_', ' '
+            ) as property_hs_analytics_source,
             cast(
                 trim(property_hs_projected_amount) as float
             ) as property_hs_projected_amount,
@@ -97,7 +121,7 @@ with
             current_timestamp()::timestamp_ntz as silver_load_date,
             cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
             cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,
-            _FIVETRAN_SYNCED,
+            _fivetran_synced,
             case when dbt_valid_to is null then 1 else 0 end as is_active
 
         from source

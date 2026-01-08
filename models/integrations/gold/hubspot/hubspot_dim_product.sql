@@ -1,11 +1,11 @@
-{% set company = var("company") %}
-{% set sourcesystem = var("sourcesystem") | upper %}
+{% set company = var('company', 'amh') | lower %}
+{% set sourcesystem = var('sourcesystem','hubspot') | lower %}
 
 
 {{
     config(
-        enabled=(var("sourcesystem") | lower) in ["hubspot", "hubspot_pawville"]
-        and (var("company") | lower) in ["playfly", "amh"],
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot"]
+        and (var("company", "amh") | lower) in ["playfly", "amh"],
         database=get_target_database(company),
         alias="dim_product",
         materialized="incremental",
@@ -19,10 +19,10 @@ b.deal_id as opportunity_id,
 concat('HUBSPOT_', '{{company | upper}}') as source_schema,
 current_timestamp()::timestamp_ntz as gold_load_date
 
-from {{ get_silver_source(company, "HUBSPOT_PRODUCT") }} p
+from {{ ref('hubspot_product_current') }} p
 left join
-    {{ get_silver_source(company, "HUBSPOT_LINE_ITEM") }} d
+    {{ ref('hubspot_line_item_current') }} d
     on p.product_id = d.product_id
 left join
-    {{ get_silver_source(company, "HUBSPOT_LINE_ITEM_DEAL") }} b
+    {{ ref('hubspot_line_item_deal_current') }} b
     on d.id = b.line_item_id

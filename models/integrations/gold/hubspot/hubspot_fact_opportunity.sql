@@ -1,11 +1,11 @@
-{% set company = var("company") %}
-{% set sourcesystem = var("sourcesystem") | upper %}
+{% set company = var('company', 'amh') | lower %}
+{% set sourcesystem = var('sourcesystem','hubspot') | lower %}
 
 
 {{
     config(
-        enabled=(var("sourcesystem") | lower) in ["hubspot", "hubspot_pawville"]
-        and (var("company") | lower) in ["wagway", "playfly", "amh"],
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="fact_opportunity",
         materialized="incremental",
@@ -82,17 +82,17 @@ with
             ) as attr_hash,
             property_hs_projected_amount,
             company_id,
-        from {{ get_silver_source(company, "HUBSPOT_DEAL") }} a
+        from {{ ref('hubspot_deal_current') }} a
         left join
-            {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }} c
+            {{ ref('hubspot_deal_contact_current') }} c
             on a.deal_id = c.deal_id
 
         left join
-            {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE_STAGE") }} b
+            {{ ref('hubspot_deal_pipeline_stage_current') }} b
             on b.stage_id = a.deal_pipeline_stage_id
             and b.is_active = 1
         left join
-            {{ get_silver_source(company, "HUBSPOT_DEAL_COMPANY") }} d
+            {{ ref('hubspot_deal_company_current') }} d
             on a.deal_id = d.deal_id
 
         left join
@@ -172,7 +172,7 @@ with
                     || coalesce(is_closed_n::string, '')
                 ) as attr_hash,
                 property_hs_projected_amount,
-                company_id,
+                null as company_id,
             from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL") }} a
             left join
                 {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_CONTACT") }} c
@@ -181,9 +181,6 @@ with
                 {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE") }} b
                 on b.stage_id = a.deal_pipeline_stage_id
                 and b.is_active = 1
-            left join
-                {{ get_silver_source(company, "HUBSPOT_DEAL_COMPANY") }} d
-                on a.deal_id = d.deal_id
             left join
                 {{ ref("hubspot_dim_stage_mapping") }} dsmm
                 on b.label = dsmm.stage_name
