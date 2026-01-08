@@ -1,9 +1,11 @@
-{% set company = var('company','zeus') %}
-{% set sourcesystem = var('sourcesystem','salesforce') %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
-
-{{ config(
-    enabled = var('sourcesystem', 'none') == 'salesforce',
+{% set company = var('company', 'zeus') %}
+{% set sourcesystem = var('sourcesystem', 'salesforce') %}
+ 
+      
+{{
+    config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     schema = 'silver',
     unique_key = 'ID_DATE_KEY',
@@ -17,7 +19,7 @@ with raw as
 (
 select *
 
-from {{ source_snapshot_schema(company, 'SALESFORCE_QUOTE') }}
+from {{ ref('salesforce_quote_snapshot') }}
 
     {% if is_incremental() %}
     where 

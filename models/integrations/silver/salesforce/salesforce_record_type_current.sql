@@ -1,9 +1,11 @@
-{% set company = var('company','zeus') %}
-{% set sourcesystem = var('sourcesystem','salesforce') %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
-
-{{ config(
-    enabled = var('sourcesystem', 'none') == 'salesforce',
+{% set company = var('company', 'zeus') %}
+{% set sourcesystem = var('sourcesystem', 'salesforce') %}
+ 
+      
+{{
+    config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     schema = 'silver',
     unique_key = 'ID_DATE_KEY',
@@ -14,8 +16,9 @@
 
 with raw as 
 (
-select *
-from {{ source_snapshot_schema(company, 'SALESFORCE_USER') }}
+select 
+    *
+from {{ ref('salesforce_record_type_snapshot') }}
 {% if is_incremental() %}
     where 
         (cast(LAST_MODIFIED_DATE as timestamp_ntz) > (select dateadd(day, -3, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)) from {{ this }})
@@ -24,31 +27,25 @@ from {{ source_snapshot_schema(company, 'SALESFORCE_USER') }}
 {% else %}
     where 1=1
 {% endif %}
-    
 ),
 
 cleaned as (
-select
+select 
     CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
-    TRIM(ID) AS ID,
-    TRIM(USERNAME) AS USERNAME,
-    TRIM(NAME) AS NAME,
-    TRIM(EMAIL) AS EMAIL,
-    TRIM(ALIAS) AS ALIAS,
-    TRIM(FIRST_NAME) AS FIRST_NAME,
-    TRIM(LAST_NAME) AS LAST_NAME,
-    IS_ACTIVE AS USER_IS_ACTIVE,
-    TRIM(USER_ROLE_ID) AS USER_ROLE_ID,
-    TRIM(PROFILE_ID) AS PROFILE_ID,
-    TRIM(TITLE) AS TITLE,
-    TRIM(DEPARTMENT) AS DEPARTMENT,
-    TRIM(MANAGER_ID) AS MANAGER_ID,
+    ID,
+    NAME,
+    DEVELOPER_NAME,
+    NAMESPACE_PREFIX,
+    DESCRIPTION,
+    BUSINESS_PROCESS_ID,
+    SOBJECT_TYPE,
+    IS_ACTIVE AS RECORD_TYPE_IS_ACTIVE,
+    CREATED_BY_ID,
     CREATED_DATE,
-    LAST_LOGIN_DATE,
+    LAST_MODIFIED_BY_ID,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
-    TIME_ZONE_SID_KEY,
-    LOCALE_SID_KEY,
-    TRIM(LANGUAGE_LOCALE_KEY) AS LANGUAGE_LOCALE_KEY,
+    SYSTEM_MODSTAMP,
+    IS_PERSON_TYPE,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
     CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,

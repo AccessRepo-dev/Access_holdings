@@ -1,9 +1,11 @@
-{% set company = var('company','zeus') %}
-{% set sourcesystem = var('sourcesystem','salesforce') %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
-
-{{ config(
-    enabled = var('sourcesystem', 'none') == 'salesforce',
+{% set company = var('company', 'zeus') %}
+{% set sourcesystem = var('sourcesystem', 'salesforce') %}
+ 
+      
+{{
+    config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     schema = 'silver',
     unique_key = 'ID_DATE_KEY',
@@ -14,35 +16,28 @@
 
 with raw as 
 (
-select *
-from {{ source_snapshot_schema(company, 'SALESFORCE_PRODUCT_2') }}
+select 
+    *
+from {{ ref('salesforce_task_snapshot') }}
 {% if is_incremental() %}
     where 
         (cast(LAST_MODIFIED_DATE as timestamp_ntz) > (select dateadd(day, -3, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)) from {{ this }})
     OR 
         (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
-
 {% else %}
     where 1=1
-
 {% endif %}
-    
 ),
 
-
-cleaned as 
-(
-select
+cleaned as (
+select 
     CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
-    ID AS PRODUCT_ID,
-    TRIM(NAME) AS NAME,
-    TRIM(PRODUCT_CODE) AS PRODUCT_CODE,
-    TRIM(DESCRIPTION) AS DESCRIPTION,
-    FAMILY,
-    IS_ACTIVE AS PRODUCT_IS_ACTIVE,
-    CREATED_DATE,
+    TRIM(ID) AS ACTIVITY_ID,
+    TRIM(OWNER_ID) AS OWNER_ID,
+    TRIM(WHO_ID) AS WHO_ID,
+    TRIM(WHAT_ID) AS WHAT_ID,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
-    QUANTITY_UNIT_OF_MEASURE,
+    _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
     CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,

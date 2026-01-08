@@ -1,43 +1,50 @@
-{% set company = var('company', 'zeus') | lower %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
+{% set company = var("company", "zeus") %}
+{% set sourcesystem = var("sourcesystem", "salesforce") %}
 
-{{ config(
-    database = get_target_database(company),
-    materialized = 'incremental',
-    alias = 'dim_crm_location',
-    incremental_strategy = 'merge',
-    unique_key = 'ID'
-) }}
 
-with 
-source as (
-SELECT 
-    md5(
-        coalesce(A.BILLING_CITY,'') || '|' ||
-        coalesce(A.BILLING_STATE,'') || '|' ||
-        coalesce(A.BILLING_COUNTRY,'')
-        ) as ID,
-    A.BILLING_CITY as CITY, 
-    A.BILLING_STATE as STATE, 
-    A.BILLING_COUNTRY as COUNTRY,
-    CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-FROM {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}  as B 
-    LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}  as A 
-        ON A.ACCOUNT_ID = B.ACCOUNT_ID and  A.IS_ACTIVE = 1
-    where B.IS_ACTIVE = 1
+{{
+    config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
+        database=get_target_database(company),
+        materialized="incremental",
+        alias="dim_crm_location",
+        incremental_strategy="merge",
+        unique_key="ID",
+    )
+}}
 
-{% if is_incremental() %}
-        WHERE LAST_MODIFIED_DATE > (
-            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
-            from {{ this }}
-        )
-    {% endif %}
+with
+    source as (
+        select
+            md5(
+                coalesce(a.billing_city, '')
+                || '|'
+                || coalesce(a.billing_state, '')
+                || '|'
+                || coalesce(a.billing_country, '')
+            ) as id,
+            a.billing_city as city,
+            a.billing_state as state,
+            a.billing_country as country,
+            concat('SALESFORCE_', '{{company | upper}}') as source_schema,
+            current_timestamp()::timestamp_ntz as gold_load_date
+        from {{ ref('salesforce_opportunity_current') }} as b
+        left join {{ ref('salesforce_account_current') }} as a
+            on a.account_id = b.account_id
+            and a.is_active = 1
+        where b.is_active = 1
 
-GROUP BY A.BILLING_CITY, 
-    A.BILLING_STATE, 
-    A.BILLING_COUNTRY
-)
+        {% if is_incremental() %}
+            where
+                last_modified_date > (
+                    select coalesce(max(last_modified_date), '1900-01-01')
+                    from {{ this }}
+                )
+        {% endif %}
+
+        group by a.billing_city, a.billing_state, a.billing_country
+    )
 
 select *
 from source

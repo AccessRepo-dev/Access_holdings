@@ -1,9 +1,11 @@
-{% set company = var('company','zeus') %}
-{% set sourcesystem = var('sourcesystem','salesforce') %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
-
-{{ config(
-    enabled = var('sourcesystem', 'none') == 'salesforce',
+{% set company = var('company', 'zeus') %}
+{% set sourcesystem = var('sourcesystem', 'salesforce') %}
+ 
+      
+{{
+    config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     schema = 'silver',
     unique_key = 'ID_DATE_KEY',
@@ -15,7 +17,7 @@
 with raw as 
 (
 select *
-from {{ source_snapshot_schema(company, 'SALESFORCE_OPPORTUNITY') }}
+from {{ ref('salesforce_opportunity_snapshot') }}
 {% if is_incremental() %}
     where 
         (cast(LAST_MODIFIED_DATE as timestamp_ntz) > (select dateadd(day, -3, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)) from {{ this }})
