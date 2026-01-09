@@ -1,11 +1,8 @@
-{% set company = var("company", "zeus") %}
-{% set sourcesystem = var("sourcesystem", "salesforce") %}
+{% set company = var('company', 'zeus') | lower %}
+{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce') }}
+{{ config(enabled = var('company', 'zeus') == 'zeus'  and   var('sourcesystem', 'salesforce') | lower in ['salesforce']) }}
 
-
-{{
-    config(
-        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
-        and (var("company", "zeus") | lower) in ["zeus"],
+{{ config(
     database = get_target_database(company),
     alias = 'dim_product',
     materialized = 'incremental',
@@ -13,27 +10,22 @@
     unique_key = 'ID_DATE_KEY'
 ) }}
 
-with source as (
 
-    select
-        ID_DATE_KEY,
-        PRODUCT_ID,
-        NAME,
-        PRODUCT_CODE,
-        FAMILY,
-        DESCRIPTION,
-        PRODUCT_IS_ACTIVE,
-        LAST_MODIFIED_DATE,
-        CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active,
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    from {{ ref('salesforce_product_current') }}
+SELECT
+    p.ID_DATE_KEY,
+    p.PRODUCT_ID,
+    p.NAME,
+    p.DESCRIPTION AS property_description,
+    p.FAMILY AS property_family,
+    CAST(NULL AS INT) AS portal_id,
+    CAST(NULL AS INT) AS pricing_model,
+    NULL AS product_status ,
+    p.PRODUCT_CODE AS product_type,
+    CAST(NULL AS INT) AS property_hs_folder_id,
+    CAST(NULL AS INT) AS price,
+    p.created_date as created_at,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE,
+    ol.OPPORTUNITY_ID
 
-    {% if is_incremental() %}
-        WHERE LAST_MODIFIED_DATE > (
-            select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
-            from {{ this }}
-        )
-    {% endif %}
-)
-select *
-from source
+FROM {{ get_silver_source(company , 'SALESFORCE_PRODUCT') }} p
+LEFT JOIN {{ get_silver_source(company , 'SALESFORCE_OPPORTUNITY_LINE_ITEM') }} ol on p.product_id = ol.PRODUCT_2_ID
