@@ -182,12 +182,7 @@ SELECT * FROM source
         from {{ ref('sage_gl_detail') }}
         WHERE SYMBOL = 'QB_HISTORY' and 
             batch_date <= '2022-08-31')
--- {% elif company | lower  == 'spotless' %}
 
-    -- WHERE (TRANSACTION_LINE_ID NOT IN 
-    --     (select distinct GLENTRYKEY 
-    --     from {{ ref('sage_gl_detail') }}
-    --     WHERE SYMBOL = 'DBJ'))--SYMBOL IN ('APJ', 'ARJ', 'ASC 842', 'CDJ', 'CRJ', 'CAS', 'CCJ', 'DRB', 'EEDJ', 'EEJ', 'FAJ', 'GJ', 'GJH', 'IET', 'IJ', 'PYRJ', 'PEJ', 'PURCH', 'PJ', 'RRJ', 'SJ', 'UNB', 'PRO', 'SYN', 'ELIM'))) OR TRANSACTION_LINE_ID IS NOT NULL 
 {% endif %}
 UNION 
 SELECT * FROM adjustments

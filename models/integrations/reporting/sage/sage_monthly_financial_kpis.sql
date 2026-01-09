@@ -1,5 +1,6 @@
-{% set company = var('company', 'wagway') | lower %}
-{{ config(enabled = var('sourcesystem', 'netsuite') == 'netsuite') }}
+{% set company = var('company', 'spotless') | lower %}
+{% set sourcesystem = var('sourcesystem', 'sage') | lower %}
+{{ config(enabled = var('sourcesystem', 'sage') == 'sage') }}
 
 {{ config(
     database = get_target_database(company),
@@ -7,8 +8,7 @@
     alias = 'rpt_monthly_financial_kpis'
 ) }}
 
-
-with agg as (
+with Agg as (
 SELECT
     PERIOD_START_DATE ,
     SUM(CASE WHEN a.METRIC_L1 = 'Revenue' THEN AMOUNT ELSE 0 END) AS REVENUE ,
@@ -16,8 +16,8 @@ SELECT
     SUM(CASE WHEN a.METRIC_L1 = 'Field Corporate Expenses' THEN AMOUNT ELSE 0 END) AS FCE,
     SUM(CASE WHEN a.METRIC_L1 = 'Post Corporate EBITDA' THEN AMOUNT ELSE 0 END) AS PCE,
     SUM(CASE WHEN a.METRIC_L1 = 'Other (Income) / Expense' THEN AMOUNT ELSE 0 END) AS Other
-FROM {{ ref('netsuite_fact_transaction') }} f
-    LEFT JOIN  {{ ref('netsuite_dim_coa') }} a
+FROM {{ ref(sourcesystem ~ '_fact_transaction') }} f
+    LEFT JOIN  {{ ref(sourcesystem ~ '_dim_coa') }} a
     ON f.DIM_CHART_OF_ACCOUNT_ID = a.DIM_CHART_OF_ACCOUNT_ID
     GROUP BY PERIOD_START_DATE
 )

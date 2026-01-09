@@ -9,7 +9,19 @@
 ) }}
 
 SELECT
-    p.*,
+    id_date_key,
+    product_id,
+    product_name,
+    property_description,
+    property_family,
+    portal_id,
+    pricing_model,
+    product_status.
+    product_type,
+    property_hs_folder_id,
+    price,
+    created_at,
+    is_deleted,
     b.DEAL_ID AS OPPORTUNITY_ID
 
 FROM {{ get_silver_source(company , 'HUBSPOT_PRODUCT') }} p
