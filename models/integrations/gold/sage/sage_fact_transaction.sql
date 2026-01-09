@@ -93,11 +93,16 @@ ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
  {% if company == 'spotless' %}
     WHERE (COALESCE(e.BATCHTITLE,'NONE') not in ('VIE Depreciation & Amortization','record VIE transactions'))
     AND JOURNAL NOT IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ')
-    
+    AND (
+        (COALESCE(b._FIVETRAN_DELETED, true) = true) 
+        OR 
+        (COALESCE(b._FIVETRAN_DELETED, true) = false AND PERIOD_START_DATE >= '2025-11-01')
+    )
 {% elif company == 'amh' %}
     WHERE NOT (e.BATCHTITLE  ILIKE '%Elimination Entry Rev and Exp%' and e.LOCATIONKEY=144 AND CAST(COALESCE(acc.ACCOUNTNO,E.ACCOUNTNO) AS VARCHAR) IN (20000,23005))
+    AND COALESCE(b._FIVETRAN_DELETED, false) = false 
 {% endif %}
-    AND (COALESCE(b._FIVETRAN_DELETED, true) = true ) OR (PERIOD_START_DATE >= '2025-11-01')
+    
 ),
 adjustments AS (
     SELECT
