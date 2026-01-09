@@ -77,7 +77,9 @@ with
             {% elif company == "playfly" %}
                 lower(trim(property_product_category)) as product_type,
                 cast(null as int) property_hs_folder_id,
-            {% else %} cast(null as varchar) as product_type,
+            {% else %} 
+                cast(null as varchar) as product_type,
+                cast(null as int) property_hs_folder_id,
             {% endif %}
 
             cast(property_price as float) as price,
