@@ -22,6 +22,7 @@ with hashed as (
         -- IS_CLOSED,
         -- IS_WON,
         PROBABILITY,
+        ACCOUNT_ID,
         DBT_VALID_FROM,
         DBT_VALID_TO,
         md5(
@@ -60,7 +61,7 @@ with hashed as (
                     || concat('SALESFORCE_', '{{company | upper}}')
                 ) as STAGE_KEY,
         CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
-        null as DIM_COMPANY_ID,
+        ACCOUNT_ID as DIM_COMPANY_ID,
         null as PROPERTY_HS_PROJECTED_AMOUNT,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from hashed

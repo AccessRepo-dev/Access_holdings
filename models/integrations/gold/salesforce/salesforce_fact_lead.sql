@@ -23,7 +23,20 @@ with source as (
         sl.owner_id AS OWNER_ID,
         sl.COMPANY,
         sl.STATUS,
-        null as MAPPED_LEADSTAGE,
+        case
+            when
+                lower(STATUS) in (
+                    'working',
+                    'nurturing',
+                    'qualified',
+                    'secure nda',
+                    'nda signed',
+                    'qualified target',
+                    'qualified prospect'
+                )
+            then 'Qualified Lead'
+            else 'Lead'
+        end as MAPPED_LEADSTAGE,
         sl.IS_ACTIVE,
         sl.converted_opportunity_id AS CONVERTED_OPPORTUNITY_KEY,
         CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,

@@ -43,9 +43,9 @@ with source as (
         CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}
-
+    where Is_Active = 1
     {% if is_incremental() %}
-        WHERE LAST_MODIFIED_DATE > (
+        and LAST_MODIFIED_DATE > (
             select coalesce(max(LAST_MODIFIED_DATE), '1900-01-01')
             from {{ this }}
         )

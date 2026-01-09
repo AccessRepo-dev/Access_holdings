@@ -14,7 +14,7 @@
 SELECT
     p.ID_DATE_KEY,
     p.PRODUCT_ID,
-    p.NAME,
+    p.NAME as PRODUCT_NAME,
     p.DESCRIPTION AS property_description,
     p.FAMILY AS property_family,
     CAST(NULL AS INT) AS portal_id,
@@ -24,6 +24,7 @@ SELECT
     CAST(NULL AS INT) AS property_hs_folder_id,
     CAST(NULL AS INT) AS price,
     p.created_date as created_at,
+    CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE,
     ol.OPPORTUNITY_ID
 

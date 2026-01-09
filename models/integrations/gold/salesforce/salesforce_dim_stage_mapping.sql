@@ -25,17 +25,3 @@ SELECT
     CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
 FROM {{ get_silver_source(company, company ~ '_OPPORTUNITY_STAGE_MAPPING') }}
-
-union 
-
-SELECT 
-    'Lead' as STAGE_NAME, 
-    'Lead' as MAPPED_STAGE_NAME, 
-    1 as STAGE_ORDER,
-    md5(
-        coalesce('Lead', '')
-        || concat('SALESFORCE_', '{{company | upper}}')
-    ) as STAGE_KEY,
-    CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-FROM {{ get_silver_source(company, company ~ '_OPPORTUNITY_STAGE_MAPPING') }}

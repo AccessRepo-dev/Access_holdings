@@ -103,6 +103,7 @@ with
 
         select
             o.id as opportunity_id,
+            l.lead_id as contact_id,
             o.name as opportunity_name,
             o.created_date as opportunity_date,
             a.record_type_name_c as hub,
@@ -168,13 +169,17 @@ select
     opportunity_id,
     opportunity_name,
     opportunity_date,
-    null as acquisition_date,
+    contact_id,
+    case
+                when contact_id is null
+                then null
+                else min(closed_won_date) over (partition by contact_id)
+            end as acquisition_date,
     hub,
     sales_channel_id,
     product_category_id,
     location_id,
     CAST(NULL AS VARCHAR) AS sk_location_id,
-    null as contact_id,
     close_date,
     cast(is_closed as Boolean) as is_closed,
     cast(is_won as Boolean) as is_won,

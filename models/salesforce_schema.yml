@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: zeus_salesforce_raw
     database: zeus_raw     
-    schema: SALESFORCE_ACCESS_HOLDINGS       
+    schema: SALESFORCE      
     tables:
       - name: ACCOUNT
         <<: &freshness_salesforce_defaults
@@ -64,7 +64,7 @@ sources:
 
   - name: zeus_snapshots
     database: zeus_raw  
-    schema: SALESFORCE_ACCESS_HOLDINGS_SNAPSHOTS        
+    schema: SALESFORCE_SNAPSHOTS        
     tables:
       - name: SALESFORCE_ACCOUNT
         <<: *freshness_salesforce_defaults
