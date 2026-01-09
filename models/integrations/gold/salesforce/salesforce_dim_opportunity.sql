@@ -168,13 +168,19 @@ select
     opportunity_id,
     opportunity_name,
     opportunity_date,
+    null as acquisition_date,
     hub,
     sales_channel_id,
     product_category_id,
     location_id,
+    CAST(NULL AS VARCHAR) AS sk_location_id,
+    null as contact_id,
     close_date,
-    cast(is_won as Boolean) as is_won,
     cast(is_closed as Boolean) as is_closed,
+    cast(is_won as Boolean) as is_won,
+
+    null as contact_date,
+
 
     case
         when is_won = 1
@@ -209,6 +215,9 @@ select
         else coalesce(negotiation_date, closed_lost_date, close_date)
     end as negotiation_date,
 
+    null as QUALIFIED_LEAD_DATE,
+    null as CONTACTED_DATE,
+
     case
         when is_won = 1 then coalesce(closed_won_date, close_date)
     end as closed_won_date,
@@ -217,8 +226,12 @@ select
         when is_won = 0 then coalesce(closed_lost_date, close_date)
     end as closed_lost_date,
 
+    null as lead_status,
+    null as contact_close_date,
+    null as lead_stage,
+
     'Zeus' as pipeline_name,
-    last_modified_date,
+    -- last_modified_date,
     concat('SALESFORCE_', '{{ company | upper }}') as source_schema,
     current_timestamp()::timestamp_ntz as gold_load_date
 

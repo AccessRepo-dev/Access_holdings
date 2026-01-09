@@ -7,9 +7,10 @@
 
 {{
     config(
-        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce", "salesforce_access_holdings"]
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
         and (var("company", "zeus") | lower) in ["zeus"],
         database = get_raw_database(company),
+        alias= sourcesystem ~ '_OPPORTUNITY_FIELD_HISTORY', 
         target_schema= target_snapshot_schema(sourcesystem),
         unique_key='id',
         strategy='timestamp',

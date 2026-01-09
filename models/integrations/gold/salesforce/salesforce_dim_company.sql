@@ -8,7 +8,7 @@
         and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     materialized = 'incremental',
-    alias = 'dim_user',
+    alias = 'dim_company',
     incremental_strategy = 'merge',
     unique_key = 'ID_DATE_KEY'
 ) }}
@@ -17,19 +17,32 @@ with source as (
 
     select
         ID_DATE_KEY,
-        ID AS USER_ID,
+        ACCOUNT_ID as ID,
         NAME,
-        -- USERNAME,
-        -- EMAIL,
-        -- FIRST_NAME,
-        -- LAST_NAME,
-        -- USER_IS_ACTIVE,
-        -- USER_ROLE_ID,
+        null as DOMAIN,
+        PHONE as PHONE,
+        INDUSTRY,
+        SITE_ADDRESS_SAME_AS_BILLING_C as ADDRESS,
+        BILLING_CITY as CITY,
+        BILLING_STATE as STATE,
+        BILLING_COUNTRY as COUNTRY,
+        OWNER_ID,
+        CREATED_DATE as CREATE_DATE,
+        LAST_MODIFIED_DATE,
+        TYPE as PROPERTY_COMPANY_TYPE,
+        annual_revenue as ANNUAL_REVENUE,
+        NUMBER_OF_EMPLOYEES,
+
+        -- BILLING_CITY,
+        -- SHIPPING_CITY,
+        -- CREATED_DATE,
         -- LAST_MODIFIED_DATE,
-        CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS IS_ACTIVE,
+        -- DBT_VALID_FROM,
+        -- DBT_VALID_TO,
+        -- Is_Active,
         CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    from {{ ref('salesforce_user_current') }}
+    from {{ get_silver_source(company, 'SALESFORCE_ACCOUNT') }}
 
     {% if is_incremental() %}
         WHERE LAST_MODIFIED_DATE > (
@@ -38,5 +51,5 @@ with source as (
         )
     {% endif %}
 )
-select *
+select *    
 from source

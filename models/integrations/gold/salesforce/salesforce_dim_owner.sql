@@ -8,27 +8,28 @@
         and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     materialized = 'incremental',
-    alias = 'fact_lead',
+    alias = 'dim_owner',
     incremental_strategy = 'merge',
     unique_key = 'ID_DATE_KEY'
 ) }}
 
 with source as (
 
-
     select
-        CONCAT(LEAD_ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
-        sl.LEAD_ID,
-        sl.CREATED_DATE AS LEAD_DATE,
-        sl.owner_id AS OWNER_ID,
-        sl.COMPANY,
-        sl.STATUS,
-        null as MAPPED_LEADSTAGE,
-        sl.IS_ACTIVE,
-        sl.converted_opportunity_id AS CONVERTED_OPPORTUNITY_KEY,
+        ID_DATE_KEY,
+        ID AS OWNER_ID,
+        NAME,
+        -- USERNAME,
+        EMAIL,
+        -- FIRST_NAME,
+        -- LAST_NAME,
+        -- USER_IS_ACTIVE,
+        -- USER_ROLE_ID,
+        -- LAST_MODIFIED_DATE,
+        CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS IS_ACTIVE,
         CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    FROM {{ ref('salesforce_lead_current') }} sl
+    from {{ ref('salesforce_user_current') }}
 
     {% if is_incremental() %}
         WHERE LAST_MODIFIED_DATE > (
@@ -36,8 +37,6 @@ with source as (
             from {{ this }}
         )
     {% endif %}
-
-
 )
 select *
 from source

@@ -79,6 +79,8 @@ with
             try_cast(shipping_postal_code as int) as shipping_postal_code,
             trim(shipping_country) as shipping_country,
             trim(owner_id) as owner_id,
+            trim(phone) as phone,
+            trim(SITE_ADDRESS_SAME_AS_BILLING_C) as SITE_ADDRESS_SAME_AS_BILLING_C,
             created_date,
             created_by_id,
             cast(last_modified_date as timestamp_ntz) as last_modified_date,

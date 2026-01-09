@@ -55,7 +55,13 @@ with hashed as (
         end as DBT_VALID_TO,
         max(case when DBT_VALID_TO is null then 1 else 0 end) 
             over (partition by ID, attr_hash) as IS_ACTIVE,
+        md5(
+                    coalesce(STAGE_NAME, '')
+                    || concat('SALESFORCE_', '{{company | upper}}')
+                ) as STAGE_KEY,
         CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
+        null as DIM_COMPANY_ID,
+        null as PROPERTY_HS_PROJECTED_AMOUNT,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
     from hashed
     qualify row_number() over (partition by ID, attr_hash order by DBT_VALID_FROM) = 1
