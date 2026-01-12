@@ -108,7 +108,7 @@ with
             o.created_date as opportunity_date,
             a.record_type_name_c as hub,
             md5(coalesce(o.lead_source, '')) as sales_channel_id,
-            md5(coalesce(l.industry, '')) as product_category_id,
+            md5(coalesce(o.SYSTEM_SUB_TYPE_C, '')) as product_category_id,
             md5(
                 coalesce(a.billing_city, '')
                 || '|'
