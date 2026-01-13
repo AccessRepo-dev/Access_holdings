@@ -117,7 +117,7 @@ with
                 || coalesce(a.billing_country, '')
             ) as location_id,
             o.close_date,
-            case when o.stage_name ilike 'close%' and is_won = 1 then 1 else 0 end as is_won,
+            case when o.stage_name ilike 'close%' and o.stage_name ilike '%won'then 1 else 0 end as is_won,
             case when o.stage_name ilike 'close%' then 1 else 0 end as is_closed,
             -- o.is_won,
             -- o.is_closed,
