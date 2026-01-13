@@ -92,7 +92,7 @@ ON TRUNC(e.BATCH_DATE, 'MONTH') = per.START_DATE
 
  {% if company == 'spotless' %}
     WHERE (COALESCE(e.BATCHTITLE,'NONE') not in ('VIE Depreciation & Amortization','record VIE transactions') )
-    AND (COALESCE(JOURNAL,'NONE') NOT IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ') )
+    AND (COALESCE(JOURNAL,'NONE') NOT IN ('DBJ','DCJ','GAAP YE ADJS','MAT','PROAJ','PAJ','GAAP YE ELIMS') )
     AND (
         (COALESCE(b._FIVETRAN_DELETED, true) = true) 
         OR 
