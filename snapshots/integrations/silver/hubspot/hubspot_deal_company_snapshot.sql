@@ -7,7 +7,7 @@
 
 {{
     config(
-        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot"]
         and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database = get_raw_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
