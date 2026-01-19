@@ -81,7 +81,9 @@ with
                 || coalesce(is_closed_n::string, '')
             ) as attr_hash,
             property_hs_projected_amount,
-            company_id,
+            {% if sourcesystem == "hubspot" %}
+            company_id
+            {% endif %}
         from {{ ref('hubspot_deal_current') }} a
         left join
             {{ ref('hubspot_deal_contact_current') }} c
@@ -91,9 +93,11 @@ with
             {{ ref('hubspot_deal_pipeline_stage_current') }} b
             on b.stage_id = a.deal_pipeline_stage_id
             and b.is_active = 1
+        {% if sourcesystem == "hubspot" %}
         left join
             {{ ref('hubspot_deal_company_current') }} d
             on a.deal_id = d.deal_id
+        {% endif %}
 
         left join
             {{ ref("hubspot_dim_stage_mapping") }} dsm on b.label = dsm.stage_name
