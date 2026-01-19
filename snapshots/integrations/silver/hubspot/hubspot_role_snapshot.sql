@@ -1,12 +1,14 @@
-{% snapshot hubspot_role %}
+{% snapshot hubspot_role_snapshot %}
 
-
-{% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') %}
+{% set company = var('company', 'amh') %}
+{% set sourcesystem = var('sourcesystem', 'hubspot') %}
+ 
+      
 
 {{
     config(
-        enabled = (var('company') | lower in ['wagway','playfly','amh']) and (var('sourcesystem') | lower in ['hubspot','hubspot_pawville']),
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database = get_raw_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_ROLE', 

@@ -1,7 +1,11 @@
-{% set company = var('company', 'zeus') | lower %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
+{% set company = var("company", "zeus") %}
+{% set sourcesystem = var("sourcesystem", "salesforce") %}
 
-{{ config(
+
+{{
+    config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     materialized = 'incremental',
     alias = 'dim_sales_channel',
@@ -19,7 +23,7 @@ with source as (
     CASE WHEN O.LEAD_SOURCE is null then 'Unknown' ELSE O.LEAD_SOURCE END as SALES_CHANNEL,
     CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    FROM {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}  as O
+    FROM {{ ref('salesforce_opportunity_current') }}  as O
 
 )
 select *

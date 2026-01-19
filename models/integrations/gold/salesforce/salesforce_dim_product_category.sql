@@ -1,7 +1,11 @@
-{% set company = var('company', 'zeus') | lower %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
+{% set company = var("company", "zeus") %}
+{% set sourcesystem = var("sourcesystem", "salesforce") %}
 
-{{ config(
+
+{{
+    config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     materialized = 'incremental',
     alias = 'dim_product_category',
@@ -14,14 +18,16 @@ with source as (
     SELECT 
     distinct 
     md5(
-        coalesce(L.INDUSTRY,'')
+        coalesce(SYSTEM_SUB_TYPE_C,'')
         ) as ID,
-    CASE WHEN L.INDUSTRY IS NULL THEN 'Unknown' ELSE L.INDUSTRY END as PRODUCT_CATEGORY,
+    -- CASE WHEN L.INDUSTRY IS NULL THEN 'Unknown' ELSE L.INDUSTRY END as PRODUCT_CATEGORY,
+    CASE 
+    WHEN SYSTEM_SUB_TYPE_C IS NULL THEN 'Unknown'
+    WHEN SYSTEM_SUB_TYPE_C like '%-%' THEN SPLIT_PART(SYSTEM_SUB_TYPE_C, '-', 2) 
+    ELSE SYSTEM_SUB_TYPE_C END as PRODUCT_CATEGORY,
     CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    FROM {{ get_silver_source(company, 'SALESFORCE_OPPORTUNITY') }}  as O
-    LEFT JOIN {{ get_silver_source(company, 'SALESFORCE_LEAD') }}  as L 
-        ON L.CONVERTED_OPPORTUNITY_ID = O.ID and  L.IS_ACTIVE = 1
+    FROM {{ ref('salesforce_opportunity_current') }}  as O
 
 )
 select *

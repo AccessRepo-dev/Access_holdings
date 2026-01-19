@@ -1,14 +1,11 @@
-{% set company = var("company", "wagway") %}
+{% set company = var('company', 'amh') | lower %}
+{% set sourcesystem = var('sourcesystem','hubspot') | lower %}
+
 
 {{
     config(
-        enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]
-        and company in ["wagway", "playfly", "amh"]
-    )
-}}
-
-{{
-    config(
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="dim_opportunity",
         materialized="incremental",
@@ -23,7 +20,7 @@ with
 ======================================================= */
     deal_contacts as (
         select deal_id, max(contact_id) as contact_id
-        from {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }}
+        from {{ ref('hubspot_deal_contact_current') }}
         where is_active = 1
         group by deal_id
     ),
@@ -45,12 +42,9 @@ with
             ds.deal_id,
             dsm.mapped_stage_name,
             cast(ds.date_entered as date) as date_entered
-        {% if company == "wagway" %} from wagway_raw.hubspot.deal_stage ds
-        {% elif company == "playfly" %} from playfly_raw.hubspot.deal_stage ds
-        {% else %} from amh_raw.hubspot.deal_stage ds
-        {% endif %}
+        from {{ ref('hubspot_deal_stage_current') }} ds
         left join
-            {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE_STAGE") }} dps
+            {{ ref('hubspot_deal_pipeline_stage_current') }} dps
             on dps.stage_id = ds.value
         left join
             {{ ref("hubspot_dim_stage_mapping") }} dsm on dps.label = dsm.stage_name
@@ -124,7 +118,7 @@ with
                 ds.deal_id,
                 dsm.mapped_stage_name,
                 cast(ds.date_entered as date) as date_entered
-            from wagway_raw.hubspot_pawville.deal_stage ds
+            from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_STAGE") }}  ds
             left join
                 {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE") }} dps
                 on dps.stage_id = ds.value
@@ -334,14 +328,14 @@ with
                 || coalesce(nullif(c.property_country, ''), '')
                 || '|HUBSPOT'
             ) as location_id
-        from {{ get_silver_source(company, "HUBSPOT_DEAL") }} a
+        from {{ ref('hubspot_deal_current') }} a
         left join deal_contacts dc on a.deal_id = dc.deal_id
         left join
-            {{ get_silver_source(company, "HUBSPOT_CONTACT") }} c
+            {{ ref('hubspot_contact_current') }} c
             on c.id = dc.contact_id
             and c.is_active = 1
         left join
-            {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE_STAGE") }} b
+            {{ ref('hubspot_deal_pipeline_stage_current') }} b
             on b.stage_id = a.deal_pipeline_stage_id
             and b.is_active = 1
         left join
@@ -594,7 +588,12 @@ with
                 then coalesce(so.negotiation_date, so.closed_won_date, bd.close_date)
                 else coalesce(so.negotiation_date, so.closed_lost_date, bd.close_date)
             end as negotiation_date,
+            null as qualified_lead_date,
+            null as contacted_date,
             {% else %}
+            null as proposal_requested_date,
+            null as proposal_sent_date,
+            null as negotiation_date,
             case
                 when bd.is_won = 1
                 then
@@ -641,11 +640,19 @@ with
             end as closed_lost_date,
 
             dp.label as pipeline_name,
-            property_hs_is_closed_lost
+            property_hs_is_closed_lost,
+            {% if company == "wagway" %}
+            'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+
+        {%else%}
+
+            CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+
+        {% endif %}
         from base_deals bd
         left join stage_dates_by_opp so on so.deal_id = bd.deal_id
         left join
-            {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE") }} dp
+            {{ ref('hubspot_deal_pipeline_current') }} dp
             on dp.pipeline_id = bd.deal_pipeline_id
             and dp.is_active = 1
 
@@ -724,7 +731,12 @@ with
                             so.negotiation_date, so.closed_lost_date, bd.close_date
                         )
                 end as negotiation_date,
+                null as qualified_lead_date,
+                null as contacted_date,
                 {%else%}
+                null as proposal_requested_date,
+                null as proposal_sent_date,
+                null as negotiation_date,
                 case
                     when bd.is_won = 1
                     then
@@ -774,7 +786,8 @@ with
                 end as closed_lost_date,
 
                 dp.label as pipeline_name,
-                property_hs_is_closed_lost
+                property_hs_is_closed_lost,
+                'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
 
             from base_deals_pawville bd
             left join stage_dates_by_opp_pawville so on so.deal_id = bd.deal_id
@@ -801,14 +814,11 @@ select distinct
     is_closed,
     is_won,
     contact_date,
-    {% if company == 'playfly'%}
     proposal_requested_date,
     proposal_sent_date,
     negotiation_date,
-    {%else%}
     qualified_lead_date,
     contacted_date,
-    {%endif%}
     closed_won_date,
     closed_lost_date,
     case
@@ -885,6 +895,7 @@ select distinct
     -- end as lead_status,
     pipeline_name,
     -- last_modified_date,
+    SOURCE_SCHEMA,
     current_timestamp()::timestamp_ntz as gold_load_date
 
 from final

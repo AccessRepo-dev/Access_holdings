@@ -1,13 +1,16 @@
-{% snapshot salesforce_user_role %}
+{% snapshot salesforce_user_role_snapshot %}
 
-
-{% set company = var('company','zeus') %}
-{% set sourcesystem = var('sourcesystem','salesforce') %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
+{% set company = var('company', 'zeus') %}
+{% set sourcesystem = var('sourcesystem', 'salesforce') %}
+ 
+      
 
 {{
     config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
         database = get_raw_database(company),
+        alias= sourcesystem ~ '_USER_ROLE', 
         target_schema= target_snapshot_schema(sourcesystem),
         unique_key='id',
         strategy='timestamp',

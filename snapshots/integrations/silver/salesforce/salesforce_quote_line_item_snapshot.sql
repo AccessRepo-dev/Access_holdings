@@ -1,13 +1,16 @@
-{% snapshot salesforce_quote_line_item %}
+{% snapshot salesforce_quote_line_item_snapshot %}
 
-
-{% set company = var('company','zeus') %}
-{% set sourcesystem = var('sourcesystem','salesforce') %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
+{% set company = var('company', 'zeus') %}
+{% set sourcesystem = var('sourcesystem', 'salesforce') %}
+ 
+      
 
 {{
     config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
         database = get_raw_database(company),
+        alias= sourcesystem ~ '_QUOTE_LINE_ITEM', 
         target_schema= target_snapshot_schema(sourcesystem),
         unique_key='id',
         strategy='timestamp',

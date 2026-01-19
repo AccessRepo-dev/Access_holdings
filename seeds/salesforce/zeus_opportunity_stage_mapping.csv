@@ -1,36 +1,38 @@
 STAGE_NAME,MAPPED_STAGE_NAME,SORT_ORDER
-Initial Screening,Opportunity,1
-Identified Opportunity,Opportunity,2
-Site Identified,Opportunity,3
-Opportunity Screened,Opportunity,4
-Sales Checklist,Opportunity,5
-NDA Secured,Opportunity,6
-Next Steps Scheduled,Opportunity,7
-Nurturing,Opportunity,8
-Demo Conducted,Opportunity,9
-Completed Onsight / MP,Opportunity,10
-Design,Opportunity,11
+Lead,Lead,1
+Initial Screening,Opportunity,2
+Identified Opportunity,Opportunity,3
+Site Identified,Opportunity,4
+Opportunity Screened,Opportunity,5
+Sales Checklist,Opportunity,6
+NDA Secured,Opportunity,7
+Next Steps Scheduled,Opportunity,8
+Nurturing,Opportunity,9
+Demo Conducted,Opportunity,10
+Completed Onsight / MP,Opportunity,11
 Design/Permitting,Opportunity,12
 Diligence,Opportunity,13
-Secure Proposal Opportunity,Opportunity,14
-Engagement,Opportunity,15
-Site Ramping,Opportunity,16
-Proposal Submitted,Proposal Requested,17
-Preparing LOI,Proposal Requested,18
-Proposal Delivered,Proposal Sent,19
-Quote Sent,Proposal Sent,20
-Quote Negotiation / Review,Negotiation,21
-Negotiation,Negotiation,22
-Negotiations,Negotiation,23
-Contract Under Negotiation,Negotiation,24
-Legal Review,Negotiation,25
-Contract Sent,Negotiation,26
-Verbal Authorization,Negotiation,27
-LOI Process,Negotiation,28
-Executed LOI,Negotiation,29
-Completed,Closed Won,30
-Closed Won,Closed Won,31
-Closed Lost,Closed Lost,32
-Contract Lost,Closed Lost,33
-Eliminated,Closed Lost,34
-Unqualified,Closed Lost,35
+Engagement,Opportunity,14
+Site Ramping,Opportunity,15
+Design,Proposal Requested,16
+Secure Proposal Opportunity,Proposal Requested,17
+Proposal Submitted,Proposal Requested,18
+Preparing LOI,Proposal Requested,19
+Proposal Delivered,Proposal Sent,20
+Quote Sent,Proposal Sent,21
+Quote Negotiation / Review,Negotiation,22
+Negotiation,Negotiation,23
+Negotiations,Negotiation,24
+Contract Under Negotiation,Negotiation,25
+Legal Review,Negotiation,26
+Contract Sent,Negotiation,27
+Verbal Authorization,Negotiation,28
+LOI Process,Negotiation,29
+Negotiating LOI,Negotiation,30
+Executed LOI,Negotiation,31
+Completed,Closed Won,32
+Closed Won,Closed Won,33
+Closed Lost,Closed Lost,34
+Contract Lost,Closed Lost,35
+Eliminated,Closed Lost,36
+Unqualified,Closed Lost,37

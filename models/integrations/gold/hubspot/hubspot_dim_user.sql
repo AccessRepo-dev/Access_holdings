@@ -1,9 +1,9 @@
 {% set company = var("company", "wagway") %}
-{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly", "amh"]) }}
 
 
 
 {{ config(
+    enabled = false,
     database = get_target_database(company),
     alias = 'dim_user',
     materialized = 'incremental',

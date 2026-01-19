@@ -1,10 +1,11 @@
-{% set company = var("company", "wagway") %}
-{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly","amh"]) }}
-
+{% set company = var('company', 'amh') | lower %}
+{% set sourcesystem = var('sourcesystem','hubspot') | lower %}
 
 
 {{
     config(
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="dim_crm_location",
         materialized="incremental",
@@ -15,7 +16,7 @@
 
 with deal_contacts as (
         SELECT distinct deal_id, max(contact_id) as contact_id
-        FROM {{ get_silver_source(company, "HUBSPOT_DEAL_CONTACT") }}
+        FROM {{ ref('hubspot_deal_contact_current') }} A
         where is_active = 1
         group by 1
         )
@@ -53,9 +54,9 @@ select
         {% endif %}
 
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    from {{ get_silver_source(company, "HUBSPOT_DEAL") }} A
+    from {{ ref('hubspot_deal_current') }} A
     LEFT JOIN deal_contacts B ON A.DEAL_ID = B.DEAL_ID
-    LEFT JOIN {{ get_silver_source(company, "HUBSPOT_CONTACT") }} C ON c.id = B.contact_id and c.is_active = 1
+    LEFT JOIN {{ ref('hubspot_contact_current') }} C ON c.id = B.contact_id and c.is_active = 1
 where a.is_active = 1
 
 {% if company == 'wagway'%} 

@@ -1,14 +1,11 @@
-{% set company = var("company", "wagway") %}
-{{
-    config(
-        enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"]
-        and var("company", "none") in ["wagway", "playfly", "amh"]
-    )
-}}
+{% set company = var('company', 'amh') | lower %}
+{% set sourcesystem = var('sourcesystem','hubspot') | lower %}
 
 
 {{
     config(
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="dim_product_category",
         materialized="incremental",
@@ -140,7 +137,7 @@ with
             {% endif %}
 
             current_timestamp()::timestamp_ntz as gold_load_date
-        from {{ get_silver_source(company, "HUBSPOT_DEAL") }} a
+        from {{ ref('hubspot_deal_current') }} a
         where a.is_active = 1
     )
 

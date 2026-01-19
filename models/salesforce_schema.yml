@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: zeus_salesforce_raw
     database: zeus_raw     
-    schema: salesforce        
+    schema: SALESFORCE      
     tables:
       - name: ACCOUNT
         <<: &freshness_salesforce_defaults

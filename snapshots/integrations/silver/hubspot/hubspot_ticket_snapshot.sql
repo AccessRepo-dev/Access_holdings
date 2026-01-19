@@ -1,12 +1,14 @@
-{% snapshot hubspot_ticket %}
+{% snapshot hubspot_ticket_snapshot %}
 
-
-{% set company = var('company') %}
-{% set sourcesystem = var('sourcesystem') %}
+{% set company = var('company', 'wagway') %}
+{% set sourcesystem = var('sourcesystem', 'hubspot') %}
+ 
+      
 
 {{
     config(
-        enabled = (var('company') | lower in ['wagway','playfly']) and var('sourcesystem') | lower == 'hubspot',
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot"]
+        and (var("company", "wagway") | lower) in ["wagway", "playfly"],
         database = get_raw_database(company),
         target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_TICKET', 

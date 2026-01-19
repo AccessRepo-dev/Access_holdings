@@ -1,13 +1,16 @@
-{% snapshot salesforce_campaign %}
+{% snapshot salesforce_campaign_snapshot %}
 
-
-{% set company = var('company','zeus') %}
-{% set sourcesystem = var('sourcesystem','salesforce') %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
+{% set company = var('company', 'zeus') %}
+{% set sourcesystem = var('sourcesystem', 'salesforce') %}
+ 
+      
 
 {{
     config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
         database = get_raw_database(company),
+        alias= sourcesystem ~ '_CAMPAIGN', 
         target_schema= target_snapshot_schema(sourcesystem),
         unique_key='id',
         strategy='timestamp',

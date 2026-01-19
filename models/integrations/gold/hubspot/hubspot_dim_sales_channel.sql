@@ -1,9 +1,11 @@
-{% set company = var("company", "wagway") %}
-{{ config(enabled=var("sourcesystem", "none") in ["hubspot", "hubspot_pawville"] and var("company", "none") in ["wagway", "playfly", "amh"]) }}
+{% set company = var('company', 'amh') | lower %}
+{% set sourcesystem = var('sourcesystem','hubspot') | lower %}
 
 
 {{
     config(
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="dim_sales_channel",
         materialized="incremental",
@@ -13,48 +15,48 @@
 }}
 
 
+select distinct
+    md5(
+        coalesce(nullif(a.property_hs_analytics_source, ''), '')
+        || '|'
+        || coalesce('HUBSPOT', '')
+    ) as id,
+    case
+        when
+            a.property_hs_analytics_source is null
+            or a.property_hs_analytics_source = ''
+        then 'UNKNOWN'
+        else a.property_hs_analytics_source
+    end as sales_channel,
 
-select
-    distinct
-        md5(   
-        coalesce(nullif(A.property_hs_analytics_source,''), '') || '|' ||
-        coalesce('HUBSPOT','')
-        ) as ID,
-        CASE 
-            WHEN A.property_hs_analytics_source is null or A.property_hs_analytics_source = '' then 'UNKNOWN' 
-                else A.property_hs_analytics_source
-        end as SALES_CHANNEL,
+    {% if company == "wagway" %} 'HUBSPOT_PUPS' as source_schema,
 
-        {% if company == "wagway" %}
-            'HUBSPOT_PUPS' as SOURCE_SCHEMA,
+    {% else %} concat('HUBSPOT_', '{{company | upper}}') as source_schema,
 
-        {%else%}
+    {% endif %}
 
-            CONCAT('HUBSPOT_','{{company | upper}}') as SOURCE_SCHEMA,
+    current_timestamp()::timestamp_ntz as gold_load_date
+from {{ ref('hubspot_deal_current') }} a
 
-        {% endif %}
+{% if company == "wagway" %}
 
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    from {{ get_silver_source(company, "HUBSPOT_DEAL") }} A
+    union all
 
-
-
-{% if company == 'wagway'%} 
-
-UNION ALL
-
-select
-    distinct
-         md5(   
-        coalesce(nullif(A.property_hs_analytics_source,''), '') || '|' ||
-        coalesce('HUBSPOT_PAWVILLE','')
-        ) as ID,
-        CASE 
-            WHEN A.property_hs_analytics_source is null or A.property_hs_analytics_source = '' then 'UNKNOWN' 
-                else A.property_hs_analytics_source
-        end as SALES_CHANNEL,
-        'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
-        CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-    from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL") }} A
+    select distinct
+        md5(
+            coalesce(nullif(a.property_hs_analytics_source, ''), '')
+            || '|'
+            || coalesce('HUBSPOT_PAWVILLE', '')
+        ) as id,
+        case
+            when
+                a.property_hs_analytics_source is null
+                or a.property_hs_analytics_source = ''
+            then 'UNKNOWN'
+            else a.property_hs_analytics_source
+        end as sales_channel,
+        'HUBSPOT_PAWVILLE' as source_schema,
+        current_timestamp()::timestamp_ntz as gold_load_date
+    from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL") }} a
 
 {% endif %}

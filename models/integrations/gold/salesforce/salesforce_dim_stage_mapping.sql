@@ -1,7 +1,11 @@
-{% set company = var('company', 'zeus') | lower %}
-{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
+{% set company = var("company", "zeus") %}
+{% set sourcesystem = var("sourcesystem", "salesforce") %}
 
-{{ config(
+
+{{
+    config(
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     alias = 'dim_stage_mapping',
     materialized = 'incremental',
@@ -14,16 +18,10 @@ SELECT
     STAGE_NAME, 
     MAPPED_STAGE_NAME, 
     CAST(sort_order as INT)+1 as STAGE_ORDER,
-    CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
-FROM {{ get_silver_source(company, company ~ '_OPPORTUNITY_STAGE_MAPPING') }}
-
-union 
-
-SELECT 
-    'Lead' as STAGE_NAME, 
-    'Lead' as MAPPED_STAGE_NAME, 
-    1 as STAGE_ORDER,
+    md5(
+        coalesce(stage_name, '')
+        || concat('SALESFORCE_', '{{company | upper}}')
+    ) as STAGE_KEY,
     CONCAT('SALESFORCE_','{{company | upper}}') as SOURCE_SCHEMA,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
 FROM {{ get_silver_source(company, company ~ '_OPPORTUNITY_STAGE_MAPPING') }}

@@ -1,8 +1,11 @@
-{% set company = var("company", "zeus") | lower %}
+{% set company = var("company", "zeus") %}
+{% set sourcesystem = var("sourcesystem", "salesforce") %}
+
 
 {{
     config(
-        enabled=var("sourcesystem", "salesforce") == "salesforce" and var("company", "zeus") == "zeus",
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
+        and (var("company", "zeus") | lower) in ["zeus"],
         database=get_target_database(company),
         materialized="incremental",
         incremental_strategy="merge",
@@ -15,7 +18,8 @@ with
     hist_stage_dates as (
 
         select opportunity_id, sn.mapped_stage_name as mapped_stage_name, created_date
-        from zeus_raw.salesforce.opportunity_field_history o
+        from 
+        {{ ref('salesforce_opportunity_field_history_current') }} o
         left join
             {{ ref('salesforce_dim_stage_mapping') }} sn on trim(o.new_value) = sn.stage_name
         where o.field = 'StageName'
@@ -99,11 +103,12 @@ with
 
         select
             o.id as opportunity_id,
+            l.lead_id as contact_id,
             o.name as opportunity_name,
             o.created_date as opportunity_date,
             a.record_type_name_c as hub,
             md5(coalesce(o.lead_source, '')) as sales_channel_id,
-            md5(coalesce(l.industry, '')) as product_category_id,
+            md5(coalesce(o.SYSTEM_SUB_TYPE_C, '')) as product_category_id,
             md5(
                 coalesce(a.billing_city, '')
                 || '|'
@@ -112,7 +117,7 @@ with
                 || coalesce(a.billing_country, '')
             ) as location_id,
             o.close_date,
-            case when o.stage_name ilike 'close%' and is_won = 1 then 1 else 0 end as is_won,
+            case when o.stage_name ilike 'close%' and o.stage_name ilike '%won'then 1 else 0 end as is_won,
             case when o.stage_name ilike 'close%' then 1 else 0 end as is_closed,
             -- o.is_won,
             -- o.is_closed,
@@ -133,13 +138,13 @@ with
             -- coalesce(hs.closed_won_date, cs.closed_won_date) as closed_won_date,
             -- coalesce(hs.closed_lost_date, cs.closed_lost_date) as closed_lost_date,
             o.last_modified_date
-        from {{ get_silver_source(company, "SALESFORCE_OPPORTUNITY") }} o
+        from {{ ref('salesforce_opportunity_current') }} o
         left join
-            {{ get_silver_source(company, "SALESFORCE_LEAD") }} l
+            {{ ref('salesforce_lead_current') }} l
             on l.converted_opportunity_id = o.id
             and l.is_active = 1
         left join
-            {{ get_silver_source(company, "SALESFORCE_ACCOUNT") }} a
+            {{ ref('salesforce_account_current') }} a
             on a.account_id = o.account_id
             and a.is_active = 1
         left join
@@ -164,13 +169,23 @@ select
     opportunity_id,
     opportunity_name,
     opportunity_date,
+    contact_id,
+    case
+                when contact_id is null
+                then null
+                else min(closed_won_date) over (partition by contact_id)
+            end as acquisition_date,
     hub,
     sales_channel_id,
     product_category_id,
     location_id,
+    CAST(NULL AS VARCHAR) AS sk_location_id,
     close_date,
-    cast(is_won as Boolean) as is_won,
     cast(is_closed as Boolean) as is_closed,
+    cast(is_won as Boolean) as is_won,
+
+    null as contact_date,
+
 
     case
         when is_won = 1
@@ -205,6 +220,9 @@ select
         else coalesce(negotiation_date, closed_lost_date, close_date)
     end as negotiation_date,
 
+    null as QUALIFIED_LEAD_DATE,
+    null as CONTACTED_DATE,
+
     case
         when is_won = 1 then coalesce(closed_won_date, close_date)
     end as closed_won_date,
@@ -213,8 +231,12 @@ select
         when is_won = 0 then coalesce(closed_lost_date, close_date)
     end as closed_lost_date,
 
+    null as lead_status,
+    null as contact_close_date,
+    null as lead_stage,
+
     'Zeus' as pipeline_name,
-    last_modified_date,
+    -- last_modified_date,
     concat('SALESFORCE_', '{{ company | upper }}') as source_schema,
     current_timestamp()::timestamp_ntz as gold_load_date
 
