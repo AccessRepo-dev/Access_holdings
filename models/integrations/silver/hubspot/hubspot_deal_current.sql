@@ -96,11 +96,11 @@ with
             {% endif %}
             property_hs_is_closed_won,
             property_hs_is_closed_lost,
-            {% if sourcesystem == "HUBSPOT_PAWVILLE" %}
+            {% if sourcesystem == "hubspot_pawville" %}
                 null as property_club_c,
                 null as property_service_type,
                 null as property_service_category,
-            {% elif company | lower == "wagway" and sourcesystem == "HUBSPOT" %}
+            {% elif company | lower == "wagway" and sourcesystem == "hubspot" %}
                 trim(property_club_c) as property_club_c,
                 trim(property_service_type) as property_service_type,
                 trim(property_service_category) as property_service_category,
