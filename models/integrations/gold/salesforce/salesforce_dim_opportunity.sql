@@ -137,6 +137,7 @@ with
             -- coalesce(hs.negotiation_date, cs.negotiation_date) as negotiation_date,
             -- coalesce(hs.closed_won_date, cs.closed_won_date) as closed_won_date,
             -- coalesce(hs.closed_lost_date, cs.closed_lost_date) as closed_lost_date,
+            o.LOSS_REASON_C,
             o.last_modified_date
         from {{ ref('salesforce_opportunity_current') }} o
         left join
@@ -180,6 +181,7 @@ select
     product_category_id,
     location_id,
     CAST(NULL AS VARCHAR) AS sk_location_id,
+    LOSS_REASON_C,
     close_date,
     cast(is_closed as Boolean) as is_closed,
     cast(is_won as Boolean) as is_won,
