@@ -7,7 +7,7 @@ select
     CAST("TableID" AS INTEGER) as TABLEID,
     TRIM("Frequency")           as FREQUENCY,
     CAST("Year" AS INTEGER) as YEAR,
-    CAST("Quarter"AS INTEGER) as QUARTER,
+    CAST("Quarter"AS VARCHAR) as QUARTER,
     "Industry"            as INDUSTRY,
     "IndustrYDescription" as INDUSTRYDESCRIPTION,
     cast("DataValue" as float) as DATAVALUE,
