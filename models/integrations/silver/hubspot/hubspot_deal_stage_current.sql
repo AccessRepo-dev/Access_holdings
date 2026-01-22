@@ -9,8 +9,7 @@
     database=get_target_database(var('company')),
     materialized = 'incremental',
     alias = sourcesystem ~ '_DEAL_STAGE',
-    incremental_strategy = 'merge',
-    unique_key = 'ID_DATE_KEY'
+ 
 ) }}
 
 
@@ -18,14 +17,14 @@ with source as (
     select *
     from  {{ ref('hubspot_deal_stage_snapshot') }}
     
-    {% if is_incremental() %}
-        where 
-            (UPDATED_AT > (select dateadd(day, -3, coalesce(max(UPDATED_AT), '1900-01-01')) from {{ this }})
-        OR 
-            (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
-    {% else %}
-        where 1=1
-    {% endif %}
+    -- {% if is_incremental() %}
+    --     where 
+    --         (UPDATED_AT > (select dateadd(day, -3, coalesce(max(UPDATED_AT), '1900-01-01')) from {{ this }})
+    --     OR 
+    --         (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
+    -- {% else %}
+    --     where 1=1
+    -- {% endif %}
 ),
 
 cleaned as (
