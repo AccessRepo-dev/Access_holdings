@@ -18,16 +18,20 @@ cleaned as (
     select 
         CAST(ID AS VARCHAR) AS ID,
         CAST(ANNUAL_SALARY AS FLOAT)              AS ANNUAL_SALARY,
-        -- CAST(BONUS_TOTAL_HOURS AS FLOAT)          AS BONUS_TOTAL_HOURS,
-        -- CAST(BONUS_TOTAL_OT_HOURS AS FLOAT)       AS BONUS_TOTAL_OT_HOURS,
-        --CAST(COMPANY_ID AS TEXT)                  AS COMPANY_ID,
+        
+        CAST(COMPANY_ID AS TEXT)                  AS COMPANY_ID,
         CAST(CURRENCY_CODE AS TEXT)               AS CURRENCY_CODE,
         CAST(EMPLOYEE_ID AS TEXT)                 AS EMPLOYEE_ID,
-        --CAST(EMPLOYEE_STATUS AS TEXT)             AS EMPLOYEE_STATUS,
-        --CAST(EMPLOYMENT_ID AS TEXT)               AS EMPLOYMENT_ID,
+        
         CAST(HOURLY_PAY_RATE AS FLOAT)             AS HOURLY_PAY_RATE,
-        --CAST(JOB_CODE AS TEXT)                    AS JOB_CODE,
-        --CAST(LOCATION_ID AS TEXT)                 AS LOCATION_ID,
+
+        CAST(JOB_CODE AS TEXT)                    AS JOB_CODE,
+        CAST(LOCATION_ID AS TEXT)                 AS LOCATION_ID,
+        TRIM(Organization_Level_1_ID)               AS Organization_Level_1_ID,
+        CAST(Total_Tax_Amount AS FLOAT) AS Total_Tax_Amount,
+        CAST(Net_Amount AS FLOAT) AS Net_Amount,
+        bonus_total_hours ,
+        bonus_total_ot_hours,
         CAST(TOTAL_DEDUCTION_AMOUNT AS FLOAT)     AS TOTAL_DEDUCTION_AMOUNT,
         CAST(TOTAL_EARNINGS_AMOUNT AS FLOAT)      AS TOTAL_EARNINGS_AMOUNT,
         CAST(TOTAL_HOURS AS FLOAT)                AS TOTAL_HOURS,

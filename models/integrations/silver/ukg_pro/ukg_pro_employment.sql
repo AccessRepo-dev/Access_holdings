@@ -6,7 +6,7 @@
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
-    unique_key = 'EMPLOYEE_ID'
+    unique_key=['company_id', 'employee_id']
 ) }}
 
 with source_data as (
