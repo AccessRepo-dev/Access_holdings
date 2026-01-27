@@ -57,6 +57,8 @@ sources:
       - name: TASK
       - name: OPPORTUNITY_FIELD_HISTORY
         <<: *freshness_salesforce_defaults
+      - name: FORECASTING_QUOTA
+        <<: *freshness_salesforce_defaults
 
 
    
@@ -107,6 +109,7 @@ sources:
 
       - name: SALESFORCE_QUOTE_LINE_ITEM
         <<: *freshness_salesforce_defaults
+      
 
 
   - name: zeus_silver
@@ -129,6 +132,7 @@ sources:
       - name: SALESFORCE_TASK
       - name: SALESFORCE_CAMPAIGN
       - name: SALESFORCE_QUOTE_LINE_ITEM
+      - name: SALESFORCE_FORECASTING_QUOTA
       - name: zeus_OPPORTUNITY_STAGE_MAPPING
 
 

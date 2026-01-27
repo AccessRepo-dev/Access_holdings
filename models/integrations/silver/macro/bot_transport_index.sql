@@ -4,12 +4,10 @@ with source as (
 )
 
 select
-    cast("year" as integer) as YEAR,
-    TRIM("period") as PERIOD,
-    CAST(REPLACE("period" , '-', '')AS INT) AS DateKey,
-    TRIM("series_id") as SERIES_ID,
-    TRIM("series_title") as SERIES_TITLE,
-    "value" as VALUE,
-    TRIM("units") as UNITS,
-    TRIM("source") as SOURCE
+    TRIM(period) as PERIOD,
+    CAST(REPLACE(period , '-', '')AS INT) AS DateKey,
+    TRIM(series_id) as SERIES_ID,
+    TRIM(series_title) as SERIES_TITLE,
+    value as VALUE,
+    TRIM(units) as UNITS
 from source

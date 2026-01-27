@@ -11,6 +11,7 @@
 
 with source as (
     select
+        HASH(CONCAT(EMPLOYEE_ID,COMPANY_ID)) AS DIM_EMPLOYEE_COMPANY_ID,
         EMPLOYEE_ID,
         COMPANY_ID              AS DIM_COMPANY_ID,
         ORIGINAL_HIRE_DATE,
