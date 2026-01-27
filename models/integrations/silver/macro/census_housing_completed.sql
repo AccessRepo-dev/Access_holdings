@@ -4,7 +4,7 @@ with source as (
 )
 
 select
-    CAST("Total" AS NUMBER) as TOTAL,
+    CAST(Total AS NUMBER) as TOTAL,
     CAST("1 unit" AS NUMBER) as UNIT_1,
     CAST("2 to 4
  units" AS NUMBER) as UNIT_2_TO_4,
@@ -18,5 +18,5 @@ select
     CAST("1 unit.3" AS NUMBER) as UNIT_1_3,
     CAST("Total.4" AS NUMBER) as TOTAL_4,
     CAST("1 unit.4" AS NUMBER) as UNIT_1_4,
-    CAST(REPLACE("month",'-','') AS NUMBER) AS DATEKEY
+    CAST(REPLACE(month,'-','') AS NUMBER) AS DATEKEY
 from source

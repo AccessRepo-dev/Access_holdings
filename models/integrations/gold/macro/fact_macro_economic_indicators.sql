@@ -138,7 +138,7 @@ bls_unemployment_cte AS (
 
 umich_sent_cte AS (
     SELECT 
-        DateKey,
+        D.DateKey,
         SERIES_TITLE AS measure_name,
         Value AS measure_value,
         hash(series_id, DateKey) AS unique_id,
@@ -150,7 +150,9 @@ umich_sent_cte AS (
         'Consumer' AS DATASET,
         'Umich Survey of Consumers' AS DATASOURCE
 
-    FROM {{ ref('umich_sent') }}
+    FROM {{ ref('umich_sent') }} A
+    LEFT JOIN {{ ref('dim_date_monthly') }} D 
+     ON  A.DATE = D.FULL_DATE
 ),
 
 bea_gdp_industry_cte AS (
