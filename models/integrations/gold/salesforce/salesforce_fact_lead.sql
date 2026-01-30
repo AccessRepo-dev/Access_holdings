@@ -19,7 +19,7 @@ with source as (
     select
         CONCAT(LEAD_ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
         sl.LEAD_ID,
-        sl.CREATED_DATE AS LEAD_DATE,
+        cast(sl.CREATED_DATE as date) AS LEAD_DATE,
         sl.owner_id AS OWNER_ID,
         sl.COMPANY,
         sl.STATUS,

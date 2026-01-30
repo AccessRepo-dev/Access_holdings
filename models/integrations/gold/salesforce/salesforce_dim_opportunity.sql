@@ -184,12 +184,12 @@ with
 select
     opportunity_id,
     opportunity_name,
-    opportunity_date,
+    cast(opportunity_date as date) as opportunity_date,
     contact_id,
     case
                 when contact_id is null
-                then null
-                else min(closed_won_date) over (partition by contact_id)
+                then cast(null as date)
+                else cast(min(closed_won_date) over (partition by contact_id) as date)
             end as acquisition_date,
     hub,
     sales_channel_id,
@@ -207,50 +207,50 @@ select
     case
         when is_won = 1
         then
-            coalesce(
+            cast(coalesce(
                 proposal_requested_date,
                 proposal_sent_date,
                 negotiation_date,
                 closed_won_date,
                 close_date
-            )
+            ) as date)
         else
-            coalesce(
+            cast(coalesce(
                 proposal_requested_date,
                 proposal_sent_date,
                 negotiation_date,
                 closed_lost_date,
                 close_date
-            )
+            ) as date)
     end as proposal_requested_date,
 
     case
         when is_won = 1
-        then coalesce(proposal_sent_date, negotiation_date, closed_won_date, close_date)
+        then cast(coalesce(proposal_sent_date, negotiation_date, closed_won_date, close_date) as date)
         else
-            coalesce(proposal_sent_date, negotiation_date, closed_lost_date, close_date)
+            cast(coalesce(proposal_sent_date, negotiation_date, closed_lost_date, close_date) as date)
     end as proposal_sent_date,
 
     case
         when is_won = 1
-        then coalesce(negotiation_date, closed_won_date, close_date)
-        else coalesce(negotiation_date, closed_lost_date, close_date)
+        then cast(coalesce(negotiation_date, closed_won_date, close_date) as date)
+        else cast(coalesce(negotiation_date, closed_lost_date, close_date) as date)
     end as negotiation_date,
 
-    null as QUALIFIED_LEAD_DATE,
-    null as CONTACTED_DATE,
+    cast(null as date) as QUALIFIED_LEAD_DATE,
+    cast(null as date) as CONTACTED_DATE,
 
     case
-        when is_won = 1 then coalesce(closed_won_date, close_date)
+        when is_won = 1 then cast(coalesce(closed_won_date, close_date) as date)
     end as closed_won_date,
 
     case
-        when is_won = 0 then coalesce(closed_lost_date, close_date)
+        when is_won = 0 then cast(coalesce(closed_lost_date, close_date) as date)
     end as closed_lost_date,
     native_lost_stage,
     mapped_lost_stage,
     null as lead_status,
-    null as contact_close_date,
+    cast(null as date) as contact_close_date,
     null as lead_stage,
 
     'Zeus' as pipeline_name,
