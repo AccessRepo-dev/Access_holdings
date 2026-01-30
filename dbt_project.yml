@@ -126,6 +126,13 @@ models:
         ukg_pro:
             +schema: SILVER
             +materialized: table
+        ukg_ready:
+            +schema: SILVER
+            +materialized: table
+        adp_workforce_now:
+            +schema: SILVER
+            +materialized: table
+
 
 
       gold:
