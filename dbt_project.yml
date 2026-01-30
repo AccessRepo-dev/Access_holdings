@@ -160,6 +160,9 @@ models:
         ukg_pro:
             +schema: GOLD
             +materialized: table
+        adp_workforce_now:
+            +schema: GOLD
+            +materialized: table
      
       reporting:
         netsuite:
