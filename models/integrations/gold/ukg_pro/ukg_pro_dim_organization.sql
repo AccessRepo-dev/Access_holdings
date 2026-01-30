@@ -13,7 +13,10 @@ with source as (
     select
         ID AS DIM_ORGANIZATION_LEVEL_ID,
         LEVEL, 
-        LEVEL_DESCRIPTION 
+        LEVEL_DESCRIPTION,
+        DESCRIPTION,
+        
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS GOLD_LOAD_DATE
       
     from {{ref('ukg_pro_organization_level')}}
     WHERE IS_ACTIVE = True
