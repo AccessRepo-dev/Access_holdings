@@ -20,8 +20,9 @@ with
     source as (
         select distinct
             md5(coalesce(job_title, job_short_name, job_long_name)) as dim_job_id,
+            null as job_id,
             coalesce(job_title, job_short_name, job_long_name) as job_title,
-            null as job_category,
+            null as job_group,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("adp_workforce_now_work_assignment_history") }} wah
         where wah._fivetran_active = true and wah.primary_indicator = true

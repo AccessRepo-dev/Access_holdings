@@ -1,0 +1,53 @@
+{% set company = var("company", "playfly") | lower %}
+{{ config(enabled=var("sourcesystem", "ukg_pro") | lower == "ukg_pro") }}
+
+{{
+    config(
+        database=get_target_database(company),
+        materialized="incremental",
+        alias="dim_hr_employee",
+        incremental_strategy="merge",
+        unique_key="EMPLOYEE_KEY",
+    )
+}}
+
+with
+    source as (
+        select
+            hash(concat(employee_id, company_id)) as dim_employee_id,
+            employee_id,
+            hire_source,
+            case when employee_status_code = 'T' then 'Terminated'
+                when employee_status_code = 'A' then 'Active' 
+                when employee_status_code = 'L' then 'Leave'
+                else 'Unknown' end as employee_status,
+            case when full_time_or_part_time_code = 'P' then 'Part Time'
+                when full_time_or_part_time_code = 'F' then 'Full Time'
+                else 'Unknown' end as employee_type,
+            original_hire_date,
+            last_hire_date,
+            date_of_termination as termination_date,
+            termination_reason_description as termination_reason,
+            case when term_type = 'I' then 'Involuntary'
+                when term_type = 'V' then 'Voluntary'
+                else 'Unknown' end as termination_type,
+            md5(coalesce(company_id, '')) as dim_company_id,
+            md5(coalesce(primary_work_location_id, '')) as DIM_LOCATION_ID,
+            md5(coalesce(primary_job_id, '')) as dim_job_id,
+            md5(coalesce(organization_level_1_id, '') || coalesce(1, '') ) as dim_organization_level_id,
+            md5(coalesce(supervisor_co_id, '')) as supervisor_company_id,
+            supervisor_id as manager_id,
+            job_change_reason_code as employee_status_reason_code,
+            null as job_function,   
+            scheduled_annual_hrs as scheduled_annual_hours,
+            scheduled_work_hrs as scheduled_work_hours,
+            weekly_hours,
+            date_time_changed,
+            -- employee_type_code,
+            -- term_reason,
+            current_timestamp()::timestamp_ntz as gold_load_date
+        from {{ ref("ukg_pro_employment") }}
+
+    )
+select *
+from source

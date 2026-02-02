@@ -1,23 +1,27 @@
-{% set company = var('company', 'playfly') | lower %}
-{{ config(enabled = var('sourcesystem', 'ukg_pro') | lower == 'ukg_pro') }}
+{% set company = var("company", "playfly") | lower %}
+{{ config(enabled=var("sourcesystem", "ukg_pro") | lower == "ukg_pro") }}
 
-{{ config(
-    database = get_target_database(company),
-    materialized = 'incremental',
-    alias = 'dim_company_hr',
-    incremental_strategy = 'merge',
-    unique_key = 'DIM_JOB_ID'
-) }}
+{{
+    config(
+        database=get_target_database(company),
+        materialized="incremental",
+        alias="dim_hr_company",
+        incremental_strategy="merge",
+        unique_key="COMPANY_KEY",
+    )
+}}
 
-with source as (
-    select
+with
+    source as (
+        select
+            md5(coalesce(id, '')) as dim_company_id,
+            id as company_id,
+            company_code,
+            company_name,
+            current_timestamp()::timestamp_ntz as gold_load_date
 
-        ID AS DIM_COMPANY_ID,
-        COMPANY_CODE,
-        COMPANY_NAME
-      
-    from {{ref('ukg_pro_company')}}
+        from {{ ref("ukg_pro_company") }}
 
-)
+    )
 select *
 from source

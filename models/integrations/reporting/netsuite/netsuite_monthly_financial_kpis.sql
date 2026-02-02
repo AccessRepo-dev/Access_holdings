@@ -1,4 +1,4 @@
-{% set company = var("company", "wagway") | lower %}
+{% set company = var("company", "playfly") | lower %}
 {{ config(enabled=var("sourcesystem", "netsuite") == "netsuite") }}
 
 {{
@@ -18,7 +18,7 @@ with
 
             -- coalesce(a.state, b.state) as state_name,
             mad.*
-        from playfly_raw.netsuite.transactionaddressmappingaddress mad
+        from {{ ref('netsuite_transactionaddressmappingaddress') }} mad
         left join playfly_dev.gold.dim_us_location a on a.state_code = mad.state
         left join playfly_dev.gold.dim_us_location b on b.state = mad.state
     ),
@@ -49,7 +49,7 @@ with
             ) as other
         from {{ ref("netsuite_fact_transaction") }} f
         left join
-            playfly_raw.netsuite.transactionaddressmapping ma
+            {{ ref('netsuite_transactionaddressmapping') }} ma
             on f.transaction_id = ma.transaction
         left join cleaned_states mad on mad.nkey = ma.address
         left join

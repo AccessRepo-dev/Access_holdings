@@ -15,13 +15,13 @@ with
     source as (
         select
 
-            id as dim_location_id,
+            md5(coalesce(id, '')) as dim_location_id,
+            md5(coalesce(state, '')) as STATE_KEY,
             city,
             country_code,
-            md5(coalesce(state, '')) as LOCATION_KEY,
             state,
-            zip_or_postal_code
-
+            zip_or_postal_code,
+            current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("ukg_pro_location") }}
         where is_active = true and _fivetran_deleted = false
 

@@ -18,6 +18,7 @@ with source_data as (
 cleaned as (
     select 
         CAST(ID AS VARCHAR) AS ID,
+        TRIM(TITLE) as TITLE,
         TRIM(JOB_FAMILY_CODE) AS JOB_FAMILY_CODE,
         CURRENT_TIMESTAMP() AS SILVER_LOAD_DATE,
         _FIVETRAN_DELETED    
