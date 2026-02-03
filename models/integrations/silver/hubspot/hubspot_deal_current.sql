@@ -117,7 +117,7 @@ with
                 cast(property_invoice_id as number) as property_invoice_id,
             {% else %} cast(null as number) as property_invoice_id,
             {% endif %}
-
+            property_closed_lost_reason,
             current_timestamp()::timestamp_ntz as silver_load_date,
             cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
             cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,

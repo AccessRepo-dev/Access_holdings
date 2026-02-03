@@ -123,6 +123,10 @@ models:
         gingr:
             +schema: SILVER
             +materialized: table
+        ukg_pro:
+            +schema: SILVER
+            +materialized: table
+
 
       gold:
         netsuite:
@@ -146,7 +150,10 @@ models:
         wagway_multisource_models:
             +schema: GOLD
             +materialized: table 
-            
+        ukg_pro:
+            +schema: GOLD
+            +materialized: table
+     
       reporting:
         netsuite:
           +schema: GOLD

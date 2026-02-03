@@ -15,9 +15,26 @@
 }}
 
 with
+    Last_Stage as (
+
+        select 
+            row_number() OVER (PARTITION BY opportunity_id ORDER BY CREATED_DATE DESC) as row_num,
+            opportunity_id,
+            old_value as native_stage_name,
+            old.mapped_stage_name
+        from  {{ ref('salesforce_opportunity_field_history_current') }} o
+        left join {{ ref('salesforce_dim_stage_mapping') }} new on trim(o.new_value) = new.stage_name
+        left join {{ ref('salesforce_dim_stage_mapping') }} old on trim(o.old_value) = old.stage_name
+        WHERE field = 'StageName' AND new.mapped_stage_name = 'Closed Lost' AND is_deleted = false and is_active = 1
+        QUALIFY row_num = 1
+
+    ),
     hist_stage_dates as (
 
-        select opportunity_id, sn.mapped_stage_name as mapped_stage_name, created_date
+        select opportunity_id, 
+
+        sn.mapped_stage_name as mapped_stage_name, 
+        created_date
         from 
         {{ ref('salesforce_opportunity_field_history_current') }} o
         left join
@@ -137,6 +154,9 @@ with
             -- coalesce(hs.negotiation_date, cs.negotiation_date) as negotiation_date,
             -- coalesce(hs.closed_won_date, cs.closed_won_date) as closed_won_date,
             -- coalesce(hs.closed_lost_date, cs.closed_lost_date) as closed_lost_date,
+            h.native_stage_name as native_lost_stage,
+            h.mapped_stage_name as mapped_lost_stage,
+            o.LOSS_REASON_C,
             o.last_modified_date
         from {{ ref('salesforce_opportunity_current') }} o
         left join
@@ -150,11 +170,7 @@ with
         left join
             hist_stage_dates_by_opp hs
             on hs.opportunity_id = o.id
-        --     and o.created_date <= '2025-11-01' 
-        -- left join
-        --     stage_dates_by_opp cs
-        --     on o.created_date > '2025-11-01'
-        --     and cs.opportunity_id = o.id
+        left join Last_Stage h on h.opportunity_id = o.id
         where
             o.is_active = 1
 
@@ -180,6 +196,7 @@ select
     product_category_id,
     location_id,
     CAST(NULL AS VARCHAR) AS sk_location_id,
+    LOSS_REASON_C,
     close_date,
     cast(is_closed as Boolean) as is_closed,
     cast(is_won as Boolean) as is_won,
@@ -230,7 +247,8 @@ select
     case
         when is_won = 0 then coalesce(closed_lost_date, close_date)
     end as closed_lost_date,
-
+    native_lost_stage,
+    mapped_lost_stage,
     null as lead_status,
     null as contact_close_date,
     null as lead_stage,

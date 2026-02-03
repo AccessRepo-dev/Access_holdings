@@ -7,10 +7,9 @@
 
 {% set companies = var('companies') %}
 
--- Filter to include only NETSUITE companies
-{% set companies = companies | selectattr('source', 'equalto', 'NETSUITE') | list %}
 
-{% for c in companies %}
+
+{% for c in companies if c.name | lower != 'zeus' %}
     select
         ABS(HASH(DIM_ENTITY_ID, '{{ c.name }}','{{c.source}}')) as DIM_ENTITY_ID,
         DIM_ENTITY_ID AS ENTITY_ID,

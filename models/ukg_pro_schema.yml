@@ -1,0 +1,12 @@
+sources:
+  - name: playfly_ukg_pro_raw
+    database: playfly_raw
+    schema: ukg_pro
+    tables:
+      - name: EMPLOYMENT
+      - name: PAY_REGISTER
+      - name: LOCATION
+      - name: COMPANY
+      - name: JOB
+      - name: ORGANIZATION_LEVEL
+      

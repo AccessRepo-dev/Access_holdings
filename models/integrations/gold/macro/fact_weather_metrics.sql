@@ -1,3 +1,4 @@
+
 WITH day_level_forecast as (
     SELECT 
     date, 

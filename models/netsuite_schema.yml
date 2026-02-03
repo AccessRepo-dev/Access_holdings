@@ -155,6 +155,9 @@ sources:
       - name: LOCATION
         description: Physical or logical business locations used throughout the system.
         <<: *freshness_netsuite_defaults
+      - name: LOCATIONMAINADDRESS
+        description: Physical or logical business addresses used throughout the system.
+        <<: *freshness_netsuite_defaults
         
       - name: SUBSIDIARY
         description: Legal and reporting company entities configured for Playfly.
