@@ -134,8 +134,8 @@ with
                 || coalesce(a.billing_country, '')
             ) as location_id,
             o.close_date,
-            case when o.stage_name ilike 'close%' and o.stage_name ilike '%won'then 1 else 0 end as is_won,
-            case when o.stage_name ilike 'close%' then 1 else 0 end as is_closed,
+            case when dsm.mapped_stage_name = 'Closed Won' then 1 else 0 end as is_won,
+            case when dsm.mapped_stage_name in ('Closed Won', 'Closed Lost') then 1 else 0 end as is_closed,
             -- o.is_won,
             -- o.is_closed,
             hs.opportunity_date as opp_date,
@@ -167,10 +167,12 @@ with
             {{ ref('salesforce_account_current') }} a
             on a.account_id = o.account_id
             and a.is_active = 1
+        left join {{ ref('salesforce_dim_stage_mapping') }} dsm on dsm.stage_name = o.stage_name
         left join
             hist_stage_dates_by_opp hs
             on hs.opportunity_id = o.id
         left join Last_Stage h on h.opportunity_id = o.id
+        
         where
             o.is_active = 1
 
@@ -184,12 +186,12 @@ with
 select
     opportunity_id,
     opportunity_name,
-    opportunity_date,
+    cast(opportunity_date as date) as opportunity_date,
     contact_id,
     case
                 when contact_id is null
-                then null
-                else min(closed_won_date) over (partition by contact_id)
+                then cast(null as date)
+                else cast(min(closed_won_date) over (partition by contact_id) as date)
             end as acquisition_date,
     hub,
     sales_channel_id,
@@ -207,50 +209,50 @@ select
     case
         when is_won = 1
         then
-            coalesce(
+            cast(coalesce(
                 proposal_requested_date,
                 proposal_sent_date,
                 negotiation_date,
                 closed_won_date,
                 close_date
-            )
+            ) as date)
         else
-            coalesce(
+            cast(coalesce(
                 proposal_requested_date,
                 proposal_sent_date,
                 negotiation_date,
                 closed_lost_date,
                 close_date
-            )
+            ) as date)
     end as proposal_requested_date,
 
     case
         when is_won = 1
-        then coalesce(proposal_sent_date, negotiation_date, closed_won_date, close_date)
+        then cast(coalesce(proposal_sent_date, negotiation_date, closed_won_date, close_date) as date)
         else
-            coalesce(proposal_sent_date, negotiation_date, closed_lost_date, close_date)
+            cast(coalesce(proposal_sent_date, negotiation_date, closed_lost_date, close_date) as date)
     end as proposal_sent_date,
 
     case
         when is_won = 1
-        then coalesce(negotiation_date, closed_won_date, close_date)
-        else coalesce(negotiation_date, closed_lost_date, close_date)
+        then cast(coalesce(negotiation_date, closed_won_date, close_date) as date)
+        else cast(coalesce(negotiation_date, closed_lost_date, close_date) as date)
     end as negotiation_date,
 
-    null as QUALIFIED_LEAD_DATE,
-    null as CONTACTED_DATE,
+    cast(null as date) as QUALIFIED_LEAD_DATE,
+    cast(null as date) as CONTACTED_DATE,
 
     case
-        when is_won = 1 then coalesce(closed_won_date, close_date)
+        when is_won = 1 then cast(closed_won_date as date)
     end as closed_won_date,
 
     case
-        when is_won = 0 then coalesce(closed_lost_date, close_date)
+        when is_won = 0 and is_closed = 1 then cast(closed_lost_date as date)
     end as closed_lost_date,
     native_lost_stage,
     mapped_lost_stage,
     null as lead_status,
-    null as contact_close_date,
+    cast(null as date) as contact_close_date,
     null as lead_stage,
 
     'Zeus' as pipeline_name,
