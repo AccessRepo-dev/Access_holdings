@@ -1,17 +1,19 @@
-{% set company = var("company", "zeus") %}
-{% set sourcesystem = var("sourcesystem", "salesforce") %}
+{% set company = var('company', 'amh') | lower %}
+{% set sourcesystem = var('sourcesystem','hubspot') | lower %}
 
 
 {{
     config(
-        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
-        and (var("company", "zeus") | lower) in ["zeus"],
-    database = get_target_database(company),
-    materialized = 'incremental',
-    alias = 'rpt_opportunity_waterfall',
-    incremental_strategy = 'merge',
-    unique_key = ['STAGE_DATE','MAPPED_STAGE_NAME']
-) }}
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+        and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
+        database=get_target_database(company),
+        materialized = 'incremental',
+        alias = 'rpt_opportunity_waterfall',
+        incremental_strategy = 'merge',
+        unique_key = ['STAGE_DATE','MAPPED_STAGE_NAME']
+    )
+}}
+
 
 
 WITH base_opp AS (
@@ -32,10 +34,10 @@ WITH base_opp AS (
                 WHEN m.mapped_stage_name = 'Closed Lost' THEN od.closed_lost_date
             END
         )::date AS close_month
-    FROM  {{ref('salesforce_fact_opportunity')}}  fo
-    LEFT JOIN {{ref ('salesforce_dim_opportunity') }} od
+    FROM  {{ref('hubspot_fact_opportunity')}}  fo
+    LEFT JOIN {{ref ('hubspot_dim_opportunity') }} od
         ON fo.opportunity_id = od.opportunity_id
-    LEFT JOIN {{ref ('salesforce_dim_stage_mapping')}} m
+    LEFT JOIN {{ref ('hubspot_dim_stage_mapping')}} m
         ON fo.STAGE_KEY = m.stage_key
 ),
 opp_amt AS (
