@@ -5,7 +5,7 @@
 
 {{
     config(
-    enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+    enabled= (var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
     and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
     materialized = 'incremental',
     database = get_target_database(company),
@@ -13,6 +13,8 @@
     incremental_strategy = 'merge',
     unique_key = 'ID_DATE_KEY'
 ) }}
+
+{{config(enabled = false)}}
 
 with source as (
     select  concat(id,'_',to_varchar(dbt_valid_from,'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
