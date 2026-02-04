@@ -5,8 +5,7 @@
 
 {{
     config(
-    enabled= (var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
-    and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
+    enabled= false,
     materialized = 'incremental',
     database = get_target_database(company),
     alias = sourcesystem ~ '_COMPANY_V1',
