@@ -28,6 +28,7 @@ with
             md5(coalesce(mad.state_code, '')) as state_key,
             period_start_date,
             dim_department_id,
+            DIM_SUBSIDIARY_ID,
             dim_class_id,
             sum(case when a.metric_l1 = 'Revenue' then amount else 0 end) as rev,
             sum(case when a.metric_l1 = 'COGS' then amount else 0 end) as cogs,
@@ -61,8 +62,8 @@ with
 select
     period_start_date,
     dim_department_id,
+    DIM_SUBSIDIARY_ID,
     dim_class_id,
-    null as dim_subsidiary_id,
     state_key,
     -1 * rev as revenue,
     -1 * (rev + cogs) as gross_profit,
