@@ -7,7 +7,7 @@
         materialized="incremental",
         alias="dim_hr_employee",
         incremental_strategy="merge",
-        unique_key="EMPLOYEE_KEY",
+        unique_key="dim_employee_id",
     )
 }}
 
@@ -24,9 +24,9 @@ with
             case when full_time_or_part_time_code = 'P' then 'Part Time'
                 when full_time_or_part_time_code = 'F' then 'Full Time'
                 else 'Unknown' end as employee_type,
-            original_hire_date,
-            last_hire_date,
-            date_of_termination as termination_date,
+            cast(original_hire_date as date) as original_hire_date,
+            cast(last_hire_date as date) as hire_date,
+            cast(date_of_termination as date) as termination_date,
             termination_reason_description as termination_reason,
             case when term_type = 'I' then 'Involuntary'
                 when term_type = 'V' then 'Voluntary'
@@ -34,7 +34,11 @@ with
             md5(coalesce(company_id, '')) as dim_company_id,
             md5(coalesce(primary_work_location_id, '')) as DIM_LOCATION_ID,
             md5(coalesce(primary_job_id, '')) as dim_job_id,
-            md5(coalesce(organization_level_1_id, '') || coalesce(1, '') ) as dim_organization_level_id,
+            -- md5(coalesce(organization_level_1_id, '') || coalesce(1, '') ) as dim_organization_level_id,
+            md5(coalesce(organization_level_1_id, '')) as dim_class_id,
+            -- md5(coalesce(organization_level_2_id, '') || coalesce(2, '') ) as dim_class_id,
+            md5(coalesce(organization_level_3_id, '')) as dim_department_id,
+            -- md5(coalesce(organization_level_4_id, '') || coalesce(4, '') ) as dim_location_ns_id,
             md5(coalesce(supervisor_co_id, '')) as supervisor_company_id,
             supervisor_id as manager_id,
             job_change_reason_code as employee_status_reason_code,

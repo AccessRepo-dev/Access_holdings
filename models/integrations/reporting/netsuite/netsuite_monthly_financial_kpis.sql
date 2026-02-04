@@ -62,6 +62,7 @@ select
     period_start_date,
     dim_department_id,
     dim_class_id,
+    null as dim_subsidiary_id,
     state_key,
     -1 * rev as revenue,
     -1 * (rev + cogs) as gross_profit,

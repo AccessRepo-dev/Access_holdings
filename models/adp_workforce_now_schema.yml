@@ -13,3 +13,4 @@ sources:
       - name: ORGANIZATIONAL_UNIT
       - name: GROUPS
       - name: CLASSIFICATION
+      - name: WORKER_TIME_CARD

@@ -163,6 +163,9 @@ models:
         adp_workforce_now:
             +schema: GOLD
             +materialized: table
+        ukg_ready:
+            +schema: GOLD
+            +materialized: table
      
       reporting:
         netsuite:
@@ -188,6 +191,9 @@ seeds:
       +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
       +schema: SILVER
     hubspot:
+      +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
+      +schema: SILVER
+    access:
       +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
       +schema: SILVER
 

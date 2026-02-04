@@ -5,22 +5,20 @@
     config(
         database=get_target_database(company),
         materialized="incremental",
-        alias="dim_hr_company",
+        alias="dim_department_mapping",
         incremental_strategy="merge",
-        unique_key="dim_company_id",
+        unique_key="department_id",
     )
 }}
 
 with
     source as (
         select
-            md5(coalesce(id, '')) as dim_company_id,
-            id as company_id,
-            company_code,
-            company_name,
+            cast(department_id as int) as dim_department_id,
+            trim(department_code) as department_code,
+            trim(department_name) as department_name,
             current_timestamp()::timestamp_ntz as gold_load_date
-
-        from {{ ref("ukg_pro_company") }}
+        from {{ ref("department_mapping") }}
 
     )
 select *
