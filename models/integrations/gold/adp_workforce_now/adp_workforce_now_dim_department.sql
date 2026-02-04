@@ -1,0 +1,32 @@
+{% set company = var("company", "zeus") | lower %}
+{{
+    config(
+        enabled=var("sourcesystem", "adp_workforce_now") | lower
+        == "adp_workforce_now"
+    )
+}}
+
+{{
+    config(
+        database=get_target_database(company),
+        materialized="incremental",
+        alias="dim_hr_department",
+        incremental_strategy="merge",
+        unique_key="dim_department_id",
+    )
+}}
+
+with
+    source as (
+        select
+            md5(coalesce(id, '')) as dim_department_id,
+            id as department_id,
+            coalesce(name_short_name, name_long_name) as department_name,
+            current_timestamp()::timestamp_ntz as gold_load_date
+
+        from {{ ref("adp_workforce_now_organizational_unit") }}
+        where lower(type_short_name) = 'department'
+
+    )
+select *
+from source

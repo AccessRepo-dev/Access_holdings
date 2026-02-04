@@ -1,0 +1,16 @@
+sources:
+  - name: zeus_adp_workforce_now_raw
+    database: zeus_raw
+    schema: adp_workforce_now
+    tables:
+      - name: WORKER
+      - name: WORKER_GROUP
+      - name: WORKER_CLASSIFICATION
+      - name: WORKER_REPORT_TO
+      - name: WORKER_HOME_ORGANIZATIONAL_UNIT
+      - name: WORKER_ASSIGNED_ORGANIZATIONAL_UNIT
+      - name: WORK_ASSIGNMENT_HISTORY
+      - name: ORGANIZATIONAL_UNIT
+      - name: GROUPS
+      - name: CLASSIFICATION
+      - name: WORKER_TIME_CARD
