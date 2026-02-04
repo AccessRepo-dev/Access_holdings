@@ -4,11 +4,10 @@ with source as (
 )
 
 select
-    TRIM("series_id") as SERIES_ID,
-    CAST("year" AS NUMBER) as YEAR,
-    TRIM("period") as PERIOD,
-    CAST(CONCAT(YEAR,SUBSTRING("period", 2, 2),'01') AS INT) AS DateKey,
-    "value" as VALUE,
-    TRIM("footnote_codes") as FOOTNOTE_CODES,
-    TRIM("series_title") as SERIES_TITLE
+    TRIM(series_id) as SERIES_ID,
+    CAST(year AS NUMBER) as YEAR,
+    TRIM(period) as PERIOD,
+    CAST(CONCAT(YEAR,SUBSTRING(period, 2, 2),'01') AS INT) AS DateKey,
+    COALESCE(TRY_TO_NUMBER(value), 0) as value ,
+    TRIM(series_title) as SERIES_TITLE
 from source
