@@ -1,21 +1,21 @@
-Class_Code,Class_Name
-PSP,Playfly Sports Properties
-PSP,Home Team Sports
-PGP,Playfly Global Partnerships
-TECH,Tech & Digital
-CORP,Corporate
-TECH,Sport & Story
-MEDIA,Digital Media
-CORP,PF 22 Cassatt
-PGP,Event Dynamic
-TECH,WMT Digital
-CORP,Vision Insights
-TECH,WMT
-MEDIA,Owned Media
-CORP,PF Eliminations
-PSP,Gameday
-TECH,Data Activation
-MEDIA,Playfly Media
-CORP,Aloompa
-CORP/TECH,Corporate - Tech
-CORP/MEDIA/PGP,Paragon Sports Marketing
+Finance_ID,Finance_Class_Name,HR_Organization_Name,HR_ID
+209,Home Team Sports,Sports Properties,PSP
+441,WMT,Tech,TECH
+213,Tech & Digital,Tech,TECH
+431,PF 22 Cassatt,Corporate,CORP
+435,WMT Digital,Tech,TECH
+440,Vision Insights,Corporate,CORP
+432,Event Dynamic,Global Partnerships,PGP
+601,PF Eliminations,Corporate,CORP
+614,Gameday,Sports Properties,PSP
+452,Digital Media,Media,MEDIA
+453,Sport & Story,Tech,TECH
+743,Corporate - Tech,Corporate,CORP
+758,Paragon Sports Marketing,Corporate,CORP
+626,Data Activation,Tech,TECH
+458,Owned Media,Media,MEDIA
+690,Playfly Media,Media,MEDIA
+214,Corporate,Corporate,CORP
+208,Playfly Sports Properties,Sports Properties,PSP
+704,Aloompa,Corporate,CORP
+697,Playfly Global Partnerships,Global Partnerships,PGP
