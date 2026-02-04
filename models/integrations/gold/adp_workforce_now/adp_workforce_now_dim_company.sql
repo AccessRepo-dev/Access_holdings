@@ -1,5 +1,10 @@
-{% set company = var("company", "playfly") | lower %}
-{{ config(enabled=var("sourcesystem", "ukg_pro") | lower == "ukg_pro") }}
+{% set company = var("company", "zeus") | lower %}
+{{
+    config(
+        enabled=var("sourcesystem", "adp_workforce_now") | lower
+        == "adp_workforce_now"
+    )
+}}
 
 {{
     config(
@@ -16,11 +21,12 @@ with
         select
             md5(coalesce(id, '')) as dim_company_id,
             id as company_id,
-            company_code,
-            company_name,
+            null as company_code,
+            coalesce(name_short_name, name_long_name) as company_name,
             current_timestamp()::timestamp_ntz as gold_load_date
 
-        from {{ ref("ukg_pro_company") }}
+        from {{ ref("adp_workforce_now_organizational_unit") }}
+        where lower(type_short_name) = 'business unit'
 
     )
 select *

@@ -1,0 +1,20 @@
+Department_ID,Department_Code,Department_Name
+19,EXEC,Executive
+20,GENFIN,Finance
+21,CSVCS,Creative Services
+22,LEGAL,Legal / Risk Mgmt
+23,HR,Human Resources
+25,MKTNG,Marketing / PR
+26,BD,Business Development
+27,GA,G&A
+28,SALES,Sales
+29,FMGMT,Field Management
+30,OPS,Operations
+31,RSRCH,Research
+33,SLSSUP,Sales Support
+34,PROD,Production
+35,PRTACT,Partnership Activation
+36,PNP,Pricing & Planning
+38,ESVCS,Event Services
+39,STRAT,Strategy/Corp Development
+40,SALELO,Sales - Local
