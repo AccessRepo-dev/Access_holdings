@@ -32,8 +32,8 @@ with
     cleaned as (
         select
             trim(coalesce(id, '')) as id,
-            trim(coalesce(name_short_name, '')) as name_short_name,
-            trim(coalesce(name_long_name, '')) as name_long_name,
+            trim(name_short_name) as name_short_name,
+            trim(name_long_name) as name_long_name,
             trim(coalesce(name_subdivision_type, '')) as name_subdivision_type,
             cast(name_effective_date as date) as name_effective_date,
             trim(coalesce(type_short_name, '')) as type_short_name,

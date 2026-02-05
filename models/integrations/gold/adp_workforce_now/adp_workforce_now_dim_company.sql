@@ -19,10 +19,9 @@
 with
     source as (
         select
-            md5(coalesce(id, '')) as dim_company_id,
-            id as company_id,
+            id as dim_company_id,
             null as company_code,
-            coalesce(name_short_name, name_long_name) as company_name,
+            coalesce(name_short_name, name_long_name, 'Unknown') as company_name,
             current_timestamp()::timestamp_ntz as gold_load_date
 
         from {{ ref("adp_workforce_now_organizational_unit") }}
