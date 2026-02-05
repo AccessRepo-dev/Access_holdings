@@ -5,19 +5,19 @@
     config(
         database=get_target_database(company),
         materialized="incremental",
-        alias="dim_job",
+        alias="dim_job_group",
         incremental_strategy="merge",
-        unique_key="job_key",
+        unique_key="dim_job_group_id",
     )
 }}
 
 with
     source as (
-        select
-            md5(coalesce(id, '')) as dim_job_id,
-            id as job_id,
-            title as job_title,
-            -- job_family_code as job_group,
+        select distinct
+            md5(coalesce(job_family_code, '')) as dim_job_group_id,
+            job_family_code as job_group_id,
+            job_family_code as job_group,
+            null as job_group_type,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("ukg_pro_job") }}
         where _fivetran_deleted = false
