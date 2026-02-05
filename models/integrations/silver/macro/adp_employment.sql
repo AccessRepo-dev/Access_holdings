@@ -9,6 +9,6 @@ with source as (
         TRIM(timestep)       as TIMESTEP,
         TRIM(category)       as CATEGORY,
         TRIM(agg_RIS)        as AGG_RIS,
-        "NER"            as NER,
-        "NER_SA"         as NER_SA
+        cast(NER  as float)          as NER,
+        cast(NER_SA as float)        as NER_SA
     from source

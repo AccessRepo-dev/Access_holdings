@@ -104,12 +104,15 @@ with
                 coalesce(home_work_location_address_city_name, '')
                 || coalesce(home_work_location_address_country_code, '')
             ) as dim_location_id,
+            wc.company_id as dim_company_id,
+            md5(coalesce(home_work_location_address_city_name,'') || coalesce(home_work_location_address_country_code, '') ) as dim_location_id,
             md5(coalesce(job_title, job_short_name, job_long_name)) as dim_job_id,
             null as dim_organization_level_id,
             null as dim_parent_class_id,
             null as dim_class_id,
             md5(coalesce(wd.department_id, '')) as dim_department_id,
             md5(coalesce(wcl.selected_classification, '')) as dim_job_group_id,
+            wd.department_id as dim_department_id,
             null as supervisor_company_id,
             rpt.report_to_worker_id as manager_id,
             assignment_status_reason as employee_status_reason_code,

@@ -1,21 +1,419 @@
-Class_Code,Class_Name
-PSP,Playfly Sports Properties
-PSP,Home Team Sports
-PGP,Playfly Global Partnerships
-TECH,Tech & Digital
-CORP,Corporate
-TECH,Sport & Story
-MEDIA,Digital Media
-CORP,PF 22 Cassatt
-PGP,Event Dynamic
-TECH,WMT Digital
-CORP,Vision Insights
-TECH,WMT
-MEDIA,Owned Media
-CORP,PF Eliminations
-PSP,Gameday
-TECH,Data Activation
-MEDIA,Playfly Media
-CORP,Aloompa
-CORP/TECH,Corporate - Tech
-CORP/MEDIA/PGP,Paragon Sports Marketing
+DIM_CLASS_ID,CLASS_NAME,PARENT_CLASS_NAME,ORGANIZATION_LEVEL_NAME,DIM_ORGANIZATION_ID
+779,Sport & Story : Production : Fairfield WBB (Fairfield University),Sport & Story,Tech,TECH
+781,Playfly Global Partnerships : Sales : Playfly Access : Buffalo Sabres,Playfly Global Partnerships,Global Partnerships,PGP
+782,Playfly Sports Properties : Playfly Max : University of Virginia,Playfly Sports Properties,Sports Properties,PSP
+780,Playfly Global Partnerships : Sales : Playfly Access : Arizona Diamondbacks,Playfly Global Partnerships,Global Partnerships,PGP
+778,Sport & Story : Newsletter : Tiger Exclusive (Auburn University),Sport & Story,Tech,TECH
+774,Sport & Story : Newsletter : Wazzu Morning Brew (Washington State University),Sport & Story,Tech,TECH
+497,Digital Media : RSN : MSG - Digital,Digital Media,Media,MEDIA
+486,Digital Media : RSN : Bally Sports South - Digital,Digital Media,Media,MEDIA
+587,Sport & Story : Podcast : Pokes Pod (Oklahoma State),Sport & Story,Tech,TECH
+502,Digital Media : RSN : NBC Sports Chicago - Digital,Digital Media,Media,MEDIA
+603,Sport & Story : Newsletter : Pirates Brew (ECU),Sport & Story,Tech,TECH
+598,Digital Media : Non-RSN : Amazon - Digital,Digital Media,Media,MEDIA
+433,Playfly Global Partnerships : Sales : Playfly Esports : Non-League,Playfly Global Partnerships,Global Partnerships,PGP
+422,Sport & Story : Podcast : The Arkansas Razorback Daily (U of Arkansas),Sport & Story,Tech,TECH
+582,Playfly Sports Properties : College : Huskers Athletic Partners,Playfly Sports Properties,Sports Properties,PSP
+438,Playfly Sports Properties : College : ECU Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+241,Playfly Sports Properties : College : MSU Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+310,Home Team Sports : Non-RSN : Portland Blazers,Home Team Sports,Sports Properties,PSP
+278,Home Team Sports : RSN : MSG Plus,Home Team Sports,Sports Properties,PSP
+635,Home Team Sports : RSN : ION,Home Team Sports,Sports Properties,PSP
+518,Digital Media : Non-RSN : NY Mets - Digital,Digital Media,Media,MEDIA
+742,Sport & Story : Newsletter : One Troy Today (Troy),Sport & Story,Tech,TECH
+710,Playfly Global Partnerships : Sales : Playfly Access : Arizona Coyotes,Playfly Global Partnerships,Global Partnerships,PGP
+726,Sport & Story : Newsletter : Good in the Game (The National Football Foundation),Sport & Story,Tech,TECH
+694,Home Team Sports : RSN : Gray Media Group-Atlanta Hawks,Home Team Sports,Sports Properties,PSP
+662,Home Team Sports : RSN : Scripps Network Vegas Golden Knights,Home Team Sports,Sports Properties,PSP
+678,Digital Media : RSN : Scripps Network Vegas Golden Knights - Digital,Digital Media,Media,MEDIA
+646,Playfly Global Partnerships : Sales : Playfly Access : San Diego Padres,Playfly Global Partnerships,Global Partnerships,PGP
+209,Home Team Sports,Home Team Sports,Sports Properties,PSP
+494,Digital Media : RSN : HTS Admin - Digital,Digital Media,Media,MEDIA
+254,Playfly Sports Properties : Other MMR : Las Vegas Invitational,Playfly Sports Properties,Sports Properties,PSP
+595,Playfly Global Partnerships : Sales : Playfly Access : Dallas Mavericks,Playfly Global Partnerships,Global Partnerships,PGP
+675,Digital Media : RSN : Nexstar Media Washington DC - Digital,Digital Media,Media,MEDIA
+297,Home Team Sports : RSN : Bally Sports Wisconsin,Home Team Sports,Sports Properties,PSP
+734,Sport & Story : Production : First Point Volleyball Foundation,Sport & Story,Tech,TECH
+739,Playfly Global Partnerships : Sales : Playfly Access : DC United,Playfly Global Partnerships,Global Partnerships,PGP
+489,Digital Media : RSN : Bally Sports Southwest - Digital,Digital Media,Media,MEDIA
+590,Sport & Story : Podcast : Gamecock Talk (University of South Carolina),Sport & Story,Tech,TECH
+446,Sport & Story : Subscription : Penn State (Nittany Lions+),Sport & Story,Tech,TECH
+606,Owned Media : JohnWallstreet,Owned Media,Media,MEDIA
+441,WMT,WMT,Tech,TECH
+430,Tech & Digital : T&D Overhead,Tech & Digital,Tech,TECH
+718,Playfly Global Partnerships : Sales : Playfly Access : Kansas City Royals,Playfly Global Partnerships,Global Partnerships,PGP
+686,Playfly Global Partnerships : Sales : Premier Partnerships : Toyota Music Factory,Playfly Global Partnerships,Global Partnerships,PGP
+611,Sport & Story : Newsletter : Shocker Brew (Wichita State),Sport & Story,Tech,TECH
+478,Digital Media : RSN : Bally Sports Detroit - Digital,Digital Media,Media,MEDIA
+286,Home Team Sports : RSN : Bally Sports Detroit,Home Team Sports,Sports Properties,PSP
+510,Digital Media : RSN : Spectrum Reach Sportsnet LA - Digital,Digital Media,Media,MEDIA
+750,Sport & Story : Production : Coach Cal,Sport & Story,Tech,TECH
+233,Playfly Sports Properties : College : ORU Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+302,Home Team Sports : Non-RSN : Buffalo Sabres,Home Team Sports,Sports Properties,PSP
+249,Playfly Sports Properties : High School : NMAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+670,Home Team Sports : RSN : Scripps Network Arizona Coyotes,Home Team Sports,Sports Properties,PSP
+771,Playfly Sports Properties : Playfly Max : Washington State University,Playfly Sports Properties,Sports Properties,PSP
+217,Playfly Sports Properties : Other MMR,Playfly Sports Properties,Sports Properties,PSP
+654,Sport & Story : Podcast : CockTale Hour (University of South Carolina),Sport & Story,Tech,TECH
+594,Playfly Global Partnerships : Sales : Playfly Access : St. Louis Cardinals,Playfly Global Partnerships,Global Partnerships,PGP
+775,Sport & Story : Podcast : Washington State Podcast (Washington State University),Sport & Story,Tech,TECH
+253,Playfly Sports Properties : Other MMR : USOPC,Playfly Sports Properties,Sports Properties,PSP
+490,Digital Media : RSN : Bally Sports SUN Sports - Digital,Digital Media,Media,MEDIA
+498,Digital Media : RSN : MSG Plus - Digital,Digital Media,Media,MEDIA
+442,Sport & Story : Newsletter : Nittany Lion Brew (Penn State),Sport & Story,Tech,TECH
+602,Sport & Story : Newsletter : Space U Brew (UCF),Sport & Story,Tech,TECH
+426,Digital Media : Non-RSN : Bluewire Podcast - Digital,Digital Media,Media,MEDIA
+586,Sport & Story : Podcast : The Old Pokes Show,Sport & Story,Tech,TECH
+434,Playfly Global Partnerships : Sales : Playfly Esports : College Non-League,Playfly Global Partnerships,Global Partnerships,PGP
+450,Sport & Story : Subscription : WVU (Country Roads+),Sport & Story,Tech,TECH
+482,Digital Media : RSN : Bally Sports North - Digital,Digital Media,Media,MEDIA
+506,Digital Media : RSN : NESN - Digital,Digital Media,Media,MEDIA
+258,Home Team Sports : RSN : AT&T SportsNet Rocky Mountain,Home Team Sports,Sports Properties,PSP
+229,Playfly Sports Properties : College : Shocker Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+237,Playfly Sports Properties : College : Georgetown Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+245,Playfly Sports Properties : High School : CIF Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+213,Tech & Digital,Tech & Digital,Tech,TECH
+221,Playfly Global Partnerships : Sales : Playfly Esports : Curriculum,Playfly Global Partnerships,Global Partnerships,PGP
+773,Sport & Story : Newsletter : Butler Brew (Butler University),Sport & Story,Tech,TECH
+673,Home Team Sports : RSN : Nexstar Media Tampa,Home Team Sports,Sports Properties,PSP
+496,Digital Media : RSN : MASN - Digital,Digital Media,Media,MEDIA
+492,Digital Media : RSN : Bally Sports Wisconsin - Digital,Digital Media,Media,MEDIA
+300,Home Team Sports : RSN : Spectrum Reach SportsNet,Home Team Sports,Sports Properties,PSP
+737,Sport & Story : Production : Army Documentary,Sport & Story,Tech,TECH
+427,Playfly Sports Properties : College : USC Sports Properties : Founder's Suite,Playfly Sports Properties,Sports Properties,PSP
+604,Playfly Sports Properties : Other MMR : Poker Go,Playfly Sports Properties,Sports Properties,PSP
+592,Sport & Story : Podcast : OSU MAX Podcast Network (Oklahoma State),Sport & Story,Tech,TECH
+588,Sport & Story : Production,Sport & Story,Tech,TECH
+443,Sport & Story : Newsletter : LSU Brew,Sport & Story,Tech,TECH
+439,Playfly Sports Properties : College : SJSU Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+508,Digital Media : RSN : SNY - Digital,Digital Media,Media,MEDIA
+476,Digital Media : RSN : AT&T SportsNet Southwest - Digital,Digital Media,Media,MEDIA
+480,Digital Media : RSN : Bally Sports Great Lakes - Digital,Digital Media,Media,MEDIA
+256,Playfly Sports Properties : College : USC Sports Properties : LA Coliseum,Playfly Sports Properties,Sports Properties,PSP
+524,Digital Media : Non-RSN : Utah Jazz - Digital,Digital Media,Media,MEDIA
+304,Home Team Sports : Non-RSN : Memphis Grizzlies,Home Team Sports,Sports Properties,PSP
+288,Home Team Sports : RSN : Bally Sports Midwest,Home Team Sports,Sports Properties,PSP
+640,Home Team Sports : RSN : Gray Media Las Vegas Aces,Home Team Sports,Sports Properties,PSP
+769,Playfly Sports Properties : High School : OFSAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+733,Sport & Story : Newsletter : Olympic Brew (Stanford),Sport & Story,Tech,TECH
+296,Home Team Sports : RSN : Bally Sports West,Home Team Sports,Sports Properties,PSP
+729,Playfly Sports Properties : Playfly Max,Playfly Sports Properties,Sports Properties,PSP
+292,Home Team Sports : RSN : Bally Sports South,Home Team Sports,Sports Properties,PSP
+500,Digital Media : RSN : NBC Sports Boston - Digital,Digital Media,Media,MEDIA
+600,Sport & Story : Podcast : That's the Tea (U of Arkansas),Sport & Story,Tech,TECH
+488,Digital Media : RSN : Bally Sports Southern Cal - Digital,Digital Media,Media,MEDIA
+484,Digital Media : RSN : Bally Sports Oklahoma City - Digital,Digital Media,Media,MEDIA
+431,PF 22 Cassatt,PF 22 Cassatt,Corporate,CORP
+596,Playfly Sports Properties : College : Baylor Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+447,Playfly Sports Properties : College : GMU Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+584,Playfly Sports Properties : High School : BC School Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+580,Sport & Story : Newsletter : Terrapins Brew (Maryland),Sport & Story,Tech,TECH
+435,WMT Digital,WMT Digital,Tech,TECH
+520,Digital Media : Non-RSN : Pac 12 Network - Digital,Digital Media,Media,MEDIA
+419,Sport & Story : Podcast : The Mighty Oregon (U of Oregon),Sport & Story,Tech,TECH
+637,Sport & Story : Newsletter : Big Blue Brew (Univ of Kentucky),Sport & Story,Tech,TECH
+312,Home Team Sports : Non-RSN : Utah Jazz,Home Team Sports,Sports Properties,PSP
+308,Home Team Sports : Non-RSN : OK Thunder,Home Team Sports,Sports Properties,PSP
+516,Digital Media : Non-RSN : Minnesota Wild - Digital,Digital Media,Media,MEDIA
+504,Digital Media : RSN : NBC Sports Philadelphia - Digital,Digital Media,Media,MEDIA
+280,Home Team Sports : RSN : Marquee Sports Network,Home Team Sports,Sports Properties,PSP
+276,Home Team Sports : RSN : MASN,Home Team Sports,Sports Properties,PSP
+255,Playfly Sports Properties : College : Big East Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+428,Playfly Sports Properties : College : USC Sports Properties : Harbor Sign,Playfly Sports Properties,Sports Properties,PSP
+424,Sport & Story : Newsletter : The Arkansas Brew (U of Arkansas),Sport & Story,Tech,TECH
+444,Sport & Story : Newsletter : The Cowboy Brew (Oklahoma State),Sport & Story,Tech,TECH
+440,Vision Insights,Vision Insights,Corporate,CORP
+448,Playfly Sports Properties : High School : UHSAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+432,Event Dynamic,Event Dynamic,Global Partnerships,PGP
+436,Playfly Global Partnerships : Sales : Premier Partnerships,Playfly Global Partnerships,Global Partnerships,PGP
+211,Playfly Global Partnerships : Sales : Playfly Esports,Playfly Global Partnerships,Global Partnerships,PGP
+239,Playfly Sports Properties : College : Auburn Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+247,Playfly Sports Properties : High School : MHSAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+251,Playfly Sports Properties : High School : WIAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+243,Playfly Sports Properties : College : University of Florida,Playfly Sports Properties,Sports Properties,PSP
+227,Playfly Sports Properties : College : LSU Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+235,Playfly Sports Properties : College : Troy Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+231,Playfly Sports Properties : College : Oakland Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+219,Playfly Global Partnerships : Sales : Playfly Access,Playfly Global Partnerships,Global Partnerships,PGP
+215,Playfly Sports Properties : College,Playfly Sports Properties,Sports Properties,PSP
+223,Sport & Story : Subscription,Sport & Story,Tech,TECH
+593,Playfly Global Partnerships : Sales : Playfly Access : NY Islanders,Playfly Global Partnerships,Global Partnerships,PGP
+672,Home Team Sports : RSN : Nexstar Media Washington DC,Home Team Sports,Sports Properties,PSP
+295,Home Team Sports : RSN : Bally Sports SUN Sports,Home Team Sports,Sports Properties,PSP
+495,Digital Media : RSN : Marquee Sports Network - Digital,Digital Media,Media,MEDIA
+491,Digital Media : RSN : Bally Sports West - Digital,Digital Media,Media,MEDIA
+736,Playfly Sports Properties : High School : WHSAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+299,Home Team Sports : RSN : Bally Sports Great Lakes,Home Team Sports,Sports Properties,PSP
+291,Home Team Sports : RSN : Bally Sports San Diego,Home Team Sports,Sports Properties,PSP
+601,PF Eliminations,PF Eliminations,Corporate,CORP
+499,Digital Media : RSN : NBC Sports Bay Area - Digital,Digital Media,Media,MEDIA
+487,Digital Media : RSN : Bally Sports Southeast - Digital,Digital Media,Media,MEDIA
+483,Digital Media : RSN : Bally Sports Ohio - Digital,Digital Media,Media,MEDIA
+605,Playfly Global Partnerships : Consulting : Experiential & Hospitality,Playfly Global Partnerships,Global Partnerships,PGP
+597,Playfly Sports Properties : College : UTSA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+585,Playfly Global Partnerships : Sales : Playfly Access : Anaheim Ducks,Playfly Global Partnerships,Global Partnerships,PGP
+589,Sport & Story : Podcast : The Dog Daily (Mississippi State),Sport & Story,Tech,TECH
+581,Sport & Story : Subscription : Auburn University (War Eagle+),Sport & Story,Tech,TECH
+609,Sport & Story : Newsletter : Grizzly Brew (Oakland),Sport & Story,Tech,TECH
+688,Playfly Global Partnerships : Sales : Playfly Access : Philadelphia Flyers,Playfly Global Partnerships,Global Partnerships,PGP
+716,Playfly Global Partnerships : Sales : Playfly Access : Minnesota Twins,Playfly Global Partnerships,Global Partnerships,PGP
+720,Playfly Global Partnerships : Sales,Playfly Global Partnerships,Global Partnerships,PGP
+752,Playfly Sports Properties : College : Butler Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+748,Sport & Story : Production : Country Roads Trust,Sport & Story,Tech,TECH
+744,Sport & Story : Production : MSU Coaches Show,Sport & Story,Tech,TECH
+740,Gameday : Aspire : Premium Hospitality,Gameday,Sports Properties,PSP
+724,Sport & Story : Newsletter : Inside HokieSports (Virginia Tech),Sport & Story,Tech,TECH
+680,Playfly Global Partnerships : Sales : Playfly Access : St. Louis Blues,Playfly Global Partnerships,Global Partnerships,PGP
+712,Playfly Global Partnerships : Sales : Playfly Access : Cincinnati Reds,Playfly Global Partnerships,Global Partnerships,PGP
+708,Playfly Global Partnerships : Sales : Playfly Access : Philadelphia Phillies,Playfly Global Partnerships,Global Partnerships,PGP
+696,Playfly Global Partnerships : Sales : Playfly Access : Chicago Blackhawks,Playfly Global Partnerships,Global Partnerships,PGP
+692,Playfly Global Partnerships : Sales : Playfly Access : Michigan State Spartans,Playfly Global Partnerships,Global Partnerships,PGP
+648,Playfly Global Partnerships : Sales : Playfly Access : Seattle Mariners,Playfly Global Partnerships,Global Partnerships,PGP
+684,Sport & Story : Podcast : Sic 'Em Podcast (Baylor Univ),Sport & Story,Tech,TECH
+676,Digital Media : RSN : Nexstar Media Tampa - Digital,Digital Media,Media,MEDIA
+668,Sport & Story : Newsletter : Good Morning Bronco Nation (Boise State University),Sport & Story,Tech,TECH
+664,Sport & Story : Podcast : Flipping Out with Bridget Sloan,Sport & Story,Tech,TECH
+660,Playfly Global Partnerships : Sales : Playfly Access : Detroit Tigers,Playfly Global Partnerships,Global Partnerships,PGP
+656,Playfly Global Partnerships : Sales : Playfly Access : Big 10,Playfly Global Partnerships,Global Partnerships,PGP
+652,Playfly Sports Properties : High School : ASAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+465,Playfly Global Partnerships : Sales : Playfly Access : Memphis Grizzlies,Playfly Global Partnerships,Global Partnerships,PGP
+763,Playfly Global Partnerships : Sales : Playfly Access : Phoenix Suns,Playfly Global Partnerships,Global Partnerships,PGP
+625,Playfly Global Partnerships : Sales : Playfly Access : Black Student Athlete Summit,Playfly Global Partnerships,Global Partnerships,PGP
+624,Sport & Story : Podcast : This is Sparta (Michigan State),Sport & Story,Tech,TECH
+513,Digital Media : Non-RSN : Buffalo Sabres - Digital,Digital Media,Media,MEDIA
+512,Digital Media : Non-RSN : Big 10 - Digital,Digital Media,Media,MEDIA
+614,Gameday,Gameday,Sports Properties,PSP
+470,Playfly Global Partnerships : Sales : Playfly Access : New Orleans Saints,Playfly Global Partnerships,Global Partnerships,PGP
+619,Sport & Story : Newsletter : Gator Brew (U of Florida),Sport & Story,Tech,TECH
+475,Digital Media : RSN : AT&T SportsNet Rocky Mountain - Digital,Digital Media,Media,MEDIA
+454,Sport & Story : Subscription : University of South Carolina (Gamecocks+),Sport & Story,Tech,TECH
+460,Playfly Sports Properties : Other MMR : USSSA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+459,Playfly Sports Properties : College : UCF Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+747,Sport & Story : Production : Coretta Scott King Vignette Series,Sport & Story,Tech,TECH
+449,Playfly Sports Properties : High School : MHSA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+608,Sport & Story : Newsletter : Hoos Brew (UVA),Sport & Story,Tech,TECH
+523,Digital Media : Non-RSN : San Antonio Spurs - Digital,Digital Media,Media,MEDIA
+481,Digital Media : RSN : Bally Sports Midwest - Digital,Digital Media,Media,MEDIA
+731,Playfly Sports Properties : Playfly Max : Louisiana State University,Playfly Sports Properties,Sports Properties,PSP
+753,Playfly Sports Properties : High School : Mater Dei Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+667,Sport & Story : Production : Baylor (Baylor University),Sport & Story,Tech,TECH
+305,Home Team Sports : Non-RSN : Minnesota Wild,Home Team Sports,Sports Properties,PSP
+315,Playfly Global Partnerships : Sales : Playfly Esports : High School League,Playfly Global Partnerships,Global Partnerships,PGP
+641,Home Team Sports : Non-RSN : Seattle Storm,Home Team Sports,Sports Properties,PSP
+657,Playfly Global Partnerships : Sales : Playfly Access : Dallas Cowboys,Playfly Global Partnerships,Global Partnerships,PGP
+651,Playfly Sports Properties : College : Virginia Tech Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+644,Playfly Global Partnerships : Sales : Playfly Access : Indiana Fever,Playfly Global Partnerships,Global Partnerships,PGP
+622,Sport & Story : Newsletter : Patriot Brew (George Mason),Sport & Story,Tech,TECH
+627,Sport & Story : Newsletter : Spartan Brew (San Jose State University),Sport & Story,Tech,TECH
+766,Playfly Sports Properties : College : Texas A&M Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+760,Sport & Story : Production : FanDuel,Sport & Story,Tech,TECH
+616,Gameday : Aspire : FRMC,Gameday,Sports Properties,PSP
+755,Sport & Story : Production : Big East (Big East Conference),Sport & Story,Tech,TECH
+457,Sport & Story : Subscription : Mississippi State (Hail State+),Sport & Story,Tech,TECH
+515,Digital Media : Non-RSN : Memphis Grizzlies - Digital,Digital Media,Media,MEDIA
+633,Playfly Global Partnerships : Consulting : Property Consulting,Playfly Global Partnerships,Global Partnerships,PGP
+473,Digital Media : RSN : Altitude - Digital,Digital Media,Media,MEDIA
+632,Sport & Story : Subscription : Baylor University (Baylor+),Sport & Story,Tech,TECH
+617,Gameday : Aspire : SAM,Gameday,Sports Properties,PSP
+468,Playfly Global Partnerships : Sales : Playfly Access : Tampa Bay Rays,Playfly Global Partnerships,Global Partnerships,PGP
+467,Playfly Global Partnerships : Sales : Playfly Access : Milwaukee Brewers,Playfly Global Partnerships,Global Partnerships,PGP
+452,Digital Media,Digital Media,Media,MEDIA
+462,Playfly Global Partnerships : Sales : Playfly Access : Oklahoma City Thunder,Playfly Global Partnerships,Global Partnerships,PGP
+451,Playfly Sports Properties : High School : MSHSL Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+659,Playfly Global Partnerships : Sales : Playfly Access : Carolina Panthers,Playfly Global Partnerships,Global Partnerships,PGP
+638,Home Team Sports : RSN : MLB Network San Diego Padres,Home Team Sports,Sports Properties,PSP
+521,Digital Media : Non-RSN : Phoenix Suns - Digital,Digital Media,Media,MEDIA
+313,Home Team Sports : RSN : HTS Admin,Home Team Sports,Sports Properties,PSP
+307,Home Team Sports : Non-RSN : NY Mets,Home Team Sports,Sports Properties,PSP
+745,Sport & Story : Production : Wisconsin-Green Bay,Sport & Story,Tech,TECH
+761,Playfly Sports Properties : College : Washington State Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+776,Playfly Sports Properties : Playfly Max : Michigan State University,Playfly Sports Properties,Sports Properties,PSP
+665,Sport & Story : Production : Inside Villanova Basketball (Villanova University),Sport & Story,Tech,TECH
+643,Playfly Sports Properties : College : Penn State Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+649,Playfly Global Partnerships : Sales : Playfly Access : Atlanta Braves,Playfly Global Partnerships,Global Partnerships,PGP
+464,Playfly Global Partnerships : Sales : Playfly Access : Houston Astros,Playfly Global Partnerships,Global Partnerships,PGP
+623,Sport & Story : Newsletter : Playfly Brew,Sport & Story,Tech,TECH
+732,Playfly Sports Properties : Playfly Max : Penn State University,Playfly Sports Properties,Sports Properties,PSP
+777,Playfly Sports Properties : Playfly Max : Texas A&M University,Playfly Sports Properties,Sports Properties,PSP
+762,Playfly Sports Properties : Playfly Max : Auburn University,Playfly Sports Properties,Sports Properties,PSP
+767,Sport & Story : Production : PSU Pre-Game Show,Sport & Story,Tech,TECH
+631,Vision Insights : Media,Vision Insights,Corporate,CORP
+754,Sport & Story : Production : PSU Stadium (Penn State),Sport & Story,Tech,TECH
+472,Playfly Global Partnerships : Sales : Playfly Access : San Antonio Spurs,Playfly Global Partnerships,Global Partnerships,PGP
+514,Digital Media : Non-RSN : Carolina Hurricanes - Digital,Digital Media,Media,MEDIA
+615,Gameday : Aspire,Gameday,Sports Properties,PSP
+469,Playfly Global Partnerships : Sales : Playfly Access : New Orleans Pelicans,Playfly Global Partnerships,Global Partnerships,PGP
+628,Sport & Story : Newsletter : UTSA,Sport & Story,Tech,TECH
+620,Sport & Story : Newsletter : Monarch Brew (Old Dominion),Sport & Story,Tech,TECH
+453,Sport & Story,Sport & Story,Tech,TECH
+612,Playfly Global Partnerships : Sales : Playfly Access : Pittsburgh Pirates,Playfly Global Partnerships,Global Partnerships,PGP
+461,Playfly Global Partnerships : Sales : Playfly Access : Dallas Stars (DSE Hockey Club LP),Playfly Global Partnerships,Global Partnerships,PGP
+477,Digital Media : RSN : Bally Sports Arizona - Digital,Digital Media,Media,MEDIA
+636,Playfly Global Partnerships : Consulting : Brand Consulting,Playfly Global Partnerships,Global Partnerships,PGP
+519,Digital Media : Non-RSN : OK Thunder - Digital,Digital Media,Media,MEDIA
+309,Home Team Sports : Non-RSN : Phoenix Suns,Home Team Sports,Sports Properties,PSP
+751,Playfly Sports Properties : College : Appalachian State Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+743,Corporate - Tech,Corporate - Tech,Corporate,CORP
+669,Home Team Sports : RSN : SportsNet Pittsburgh,Home Team Sports,Sports Properties,PSP
+661,Playfly Global Partnerships : Sales : Playfly Access : UCF Knights,Playfly Global Partnerships,Global Partnerships,PGP
+758,Paragon Sports Marketing,Paragon Sports Marketing,Corporate,CORP
+759,Playfly Global Partnerships : Consulting : Brand Consulting : Paragon,Playfly Global Partnerships,Global Partnerships,PGP
+645,Playfly Global Partnerships : Sales : Playfly Access : Los Angeles Angels,Playfly Global Partnerships,Global Partnerships,PGP
+653,Sport & Story : Newsletter : Spiders Brew (Univ of Richmond),Sport & Story,Tech,TECH
+463,Playfly Global Partnerships : Sales : Playfly Access : Atlanta Hawks,Playfly Global Partnerships,Global Partnerships,PGP
+466,Playfly Global Partnerships : Sales : Playfly Access : LSU Tigers,Playfly Global Partnerships,Global Partnerships,PGP
+626,Data Activation,Data Activation,Tech,TECH
+621,Sport & Story : Newsletter : Spartan Brew (Michigan State),Sport & Story,Tech,TECH
+765,Playfly Sports Properties : High School : Manitoba Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+764,Playfly Global Partnerships : Sales : Playfly Access : Miami Marlins,Playfly Global Partnerships,Global Partnerships,PGP
+757,Sport & Story : Production : Highmark Health,Sport & Story,Tech,TECH
+756,Playfly Global Partnerships : Sales : Playfly Access : Nashville Predators,Playfly Global Partnerships,Global Partnerships,PGP
+471,Playfly Global Partnerships : Sales : Playfly Access : Indiana Pacers,Playfly Global Partnerships,Global Partnerships,PGP
+458,Owned Media,Owned Media,Media,MEDIA
+629,Sport & Story : Newsletter : Paradise Brew (Florida Atlantic University),Sport & Story,Tech,TECH
+618,Gameday : Aspire : Training,Gameday,Sports Properties,PSP
+474,Digital Media : RSN : AT&T SportsNet Pittsburgh - Digital,Digital Media,Media,MEDIA
+613,Playfly Global Partnerships : Sales : Playfly Access : Washington Nationals,Playfly Global Partnerships,Global Partnerships,PGP
+455,Home Team Sports : Non-RSN,Home Team Sports,Sports Properties,PSP
+479,Digital Media : RSN : Bally Sports Florida - Digital,Digital Media,Media,MEDIA
+311,Home Team Sports : Non-RSN : San Antonio Spurs,Home Team Sports,Sports Properties,PSP
+610,Sport & Story : Newsletter : Trojan Brew (USC),Sport & Story,Tech,TECH
+517,Digital Media : Non-RSN : New Orleans Pelicans - Digital,Digital Media,Media,MEDIA
+634,Playfly Global Partnerships : Sales : Premier Partnerships : Host City Services,Playfly Global Partnerships,Global Partnerships,PGP
+749,Playfly Global Partnerships : Sales : Playfly Access : Los Angeles Clippers,Playfly Global Partnerships,Global Partnerships,PGP
+741,Sport & Story : Podcast : Tailgate Talks (University of South Carolina),Sport & Story,Tech,TECH
+303,Home Team Sports : Non-RSN : Carolina Hurricanes,Home Team Sports,Sports Properties,PSP
+493,Digital Media : RSN : COX Media/Southwest - Digital,Digital Media,Media,MEDIA
+655,Owned Media : Sportsfeed,Owned Media,Media,MEDIA
+674,Digital Media : RSN : Scripps Network Arizona Coyotes - Digital,Digital Media,Media,MEDIA
+663,Home Team Sports : RSN : Monumental Sports Network,Home Team Sports,Sports Properties,PSP
+298,Home Team Sports : RSN : Bally Sports Southern Cal,Home Team Sports,Sports Properties,PSP
+647,Playfly Global Partnerships : Sales : Playfly Access : Oakland Athletics,Playfly Global Partnerships,Global Partnerships,PGP
+301,Home Team Sports : RSN : Spectrum Reach Sportsnet LA,Home Team Sports,Sports Properties,PSP
+705,Sport & Story : Podcast : WarEagle+ Podcast Network (Auburn University),Sport & Story,Tech,TECH
+293,Home Team Sports : RSN : Bally Sports Southeast,Home Team Sports,Sports Properties,PSP
+738,Playfly Sports Properties : College : Penn State Sports Properties : Alumni Association,Playfly Sports Properties,Sports Properties,PSP
+727,Sport & Story : Podcast : Good in the Game (The National Football Foundation),Sport & Story,Tech,TECH
+730,Playfly Sports Properties : Playfly Max : Baylor University,Playfly Sports Properties,Sports Properties,PSP
+735,Sport & Story : Production : UMES Documentary (First Point Volleyball Foundation),Sport & Story,Tech,TECH
+262,Home Team Sports : RSN : COX Media/Southwest,Home Team Sports,Sports Properties,PSP
+501,Digital Media : RSN : NBC Sports California - Digital,Digital Media,Media,MEDIA
+268,Home Team Sports : RSN : NBC Sports California,Home Team Sports,Sports Properties,PSP
+485,Digital Media : RSN : Bally Sports San Diego - Digital,Digital Media,Media,MEDIA
+274,Home Team Sports : RSN : Altitude,Home Team Sports,Sports Properties,PSP
+583,Playfly Sports Properties : College : FAU Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+272,Home Team Sports : RSN : NBC Sports Washington,Home Team Sports,Sports Properties,PSP
+591,Sport & Story : Podcast : HailState+ Podcast Network (Mississippi State),Sport & Story,Tech,TECH
+411,Playfly Sports Properties : Overhead,Playfly Sports Properties,Sports Properties,PSP
+599,Playfly Global Partnerships : Sales : Playfly Access : Milwaukee Bucks,Playfly Global Partnerships,Global Partnerships,PGP
+417,Sport & Story : Subscription : University of Arkansas (Hogs+),Sport & Story,Tech,TECH
+445,Sport & Story : Subscription : LSU (LSU Gold),Sport & Story,Tech,TECH
+576,Playfly Global Partnerships : Sales : Playfly Access : Denver Nuggets,Playfly Global Partnerships,Global Partnerships,PGP
+437,Tech & Digital : Playfly Connect,Tech & Digital,Tech,TECH
+240,Playfly Sports Properties : College : SDSU Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+282,Home Team Sports : Non-RSN : Pac 12 Network,Home Team Sports,Sports Properties,PSP
+210,Playfly Global Partnerships : Sales : Premier Partnerships : Impression Sports,Playfly Global Partnerships,Global Partnerships,PGP
+639,Home Team Sports : RSN : MLB Network Arizona Diamondbacks,Home Team Sports,Sports Properties,PSP
+689,Sport & Story : Newsletter : JohnWallStreet,Sport & Story,Tech,TECH
+421,Sport & Story : Podcast : The Arkansas HogPod,Sport & Story,Tech,TECH
+715,Playfly Global Partnerships : Sales : Playfly Access : Vancouver Canucks,Playfly Global Partnerships,Global Partnerships,PGP
+690,Playfly Media,Playfly Media,Media,MEDIA
+721,Playfly Global Partnerships : Consulting,Playfly Global Partnerships,Global Partnerships,PGP
+607,Sport & Story : Newsletter : S&S Daily,Sport & Story,Tech,TECH
+725,Sport & Story : Newsletter : Good Morning Nova Nation (Villanova),Sport & Story,Tech,TECH
+522,Digital Media : Non-RSN : Portland Blazers - Digital,Digital Media,Media,MEDIA
+711,Playfly Global Partnerships : Sales : Playfly Access : Minnesota Wild,Playfly Global Partnerships,Global Partnerships,PGP
+246,Playfly Sports Properties : High School : LHSAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+314,Playfly Global Partnerships : Sales : Playfly Esports : College League,Playfly Global Partnerships,Global Partnerships,PGP
+683,Playfly Sports Properties : College : Penn State Sports Properties : Happy Valley United,Playfly Sports Properties,Sports Properties,PSP
+714,Playfly Global Partnerships : Sales : Playfly Access : Houston Dynamo,Playfly Global Partnerships,Global Partnerships,PGP
+679,Playfly Global Partnerships : Sales : Playfly Access : Orlando Magic,Playfly Global Partnerships,Global Partnerships,PGP
+722,Playfly Global Partnerships : Consulting : Events Consulting,Playfly Global Partnerships,Global Partnerships,PGP
+709,Sport & Story : Production : Michigan State University (This is Sparta Show),Sport & Story,Tech,TECH
+746,Playfly Sports Properties : Playfly Max : University of Texas at San Antonio,Playfly Sports Properties,Sports Properties,PSP
+693,Playfly Global Partnerships : Sales : Playfly Access : TV Stations,Playfly Global Partnerships,Global Partnerships,PGP
+666,Sport & Story : Production : FAU Basketball (Florida Atlantic University),Sport & Story,Tech,TECH
+699,Playfly Sports Properties : College : UCF Sports Properties : The Kingdom,Playfly Sports Properties,Sports Properties,PSP
+290,Home Team Sports : RSN : Bally Sports Ohio,Home Team Sports,Sports Properties,PSP
+695,Home Team Sports : RSN : Arizonas Family (Gray Media),Home Team Sports,Sports Properties,PSP
+306,Home Team Sports : Non-RSN : New Orleans Pelicans,Home Team Sports,Sports Properties,PSP
+214,Corporate,Corporate,Corporate,CORP
+698,Sport & Story : Podcast : On the Fly,Sport & Story,Tech,TECH
+236,Playfly Sports Properties : College : UNM Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+642,Home Team Sports : Non-RSN : Phoenix Mercury,Home Team Sports,Sports Properties,PSP
+252,Playfly Sports Properties : High School : VHSL Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+658,Sport & Story : Podcast : Inside Baylor Sports,Sport & Story,Tech,TECH
+677,Digital Media : RSN : Monumental Sports Network - Digital,Digital Media,Media,MEDIA
+242,Playfly Sports Properties : College : USC Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+650,Playfly Global Partnerships : Sales : Playfly Access : New York Mets,Playfly Global Partnerships,Global Partnerships,PGP
+208,Playfly Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+230,Playfly Sports Properties : College : Virginia Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+226,Playfly Sports Properties : College : Denver Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+220,Playfly Global Partnerships : Sales : Playfly Esports : League,Playfly Global Partnerships,Global Partnerships,PGP
+702,Sport & Story : Newsletter : Lobos Brew (New Mexico),Sport & Story,Tech,TECH
+706,Playfly Global Partnerships : Sales : Playfly Access : Baltimore Orioles,Playfly Global Partnerships,Global Partnerships,PGP
+269,Home Team Sports : RSN : NBC Sports Chicago,Home Team Sports,Sports Properties,PSP
+267,Home Team Sports : RSN : NBC Sports Boston,Home Team Sports,Sports Properties,PSP
+265,Home Team Sports : RSN : Access Sports Media,Home Team Sports,Sports Properties,PSP
+225,Playfly Sports Properties : College : Spiders Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+261,Home Team Sports : RSN : Bally Sports Southwest,Home Team Sports,Sports Properties,PSP
+704,Aloompa,Aloompa,Corporate,CORP
+273,Home Team Sports : RSN : NESN,Home Team Sports,Sports Properties,PSP
+700,Sport & Story : Newsletter : Baylor Brew,Sport & Story,Tech,TECH
+412,Sport & Story : Podcast,Sport & Story,Tech,TECH
+263,Digital Media : Non-RSN : Send To News - Digital,Digital Media,Media,MEDIA
+575,Sport & Story : Subscription : University of Maryland (Terps+),Sport & Story,Tech,TECH
+271,Home Team Sports : RSN : NBC Sports Philadelphia,Home Team Sports,Sports Properties,PSP
+579,Sport & Story : Newsletter : Bulldog Brew (Mississippi State),Sport & Story,Tech,TECH
+259,Home Team Sports : RSN : AT&T SportsNet Southwest,Home Team Sports,Sports Properties,PSP
+410,Playfly Sports Properties : High School : IDHSAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+420,Sport & Story : Podcast : The Kansas Jayhawker,Sport & Story,Tech,TECH
+418,Sport & Story : Subscription : Oklahoma State (OSUMax),Sport & Story,Tech,TECH
+281,Home Team Sports : RSN : YESN,Home Team Sports,Sports Properties,PSP
+573,Digital Media : RSN,Digital Media,Media,MEDIA
+509,Digital Media : RSN : Spectrum Reach SportsNet - Digital,Digital Media,Media,MEDIA
+285,Home Team Sports : RSN : Bally Sports Arizona,Home Team Sports,Sports Properties,PSP
+577,Sport & Story : Newsletter : Cock-a-doodle Brew (University of South Carolina),Sport & Story,Tech,TECH
+257,Home Team Sports : RSN : AT&T SportsNet Pittsburgh,Home Team Sports,Sports Properties,PSP
+507,Digital Media : RSN : Root Sports Northwest - Digital,Digital Media,Media,MEDIA
+505,Digital Media : RSN : NBC Sports Washington - Digital,Digital Media,Media,MEDIA
+511,Digital Media : RSN : YESN - Digital,Digital Media,Media,MEDIA
+277,Home Team Sports : RSN : MSG,Home Team Sports,Sports Properties,PSP
+503,Digital Media : RSN : NBC Sports Northwest - Digital,Digital Media,Media,MEDIA
+289,Home Team Sports : RSN : Bally Sports North,Home Team Sports,Sports Properties,PSP
+287,Home Team Sports : RSN : Bally Sports Florida,Home Team Sports,Sports Properties,PSP
+768,Playfly Sports Properties : College : Penn State Sports Properties : Bryce Jordan Center,Playfly Sports Properties,Sports Properties,PSP
+279,Home Team Sports : RSN : SNY,Home Team Sports,Sports Properties,PSP
+772,Sport & Story : Newsletter : App State Brew (Appalachian State University),Sport & Story,Tech,TECH
+275,Home Team Sports : Non-RSN : Big 10,Home Team Sports,Sports Properties,PSP
+770,Playfly Sports Properties : High School : SHSAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+703,Sport & Story : Podcast : Auburn Weekly Podcast,Sport & Story,Tech,TECH
+701,Sport & Story : Newsletter : Bodda Getta Brew (Auburn),Sport & Story,Tech,TECH
+707,Playfly Global Partnerships : Sales : Playfly Access : Cleveland Guardians,Playfly Global Partnerships,Global Partnerships,PGP
+266,Home Team Sports : RSN : NBC Sports Bay Area,Home Team Sports,Sports Properties,PSP
+264,Digital Media : Non-RSN : Fanserv - Digital,Digital Media,Media,MEDIA
+270,Home Team Sports : RSN : NBC Sports Northwest,Home Team Sports,Sports Properties,PSP
+260,Home Team Sports : RSN : Root Sports Northwest,Home Team Sports,Sports Properties,PSP
+413,Sport & Story : Newsletter,Sport & Story,Tech,TECH
+409,Home Team Sports : RSN : Bally Sports Oklahoma City,Home Team Sports,Sports Properties,PSP
+574,Digital Media : Non-RSN,Digital Media,Media,MEDIA
+578,Sport & Story : Newsletter : Bayou Brew (LSU),Sport & Story,Tech,TECH
+717,Playfly Global Partnerships : Sales : Playfly Access : Colorado Rockies,Playfly Global Partnerships,Global Partnerships,PGP
+719,Sport & Story : Production : National Football Foundation,Sport & Story,Tech,TECH
+687,Playfly Global Partnerships : Sales : Playfly Access : Detroit Red Wings,Playfly Global Partnerships,Global Partnerships,PGP
+691,Playfly Global Partnerships : Consulting : Playfly Europe,Playfly Global Partnerships,Global Partnerships,PGP
+713,Playfly Global Partnerships : Sales : Playfly Access : Chicago White Sox,Playfly Global Partnerships,Global Partnerships,PGP
+723,Playfly Sports Properties : High School : Aktivate,Playfly Sports Properties,Sports Properties,PSP
+681,Home Team Sports : RSN : Space City Home Network,Home Team Sports,Sports Properties,PSP
+218,Home Team Sports : RSN,Home Team Sports,Sports Properties,PSP
+232,Playfly Sports Properties : College : ODU Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+248,Playfly Sports Properties : High School : NIAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+697,Playfly Global Partnerships,Playfly Global Partnerships,Global Partnerships,PGP
+685,Playfly Global Partnerships : Sales : Playfly Access : Pac 12,Playfly Global Partnerships,Global Partnerships,PGP
+250,Playfly Sports Properties : High School : OSAA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+244,Playfly Sports Properties : High School : AIA Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+238,Playfly Sports Properties : College : Villanova Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+216,Playfly Sports Properties : High School,Playfly Sports Properties,Sports Properties,PSP
+234,Playfly Sports Properties : College : St. Bonaventure University,Playfly Sports Properties,Sports Properties,PSP
+228,Playfly Sports Properties : College : Maryland Sports Properties,Playfly Sports Properties,Sports Properties,PSP
+222,Playfly Global Partnerships : Sales : Playfly Esports : Consulting,Playfly Global Partnerships,Global Partnerships,PGP

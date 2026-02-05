@@ -5,22 +5,21 @@
     config(
         database=get_target_database(company),
         materialized="incremental",
-        alias="dim_class_mapping",
+        alias="dim_subsidiary_mapping",
         incremental_strategy="merge",
-        unique_key="class_id",
+        unique_key="subsidiary_id",
     )
 }}
 
 with
     source as (
         select
-            DIM_CLASS_ID,
-            CLASS_NAME,
-            PARENT_CLASS_NAME,
-            ORGANIZATION_LEVEL_NAME,
-            DIM_ORGANIZATION_ID,
+            Finance_ID as DIM_SUBSIDIARY_ID,
+            FINANCE_SUBSIDIARY_NAME as SUBSIDIARY_NAME,
+            HR_Company_Name AS COMPANY_NAME,
+            md5(HR_ID) as DIM_COMPANY_ID,
             current_timestamp()::timestamp_ntz as gold_load_date
-        from {{ ref("class_mapping") }}
+        from {{ ref("subsidiary_mapping") }}
 
     )
 select *

@@ -11,6 +11,10 @@
 with Agg as (
 SELECT
     PERIOD_START_DATE ,
+    DIM_DEPARTMENT_ID,
+    NULL AS state_key,
+    DIM_SUBSIDIARY_ID,
+    DIM_CLASS_ID,
     SUM(CASE WHEN a.METRIC_L1 = 'Revenue' THEN AMOUNT ELSE 0 END) AS REVENUE ,
     SUM(CASE WHEN a.METRIC_L1 = 'COGS' THEN AMOUNT ELSE 0 END) AS COGS,
     SUM(CASE WHEN a.METRIC_L1 = 'Field Corporate Expenses' THEN AMOUNT ELSE 0 END) AS FCE,
@@ -19,11 +23,15 @@ SELECT
 FROM {{ ref(sourcesystem ~ '_fact_transaction') }} f
     LEFT JOIN  {{ ref(sourcesystem ~ '_dim_coa') }} a
     ON f.DIM_CHART_OF_ACCOUNT_ID = a.DIM_CHART_OF_ACCOUNT_ID
-    GROUP BY PERIOD_START_DATE
+    GROUP BY ALL
 )
 
 SELECT 
     PERIOD_START_DATE,
+    DIM_DEPARTMENT_ID,
+    state_key,
+    DIM_SUBSIDIARY_ID,
+    DIM_CLASS_ID,
     REVENUE,
     -1 * (REVENUE + COGS ) AS GROSS_PROFIT,
     REVENUE + COGS + FCE + PCE + Other AS EBITDA  

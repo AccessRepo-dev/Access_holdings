@@ -4,6 +4,6 @@ with source as (
 )
 
 select
-    TRIM("Key") as KEY,
-    TRIM("Desc") as DESCRIPTION
+    TRIM(Key) as KEY,
+    TRIM(Desc) as DESCRIPTION
 from source
