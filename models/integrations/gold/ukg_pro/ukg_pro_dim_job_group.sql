@@ -14,7 +14,7 @@
 with
     source as (
         select distinct
-            md5(coalesce(job_family_code, '')) as dim_job_group_id,
+            hash(coalesce(job_family_code, '')) as dim_job_group_id,
             job_family_code as job_group_id,
             job_family_code as job_group,
             null as job_group_type,

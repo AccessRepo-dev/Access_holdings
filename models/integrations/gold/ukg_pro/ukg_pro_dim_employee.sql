@@ -44,16 +44,16 @@ with
                 then 'Voluntary'
                 else 'Unknown'
             end as termination_type,
-            md5(coalesce(company_id, '')) as dim_company_id,
-            md5(coalesce(primary_work_location_id, '')) as dim_location_id,
-            md5(coalesce(primary_job_id, '')) as dim_job_id,
+            id as dim_company_id,
+            primary_work_location_id as dim_location_id,
+            primary_job_id as dim_job_id,
             -- md5(coalesce(organization_level_1_id, '') || coalesce(1, '') ) as
             -- dim_organization_level_id,
-            md5(coalesce(organization_level_1_id, '')) as dim_class_id,
+            organization_level_1_id as dim_class_id,
             -- md5(coalesce(organization_level_2_id, '') || coalesce(2, '') ) as
             -- dim_class_id,
-            md5(coalesce(organization_level_3_id, '')) as dim_department_id,
-            md5(coalesce(j.job_family_code, '')) as dim_job_group_id,
+            organization_level_3_id as dim_department_id,
+            hash(coalesce(j.job_family_code, '')) as dim_job_group_id,
             -- md5(coalesce(organization_level_4_id, '') || coalesce(4, '') ) as
             -- dim_location_ns_id,
             md5(coalesce(supervisor_co_id, '')) as supervisor_company_id,

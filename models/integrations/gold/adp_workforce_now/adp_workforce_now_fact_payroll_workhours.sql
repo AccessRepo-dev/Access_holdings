@@ -102,7 +102,7 @@ with
             e.dim_company_id,
             e.dim_location_id,
             e.dim_job_id,
-            e.dim_organization_level_id,
+            null as dim_organization_level_id,
             cast(null as int) as total_tax_amount,
             cast(null as int) as net_amount,
             cast(null as int) as bonus_total_hours,

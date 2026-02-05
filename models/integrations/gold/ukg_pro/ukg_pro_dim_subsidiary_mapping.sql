@@ -17,7 +17,7 @@ with
             Finance_ID as DIM_SUBSIDIARY_ID,
             FINANCE_SUBSIDIARY_NAME as SUBSIDIARY_NAME,
             HR_Company_Name AS COMPANY_NAME,
-            md5(HR_ID) as DIM_COMPANY_ID,
+            HR_ID as DIM_COMPANY_ID,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("subsidiary_mapping") }}
 

@@ -14,7 +14,7 @@
 with
     source as (
         select
-            md5(coalesce(id, '')) as dim_job_id,
+            id as dim_job_id,
             id as job_id,
             title as job_title,
             -- job_family_code as job_group,

@@ -19,7 +19,7 @@
 with
     source as (
         select distinct
-            md5(coalesce(job_title, job_short_name, job_long_name)) as dim_job_id,
+            hash(coalesce(job_title, job_short_name, job_long_name)) as dim_job_id,
             null as job_id,
             coalesce(job_title, job_short_name, job_long_name) as job_title,
             -- null as job_group,

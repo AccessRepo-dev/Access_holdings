@@ -19,7 +19,7 @@
 with
     source as (
         select
-            md5(coalesce(id, '')) as dim_department_id,
+            id as dim_department_id,
             id as department_id,
             coalesce(name_short_name, name_long_name) as department_name,
             current_timestamp()::timestamp_ntz as gold_load_date

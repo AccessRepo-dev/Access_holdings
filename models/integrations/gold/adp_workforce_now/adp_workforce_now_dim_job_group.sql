@@ -19,7 +19,7 @@
 with
     source as (
         select distinct
-            md5(coalesce(id, '')) as dim_job_group_id,
+            id as dim_job_group_id,
             id as job_group_id,
             coalesce(classification_short_name, classification_long_name) as job_group,
             coalesce(name_short_name, name_long_name) as job_group_type,

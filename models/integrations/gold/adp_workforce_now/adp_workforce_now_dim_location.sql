@@ -20,7 +20,7 @@ with
     source as (
         select
             distinct
-            md5(
+            hash(
                 coalesce(home_work_location_address_city_name, '')
                 || coalesce(home_work_location_address_country_code, '')
             ) as dim_location_id,
