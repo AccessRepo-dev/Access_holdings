@@ -1,0 +1,28 @@
+Pay_Code,Full_Name,Bucket
+AFTER HOURS,After-Hours Work,Regular
+FLOAT,Floating Worked Hours,Regular
+HOLWRK,Holiday Worked,Regular
+NFP SHIFT DIFF,Non-Fixed Premium Shift Differential,Regular
+ON CALL,On-Call Time,Regular
+REGSAL,Regular Salaried Hours,Regular
+REGSH2,Regular Shift – Second Shift,Regular
+REGSH3,Regular Shift – Third Shift,Regular
+REGULAR,Regular Worked Hours,Regular
+SHIFT DIFF2,Shift Differential – Level 2,Regular
+DBLTME,Double-Time Work,Overtime
+HOLIDAY WORKED 2ND SHIFT,Holiday Worked – Second Shift,Overtime
+HOLIDAY WORKED 3RD SHIFT,Holiday Worked – Third Shift,Overtime
+NFP SHIFT DIFF OT,Non-Fixed Premium Shift Differential – Overtime,Overtime
+ON CALL OT,On-Call Overtime,Overtime
+OTSH2,Overtime – Shift 2,Overtime
+OTSH3,Overtime – Shift 3,Overtime
+OVERTIME,Overtime,Overtime
+PRIOR OT,Prior Period Overtime,Overtime
+BEREAV,Bereavement Leave,Paid Absence
+HOLIDAY,Paid Holiday,Paid Absence
+JURY,Jury Duty Leave,Paid Absence
+PTO,Paid Time Off,Paid Absence
+UNPAID MILITARY TIME,Unpaid Military Leave,Unpaid Absence
+UNPAID SCHEDULED,Unpaid Scheduled Leave,Unpaid Absence
+UNPAID TIME OFF,Unpaid Time Off,Unpaid Absence
+UNPAID UNSCHEDULED,Unpaid Unscheduled Leave,Unpaid Absence
