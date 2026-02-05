@@ -1,0 +1,37 @@
+{% set company = var("company", "zeus") | lower %}
+{{
+    config(
+        enabled=var("sourcesystem", "adp_workforce_now") | lower
+        == "adp_workforce_now"
+    )
+}}
+
+{{
+    config(
+        database=get_target_database(company),
+        materialized="incremental",
+        alias="dim_hr_location",
+        incremental_strategy="merge",
+        unique_key="DIM_LOCATION_ID",
+    )
+}}
+
+with
+    source as (
+        select
+            distinct
+            md5(
+                coalesce(home_work_location_address_city_name, '')
+                || coalesce(home_work_location_address_country_code, '')
+            ) as dim_location_id,
+            null as state_key,
+            home_work_location_address_city_name as city,
+            home_work_location_address_country_code as country_code,
+            null as state,
+            home_work_location_address_postal_code as zip_or_postal_code,
+            current_timestamp()::timestamp_ntz as gold_load_date
+        from {{ ref("adp_workforce_now_work_assignment_history") }} wah
+
+    )
+select *
+from source

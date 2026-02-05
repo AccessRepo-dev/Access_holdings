@@ -5,25 +5,21 @@
     config(
         database=get_target_database(company),
         materialized="incremental",
-        alias="dim_hr_location",
+        alias="dim_subsidiary_mapping",
         incremental_strategy="merge",
-        unique_key="DIM_LOCATION_ID",
+        unique_key="subsidiary_id",
     )
 }}
 
 with
     source as (
         select
-
-            md5(coalesce(id, '')) as dim_location_id,
-            md5(coalesce(state, '')) as STATE_KEY,
-            city,
-            country_code,
-            state,
-            zip_or_postal_code,
+            Finance_ID as DIM_SUBSIDIARY_ID,
+            FINANCE_SUBSIDIARY_NAME as SUBSIDIARY_NAME,
+            HR_Company_Name AS COMPANY_NAME,
+            md5(HR_ID) as DIM_COMPANY_ID,
             current_timestamp()::timestamp_ntz as gold_load_date
-        from {{ ref("ukg_pro_location") }}
-        where is_active = true and _fivetran_deleted = false
+        from {{ ref("subsidiary_mapping") }}
 
     )
 select *

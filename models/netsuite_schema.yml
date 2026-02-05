@@ -202,6 +202,9 @@ sources:
       - name: CUSTOMRECORD_CSEG2
         description: Additional custom segment for operational and financial reporting.
         <<: *freshness_netsuite_defaults
+
+      - name: TRANSACTIONADDRESSMAPPINGADDRESS
+      - name: TRANSACTIONADDRESSMAPPING
         
 
   - name: wagway_silver
