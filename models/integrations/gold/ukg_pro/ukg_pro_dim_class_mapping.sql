@@ -14,10 +14,11 @@
 with
     source as (
         select
-            Finance_ID as DIM_CLASS_ID,
-            FINANCE_CLASS_NAME as CLASS_NAME,
-            HR_ORGANIZATION_NAME AS ORGANIZATION_LEVEL,
-            HR_ID as DIM_ORGANIZATION_ID,
+            DIM_CLASS_ID,
+            CLASS_NAME,
+            PARENT_CLASS_NAME,
+            ORGANIZATION_LEVEL_NAME,
+            DIM_ORGANIZATION_ID,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("class_mapping") }}
 
