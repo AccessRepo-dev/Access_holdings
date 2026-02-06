@@ -133,7 +133,7 @@ umich_sent_cte AS (
         'Consumer' AS DATASET,
         'Umich Survey of Consumers' AS DATASOURCE
 
-    FROM {{ ref('umich_sent') }} A
+    FROM {{ ref('umich') }} A
       LEFT JOIN {{ ref('dim_date_monthly') }} D 
      ON  A.DATE = D.FULL_DATE
 ),
