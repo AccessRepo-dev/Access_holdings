@@ -78,19 +78,20 @@ with
     ),
     source as (
         select
-            hash(concat(w.id, '-', associate_oid)) as dim_employee_id,
+            w.associate_oid as dim_employee_id,
             w.associate_oid as employee_id,
             null as hire_source,
             w.status_value as employee_status,
             coalesce(
-                wah.worker_type_short_name, wah.worker_type_short_name
+                wah.worker_type_short_name, wah.worker_type_short_name, 'Unknown'
             ) as employee_type,
             cast(w.original_hire_date as date) as original_hire_date,
             cast(w.original_hire_date as date) as hire_date,
             w.termination_date as termination_date,
             coalesce(
                 wah.assignment_status_reason_short_name,
-                wah.assignment_status_reason_long_name
+                wah.assignment_status_reason_long_name,
+                'Unknown'
             ) as termination_reason,
             case
                 when wah.voluntary_indicator = true
@@ -113,7 +114,7 @@ with
             null as supervisor_company_id,
             rpt.report_to_worker_id as manager_id,
             assignment_status_reason as employee_status_reason_code,
-            coalesce(job_function_short_name, job_function_long_name) as job_function,
+            coalesce(job_function_short_name, job_function_long_name,'Unknown') as job_function,
             cast(null as int) as scheduled_annual_hours,
             cast(null as int) as scheduled_work_hours,
             cast(null as int) as weekly_hours,

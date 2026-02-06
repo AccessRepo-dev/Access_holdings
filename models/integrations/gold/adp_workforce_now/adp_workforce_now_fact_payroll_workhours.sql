@@ -97,7 +97,7 @@ with
         select
             cast(null as int) as annual_salary,
             null as currency_code,
-            hash(concat(h.worker_id, '-', h.associate_oid)) as dim_employee_id,
+            h.associate_oid as dim_employee_id,
             h.associate_oid as employee_id,
             e.dim_company_id,
             e.dim_location_id,
@@ -119,7 +119,7 @@ with
         from hours h
         left join
             {{ ref("adp_workforce_now_dim_employee") }} e
-            on e.employee_id = h.associate_oid
+            on e.dim_employee_id = h.associate_oid
         group by
             h.worker_id,
             h.associate_oid,
