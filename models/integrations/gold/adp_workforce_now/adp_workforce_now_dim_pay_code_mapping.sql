@@ -10,22 +10,20 @@
     config(
         database=get_target_database(company),
         materialized="incremental",
-        alias="dim_hr_department",
+        alias="dim_pay_code_mapping",
         incremental_strategy="merge",
-        unique_key="dim_department_id",
+        unique_key="PAY_CODE",
     )
 }}
 
 with
     source as (
         select
-            id as dim_department_id,
-            id as department_id,
-            coalesce(name_short_name, name_long_name) as department_name,
+            TRIM(PAY_CODE) as PAY_CODE,
+            TRIM(BUCKET) as BUCKET,
             current_timestamp()::timestamp_ntz as gold_load_date
 
-        from {{ ref("adp_workforce_now_organizational_unit") }}
-        where lower(type_short_name) = 'department'
+        from {{ ref("pay_code_mapping") }}
 
     )
 select *

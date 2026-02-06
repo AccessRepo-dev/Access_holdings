@@ -10,22 +10,21 @@
     config(
         database=get_target_database(company),
         materialized="incremental",
-        alias="dim_job",
+        alias="dim_job_group",
         incremental_strategy="merge",
-        unique_key="DIM_JOB_ID",
+        unique_key="DIM_JOB_GROUP_ID",
     )
 }}
 
 with
     source as (
         select distinct
-            hash(coalesce(job_title, job_short_name, job_long_name)) as dim_job_id,
-            null as job_id,
-            coalesce(job_title, job_short_name, job_long_name) as job_title,
-            -- null as job_group,
+            id as dim_job_group_id,
+            id as job_group_id,
+            coalesce(classification_short_name, classification_long_name) as job_group,
+            coalesce(name_short_name, name_long_name) as job_group_type,
             current_timestamp()::timestamp_ntz as gold_load_date
-        from {{ ref("adp_workforce_now_work_assignment_history") }} wah
-        where wah._fivetran_active = true and wah.primary_indicator = true
+        from {{ ref("adp_workforce_now_classification") }}
 
     )
 select *

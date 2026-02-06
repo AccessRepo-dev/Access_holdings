@@ -15,7 +15,7 @@ with
     source as (
         select
 
-            md5(coalesce(id, '')) as dim_location_id,
+            id as dim_location_id,
             md5(coalesce(state, '')) as STATE_KEY,
             city,
             country_code,

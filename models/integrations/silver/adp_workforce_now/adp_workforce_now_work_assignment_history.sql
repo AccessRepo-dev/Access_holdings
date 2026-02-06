@@ -70,27 +70,15 @@ with
             cast(
                 geographic_pay_differential_percentage as float
             ) as geographic_pay_differential_percentage,
-            trim(
-                coalesce(assignment_status_short_name, '')
-            ) as assignment_status_short_name,
-            trim(
-                coalesce(assignment_status_long_name, '')
-            ) as assignment_status_long_name,
-            trim(
-                coalesce(assignment_status_subdivision_type, '')
-            ) as assignment_status_subdivision_type,
+            trim(assignment_status_short_name) as assignment_status_short_name,
+            trim(assignment_status_long_name) as assignment_status_long_name,
+            trim(assignment_status_subdivision_type) as assignment_status_subdivision_type,
             cast(
                 assignment_status_effective_date as date
             ) as assignment_status_effective_date,
-            trim(
-                coalesce(assignment_status_reason_short_name, '')
-            ) as assignment_status_reason_short_name,
-            trim(
-                coalesce(assignment_status_reason_long_name, '')
-            ) as assignment_status_reason_long_name,
-            trim(
-                coalesce(assignment_status_reason_subdivision_type, '')
-            ) as assignment_status_reason_subdivision_type,
+            trim(assignment_status_reason_short_name) as assignment_status_reason_short_name,
+            trim(assignment_status_reason_long_name) as assignment_status_reason_long_name,
+            trim(assignment_status_reason_subdivision_type)as assignment_status_reason_subdivision_type,
             cast(
                 assignment_status_reason_effective_date as date
             ) as assignment_status_reason_effective_date,
@@ -98,8 +86,8 @@ with
             trim(coalesce(assignment_status_reason, '')) as assignment_status_reason,
             cast(probation_period_start_date as date) as probation_period_start_date,
             cast(probation_period_end_date as date) as probation_period_end_date,
-            trim(coalesce(worker_type_short_name, '')) as worker_type_short_name,
-            trim(coalesce(worker_type_long_name, '')) as worker_type_long_name,
+            trim(worker_type_short_name) as worker_type_short_name,
+            trim(worker_type_long_name) as worker_type_long_name,
             trim(
                 coalesce(worker_type_subdivision_type, '')
             ) as worker_type_subdivision_type,
