@@ -12,20 +12,10 @@
 
 with
 
-    cleaned_states as (
-        select
-            coalesce(a.state_code, b.state_code) as state_code,
-
-            -- coalesce(a.state, b.state) as state_name,
-            mad.*
-        from {{ ref('netsuite_transactionaddressmappingaddress') }} mad
-        left join playfly_dev.gold.dim_us_location a on a.state_code = mad.state
-        left join playfly_dev.gold.dim_us_location b on b.state = mad.state
-    ),
     agg as (
         select
 
-            md5(coalesce(mad.state_code, '')) as state_key,
+            null as state_key,--md5(coalesce(mad.state_code, '')) as state_key,
             period_start_date,
             dim_department_id,
             DIM_SUBSIDIARY_ID,
@@ -49,10 +39,10 @@ with
                 end
             ) as other
         from {{ ref("netsuite_fact_transaction") }} f
-        left join
-            {{ ref('netsuite_transactionaddressmapping') }} ma
-            on f.transaction_id = ma.transaction
-        left join cleaned_states mad on mad.nkey = ma.address
+        -- left join
+        --     {{ ref('netsuite_transactionaddressmapping') }} ma
+        --     on f.transaction_id = ma.transaction
+        -- left join cleaned_states mad on mad.nkey = ma.address
         left join
             {{ ref("netsuite_dim_coa") }} a
             on f.dim_chart_of_account_id = a.dim_chart_of_account_id

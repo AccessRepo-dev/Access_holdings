@@ -14,7 +14,7 @@
 with
     source as (
         select
-            md5(id) as dim_company_id,
+            id as dim_company_id,
             id as company_id,
             company_code,
             company_name,

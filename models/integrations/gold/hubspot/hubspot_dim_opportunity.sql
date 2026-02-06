@@ -15,6 +15,65 @@
 }}
 
 with
+    stage_history as 
+    (
+            select 
+            deal_id,
+            date_entered,
+            mapped_stage_name as new_value,
+            LAG(label) OVER (
+            PARTITION BY deal_id
+            ORDER BY o.date_entered,o.dbt_valid_from
+           
+        ) AS old_value 
+            from {{ ref('hubspot_deal_stage_current') }} o
+            left join {{ ref('hubspot_deal_pipeline_stage_current') }} dps on dps.stage_id = o.value
+            left join {{ ref('hubspot_dim_stage_mapping') }} new on trim(label) = new.stage_name
+            where mapped_stage_name  = 'Closed Lost'
+    ),
+    Last_Stage as (
+
+        select 
+            row_number() OVER (PARTITION BY deal_id ORDER BY date_entered ASC) as row_num,
+
+            deal_id,
+            old_value as native_stage_name,
+            old.mapped_stage_name
+        from  stage_history  o
+        left join {{ ref('hubspot_dim_stage_mapping') }} old on old_value = old.stage_name
+        QUALIFY row_num = 1
+
+    ) ,
+    {% if company == 'wagway'%}
+    stage_history_pawville as 
+    (
+            select 
+            deal_id,
+            date_entered,
+            mapped_stage_name as new_value,
+            LAG(label) OVER (
+            PARTITION BY deal_id
+            ORDER BY date_entered,o.dbt_valid_from
+           
+        ) AS old_value 
+            from {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_STAGE") }} o
+            left join {{ get_silver_source(company, "HUBSPOT_PAWVILLE_DEAL_PIPELINE_STAGE") }}  dps on dps.stage_id = o.value
+            left join  {{ ref('hubspot_dim_stage_mapping') }}  new on trim(label) = new.stage_name
+            where mapped_stage_name  = 'Closed Lost'
+    ),
+    Last_Stage_pawville  as (
+
+        select 
+            row_number() OVER (PARTITION BY deal_id ORDER BY date_entered ASC) as row_num,
+            deal_id,
+            old_value as native_stage_name,
+            old.mapped_stage_name
+        from  stage_history_pawville  o
+        left join  {{ ref('hubspot_dim_stage_mapping') }} old on old_value = old.stage_name
+        QUALIFY row_num = 1
+
+    ) ,
+    {%endif%}
     /* =======================================================
    CONTACTS
 ======================================================= */
@@ -186,6 +245,7 @@ with
             a.property_closedate as close_date,
             a.property_hs_lastmodifieddate,
             a.property_hs_analytics_source,
+            a.property_closed_lost_reason,
             a.deal_pipeline_id,
             a.property_invoice_id,
             b.label as stage_name,
@@ -365,6 +425,7 @@ with
                 a.property_closedate as close_date,
                 a.property_hs_lastmodifieddate,
                 a.property_hs_analytics_source,
+                a.property_closed_lost_reason,
                 a.deal_pipeline_id,
                 a.property_invoice_id,
                 b.label as stage_name,
@@ -641,6 +702,9 @@ with
 
             dp.label as pipeline_name,
             property_hs_is_closed_lost,
+            h.native_stage_name as native_lost_stage,
+            h.mapped_stage_name as mapped_lost_stage,
+            bd.property_closed_lost_reason as LOSS_REASON_C,
             {% if company == "wagway" %}
             'HUBSPOT_PUPS' as SOURCE_SCHEMA,
 
@@ -651,6 +715,7 @@ with
         {% endif %}
         from base_deals bd
         left join stage_dates_by_opp so on so.deal_id = bd.deal_id
+        left join Last_Stage h on h.deal_id = bd.deal_id
         left join
             {{ ref('hubspot_deal_pipeline_current') }} dp
             on dp.pipeline_id = bd.deal_pipeline_id
@@ -786,11 +851,14 @@ with
                 end as closed_lost_date,
 
                 dp.label as pipeline_name,
-                property_hs_is_closed_lost,
+                bd.property_hs_is_closed_lost as LOSS_REASON_C,
+                h.native_stage_name as native_lost_stage,
+                h.mapped_stage_name as mapped_lost_stage,
                 'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
 
             from base_deals_pawville bd
             left join stage_dates_by_opp_pawville so on so.deal_id = bd.deal_id
+            left join Last_Stage_pawville  h on h.deal_id = bd.deal_id
             left join
                 {{ get_silver_source(company, "HUBSPOT_DEAL_PIPELINE") }} dp
                 on dp.pipeline_id = bd.deal_pipeline_id
@@ -895,6 +963,9 @@ select distinct
     -- end as lead_status,
     pipeline_name,
     -- last_modified_date,
+    coalesce(native_lost_stage, 'Negotiation') as native_lost_stage,
+    coalesce(mapped_lost_stage, 'Negotiation') as mapped_lost_stage,
+    LOSS_REASON_C,
     SOURCE_SCHEMA,
     current_timestamp()::timestamp_ntz as gold_load_date
 

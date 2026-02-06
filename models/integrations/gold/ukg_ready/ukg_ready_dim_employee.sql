@@ -18,7 +18,7 @@ with
             hash(employee_id) as employee_id,
             null as hire_source,
             null as employee_status,
-            null as employee_type,
+            'Full Time' as employee_type,
             cast(hired_date as date) as original_hire_date,
             cast(hired_date as date) as hire_date,
             cast(terminated_date as date) as termination_date,
