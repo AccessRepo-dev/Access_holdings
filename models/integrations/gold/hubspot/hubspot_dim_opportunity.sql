@@ -851,11 +851,13 @@ with
                 end as closed_lost_date,
 
                 dp.label as pipeline_name,
-                bd.property_hs_is_closed_lost as LOSS_REASON_C,
+                bd.property_hs_is_closed_lost ,
                 h.native_stage_name as native_lost_stage,
                 h.mapped_stage_name as mapped_lost_stage,
+                bd.property_closed_lost_reason as LOSS_REASON_C,
                 'HUBSPOT_PAWVILLE' as SOURCE_SCHEMA,
 
+             
             from base_deals_pawville bd
             left join stage_dates_by_opp_pawville so on so.deal_id = bd.deal_id
             left join Last_Stage_pawville  h on h.deal_id = bd.deal_id
