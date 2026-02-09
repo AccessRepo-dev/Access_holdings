@@ -5,8 +5,8 @@
 {{
     config(
     database = get_target_database(company),
-    materialized = 'incremental',
     alias = 'fact_lead',
+    materialized = 'incremental',
     incremental_strategy = 'merge',
     unique_key = 'ID_DATE_KEY'
 ) }}
