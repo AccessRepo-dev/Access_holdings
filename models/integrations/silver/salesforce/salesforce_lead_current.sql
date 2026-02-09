@@ -7,11 +7,11 @@
         enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
         and (var("company", "zeus") | lower) in ["zeus"],
     database=get_target_database(var('company')),
+    materialized = 'incremental',
     alias = sourcesystem ~ '_LEAD',
     schema = 'silver',
-    unique_key = 'ID_DATE_KEY',
-    materialized = 'incremental',
     incremental_strategy = 'merge',
+    unique_key = 'ID_DATE_KEY',
     on_schema_change='sync_all_columns'
 ) }}
 
