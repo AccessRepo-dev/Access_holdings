@@ -1,11 +1,9 @@
-{% set company = var("company", "zeus") %}
-{% set sourcesystem = var("sourcesystem", "salesforce") %}
+{% set company = var('company', 'zeus') | lower %}
+{{ config(enabled = var('sourcesystem', 'salesforce') == 'salesforce' and var('company','zeus') == 'zeus') }}
 
 
 {{
     config(
-        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
-        and (var("company", "zeus") | lower) in ["zeus"],
     database = get_target_database(company),
     materialized = 'incremental',
     alias = 'fact_lead',
