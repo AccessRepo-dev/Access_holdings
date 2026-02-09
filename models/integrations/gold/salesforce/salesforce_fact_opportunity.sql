@@ -28,7 +28,7 @@ with hashed as (
         DBT_VALID_TO,
         md5(
             coalesce(STAGE_NAME,'') || '|' ||
-            coalesce(INSTALL_AMOUNT_C::string,'') || '|' ||
+            coalesce(TOTAL_CONTRACT_VALUE_CURRENCY_C::string,'') || '|' ||
             coalesce(OWNER_ID,'') || '|' ||
             coalesce(CLOSE_DATE::string,'') || '|' ||
             coalesce(IS_WON_N::string,'') || '|' ||
@@ -43,8 +43,7 @@ with hashed as (
         ID as OPPORTUNITY_ID,
         OWNER_ID,
         STAGE_NAME,
-        INSTALL_AMOUNT_C as AMOUNT,
-        TCV_AMOUNT,
+        TCV_AMOUNT as AMOUNT,
         CLOSE_DATE,
         cast(IS_CLOSED_N as Boolean) as IS_CLOSED,
         cast(IS_WON_N as Boolean) as IS_WON,

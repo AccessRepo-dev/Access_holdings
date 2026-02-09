@@ -142,3 +142,4 @@ sources:
     tables:
     - name: SALESFORCE_FACT_OPPORTUNITY
     - name: SALESFORCE_DIM_OPPORTUNITY
+    - name: SALESFORCE_FACT_LEAD
