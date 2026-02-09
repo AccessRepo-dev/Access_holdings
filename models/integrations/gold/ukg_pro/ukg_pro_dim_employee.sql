@@ -69,6 +69,7 @@ with
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("ukg_pro_employment") }} e
         left join {{ ref("ukg_pro_job") }} j on j.id = e.primary_job_id
+        where e._FIVETRAN_DELETED = FALSE
 
     )
 select *
