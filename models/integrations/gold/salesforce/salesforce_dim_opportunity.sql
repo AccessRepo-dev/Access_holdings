@@ -134,8 +134,8 @@ with
                 || coalesce(a.billing_country, '')
             ) as location_id,
             o.close_date,
-            case when o.stage_name ilike 'close%' and o.stage_name ilike '%won'then 1 else 0 end as is_won,
-            case when o.stage_name ilike 'close%' then 1 else 0 end as is_closed,
+            case when dsm.mapped_stage_name = 'Closed Won' then 1 else 0 end as is_won,
+            case when dsm.mapped_stage_name in ('Closed Won', 'Closed Lost') then 1 else 0 end as is_closed,
             -- o.is_won,
             -- o.is_closed,
             hs.opportunity_date as opp_date,
@@ -167,10 +167,12 @@ with
             {{ ref('salesforce_account_current') }} a
             on a.account_id = o.account_id
             and a.is_active = 1
+        left join {{ ref('salesforce_dim_stage_mapping') }} dsm on dsm.stage_name = o.stage_name
         left join
             hist_stage_dates_by_opp hs
             on hs.opportunity_id = o.id
         left join Last_Stage h on h.opportunity_id = o.id
+        
         where
             o.is_active = 1
 
@@ -246,6 +248,11 @@ select
 
     case
         when is_won = 0 then cast(coalesce(closed_lost_date, close_date) as date)
+        when is_won = 1 then cast(closed_won_date as date)
+    end as closed_won_date,
+
+    case
+        when is_won = 0 and is_closed = 1 then cast(closed_lost_date as date)
     end as closed_lost_date,
     native_lost_stage,
     mapped_lost_stage,

@@ -1,6 +1,6 @@
 with source as (
     select *
-    from {{ source('macro_raw', 'UMICH_SENT') }}
+    from {{ source('macro_raw', 'UMICH') }}
 )
 
 select

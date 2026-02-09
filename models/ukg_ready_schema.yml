@@ -1,0 +1,9 @@
+sources:
+  - name: wagway_ukg_ready_raw
+    database: wagway_raw
+    schema: ukg_ready
+    tables:
+      - name: EMPLOYEES
+      - name: BENEFITS
+      - name: PAY_PERIOD_PROFILES
+      
