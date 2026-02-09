@@ -32,9 +32,6 @@ with
             trim(id) as id,
             trim(worker_id) as worker_id,
             trim(associate_oid) as associate_oid,
-            trim(person_legal_name_given_name) as person_legal_name_given_name,
-            trim(person_legal_name_family_name_1) as person_legal_name_family_name_1,
-            trim(person_legal_name_formatted_name) as person_legal_name_formatted_name,
 
             exceptions_indicator as exceptions_indicator,
 
