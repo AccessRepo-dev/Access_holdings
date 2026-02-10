@@ -14,17 +14,15 @@
 with
     source_data as (
         select *
-        from {{ get_raw_source(company, sourcesystem, "EMPLOYEES") }}
+        from {{ get_raw_source(company, sourcesystem, "LOOKUP_EMPLOYEE_TYPES") }}
         {% if is_incremental() %}
             where
-                cast(date_time_changed as timestamp_ntz) > (
+                cast(_loaded_at as timestamp_ntz) > (
                     select
                         dateadd(
                             day,
                             -1,
-                            coalesce(
-                                max(date_time_changed), '1900-01-01'::timestamp_ntz
-                            )
+                            coalesce(max(_loaded_at), '1900-01-01'::timestamp_ntz)
                         )
                     from {{ this }}
                 )
@@ -33,16 +31,8 @@ with
 
     cleaned as (
         select
-            cast(id as number) as id,
-            try_cast(employee_id as varchar) as employee_id,
-            cast(primary_account_id as number) as primary_account_id,
-            cast(ein_name as varchar) as ein_name,
-            cast(_links as varchar) as _links,
-            cast(status as varchar) as status,
-            cast(dates as varchar) as dates,
-            dates:"hired"::date as hired_date,
-            dates:"started"::date as started_date,
-            dates:"terminated"::date as terminated_date,
+            cast(id as int) as id,
+            trim(name) as name,
             current_timestamp() as silver_load_date,
 
         from source_data

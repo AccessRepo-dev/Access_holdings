@@ -14,17 +14,15 @@
 with
     source_data as (
         select *
-        from {{ get_raw_source(company, sourcesystem, "EMPLOYEES") }}
+        from {{ get_raw_source(company, sourcesystem, "COMPENSATION_HISTORY") }}
         {% if is_incremental() %}
             where
-                cast(date_time_changed as timestamp_ntz) > (
+                cast(_loaded_at as timestamp_ntz) > (
                     select
                         dateadd(
                             day,
                             -1,
-                            coalesce(
-                                max(date_time_changed), '1900-01-01'::timestamp_ntz
-                            )
+                            coalesce(max(_loaded_at), '1900-01-01'::timestamp_ntz)
                         )
                     from {{ this }}
                 )
@@ -33,16 +31,21 @@ with
 
     cleaned as (
         select
-            cast(id as number) as id,
-            try_cast(employee_id as varchar) as employee_id,
-            cast(primary_account_id as number) as primary_account_id,
-            cast(ein_name as varchar) as ein_name,
-            cast(_links as varchar) as _links,
-            cast(status as varchar) as status,
-            cast(dates as varchar) as dates,
-            dates:"hired"::date as hired_date,
-            dates:"started"::date as started_date,
-            dates:"terminated"::date as terminated_date,
+            cast(id as int) as id,
+
+            /* Employee object parsing */
+            employee:account_id::int as employee_account_id,
+
+            /* Cleaning scalar columns */
+            cast(effective_from as date) as effective_from,
+            cast(amount as float) as amount,
+            cast(hourly_pay as float) as hourly_pay,
+            trim(amount_period) as amount_period,
+            cast(time as int) as time,
+            trim(time_period) as time_period,
+            cast(num_pp_in_year as int) as num_pp_in_year,
+            _links,  -- OBJECT kept as-is
+            trim(currency) as currency,
             current_timestamp() as silver_load_date,
 
         from source_data
