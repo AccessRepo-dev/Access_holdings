@@ -243,7 +243,7 @@ select
     cast(null as date) as CONTACTED_DATE,
 
     case
-        when is_won = 1 then cast(closed_won_date as date)
+        when is_won = 1 then cast(coalesce(closed_won_date, close_date) as date)
     end as closed_won_date,
 
     case
