@@ -28,8 +28,12 @@
     {%- set default_schema = target.schema -%}
     {%- set dbt_env = env_var("DBT_ENVIRONMENT_NAME", "Unknown") -%}
     {%- set deploy_shared = var("deploy_to_shared_silver", false) -%}
+    {%- set is_ci = var("is_ci_run", false) -%}
 
-    {%- if dbt_env in ["Production", "Staging"] -%}
+    {%- if is_ci -%}
+        {{ default_schema | trim }}
+
+    {%- elif dbt_env in ["Production", "Staging"] -%}
         {{ custom_schema_name | trim }}
 
     {%- elif dbt_env == "Development" and deploy_shared -%}

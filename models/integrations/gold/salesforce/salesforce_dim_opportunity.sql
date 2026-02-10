@@ -247,11 +247,6 @@ select
     end as closed_won_date,
 
     case
-        when is_won = 0 then cast(coalesce(closed_lost_date, close_date) as date)
-        when is_won = 1 then cast(closed_won_date as date)
-    end as closed_won_date,
-
-    case
         when is_won = 0 and is_closed = 1 then cast(closed_lost_date as date)
     end as closed_lost_date,
     native_lost_stage,
