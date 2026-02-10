@@ -43,8 +43,7 @@ with
             dates:"hired"::date as hired_date,
             dates:"started"::date as started_date,
             dates:"terminated"::date as terminated_date,
-            current_timestamp() as silver_load_date,
-
+            current_timestamp() as silver_load_date
         from source_data
     )
 
