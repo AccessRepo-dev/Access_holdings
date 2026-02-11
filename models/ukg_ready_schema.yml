@@ -6,4 +6,14 @@ sources:
       - name: EMPLOYEES
       - name: BENEFITS
       - name: PAY_PERIOD_PROFILES
-      
+      - name: ATTENDANCE
+      - name: COMPENSATION_HISTORY
+      - name: COMPENSATION_TOTAL
+      - name: COST_CENTER_JOBS
+      - name: LOOKUP_EARNING_CODES
+      - name: LOOKUP_EINS
+      - name: LOOKUP_EMPLOYEE_TYPES
+      - name: LOOKUP_JOBS
+      - name: LOOKUP_PAYROLL_TYPES
+      - name: LOOKUP_PAY_TYPES
+      - name: LOOKUP_TERMINATION_REASONS
