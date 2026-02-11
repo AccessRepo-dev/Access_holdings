@@ -19,14 +19,10 @@ with raw as
 (
 select *
 from {{ ref('salesforce_user_snapshot') }}
-{% if is_incremental() %}
+    {% if is_incremental()%}
     where 
-        (cast(LAST_MODIFIED_DATE as timestamp_ntz) > (select dateadd(day, -3, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)) from {{ this }})
-    OR 
-        (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
-{% else %}
-    where 1=1
-{% endif %}
+        cast(_FIVETRAN_SYNCED as timestamp_ntz) > (select dateadd(day, -3, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)) from {{ this }})
+    {% endif %}
     
 ),
 
@@ -49,6 +45,7 @@ select
     CREATED_DATE,
     LAST_LOGIN_DATE,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
+     _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
     TIME_ZONE_SID_KEY,
     LOCALE_SID_KEY,
     TRIM(LANGUAGE_LOCALE_KEY) AS LANGUAGE_LOCALE_KEY,

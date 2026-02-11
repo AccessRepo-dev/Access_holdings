@@ -4,8 +4,7 @@
 
 {{
     config(
-        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
-        and (var("company", "zeus") | lower) in ["zeus"],
+        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"] and (var("company", "zeus") | lower) in ["zeus"],
         database=get_target_database(company),
         alias = sourcesystem ~ '_ACCOUNT',
         schema="silver",
@@ -20,37 +19,14 @@
 with
     raw as (
         select *
-
         from {{ ref("salesforce_account_snapshot") }}
 
-        {% if is_incremental() %}
-            where
-                (
-                    cast(last_modified_date as timestamp_ntz) > (
-                        select
-                            dateadd(
-                                day,
-                                -3,
-                                coalesce(
-                                    max(last_modified_date), '1900-01-01'::timestamp_ntz
-                                )
-                            )
-                        from {{ this }}
-                    )
-                    or (
-                        dbt_valid_to > (
-                            select
-                                dateadd(
-                                    day, -3, coalesce(max(dbt_valid_to), '1900-01-01')
-                                )
-                            from {{ this }}
-                        )
-                    )
-                )
-        {% else %} where 1 = 1
-        {% endif %}
-    ),
+    {% if is_incremental()%}
+    where 
+        cast(_FIVETRAN_SYNCED as timestamp_ntz) > (select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)) from {{ this }})
+    {% endif %}
 
+    ),
     cleaned as (
         select
             concat(
@@ -89,7 +65,9 @@ with
             current_timestamp()::timestamp_ntz as silver_load_date,
             cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
             cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,
-            case when dbt_valid_to is null then 1 else 0 end as is_active
+            case when dbt_valid_to is null then 1 else 0 end as is_active,
+            _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED
+
         from raw
     )
 
