@@ -22,33 +22,11 @@ with
         select *
         from {{ ref("salesforce_campaign_snapshot") }}
         {% if is_incremental() %}
-            where
-                (
-                    cast(last_modified_date as timestamp_ntz) > (
-                        select
-                            dateadd(
-                                day,
-                                -3,
-                                coalesce(
-                                    max(last_modified_date), '1900-01-01'::timestamp_ntz
-                                )
-                            )
-                        from {{ this }}
-                    )
-                    or (
-                        dbt_valid_to > (
-                            select
-                                dateadd(
-                                    day, -3, coalesce(max(dbt_valid_to), '1900-01-01')
-                                )
-                            from {{ this }}
-                        )
-                    )
-                )
-
-        {% else %} where 1 = 1
+           {% if is_incremental()%}
+        where 
+            cast(_FIVETRAN_SYNCED as timestamp_ntz) > (select dateadd(day, -1, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)) from {{ this }})
         {% endif %}
-
+    {% endif %}
     ),
 
     cleaned as (
@@ -71,6 +49,7 @@ with
             cast(created_date as timestamp_ntz) as created_date,
             cast(last_modified_date as timestamp_ntz) as last_modified_date,
             _fivetran_deleted as _fivetran_deleted,
+            _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
             current_timestamp()::timestamp_ntz as silver_load_date,
             cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
             cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,
