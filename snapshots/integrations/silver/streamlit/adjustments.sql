@@ -9,7 +9,7 @@
 {{
     config(
         enabled = var('company','wagway') | lower in ('wagway','playfly','amh','spotless','zeus')
-        and (var("sourcesystem", "streamlit") | lower) in ["streamlit", "netsuite"],
+        and (var("sourcesystem", "streamlit") | lower) in ["streamlit", "netsuite", "sage"],
         database = get_target_database(company),
         target_schema = 'silver',
         alias = sourcesystem ~ '_Adjustments', 
