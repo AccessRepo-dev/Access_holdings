@@ -18,7 +18,6 @@ with source_data as (
             select dateadd(day, -1, coalesce(max(DATE_TIME_CHANGED), '1900-01-01'::timestamp_ntz))
             from {{ this }}
         )
-    or _FIVETRAN_DELETED = true
     {% endif %}
 ),
 
@@ -48,7 +47,8 @@ cleaned as (
         CAST(ORGANIZATION_LEVEL_3_ID AS VARCHAR)             AS ORGANIZATION_LEVEL_3_ID,
         CAST(ORGANIZATION_LEVEL_4_ID AS VARCHAR)             AS ORGANIZATION_LEVEL_4_ID,
         CAST(DATE_TIME_CHANGED AS TIMESTAMP_NTZ)             AS DATE_TIME_CHANGED,
-        CAST(LAST_HIRE_DATE AS DATE)                         AS LAST_HIRE_DATE
+        CAST(LAST_HIRE_DATE AS DATE)                         AS LAST_HIRE_DATE,
+        CAST(_FIVETRAN_DELETED as BOOLEAN)             AS _FIVETRAN_DELETED
 
     from source_data
 )

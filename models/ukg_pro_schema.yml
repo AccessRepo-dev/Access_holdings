@@ -9,4 +9,6 @@ sources:
       - name: COMPANY
       - name: JOB
       - name: ORGANIZATION_LEVEL
+      - name: EARNING_HISTORY_BASE_ELEMENT
+      - name: EARNING
       
