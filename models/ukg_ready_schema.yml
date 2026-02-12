@@ -17,3 +17,4 @@ sources:
       - name: LOOKUP_PAYROLL_TYPES
       - name: LOOKUP_PAY_TYPES
       - name: LOOKUP_TERMINATION_REASONS
+      - name: TIME_ENTRIES

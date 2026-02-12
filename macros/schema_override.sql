@@ -40,7 +40,7 @@
         {{ custom_schema_name | trim }}
 
     {%- elif dbt_env == "Development" -%}
-        {{ default_schema | trim }}_{{ custom_schema_name | trim }}
+        {{ default_schema | trim }}
 
     {%- else -%}
         {{ default_schema | trim }}
