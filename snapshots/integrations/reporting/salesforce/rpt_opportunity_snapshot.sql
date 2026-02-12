@@ -9,6 +9,7 @@
 
 {{
     config(
+        enabled = false,
         database = get_target_database(company),
         target_schema= 'GOLD',
         alias= 'rpt_opportunity_snapshot', 
