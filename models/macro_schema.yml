@@ -139,7 +139,7 @@ sources:
               period: day
 
       # UMICH tables
-      - name: UMICH_SENT
+      - name: UMICH
         config:
           loaded_at_field: date
           freshness:

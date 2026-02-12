@@ -22,13 +22,9 @@ select *
 
 from {{ ref('salesforce_quote_snapshot') }}
 
-    {% if is_incremental() %}
+       {% if is_incremental()%}
     where 
-        (cast(LAST_MODIFIED_DATE as timestamp_ntz) > (select dateadd(day, -3, coalesce(max(LAST_MODIFIED_DATE), '1900-01-01'::timestamp_ntz)) from {{ this }})
-    OR 
-        (dbt_valid_to > (select dateadd(day, -3, coalesce(max(dbt_valid_to), '1900-01-01')) from {{ this }})))
-    {% else %}
-    where 1=1
+        cast(_FIVETRAN_SYNCED as timestamp_ntz) > (select dateadd(day, -3, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)) from {{ this }})
     {% endif %}
 ),
 
@@ -59,6 +55,7 @@ cleaned as (
     TRIM(OWNER_ID) AS OWNER_ID,
     TRIM(PRICEBOOK_2_ID) AS PRICEBOOK_2_ID,
     _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+    _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
     CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,

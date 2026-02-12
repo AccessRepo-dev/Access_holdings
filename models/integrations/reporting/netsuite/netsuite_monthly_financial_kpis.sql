@@ -39,10 +39,6 @@ with
                 end
             ) as other
         from {{ ref("netsuite_fact_transaction") }} f
-        -- left join
-        --     {{ ref('netsuite_transactionaddressmapping') }} ma
-        --     on f.transaction_id = ma.transaction
-        -- left join cleaned_states mad on mad.nkey = ma.address
         left join
             {{ ref("netsuite_dim_coa") }} a
             on f.dim_chart_of_account_id = a.dim_chart_of_account_id
