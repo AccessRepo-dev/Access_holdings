@@ -4,7 +4,7 @@
 
 {{
     config(
-        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
+        enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot"]
         and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database=get_target_database(company),
         alias="fact_opportunity",
