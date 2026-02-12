@@ -7,6 +7,13 @@
 
 {{ config(
     enabled = var('sourcesystem') == 'netsuite',
+    pre_hook=[
+            "{{ replicate_table_from_dev(
+                source_database= this.database,
+                source_schema='FINMAP_DEV',
+                table_name = var('company') ~ '_COA_MAPPING'
+            ) }}"
+        ],
     materialized = 'incremental',
     alias = company ~ '_COA_MAPPING',
     incremental_strategy = 'merge',
