@@ -1,6 +1,16 @@
-{% macro replicate_table_from_dev( source_database, source_schema, table_name) %}
+{% macro replicate_table_from_dev(source_database, source_schema, table_name) %}
     {%- set current_database = source_database -%}
-    {%- set current_schema = target.schema -%}
+    {%- set is_ci = var("is_ci_run", false) -%}
+    {# In CI: use target.schema (default schema) #}
+    {%- if is_ci -%}
+        {%- set current_schema = target.schema -%}
+        {{ log("CI Job: Using target schema: " ~ current_schema, info=True) }}
+
+    {# In CD: use schema from config (dbt_project.yml) #}
+    {%- else -%}
+        {%- set current_schema = this.schema -%}
+        {{ log("CD Job: Using configured schema: " ~ current_schema, info=True) }}
+    {%- endif -%}
     {%- set dbt_env = env_var("DBT_ENVIRONMENT_NAME", "Production") -%}
 
     {# Only run this in non-production environments #}
@@ -20,7 +30,16 @@
             {% set table_count = results.columns[0].values()[0] %}
 
             {% if table_count == 0 %}
-                {{ log("Table '" ~ table_name ~ "' does not exist in " ~ current_schema ~ " schema. Replicating from DEV environment...", info=True) }}
+                {{
+                    log(
+                        "Table '"
+                        ~ table_name
+                        ~ "' does not exist in "
+                        ~ current_schema
+                        ~ " schema. Replicating from DEV environment...",
+                        info=True,
+                    )
+                }}
 
                 {# Create the table by cloning from production #}
                 {% set clone_query %}
@@ -30,13 +49,29 @@
 
                 {% do run_query(clone_query) %}
 
-                {{ log("Successfully replicated '" ~ table_name ~ "' from DEV env!", info=True) }}
+                {{
+                    log(
+                        "Successfully replicated '" ~ table_name ~ "' from DEV env!",
+                        info=True,
+                    )
+                }}
             {% else %}
-                {{ log("Table '" ~ table_name ~ "' already exists. Skipping replication.", info=True) }}
+                {{
+                    log(
+                        "Table '"
+                        ~ table_name
+                        ~ "' already exists. Skipping replication.",
+                        info=True,
+                    )
+                }}
             {% endif %}
         {% endif %}
 
     {% else %}
-        {{ log("Running in environment. Skipping table replication check.", info=True) }}
+        {{
+            log(
+                "Running in environment. Skipping table replication check.", info=True
+            )
+        }}
     {% endif %}
 {% endmacro %}
