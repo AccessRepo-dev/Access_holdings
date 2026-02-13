@@ -23,9 +23,15 @@ WITH base_opp AS (
         fo.probability,
         fo.is_active,
         fo.rank,
+        {% if company == 'playfly'%}
+        COALESCE(STATE, 'Unknown') as hub,
+        {%else%}
+        COALESCE(hub, 'Unknown') as hub,
+        {%endif%}
         fo.dbt_valid_from,
         m.mapped_stage_name,
         m.stage_order,
+        row_number() over(partition by fo.OPPORTUNITY_ID order by fo.DBT_VALID_FROM DESC) as desc_rank,
         DATE_TRUNC('month', od.opportunity_date)::date AS opportunity_month,
         DATE_TRUNC(
             'month',
@@ -39,34 +45,58 @@ WITH base_opp AS (
         ON fo.opportunity_id = od.opportunity_id
     LEFT JOIN {{ref ('hubspot_dim_stage_mapping')}} m
         ON fo.STAGE_KEY = m.stage_key
+    {% if company == 'playfly'%}
+    LEFT JOIN {{ref ('hubspot_dim_location')}} l on l.Id = od.location_id
+    {%endif%}
+    
 ),
+period as (
+    SELECT DISTINCT DATE_TRUNC('month', opportunity_date) AS START_OF_MONTH
+    FROM {{ref('hubspot_dim_opportunity')}}
+),
+open_opp_wa as 
+(
+    SELECT  
+        START_OF_MONTH,
+        HUB,
+        sum(amount*probability/100) as amount
+    from period p 
+    left join  base_opp oo 
+    on  oo.opportunity_month <= p.START_OF_MONTH 
+    and  coalesce(oo.close_month, CURRENT_DATE()+1)  > p.START_OF_MONTH
+    where oo.desc_rank = 1
+    group by START_OF_MONTH ,HUB
+) ,
 opp_amt AS (
     SELECT
         opportunity_month AS stage_date,
+        hub,
         SUM(amount) AS amount,
         SUM(amount * probability / 100) AS weighted_amount
     FROM base_opp
     WHERE rank = 1
-    GROUP BY opportunity_month
+    GROUP BY opportunity_month, hub
 ),
 opp AS (
     SELECT
         'New Opportunity' AS mapped_stage_name,
         opportunity_month AS stage_date,
+        hub,
         COUNT(DISTINCT opportunity_id) AS opp_count_old
     FROM base_opp
-    GROUP BY opportunity_month
+    GROUP BY opportunity_month, hub
 ), 
 ranked_stages AS (
     SELECT
         opportunity_id,
+        hub,
         amount,
         probability,
         is_active,
         mapped_stage_name,
         stage_order,
         close_month AS stage_date,
-
+     
         LAG(amount) OVER (
             PARTITION BY opportunity_id
             ORDER BY stage_order, dbt_valid_from
@@ -87,26 +117,29 @@ closed_amt AS (
     SELECT
         mapped_stage_name,
         stage_date,
+        hub,
         SUM(COALESCE(previous_amount, amount)* COALESCE(previous_prob, probability)/ 100) AS weighted_amount,
         SUM(amount) AS amount
     FROM ranked_stages
     WHERE mapped_stage_name IN ('Closed Won', 'Closed Lost')
       AND is_active = 1
-    GROUP BY mapped_stage_name, stage_date
+    GROUP BY mapped_stage_name, stage_date, hub
 ),
 closed AS (
     SELECT
         mapped_stage_name,
         close_month AS stage_date,
+        hub,
         COUNT(DISTINCT opportunity_id) * -1 AS opp_count_old
     FROM base_opp
     WHERE mapped_stage_name IN ('Closed Won', 'Closed Lost')
-    GROUP BY mapped_stage_name, close_month
+    GROUP BY mapped_stage_name, close_month , hub
 ),
 first_last_amounts AS (
     SELECT
         opportunity_id,
         opportunity_month,
+        hub,
         FIRST_VALUE(amount) OVER (
             PARTITION BY opportunity_id
             ORDER BY dbt_valid_from
@@ -128,42 +161,65 @@ delta_change as (SELECT
     ELSE 'No Change'
     END  AS MAPPED_STAGE_NAME,
     opportunity_month as stage_date,
+    hub,
     0 as opp_old_count
     FROM first_last_amounts
 GROUP BY ALL
    
 ),
 combined AS (
-    SELECT amount,weighted_amount,o.* FROM opp o 
-    left join opp_amt oa on oa.stage_date = o.stage_date
-    UNION ALL
-    SELECT  amount * -1 ,weighted_amount * -1, c.* FROM closed c 
-    left join closed_amt cl on cl.stage_date = c.stage_date
-    and c.mapped_stage_name = cl.mapped_stage_name
-    UNION ALL
-    select * from delta_change
-    where mapped_stage_name <> 'No Change'
+    SELECT 
+        COALESCE(oa.amount, 0) as amount,
+        COALESCE(wa.amount, 0) as weighted_amount,
+        o.mapped_stage_name,
+        o.stage_date,
+        o.hub,
+        o.opp_count_old
+    FROM opp o 
+    LEFT JOIN opp_amt oa ON oa.stage_date = o.stage_date AND oa.hub = o.hub
+    LEFT JOIN open_opp_wa wa on o.stage_date = wa.start_of_month AND wa.hub = o.hub
     
+    UNION ALL
+    
+    SELECT  
+        COALESCE(cl.amount, 0) * -1 as amount,
+        0 as weighted_amount,
+        c.mapped_stage_name,
+        c.stage_date,
+        c.hub,
+        c.opp_count_old
+    FROM closed c 
+    LEFT JOIN closed_amt cl ON cl.stage_date = c.stage_date
+        AND c.mapped_stage_name = cl.mapped_stage_name
+        AND c.hub = cl.hub
+    
+    UNION ALL
+    
+    SELECT 
+        amount,
+        0 as weighted_amount,
+        mapped_stage_name,
+        stage_date,
+        hub,
+        opp_old_count as opp_count_old
+    FROM delta_change
+    WHERE mapped_stage_name <> 'No Change'
 )
 SELECT 
     -- location_id,
     --sales_channel_id,
     SUM(amount) OVER (
-        PARTITION BY mapped_stage_name 
+        PARTITION BY hub,mapped_stage_name 
         ORDER BY stage_date
         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
     ) AS amount,
-     SUM(weighted_amount) OVER (
-        PARTITION BY mapped_stage_name 
-        ORDER BY stage_date
-        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
-    ) AS weighted_amount,
+    weighted_amount,
     mapped_stage_name,
     stage_date,
+    hub,
     SUM(opp_count_old) OVER (
-        PARTITION BY  mapped_stage_name 
+        PARTITION BY  hub, mapped_stage_name 
         ORDER BY stage_date
         ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
     ) AS opp_count
 FROM combined
-

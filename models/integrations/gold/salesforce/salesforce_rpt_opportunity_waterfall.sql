@@ -41,15 +41,14 @@ WITH base_opp AS (
         ON fo.STAGE_KEY = m.stage_key
 ),
 period as (
-    select DISTINCT START_OF_MONTH 
-    FROM DIM_DATE
-    WHERE YEAR >= 2023 and START_OF_MONTH <= DATE_TRUNC('month',CURRENT_DATE())
+    SELECT DISTINCT DATE_TRUNC('month', opportunity_date) AS START_OF_MONTH
+    FROM {{ref('salesforce_dim_opportunity')}}
 ),
 open_opp_wa as 
 (
     SELECT  
         START_OF_MONTH,
-        HUB,
+        oo.HUB,
         sum(amount*probability/100) as amount
     from period p 
     left join  base_opp oo 
@@ -174,7 +173,7 @@ combined AS (
     
     SELECT  
         COALESCE(cl.amount, 0) * -1 as amount,
-        COALESCE(cl.weighted_amount, 0) * -1 as weighted_amount,
+        0 as weighted_amount,
         c.mapped_stage_name,
         c.stage_date,
         c.hub,
