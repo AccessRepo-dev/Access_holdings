@@ -8,7 +8,7 @@
     enabled = var('sourcesystem') == 'sage',
     pre_hook=[
             "{{ replicate_table_from_dev(
-                source_database= this.database,
+                source_database= 'STREAMLIT_APPS',
                 source_schema='FINMAP_DEV',
                 table_name = var('company') ~ '_COA_MAPPING'
             ) }}"
