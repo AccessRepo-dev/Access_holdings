@@ -20,30 +20,10 @@ with
     raw as (
         select *
         from {{ ref("salesforce_opportunity_field_history_snapshot") }}
-        {% if is_incremental() %}
-            where
-                (
-                    _fivetran_synced > (
-                        select
-                            dateadd(
-                                day, -3, coalesce(max(_fivetran_synced), '1900-01-01')
-                            )
-                        from {{ this }}
-                    )
-                    or (
-                        dbt_valid_to > (
-                            select
-                                dateadd(
-                                    day, -3, coalesce(max(dbt_valid_to), '1900-01-01')
-                                )
-                            from {{ this }}
-                        )
-                    )
-                )
-
-        {% else %} where 1 = 1
-        {% endif %}
-
+    {% if is_incremental()%}
+    where 
+        cast(_FIVETRAN_SYNCED as timestamp_ntz) > (select dateadd(day, -3, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)) from {{ this }})
+    {% endif %}
     ),
 
     cleaned as (
@@ -63,6 +43,7 @@ with
             current_timestamp()::timestamp_ntz as silver_load_date,
             cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
             cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,
+            _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
             case when dbt_valid_to is null then 1 else 0 end as is_active
         from raw
     )

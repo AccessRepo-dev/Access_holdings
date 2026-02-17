@@ -4,8 +4,7 @@
       
 {{
     config(
-        enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"]
-        and (var("company", "zeus") | lower) in ["zeus"],
+    enabled=(var("sourcesystem", "salesforce") | lower) in ["salesforce"] and (var("company", "zeus") | lower) in ["zeus"],
     database=get_target_database(var('company')),
     materialized = 'incremental',
     alias = sourcesystem ~ '_FORECASTING_QUOTA',
@@ -19,6 +18,11 @@ with raw as
 (
 select *
 from {{ get_raw_source(company, sourcesystem, 'FORECASTING_QUOTA') }}
+    {% if is_incremental()%}
+    where 
+        cast(_FIVETRAN_SYNCED as timestamp_ntz) > (select dateadd(day, -3, coalesce(max(_FIVETRAN_SYNCED), '1900-01-01'::timestamp_ntz)) from {{ this }})
+    {% endif %}
+
 ),
 
 
@@ -46,6 +50,7 @@ select
     CAST(CREATED_DATE AS TIMESTAMP_NTZ)                AS CREATED_DATE,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ)         AS LAST_MODIFIED_DATE,
     _FIVETRAN_DELETED,
+    _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
  
 from raw

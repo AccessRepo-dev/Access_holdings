@@ -1,0 +1,8 @@
+sources:
+  - name: amh_paycom_raw
+    database: amh_raw
+    schema: paycom
+    tables:
+      - name: COMPANY_LOCATIONS
+      - name: COMPANY_ESTABLISHMENTS
+     
