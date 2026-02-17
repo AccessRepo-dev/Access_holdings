@@ -8,7 +8,7 @@
 
 {{
     config(
-        enabled = var('company','wagway') | lower in ('wagway','playfly','amh','spotless','zeus')
+        enabled = var('company','wagway') | lower in ('wagway','playfly','amh','spotless')
         and (var("sourcesystem", "netsuite") | lower) in ["streamlit", "netsuite", "sage"],
         database = get_target_database(company),
         target_schema = 'silver',
