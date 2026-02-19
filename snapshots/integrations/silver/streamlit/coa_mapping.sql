@@ -8,7 +8,7 @@
 
 {{
     config(
-        enabled = var('company','wagway') | lower in ('wagway','playfly','amh','spotless')
+        enabled = var('company','wagway') | lower in ('wagway','playfly','amh','spotless','zeus')
         and (var("sourcesystem", "netsuite") | lower) in ["streamlit", "netsuite", "sage"],
         database = get_target_database(company),
         target_schema = 'silver',
@@ -61,5 +61,6 @@ SELECT
     DEBT_MAPPING,
     DATA_LOADED_AT
 FROM {{ source(src, src_table) }}
+
 
 {% endsnapshot %}
