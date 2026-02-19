@@ -39,7 +39,7 @@ WITH base_opp AS (
         ON fo.opportunity_id = od.opportunity_id
     LEFT JOIN {{ref ('salesforce_dim_stage_mapping')}} m
         ON fo.STAGE_KEY = m.stage_key
-    where od.hub <> 'Fire & Security M&A'
+    where coalesce(od.hub,'UNKNOWN') <> 'Fire & Security M&A'
 ),
 period as (
     SELECT 
