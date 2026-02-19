@@ -1,8 +1,10 @@
 {% set company = var("company", "wagway") | lower %}
-{{ config(enabled=var("sourcesystem", "ukg_ready") | lower == "ukg_ready") }}
+{% set sourcesystem = var("sourcesystem", "ukg_ready") | lower %}
 
 {{
     config(
+        enabled=(var("sourcesystem", "ukg_ready") | lower) in ["ukg_ready"]
+        and (var("company", "wagway") | lower) in ["wagway"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_hr_company",

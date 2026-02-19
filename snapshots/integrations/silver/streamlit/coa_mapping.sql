@@ -62,4 +62,5 @@ SELECT
     DATA_LOADED_AT
 FROM {{ source(src, src_table) }}
 
+
 {% endsnapshot %}

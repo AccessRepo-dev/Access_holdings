@@ -1,9 +1,10 @@
 {% set company = var("company", "zeus") | lower %}
 {% set sourcesystem = var("sourcesystem", "adp_workforce_now") | lower %}
-{{ config(enabled=var("sourcesystem", "adp_workforce_now") == "adp_workforce_now") }}
 
 {{
     config(
+        enabled=(var("sourcesystem", "adp_workforce_now") | lower) in ["adp_workforce_now"]
+        and (var("company", "zeus") | lower) in ["zeus"],
         database=get_target_database(company),
         materialized="incremental",
         incremental_strategy="merge",

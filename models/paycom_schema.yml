@@ -5,4 +5,6 @@ sources:
     tables:
       - name: COMPANY_LOCATIONS
       - name: COMPANY_ESTABLISHMENTS
+      - name: EMPLOYEES
+      - name: PUNCH_HISTORY
      
