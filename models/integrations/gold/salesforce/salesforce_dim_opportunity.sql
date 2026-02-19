@@ -134,16 +134,16 @@ with
                 || coalesce(a.billing_country, '')
             ) as location_id,
             o.close_date,
-            case when dsm.mapped_stage_name = 'Closed Won' then 1 else 0 end as is_won,
-            case when dsm.mapped_stage_name in ('Closed Won', 'Closed Lost') then 1 else 0 end as is_closed,
+            case when lower(dsm.mapped_stage_name) like '%closed won%' then 1 else 0 end as is_won,
+            case when lower(dsm.mapped_stage_name) like '%closed%' then 1 else 0 end as is_closed,
             -- o.is_won,
             -- o.is_closed,
             hs.opportunity_date as opp_date,
             hs.proposal_requested_date as proposal_requested_date,
             hs.proposal_sent_date as proposal_sent_date,
             hs.negotiation_date as negotiation_date,
-            hs.closed_won_date as closed_won_date,
-            hs.closed_lost_date as closed_lost_date,
+            coalesce(hs.closed_won_date,sd.closed_won_date) as closed_won_date,
+            coalesce(hs.closed_lost_date, sd.closed_lost_date)  as closed_lost_date,
             -- coalesce(hs.opportunity_date, cs.opportunity_date) as opp_date,
             -- coalesce(
             --     hs.proposal_requested_date, cs.proposal_requested_date
@@ -172,6 +172,7 @@ with
             hist_stage_dates_by_opp hs
             on hs.opportunity_id = o.id
         left join Last_Stage h on h.opportunity_id = o.id
+        left join stage_dates_by_opp sd on o.id = sd.opportunity_id
         
         where
             o.is_active = 1
@@ -182,7 +183,6 @@ with
             {% endif %}
 
     )
-
 select
     opportunity_id,
     opportunity_name,
@@ -244,11 +244,13 @@ select
 
     case
         when is_won = 1 then cast(closed_won_date as date)
-    end as closed_won_date,
+    end as 
+    closed_won_date,
 
     case
         when is_won = 0 and is_closed = 1 then cast(closed_lost_date as date)
-    end as closed_lost_date,
+    end as
+    closed_lost_date,
     native_lost_stage,
     mapped_lost_stage,
     null as lead_status,

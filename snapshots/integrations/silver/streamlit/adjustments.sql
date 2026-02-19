@@ -90,4 +90,3 @@ SELECT
 FROM {{ source(src, src_table) }}
 {%endif%}
 {% endsnapshot %}
-
