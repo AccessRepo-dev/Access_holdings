@@ -1,8 +1,10 @@
-{% set company = var('company', 'playfly') | lower %}
-{% set sourcesystem  = var('sourcesystem', 'ukg_pro') | lower %}
-{{ config(enabled = var('sourcesystem', 'ukg_pro') == 'ukg_pro') }}
+{% set company = var("company", "playfly") | lower %}
+{% set sourcesystem = var("sourcesystem", "ukg_pro") | lower %}
 
-{{ config(
+{{
+    config(
+        enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
+        and (var("company", "playfly") | lower) in ["playfly"],
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',

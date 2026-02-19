@@ -1,8 +1,10 @@
 {% set company = var("company", "playfly") | lower %}
-{{ config(enabled=var("sourcesystem", "ukg_pro") | lower == "ukg_pro") }}
+{% set sourcesystem = var("sourcesystem", "ukg_pro") | lower %}
 
 {{
     config(
+        enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
+        and (var("company", "playfly") | lower) in ["playfly"],
         database=get_target_database(company),
         alias="fact_employee_salary_details",
         incremental_strategy="merge",

@@ -1,0 +1,23 @@
+Termination_Type,Mapped_Termination_Type
+,Unknown
+Deceased,Involuntary
+Dishonesty/Fasification/Theft,Involuntary
+Personal Life Circumstance,Voluntary
+Other Employment,Voluntary
+Scheduling Conflict,Voluntary
+Management/Supervisor,Voluntary
+Site Contract Termination,Involuntary
+Compensation,Voluntary
+Military,Voluntary
+Reduction in Force/Layoff,Involuntary
+Declined Offer,Voluntary
+Job Abandonment,Voluntary
+Displeasure w/ Role Expectations,Involuntary
+Medical/Sickness,Voluntary
+Admin-Do Not Select,Involuntary
+Unsatisfactory Performance,Involuntary
+End of Seasonal Employment,Involuntary
+Retirement,Involuntary
+Policy Violation,Involuntary
+Hiring Requirements Not Met,Involuntary
+Conviction of a Crime,Involuntary

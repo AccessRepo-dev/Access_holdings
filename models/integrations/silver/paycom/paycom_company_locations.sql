@@ -1,10 +1,10 @@
-{% set company = var("company", "amh") %}
-{% set sourcesystem = var("sourcesystem", "paycom") %}
-
+{% set company = var("company", "amh") | lower %}
+{% set sourcesystem = var("sourcesystem", "paycom") | lower %}
 
 {{
     config(
-        enabled=(var("sourcesystem", "paycom") | lower) in ["paycom"] and (var("company", "amh") | lower) in ["amh"],
+        enabled=(var("sourcesystem", "paycom") | lower) in ["paycom"]
+        and (var("company", "amh") | lower) in ["amh"],
         database = get_target_database(company),
         alias = sourcesystem ~ '_COMPANY_LOCATIONS',
         schema="silver",
