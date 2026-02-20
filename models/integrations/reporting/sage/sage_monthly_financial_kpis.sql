@@ -9,34 +9,35 @@
 ) }}
 
 with Agg as (
+
 SELECT
     PERIOD_START_DATE ,
-    DIM_DEPARTMENT_ID,
-    NULL AS state_key,
     DIM_SUBSIDIARY_ID,
+    DIM_DEPARTMENT_ID,
     DIM_CLASS_ID,
-    SUM(CASE WHEN a.METRIC_L1 = 'Revenue' THEN AMOUNT ELSE 0 END) AS REVENUE ,
+    NULL AS state_key,
+    SUM(CASE WHEN a.METRIC_L1 = 'Revenue' THEN AMOUNT ELSE 0 END) AS REV ,
     SUM(CASE WHEN a.METRIC_L1 = 'COGS' THEN AMOUNT ELSE 0 END) AS COGS,
     SUM(CASE WHEN a.METRIC_L1 = 'Field Corporate Expenses' THEN AMOUNT ELSE 0 END) AS FCE,
-    SUM(CASE WHEN a.METRIC_L1 = 'Post Corporate EBITDA' THEN AMOUNT ELSE 0 END) AS PCE,
+    SUM(CASE WHEN a.METRIC_L1 = 'Corporate Expenses' THEN AMOUNT ELSE 0 END) AS CE,
+    SUM(case when a.metric_l1 = 'Operating Expenses' then amount else 0 end) as oe,
     SUM(CASE WHEN a.METRIC_L1 = 'Other (Income) / Expense' THEN AMOUNT ELSE 0 END) AS Other
-FROM {{ ref(sourcesystem ~ '_fact_transaction') }} f
-    LEFT JOIN  {{ ref(sourcesystem ~ '_dim_coa') }} a
+FROM {{database}}.GOLD.FACT_TRANSACTION f
+    LEFT JOIN {{database}}.GOLD.DIM_CHART_OF_ACCOUNT  a
     ON f.DIM_CHART_OF_ACCOUNT_ID = a.DIM_CHART_OF_ACCOUNT_ID
     GROUP BY ALL
 )
 
 SELECT 
-    PERIOD_START_DATE,
-    DIM_DEPARTMENT_ID,
-    state_key,
     DIM_SUBSIDIARY_ID,
+    DIM_DEPARTMENT_ID,
     DIM_CLASS_ID,
-    REVENUE,
-    -1 * (REVENUE + COGS ) AS GROSS_PROFIT,
-    REVENUE + COGS + FCE + PCE + Other AS EBITDA  
+    STATE_KEY,
+    PERIOD_START_DATE,
+    REV * -1 AS REVENUE,
+    -1 * (REV + COGS ) AS GROSS_PROFIT,
+    -1 * (REV + COGS + FCE + CE + OE + Other) AS EBITDA  
 FROM Agg
-
 
 
 
