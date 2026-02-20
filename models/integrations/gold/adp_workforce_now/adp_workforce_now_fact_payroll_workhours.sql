@@ -3,7 +3,8 @@
 
 {{
     config(
-        enabled=(var("sourcesystem", "adp_workforce_now") | lower) in ["adp_workforce_now"]
+        enabled=(var("sourcesystem", "adp_workforce_now") | lower)
+        in ["adp_workforce_now"]
         and (var("company", "zeus") | lower) in ["zeus"],
         database=get_target_database(company),
         alias="fact_payroll_workhours",
@@ -42,8 +43,8 @@ with
     ),
 
     hours as (
-        SELECT 
-        associate_oid,
+        select
+            associate_oid,
             worker_id,
             entry_date,
             case
@@ -55,7 +56,7 @@ with
                         + coalesce(seconds, 0) / 3600
                     )
                 else 0
-            end as total_hours_worked,
+            end as total_hours_worked_cte,
             case
                 when bucket = 'Overtime'
                 then
@@ -65,7 +66,7 @@ with
                         + coalesce(seconds, 0) / 3600
                     )
                 else 0
-            end as bonus_total_ot_hours,
+            end as bonus_total_ot_hours_cte,
             case
                 when bucket = 'Paid Absence'
                 then
@@ -86,13 +87,37 @@ with
                     )
                 else 0
             end as unpaid_absence_hours
-            FROM hours_cte
-            GROUP BY 1,2,3, bucket
-    )
-    ,
+        from hours_cte
+        group by 1, 2, 3, bucket
+    ),
+    pay_rate as (
+
+        select
+
+            effective_date as effective_from,
+            case
+                when
+                    row_number() over (
+                        partition by worker_id order by effective_date desc
+                    )
+                    = 1
+                then null
+                else
+                    lag(effective_date) over (
+                        partition by worker_id order by effective_date desc
+                    )
+            end as effective_to,
+            p.worker_id,
+            w.associate_oid,
+            annual_rate_amount_amount_value,
+            hourly_rate_amount_amount_value
+        from {{ ref("adp_workforce_now_worker_base_remuneration") }} p
+        left join {{ ref('adp_workforce_now_worker') }} w ON w.id = p.worker_id 
+
+    ),
     source as (
         select
-            cast(null as int) as annual_salary,
+            annual_rate_amount_amount_value as annual_salary,
             null as currency_code,
             h.associate_oid as dim_employee_id,
             h.associate_oid as employee_id,
@@ -103,20 +128,23 @@ with
             cast(null as int) as total_tax_amount,
             cast(null as int) as net_amount,
             cast(null as int) as bonus_total_hours,
-            cast(null as int) as hourly_pay_rate,
-            cast(null as int) as total_deduction_amount,
-            cast(null as int) as total_earnings_amount,
+            hourly_rate_amount_amount_value as hourly_pay_rate,
             8 as total_hours,
-            sum(h.total_hours_worked) as total_hours_worked,
-            sum(h.bonus_total_ot_hours) as bonus_total_ot_hours,
+            sum(h.total_hours_worked_cte) as total_hours_worked,
+            sum(h.bonus_total_ot_hours_cte) as bonus_total_ot_hours,
             sum(h.paid_absence_hours) as paid_absence_hours,
             sum(h.unpaid_absence_hours) as unpaid_absence_hours,
+            cast(null as int) as total_deduction_amount,
+            (total_hours_worked + bonus_total_ot_hours)* hourly_pay_rate as total_earnings_amount,
             h.entry_date as pay_date,
             current_timestamp()::timestamp_ntz as gold_load_date
         from hours h
         left join
             {{ ref("adp_workforce_now_dim_employee") }} e
             on e.dim_employee_id = h.associate_oid
+        left join
+            pay_rate p
+            on p.associate_oid = h.associate_oid and h.entry_date >= p.effective_from and (h.entry_date <= p.effective_to OR p.effective_to is null)
         group by
             h.worker_id,
             h.associate_oid,
@@ -124,7 +152,9 @@ with
             dim_job_id,
             dim_location_id,
             dim_organization_level_id,
-            entry_date
+            entry_date,
+            annual_rate_amount_amount_value,
+            hourly_rate_amount_amount_value
     )
 select *
 from source

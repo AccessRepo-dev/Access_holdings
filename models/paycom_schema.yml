@@ -7,4 +7,5 @@ sources:
       - name: COMPANY_ESTABLISHMENTS
       - name: EMPLOYEES
       - name: PUNCH_HISTORY
+      - name: EMPLOYEE_SENSITIVE
      
