@@ -4,16 +4,76 @@
 {{ config(enabled = var('sourcesystem', 'none') == 'netsuite') }}
 
 
+{% set hook_src = var('company') | lower ~ '_' ~ var('sourcesystem') | lower ~ '_raw' %}
 
 {{ config(
     enabled = var('sourcesystem') == 'netsuite',
     pre_hook=[
-            "{{ replicate_table_from_dev(
-                source_database= 'STREAMLIT_APPS',
-                source_schema='FINMAP_DEV',
-                table_name = var('company') ~ '_COA_MAPPING'
-            ) }}"
-        ],
+        "{{ replicate_table_from_dev(
+            source_database= 'STREAMLIT_APPS',
+            source_schema='FINMAP_DEV',
+            table_name = var('company') ~ '_COA_MAPPING'
+        ) }}",
+        """
+         {% if is_incremental() %}
+MERGE INTO {{ this }} tgt
+USING (
+    SELECT
+        t.COA_ID,
+        COALESCE(a.FULLNAME, 'Unknown') AS ACCOUNT_NAME,
+        COALESCE(s.NAME, 'Unknown')     AS SUBSIDIARY_NAME,
+        COALESCE(c.NAME, 'Unknown')     AS CLASS_NAME,
+        COALESCE(d.FULLNAME, 'Unknown') AS DEPARTMENT_NAME,
+        {% if var('company') | lower == 'wagway' %}
+        COALESCE(l.NAME, 'Unknown')     AS LOCATION_NAME,
+        COALESCE(ad.NAME, 'Unknown')    AS ADJUSTMENT_NAME
+        {% else %}
+        COALESCE(l.NAME, 'Unknown')     AS LOCATION_NAME,
+        COALESCE(ad.NAME, 'Unknown')    AS ADJUSTMENT_NAME
+        {% endif %}
+
+    FROM (SELECT DISTINCT COA_ID, ACCOUNT_ID, SUBSIDIARY_ID, CLASS_ID, LOCATION_ID, DEPARTMENT_ID, ADJUSTMENT_ID FROM {{ this }}) t
+
+    LEFT JOIN {{ source(var('company') | lower ~ '_' ~ var('sourcesystem') | lower ~ '_raw', 'ACCOUNT') }} a
+        ON a.ID = t.ACCOUNT_ID
+    LEFT JOIN {{ source(var('company') | lower ~ '_' ~ var('sourcesystem') | lower ~ '_raw', 'SUBSIDIARY') }} s
+        ON s.ID = t.SUBSIDIARY_ID
+    LEFT JOIN {{ source(var('company') | lower ~ '_' ~ var('sourcesystem') | lower ~ '_raw', 'CLASSIFICATION') }} c
+        ON c.ID = t.CLASS_ID
+    LEFT JOIN {{ source(var('company') | lower ~ '_' ~ var('sourcesystem') | lower ~ '_raw', 'DEPARTMENT') }} d
+        ON d.ID = t.DEPARTMENT_ID
+    {% if var('company') | lower == 'wagway' %}
+    LEFT JOIN {{ source(var('company') | lower ~ '_' ~ var('sourcesystem') | lower ~ '_raw', 'CUSTOMRECORD_CSEG_CP_STORE_LOC') }} l
+        ON l.ID = t.LOCATION_ID
+    LEFT JOIN {{ source(var('company') | lower ~ '_' ~ var('sourcesystem') | lower ~ '_raw', 'CUSTOMRECORD_CSEG1') }} ad
+        ON ad.ID = t.ADJUSTMENT_ID
+    {% else %}
+    LEFT JOIN {{ source(var('company') | lower ~ '_' ~ var('sourcesystem') | lower ~ '_raw', 'LOCATION') }} l
+        ON l.ID = t.LOCATION_ID
+    LEFT JOIN {{ source(var('company') | lower ~ '_' ~ var('sourcesystem') | lower ~ '_raw', 'CUSTOMRECORD_CSEG2') }} ad
+        ON ad.ID = t.ADJUSTMENT_ID
+    {% endif %}
+
+) src ON tgt.COA_ID = src.COA_ID
+
+WHEN MATCHED AND NOT (
+    EQUAL_NULL(tgt.ACCOUNT_NAME,    src.ACCOUNT_NAME)    AND
+    EQUAL_NULL(tgt.SUBSIDIARY_NAME, src.SUBSIDIARY_NAME) AND
+    EQUAL_NULL(tgt.CLASS_NAME,      src.CLASS_NAME)      AND
+    EQUAL_NULL(tgt.DEPARTMENT_NAME, src.DEPARTMENT_NAME) AND
+    EQUAL_NULL(tgt.LOCATION_NAME,   src.LOCATION_NAME)   AND
+    EQUAL_NULL(tgt.ADJUSTMENT_NAME, src.ADJUSTMENT_NAME)
+)
+THEN UPDATE SET
+    tgt.ACCOUNT_NAME    = src.ACCOUNT_NAME,
+    tgt.SUBSIDIARY_NAME = src.SUBSIDIARY_NAME,
+    tgt.CLASS_NAME      = src.CLASS_NAME,
+    tgt.DEPARTMENT_NAME = src.DEPARTMENT_NAME,
+    tgt.LOCATION_NAME   = src.LOCATION_NAME,
+    tgt.ADJUSTMENT_NAME = src.ADJUSTMENT_NAME
+{% endif %}
+        """
+    ],
     materialized = 'incremental',
     alias = company ~ '_COA_MAPPING',
     incremental_strategy = 'merge',
