@@ -46,15 +46,3 @@
         {{ default_schema | trim }}
     {%- endif -%}
 {%- endmacro %}
-
-{# This affects ONLY SNAPSHOTS #}
-{% macro generate_schema_name_for_env(custom_schema_name, node) -%}
-    {%- set default_schema = target.schema -%}
-    {%- set is_ci = var("is_ci_run", false) -%}
-    
-    {%- if is_ci -%}
-        {{ default_schema | trim }}
-    {%- else -%}
-        {{ custom_schema_name | trim }}
-    {%- endif -%}
-{%- endmacro %}
