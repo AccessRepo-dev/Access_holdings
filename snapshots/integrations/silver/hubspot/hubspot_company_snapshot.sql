@@ -20,7 +20,7 @@
         enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
         and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database = get_raw_database(company),
-        target_schema= snapshot_schema,
+        target_schema= target_snapshot_schema(sourcesystem),
         alias= sourcesystem ~ '_COMPANY', 
         unique_key='id',
         strategy='timestamp',
