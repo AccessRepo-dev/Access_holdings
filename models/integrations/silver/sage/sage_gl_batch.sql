@@ -11,7 +11,11 @@
 
 with source_data as (
     select *
+     {%  if company == 'spotless'%}
+    from {{ get_raw_source(company, sourcesystem, 'GL_BATCH_BKP') }}
+    {% else %}
     from {{ get_raw_source(company, sourcesystem, 'GL_BATCH') }}
+    {%endif%}
     {% if is_incremental() %}
     where 
         cast(WHENMODIFIED as timestamp_ntz) > (

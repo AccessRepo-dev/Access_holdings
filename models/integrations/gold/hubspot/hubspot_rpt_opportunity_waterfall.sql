@@ -24,25 +24,32 @@ WITH base_opp AS (
         fo.is_active,
         fo.rank,
         fo.dbt_valid_from,
-        m.mapped_stage_name,
-        m.stage_order,
         row_number() over(partition by fo.OPPORTUNITY_ID order by fo.DBT_VALID_FROM DESC) as desc_rank,
-        DATE_TRUNC('month', od.opportunity_date)::date AS opportunity_month,
-        DATE_TRUNC(
-            'month',
-            CASE
-                WHEN m.mapped_stage_name = 'Closed Won'  THEN od.closed_won_date
-                WHEN m.mapped_stage_name = 'Closed Lost' THEN od.closed_lost_date
-            END
-        )::date AS close_month
+        {% if company == 'playfly' %}
+            m.mapped_stage_name,
+            fo.opportunity_id as count_id, 
+            DATE_TRUNC('month', od.opportunity_date)::date AS opportunity_month,
+            DATE_TRUNC(
+                'month',
+                CASE
+                    WHEN m.mapped_stage_name = 'Closed Won'  THEN od.closed_won_date
+                    WHEN m.mapped_stage_name = 'Closed Lost' THEN od.closed_lost_date
+                END
+            )::date AS close_month
+        {% else %} --b2b
+             od.contact_id as count_id,
+            od.lead_status as mapped_stage_name,
+            DATE_TRUNC('month',od.contact_date)::date AS opportunity_month,
+            DATE_TRUNC('month',od.contact_close_date)::date AS close_month
+        {% endif %}
+
+
+
     FROM  {{ref('hubspot_fact_opportunity')}}  fo
     LEFT JOIN {{ref ('hubspot_dim_opportunity') }} od
         ON fo.opportunity_id = od.opportunity_id
     LEFT JOIN {{ref ('hubspot_dim_stage_mapping')}} m
         ON fo.STAGE_KEY = m.stage_key
-    {% if company == 'playfly'%}
-    LEFT JOIN {{ref ('hubspot_dim_location')}} l on l.Id = od.location_id
-    {%endif%}
     
 ),
 period as (
@@ -74,52 +81,26 @@ opp AS (
     SELECT
         'New Opportunity' AS mapped_stage_name,
         opportunity_month AS stage_date,
-        COUNT(DISTINCT opportunity_id) AS opp_count_old
+        COUNT(DISTINCT count_id) AS opp_count_old
     FROM base_opp
     GROUP BY opportunity_month
 ), 
-ranked_stages AS (
-    SELECT
-        opportunity_id,
-        amount,
-        probability,
-        is_active,
-        mapped_stage_name,
-        stage_order,
-        close_month AS stage_date,
-     
-        LAG(amount) OVER (
-            PARTITION BY opportunity_id
-            ORDER BY stage_order, dbt_valid_from
-        ) AS previous_amount,
-
-        LAG(probability) OVER (
-            PARTITION BY opportunity_id
-            ORDER BY stage_order, dbt_valid_from
-        ) AS previous_prob,
-
-        LAG(mapped_stage_name) OVER (
-            PARTITION BY opportunity_id
-            ORDER BY stage_order, dbt_valid_from
-        ) AS previous_stage_name
-    FROM base_opp
-),
 closed_amt AS (
     SELECT
         mapped_stage_name,
-        stage_date,
-        SUM(COALESCE(previous_amount, amount)* COALESCE(previous_prob, probability)/ 100) AS weighted_amount,
+        close_month AS stage_date,
+        --SUM(COALESCE(previous_amount, amount)* COALESCE(previous_prob, probability)/ 100) AS weighted_amount,
         SUM(amount) AS amount
-    FROM ranked_stages
+    FROM base_opp
     WHERE mapped_stage_name IN ('Closed Won', 'Closed Lost')
       AND is_active = 1
-    GROUP BY mapped_stage_name, stage_date
+    GROUP BY mapped_stage_name, close_month
 ),
 closed AS (
     SELECT
         mapped_stage_name,
         close_month AS stage_date,
-        COUNT(DISTINCT opportunity_id) * -1 AS opp_count_old
+        COUNT(DISTINCT count_id) * -1 AS opp_count_old
     FROM base_opp
     WHERE mapped_stage_name IN ('Closed Won', 'Closed Lost')
     GROUP BY mapped_stage_name, close_month 
