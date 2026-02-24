@@ -12,7 +12,11 @@
 with source_data as (
 
     select *
+    {% company == 'spotless'%}
     from {{ get_raw_source(company, sourcesystem, 'GL_ENTRY_BKP') }}
+    {% else %}
+    from {{ get_raw_source(company, sourcesystem, 'GL_ENTRY') }}
+    {%endif%}
     where lower(STATE) = 'posted' 
     {% if is_incremental() %}
         and  
