@@ -12,7 +12,7 @@
 with source_data as (
 
     select *
-    {% company == 'spotless'%}
+    {% if company == 'spotless'%}
     from {{ get_raw_source(company, sourcesystem, 'GL_ENTRY_BKP') }}
     {% else %}
     from {{ get_raw_source(company, sourcesystem, 'GL_ENTRY') }}
