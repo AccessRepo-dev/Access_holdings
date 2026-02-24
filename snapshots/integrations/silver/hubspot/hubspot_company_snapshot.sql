@@ -7,10 +7,10 @@
 {# Determine schema based on CI/CD mode #}
 {% if is_ci %}
     {% set snapshot_schema = target.schema %}
-    {{ log("🔵 CI MODE - Using schema: " ~ snapshot_schema, info=True) }}
+    {{ log("CI MODE - Using schema: " ~ snapshot_schema, info=True) }}
 {% else %}
-    {% set snapshot_schema = sourcesystem | upper ~ '_SNAPSHOTS' %}
-    {{ log("🟢 CD MODE - Using schema: " ~ snapshot_schema, info=True) }}
+    {% set snapshot_schema = target_snapshot_schema(sourcesystem) %}
+    {{ log("CD MODE - Using schema: " ~ snapshot_schema, info=True) }}
 {% endif %}
  
       
@@ -20,7 +20,7 @@
         enabled=(var("sourcesystem", "hubspot") | lower) in ["hubspot", "hubspot_pawville"]
         and (var("company", "amh") | lower) in ["wagway", "playfly", "amh"],
         database = get_raw_database(company),
-        target_schema= target_snapshot_schema(sourcesystem),
+        target_schema= snapshot_schema,
         alias= sourcesystem ~ '_COMPANY', 
         unique_key='id',
         strategy='timestamp',
