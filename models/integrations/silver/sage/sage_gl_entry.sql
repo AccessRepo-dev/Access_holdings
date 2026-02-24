@@ -12,7 +12,7 @@
 with source_data as (
 
     select *
-    from {{ get_raw_source(company, sourcesystem, 'GL_ENTRY') }}
+    from {{ get_raw_source(company, sourcesystem, 'GL_ENTRY_BKP') }}
     where lower(STATE) = 'posted' 
     {% if is_incremental() %}
         and  
