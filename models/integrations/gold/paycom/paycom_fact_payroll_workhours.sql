@@ -99,7 +99,7 @@ with
             cast(null as int) as bonus_total_hours,
             es.hourly_salary as hourly_pay_rate,
             cast(null as int) as total_deduction_amount,
-            cast(null as int) as total_hours,  -- Standard hours expected
+            e.scheduled_work_hours as total_hours,  -- Standard hours expected
             h.total_hours_worked,  -- REMOVE SUM() - already aggregated
             null as bonus_total_ot_hours,
             case
