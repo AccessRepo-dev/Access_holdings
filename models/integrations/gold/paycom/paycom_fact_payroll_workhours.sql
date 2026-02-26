@@ -94,18 +94,18 @@ with
             e.dim_location_id,
             e.dim_job_id,
             null as dim_organization_level_id,
-            cast(null as int) as total_tax_amount,
-            cast(null as int) as net_amount,
-            cast(null as int) as bonus_total_hours,
+            cast(null as float) as total_tax_amount,
+            cast(null as float) as net_amount,
+            cast(null as float) as bonus_total_hours,
             es.hourly_salary as hourly_pay_rate,
-            cast(null as int) as total_deduction_amount,
+            cast(null as float) as total_deduction_amount,
             e.scheduled_work_hours as total_hours,  -- Standard hours expected
             h.total_hours_worked,  -- REMOVE SUM() - already aggregated
-            null as bonus_total_ot_hours,
+            cast(null as float) as bonus_total_ot_hours,
             case
                 when h.shift_details = 'HR Entry (8h)' then h.total_hours_worked else 0
             end as paid_absence_hours,  -- REMOVE SUM() - already aggregated
-            null as unpaid_absence_hours,
+            cast(null as float) as unpaid_absence_hours,
             case
                 when pay_class in ('SAL', 'RIS')
                 then annual_salary / 250

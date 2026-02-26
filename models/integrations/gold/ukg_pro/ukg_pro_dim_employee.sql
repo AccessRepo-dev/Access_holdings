@@ -40,6 +40,8 @@ with
             cast(date_of_termination as date) as termination_date,
             termination_reason_description as termination_reason,
             case
+                when date_of_termination is null 
+                then ''
                 when term_type = 'I'
                 then 'Involuntary'
                 when term_type = 'V'

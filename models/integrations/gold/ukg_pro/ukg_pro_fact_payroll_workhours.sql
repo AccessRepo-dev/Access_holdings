@@ -31,6 +31,8 @@ with
             total_earnings_amount,
             total_hours,
             total_hours_worked,
+            cast(null as int) as unpaid_absence_hours,
+            cast(null as int) as paid_absemce_hours,
             pay_date
         from {{ ref("ukg_pro_pay_register") }}
         where _fivetran_deleted = false
