@@ -21,6 +21,7 @@ with
                 coalesce(home_work_location_address_city_name, '')
                 || coalesce(home_work_location_address_country_code, '')
             ) as dim_location_id,
+            null as location,
             null as state_key,
             home_work_location_address_city_name as city,
             home_work_location_address_country_code as country_code,

@@ -199,7 +199,7 @@ seeds:
     hubspot:
       +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
       +schema: SILVER
-    access:
+    ukg_pro:
       +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
       +schema: SILVER
     adp_workforce_now:

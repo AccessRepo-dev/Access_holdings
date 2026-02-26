@@ -18,6 +18,7 @@ with
         select
 
             id as dim_location_id,
+            null as location,
             md5(coalesce(state, '')) as STATE_KEY,
             city,
             country_code,

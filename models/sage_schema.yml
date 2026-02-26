@@ -88,7 +88,6 @@ sources:
 
       - name: VENDOR
         <<: *freshness_sage_defaults
-
       - name: GL_BATCH_BKP
         <<: *freshness_sage_defaults
       - name: GL_ENTRY_BKP
