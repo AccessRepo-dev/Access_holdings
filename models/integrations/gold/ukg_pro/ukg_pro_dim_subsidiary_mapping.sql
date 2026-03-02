@@ -21,7 +21,7 @@ with
             HR_Company_Name AS COMPANY_NAME,
             HR_ID as DIM_COMPANY_ID,
             current_timestamp()::timestamp_ntz as gold_load_date
-        from {{ ref("subsidiary_mapping") }}
+        from {{ source('playfly_ukg_pro_silver',"playfly_subsidiary_mapping") }}
 
     )
 select *

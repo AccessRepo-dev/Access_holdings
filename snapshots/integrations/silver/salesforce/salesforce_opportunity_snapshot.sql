@@ -2,7 +2,16 @@
 
 {% set company = var('company', 'zeus') %}
 {% set sourcesystem = var('sourcesystem', 'salesforce') %}
- 
+{% set is_ci = var('is_ci_run', false) %}
+
+{# Determine schema based on CI/CD mode #}
+{% if is_ci %}
+    {% set snapshot_schema = target.schema %}
+    {{ log("CI MODE - Using schema: " ~ snapshot_schema, info=True) }}
+{% else %}
+    {% set snapshot_schema = target_snapshot_schema(sourcesystem) %}
+    {{ log("CD MODE - Using schema: " ~ snapshot_schema, info=True) }}
+{% endif %}
       
 
 {{
@@ -11,7 +20,7 @@
         and (var("company", "zeus") | lower) in ["zeus"],
         database = get_raw_database(company),
         alias= sourcesystem ~ '_OPPORTUNITY', 
-        target_schema= target_snapshot_schema(sourcesystem),
+        target_schema= snapshot_schema,
         unique_key='id',
         strategy='timestamp',
         updated_at='LAST_MODIFIED_DATE',

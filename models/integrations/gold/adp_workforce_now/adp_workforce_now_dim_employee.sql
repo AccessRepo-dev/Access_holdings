@@ -84,18 +84,20 @@ with
             ) as employee_type,
             cast(w.original_hire_date as date) as original_hire_date,
             cast(w.original_hire_date as date) as hire_date,
-            w.termination_date as termination_date,
+            w.termination_date ,
             coalesce(
                 wah.assignment_status_reason_short_name,
                 wah.assignment_status_reason_long_name,
                 'Unknown'
             ) as termination_reason,
             case
+                when w.termination_date is null
+                then ''
                 when wah.voluntary_indicator = true
                 then 'Voluntary'
-                when wah.voluntary_indicator = false
+                when wah.voluntary_indicator = false 
                 then 'Involuntary'
-                else 'Termination'
+                else 'Unknown'
             end as termination_type,
             hash(
                 coalesce(home_work_location_address_city_name, '')

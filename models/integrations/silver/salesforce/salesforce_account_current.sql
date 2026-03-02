@@ -39,7 +39,7 @@ with
             trim(type) as type,
             trim(record_type_name_c) as record_type_name_c,
             parent_id as parent_id,
-            trim(parent_company_zm_c) as parent_company,
+            --trim(parent_company_zm_c) as parent_company,
             trim(industry) as industry,
             try_cast(number_of_employees as int) as number_of_employees,
             cast(revenue_c as number) as annual_revenue,

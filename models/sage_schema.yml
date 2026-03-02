@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: spotless_sage_raw
     database: spotless_raw
-    schema: sage
+    schema: sage_intacct
     tables:
       - name: ASSET
         <<: &freshness_sage_defaults
@@ -88,7 +88,6 @@ sources:
 
       - name: VENDOR
         <<: *freshness_sage_defaults
-
       - name: GL_BATCH_BKP
         <<: *freshness_sage_defaults
       - name: GL_ENTRY_BKP
