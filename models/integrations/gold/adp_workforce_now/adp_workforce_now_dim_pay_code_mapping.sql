@@ -20,7 +20,7 @@ with
             TRIM(BUCKET) as BUCKET,
             current_timestamp()::timestamp_ntz as gold_load_date
 
-        from {{ ref("zeus_pay_code_mapping") }}
+        FROM {{ ref(company ~ "_pay_code_mapping") }}
 
     )
 select *
