@@ -67,7 +67,7 @@ with
             -- term_reason,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("paycom_employees") }} e
-        left join {{ ref('amh_termination_type_mapping') }} ttm ON lower(ttm.termination_type) = lower(e.termination_type)
+        left join {{ source('amh_paycom_silver','amh_termination_type_mapping') }} ttm ON lower(ttm.termination_type) = lower(e.termination_type)
 
     )
 select *

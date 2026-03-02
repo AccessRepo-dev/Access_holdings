@@ -20,7 +20,7 @@ with
             trim(department_code) as department_code,
             trim(department_name) as department_name,
             current_timestamp()::timestamp_ntz as gold_load_date
-        from {{ ref("playfly_department_mapping") }}
+        from {{ source("playfly_ukg_pro_silver","playfly_department_mapping") }}
 
     )
 select *

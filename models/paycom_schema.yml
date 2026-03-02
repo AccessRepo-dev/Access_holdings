@@ -8,4 +8,9 @@ sources:
       - name: EMPLOYEES
       - name: PUNCH_HISTORY
       - name: EMPLOYEE_SENSITIVE
+  - name: amh_paycom_silver
+    database: amh_dev
+    schema: silver
+    tables:
+      - name: amh_termination_type_mapping
      
