@@ -39,7 +39,10 @@ with
             cast(hire_date as date) as hire_date,
             cast(termination_date as date) as termination_date,
             termination_reason as termination_reason,
-            case when ttm.mapped_termination_type is null then 'Unknown' else ttm.mapped_termination_type end as termination_type,
+            case
+            when termination_date is null then ''
+            when ttm.mapped_termination_type is null then 'Unknown' 
+            else ttm.mapped_termination_type end as termination_type,
             null as dim_company_id,
             hash(location) as dim_location_id,
             hash(position_title) as dim_job_id,
@@ -64,7 +67,7 @@ with
             -- term_reason,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("paycom_employees") }} e
-        left join {{ ref('amh_termination_type_mapping') }} ttm ON lower(ttm.termination_type) = lower(e.termination_type)
+        left join {{ source('amh_paycom_silver','amh_termination_type_mapping') }} ttm ON lower(ttm.termination_type) = lower(e.termination_type)
 
     )
 select *

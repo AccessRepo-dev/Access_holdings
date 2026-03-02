@@ -22,7 +22,7 @@ with
             ORGANIZATION_LEVEL_NAME,
             DIM_ORGANIZATION_ID,
             current_timestamp()::timestamp_ntz as gold_load_date
-        from {{ ref("playfly_class_mapping") }}
+        from {{ source("playfly_ukg_pro_silver","playfly_class_mapping") }} 
 
     )
 select *

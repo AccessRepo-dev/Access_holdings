@@ -71,7 +71,7 @@ with
             -- TEXT
             trim(dol_status) as dol_status,
             trim(exempt_status) as exempt_status,
-            trim(custom_standard_hours) as custom_standard_hours,
+            cast(custom_standard_hours as float) as custom_standard_hours,
 
             -- BOOLEAN
             cast(comission_only as boolean) as comission_only,
