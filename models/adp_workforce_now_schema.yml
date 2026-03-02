@@ -22,3 +22,10 @@ sources:
       - name: WORKER_TIME_CARD_PERIOD_TOTAL
       - name: WORKER_TIME_CARD_TIME_ENTRY
       - name: WORKER_BASE_REMUNERATION
+
+  - name: zeus_adp_workforce_now_silver
+    database: zeus_dev
+    schema: silver
+    tables:
+      - name: pay_code_mapping
+
