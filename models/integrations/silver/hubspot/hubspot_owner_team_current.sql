@@ -15,7 +15,13 @@
 ) }}
 
 with source as (
-    select *
+    select CONCAT(OWNER_ID,'_',TEAM_ID,'_',to_varchar(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) AS ID_DATE_KEY, 
+            {{ hs_canonical_owner_team(company, sourcesystem) }}, 
+            _FIVETRAN_SYNCED,
+            CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+            DBT_VALID_FROM,
+            DBT_VALID_TO,
+            CASE WHEN DBT_VALID_TO IS NULL THEN 1 ELSE 0 END AS IS_ACTIVE
     from {{ ref('hubspot_owner_team_snapshot') }}
     
     {% if is_incremental() %}
@@ -29,17 +35,15 @@ with source as (
 ),
 
 cleaned as (
-    select
-        concat(OWNER_ID,'_',TEAM_ID,'_',to_varchar(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
+    select ID_DATE_KEY AS ID_DATE_KEY,
         cast(trim(OWNER_ID) as bigint) as OWNER_ID,
         cast(trim(TEAM_ID) as bigint) as TEAM_ID,
-        cast(trim(_FIVETRAN_DELETED) as boolean) as _FIVETRAN_DELETED,
         cast(trim(IS_TEAM_PRIMARY) as boolean) as IS_TEAM_PRIMARY,
         cast(trim(_FIVETRAN_SYNCED) as timestamp_tz) as _FIVETRAN_SYNCED,
-        current_timestamp()::timestamp_ntz as SILVER_LOAD_DATE,
+        SILVER_LOAD_DATE::timestamp_ntz as SILVER_LOAD_DATE,
         cast(DBT_VALID_FROM as timestamp_ntz) as DBT_VALID_FROM,
         cast(DBT_VALID_TO as timestamp_ntz) as DBT_VALID_TO,
-        case when DBT_VALID_TO is null then 1 else 0 end as IS_ACTIVE
+        IS_ACTIVE AS IS_ACTIVE
     from source
 )
 

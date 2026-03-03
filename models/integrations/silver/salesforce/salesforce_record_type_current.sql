@@ -18,7 +18,14 @@
 with raw as 
 (
 select 
-    *
+    concat(id,'_',to_varchar(dbt_valid_from,'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
+        {{ sf_canonical_record_type(company, sourcesystem) }},
+        _FIVETRAN_DELETED,
+        _fivetran_synced,
+        current_timestamp() as silver_load_date,
+        dbt_valid_from,
+        dbt_valid_to,
+        case when dbt_valid_to is null then 1 else 0 end as is_active
 from {{ ref('salesforce_record_type_snapshot') }}
     {% if is_incremental()%}
     where 
@@ -27,27 +34,27 @@ from {{ ref('salesforce_record_type_snapshot') }}
 ),
 
 cleaned as (
-select 
-    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
-    ID,
-    NAME,
-    DEVELOPER_NAME,
-    NAMESPACE_PREFIX,
-    DESCRIPTION,
-    BUSINESS_PROCESS_ID,
-    SOBJECT_TYPE,
-    IS_ACTIVE AS RECORD_TYPE_IS_ACTIVE,
-    CREATED_BY_ID,
-    CREATED_DATE,
-    LAST_MODIFIED_BY_ID,
+select ID_DATE_KEY AS ID_DATE_KEY,
+    ID AS ID,
+    NAME AS NAME,
+    DEVELOPER_NAME AS DEVELOPER_NAME,
+    NAMESPACE_PREFIX AS NAMESPACE_PREFIX,
+    DESCRIPTION AS DESCRIPTION,
+    BUSINESS_PROCESS_ID AS BUSINESS_PROCESS_ID,
+    SOBJECT_TYPE AS SOBJECT_TYPE,
+    RECORD_TYPE_IS_ACTIVE AS RECORD_TYPE_IS_ACTIVE,
+    CREATED_BY_ID AS CREATED_BY_ID,
+    CREATED_DATE AS CREATED_DATE,
+    LAST_MODIFIED_BY_ID AS LAST_MODIFIED_BY_ID,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
+    SYSTEM_MODSTAMP AS SYSTEM_MODSTAMP,
+    IS_PERSON_TYPE AS IS_PERSON_TYPE,
     _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
-    SYSTEM_MODSTAMP,
-    IS_PERSON_TYPE,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+    _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+    SILVER_LOAD_DATE::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
     CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
-    CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active
+    IS_ACTIVE AS IS_ACTIVE
 from raw
 )
 

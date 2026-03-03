@@ -17,7 +17,13 @@
 
 with
     source as (
-        select *
+        select CONCAT(ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) AS ID_DATE_KEY, 
+            {{ hs_canonical_engagement(company, sourcesystem) }}, 
+            _FIVETRAN_SYNCED,
+            CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+            DBT_VALID_FROM,
+            DBT_VALID_TO,
+            CASE WHEN DBT_VALID_TO IS NULL THEN 1 ELSE 0 END AS IS_ACTIVE
         from {{ ref("hubspot_engagement_snapshot") }}
 
         {% if is_incremental() %}
@@ -45,17 +51,14 @@ with
     ),
 
     cleaned as (
-        select
-            concat(
-                id, '_', to_varchar(dbt_valid_from, 'YYYYMMDDHH24MISSFF3')
-            ) as id_date_key,
-            cast(id as int) as id,
-            cast(type as varchar) as type,
-            _fivetran_synced,
-            current_timestamp()::timestamp_ntz as silver_load_date,
-            cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
-            cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,
-            case when dbt_valid_to is null then 1 else 0 end as is_active
+        select ID_DATE_KEY AS ID_DATE_KEY,
+            CAST(ID AS INT) AS ID,
+            CAST(TYPE AS VARCHAR) AS TYPE,
+            _FIVETRAN_SYNCED AS _FIVETRAN_SYNCED,
+            SILVER_LOAD_DATE::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+            CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
+            CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
+            IS_ACTIVE AS IS_ACTIVE
         from source
     )
 

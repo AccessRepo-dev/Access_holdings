@@ -16,7 +16,10 @@
 
 with raw as 
 (
-select *
+select         {{ sf_canonical_forecasting_quota(company, sourcesystem) }},
+        _FIVETRAN_DELETED,
+        _fivetran_synced,
+        current_timestamp() as silver_load_date
 from {{ get_raw_source(company, sourcesystem, 'FORECASTING_QUOTA') }}
     {% if is_incremental()%}
     where 
@@ -29,27 +32,22 @@ from {{ get_raw_source(company, sourcesystem, 'FORECASTING_QUOTA') }}
 cleaned as 
 (
 select
- TRIM(ID)                                      AS ID,
-    TRIM(QUOTA_OWNER_ID)                       AS QUOTA_OWNER_ID,
-    UPPER(TRIM(PRODUCT_FAMILY))                AS PRODUCT_FAMILY,
-
-    TRIM(PERIOD_ID)                            AS PERIOD_ID,
-    TRIM(FORECASTING_TYPE_ID)                  AS FORECASTING_TYPE_ID,
-    TRIM(FORECASTING_GROUP_ITEM_ID)            AS FORECASTING_GROUP_ITEM_ID,
-
-    START_DATE::DATE                           AS START_DATE,
-
+    TRIM(ID) AS ID,
+    TRIM(QUOTA_OWNER_ID) AS QUOTA_OWNER_ID,
+    UPPER(TRIM(PRODUCT_FAMILY)) AS PRODUCT_FAMILY,
+    TRIM(PERIOD_ID)  AS PERIOD_ID,
+    TRIM(FORECASTING_TYPE_ID) AS FORECASTING_TYPE_ID,
+    TRIM(FORECASTING_GROUP_ITEM_ID) AS FORECASTING_GROUP_ITEM_ID,
+    START_DATE::DATE AS START_DATE,
     /* Normalize booleans */
-    COALESCE(IS_AMOUNT, FALSE)                 AS IS_AMOUNT,
-    COALESCE(IS_QUANTITY, FALSE)               AS IS_QUANTITY,
-
+    COALESCE(IS_AMOUNT, FALSE) AS IS_AMOUNT,
+    COALESCE(IS_QUANTITY, FALSE) AS IS_QUANTITY,
     /* Numeric hygiene */
-    ROUND(QUOTA_AMOUNT, 2)                     AS QUOTA_AMOUNT,
-    ROUND(QUOTA_QUANTITY, 2)                   AS QUOTA_QUANTITY,
-
-    CAST(CREATED_DATE AS TIMESTAMP_NTZ)                AS CREATED_DATE,
-    CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ)         AS LAST_MODIFIED_DATE,
-    _FIVETRAN_DELETED,
+    ROUND(QUOTA_AMOUNT, 2) AS QUOTA_AMOUNT,
+    ROUND(QUOTA_QUANTITY, 2) AS QUOTA_QUANTITY,
+    CAST(CREATED_DATE AS TIMESTAMP_NTZ) AS CREATED_DATE,
+    CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
+    _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
     _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE
  

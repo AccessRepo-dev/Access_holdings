@@ -18,7 +18,14 @@
 
 with
     raw as (
-        select *
+        select concat(id,'_',to_varchar(dbt_valid_from,'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
+        {{ sf_canonical_opportunity_field_history(company, sourcesystem) }},
+        _FIVETRAN_DELETED,
+        _fivetran_synced,
+        current_timestamp() as silver_load_date,
+        dbt_valid_from,
+        dbt_valid_to,
+        case when dbt_valid_to is null then 1 else 0 end as is_active
         from {{ ref("salesforce_opportunity_field_history_snapshot") }}
     {% if is_incremental()%}
     where 
@@ -28,23 +35,22 @@ with
 
     cleaned as (
         select
-            concat(
-                id, '_', to_varchar(dbt_valid_from, 'YYYYMMDDHH24MISSFF3')
-            ) as id_date_key,
-            trim(id) as id,
-            trim(opportunity_id) as opportunity_id,
-            is_deleted,
-            trim(created_by_id) as created_by_id,
-            cast(created_date as timestamp_ntz) as created_date,
-            trim(field) as field,
-            trim(data_type) as data_type,
-            trim(old_value) as old_value,
-            trim(new_value) as new_value,
-            current_timestamp()::timestamp_ntz as silver_load_date,
-            cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
-            cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,
-            _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
-            case when dbt_valid_to is null then 1 else 0 end as is_active
+            ID_DATE_KEY AS ID_DATE_KEY,
+            TRIM(ID) AS ID,
+            TRIM(OPPORTUNITY_ID) AS OPPORTUNITY_ID,
+            IS_DELETED AS IS_DELETED,
+            TRIM(CREATED_BY_ID) AS CREATED_BY_ID,
+            CAST(CREATED_DATE AS TIMESTAMP_NTZ) AS CREATED_DATE,
+            TRIM(FIELD) AS FIELD,
+            TRIM(DATA_TYPE) AS DATA_TYPE,
+            TRIM(OLD_VALUE) AS OLD_VALUE,
+            TRIM(NEW_VALUE) AS NEW_VALUE,
+            CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+            CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
+            CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
+            _FIVETRAN_SYNCED::TIMESTAMP_NTZ  AS _FIVETRAN_SYNCED,
+            _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+            IS_ACTIVE AS IS_ACTIVE
         from raw
     )
 

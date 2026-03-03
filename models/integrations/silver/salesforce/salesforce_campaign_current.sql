@@ -19,7 +19,17 @@
 
 with
     raw as (
-        select *
+        select distinct
+            concat(
+                id, '_', to_varchar(dbt_valid_from, 'YYYYMMDDHH24MISSFF3')
+            ) as id_date_key,
+         {{ sf_canonical_campaign(company, sourcesystem) }},
+        _FIVETRAN_DELETED,
+        _fivetran_synced,
+        current_timestamp() as silver_load_date,
+        dbt_valid_from,
+        dbt_valid_to,
+        case when dbt_valid_to is null then 1 else 0 end as is_active
         from {{ ref("salesforce_campaign_snapshot") }}
         {% if is_incremental() %}
            {% if is_incremental()%}
@@ -30,30 +40,27 @@ with
     ),
 
     cleaned as (
-        select distinct
-            concat(
-                id, '_', to_varchar(dbt_valid_from, 'YYYYMMDDHH24MISSFF3')
-            ) as id_date_key,
-            trim(id) as campaign_id,
-            trim(name) as name,
-            trim(type) as type,
-            trim(status) as status,
-            cast(start_date as timestamp_ntz) as start_date,
-            cast(end_date as timestamp_ntz) as end_date,
-            cast(expected_revenue as number) as expected_revenue,
-            cast(budgeted_cost as number) as budgeted_cost,
-            cast(actual_cost as number) as actual_cost,
-            number_sent,
-            trim(owner_id) as owner_id,
-            trim(description) as description,
-            cast(created_date as timestamp_ntz) as created_date,
-            cast(last_modified_date as timestamp_ntz) as last_modified_date,
-            _fivetran_deleted as _fivetran_deleted,
-            _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
-            current_timestamp()::timestamp_ntz as silver_load_date,
-            cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
-            cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,
-            case when dbt_valid_to is null then 1 else 0 end as is_active
+        select ID_DATE_KEY,
+            TRIM(CAMPAIGN_ID) AS CAMPAIGN_ID,
+            TRIM(NAME) AS NAME,
+            TRIM(TYPE) AS TYPE,
+            TRIM(STATUS) AS STATUS,
+            CAST(START_DATE AS TIMESTAMP_NTZ) AS START_DATE,
+            CAST(END_DATE AS TIMESTAMP_NTZ) AS END_DATE,
+            CAST(EXPECTED_REVENUE AS NUMBER) AS EXPECTED_REVENUE,
+            CAST(BUDGETED_COST AS NUMBER) AS BUDGETED_COST,
+            CAST(ACTUAL_COST AS NUMBER) AS ACTUAL_COST,
+            NUMBER_SENT AS NUMBER_SENT,
+            TRIM(OWNER_ID) AS OWNER_ID,
+            TRIM(DESCRIPTION) AS DESCRIPTION,
+            CAST(CREATED_DATE AS TIMESTAMP_NTZ) AS CREATED_DATE,
+            CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
+            _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
+            _FIVETRAN_SYNCED as _FIVETRAN_SYNCED,
+            CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+            CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
+            CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
+            IS_ACTIVE as IS_ACTIVE
         from raw
     )
 

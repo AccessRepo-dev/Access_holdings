@@ -17,7 +17,14 @@
 
 with
     source as (
-        select *
+        select  CONCAT(ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) AS ID_DATE_KEY, 
+            {{ hs_canonical_product(company, sourcesystem) }}, 
+            _FIVETRAN_SYNCED,
+            CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+            DBT_VALID_FROM,
+            DBT_VALID_TO,
+            CASE WHEN DBT_VALID_TO IS NULL THEN 1 ELSE 0 END AS IS_ACTIVE,
+                        COALESCE(_fivetran_deleted, false) AS IS_DELETED,
         from {{ ref('hubspot_products_snapshot') }}
 
         {% if is_incremental() %}
@@ -45,61 +52,25 @@ with
     ),
 
     cleaned as (
-        select
-            concat(
-                id, '_', to_varchar(dbt_valid_from, 'YYYYMMDDHH24MISSFF3')
-            ) as id_date_key,
-            cast(id as int) as product_id,
-
-            /* ---------- Name ---------- */
-            initcap(trim(property_name)) as product_name,
-
-            {% if company in ["playfly", "wagway"] %}
-                initcap(trim(property_description)) as property_description,
-                initcap(trim(property_family)) as property_family,
-            {% else %}
-                cast(null as varchar) as property_description,
-                cast(null as varchar) as property_family,
-            {% endif %}
-
-            /* ---------- Product Type ---------- */
-            {% if company in ["amh", "playfly"] %}
-                portal_id::number as portal_id,
-                lower(trim(property_hs_pricing_model)) as pricing_model,
-                lower(trim(property_hs_status)) as product_status,
-            {% else %}
-                cast(null as number) as portal_id,
-                cast(null as varchar) as pricing_model,
-                cast(null as varchar) as product_status,
-            {% endif %}
-
-            {% if company in ["amh"] %}
-                lower(trim(property_hs_product_type)) as product_type,
-                trim(property_hs_folder_id) as property_hs_folder_id,
-            {% elif company == "playfly" %}
-                lower(trim(property_product_category)) as product_type,
-                cast(null as int) property_hs_folder_id,
-            {% else %} 
-                cast(null as varchar) as product_type,
-                cast(null as int) property_hs_folder_id,
-            {% endif %}
-
-            cast(property_price as float) as price,
-
-            /* ---------- Timestamps ---------- */
-            {% if company == "wagway" %} property_hs_createdate as created_at,
-            {% else %} property_createdate as created_at,
-            {% endif %}
-            property_hs_lastmodifieddate as updated_at,
-
-            /* ---------- Fivetran Metadata ---------- */
-            coalesce(_fivetran_deleted, false) as is_deleted,
-            current_timestamp()::timestamp_ntz as silver_load_date,
-            cast(dbt_valid_from as timestamp_ntz) as dbt_valid_from,
-            cast(dbt_valid_to as timestamp_ntz) as dbt_valid_to,
-            _fivetran_synced,
-            case when dbt_valid_to is null then 1 else 0 end as is_active
-
+        select ID_DATE_KEY AS ID_DATE_KEY,
+                CAST(PRODUCT_ID AS INT) AS PRODUCT_ID,
+                INITCAP(TRIM(PRODUCT_NAME)) AS PRODUCT_NAME,
+                INITCAP(TRIM(PROPERTY_DESCRIPTION)) AS PROPERTY_DESCRIPTION,
+                INITCAP(TRIM(PROPERTY_FAMILY)) AS PROPERTY_FAMILY,
+                PORTAL_ID::NUMBER AS PORTAL_ID,
+                LOWER(TRIM(PRICING_MODEL)) AS PRICING_MODEL,
+                LOWER(TRIM(PRODUCT_STATUS)) AS PRODUCT_STATUS,
+                LOWER(TRIM(PRODUCT_TYPE)) AS PRODUCT_TYPE,
+                TRIM(PROPERTY_HS_FOLDER_ID) AS PROPERTY_HS_FOLDER_ID,
+                CAST(PRICE AS FLOAT) AS PRICE,
+                CREATED_AT AS CREATED_AT,
+                UPDATED_AT AS UPDATED_AT,
+                SILVER_LOAD_DATE::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+                CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
+                CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
+                _FIVETRAN_SYNCED AS _FIVETRAN_SYNCED,
+                IS_ACTIVE AS IS_ACTIVE,
+                IS_DELETED AS IS_DELETED
         from source
     )
 

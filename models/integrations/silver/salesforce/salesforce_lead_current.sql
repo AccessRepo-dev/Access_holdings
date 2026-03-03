@@ -17,7 +17,14 @@
 
 with raw as 
 (
-select *
+select concat(id,'_',to_varchar(dbt_valid_from,'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
+        {{ sf_canonical_lead(company, sourcesystem) }},
+        _FIVETRAN_DELETED,
+        _fivetran_synced,
+        current_timestamp() as silver_load_date,
+        dbt_valid_from,
+        dbt_valid_to,
+        case when dbt_valid_to is null then 1 else 0 end as is_active
 from {{ ref('salesforce_lead_snapshot') }}
     {% if is_incremental()%}
     where 
@@ -29,18 +36,18 @@ from {{ ref('salesforce_lead_snapshot') }}
 cleaned as 
 (
 select
-    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
-    TRIM(ID) AS LEAD_ID,
+    ID_DATE_KEY AS ID_DATE_KEY,
+    TRIM(LEAD_ID) AS LEAD_ID,
     TRIM(OWNER_ID) AS OWNER_ID,
     TRIM(COMPANY) AS COMPANY,
     TRIM(FIRST_NAME) AS FIRST_NAME,
     TRIM(LAST_NAME) AS LAST_NAME,
     TRIM(SALUTATION) AS SALUTATION,
     TRIM(TITLE) AS TITLE,
-    EMAIL,
-    PHONE,
-    MOBILE_PHONE,
-    WEBSITE,
+    EMAIL AS EMAIL,
+    PHONE AS PHONE,
+    MOBILE_PHONE AS MOBILE_PHONE,
+    WEBSITE AS WEBSITE,
     TRIM(LEAD_SOURCE) AS LEAD_SOURCE,
     TRIM(STATUS) AS STATUS,
     TRIM(RATING) AS RATING,
@@ -49,14 +56,14 @@ select
     TRIM(STREET) AS STREET,
     TRIM(CITY) AS CITY,
     TRIM(STATE) AS STATE,
-    TRY_CAST(NUMBER_OF_EMPLOYEES AS INT) AS POSTAL_CODE,
+    TRY_CAST(POSTAL_CODE AS INT) AS POSTAL_CODE,
     TRIM(COUNTRY) AS COUNTRY,
-    CONVERTED_DATE,
+    CONVERTED_DATE AS CONVERTED_DATE,
     TRIM(CONVERTED_ACCOUNT_ID) AS CONVERTED_ACCOUNT_ID,
     TRIM(CONVERTED_CONTACT_ID) AS CONVERTED_CONTACT_ID,
     TRIM(CONVERTED_OPPORTUNITY_ID) AS CONVERTED_OPPORTUNITY_ID,
-    IS_CONVERTED,
-    CREATED_DATE,
+    IS_CONVERTED AS IS_CONVERTED,
+    CREATED_DATE AS CREATED_DATE,
     TRIM(CREATED_BY_ID) AS CREATED_BY_ID,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
     TRIM(LAST_MODIFIED_BY_ID) AS LAST_MODIFIED_BY_ID,
@@ -66,7 +73,7 @@ select
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
     CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
-    CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active
+    Is_Active
 from raw
 )
 
