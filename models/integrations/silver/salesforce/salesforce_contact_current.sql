@@ -17,7 +17,14 @@
 
 with raw as 
 (
-select *
+select concat(id,'_',to_varchar(dbt_valid_from,'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
+        {{ sf_canonical_contact(company, sourcesystem) }},
+        _FIVETRAN_DELETED,
+        _fivetran_synced,
+        current_timestamp() as silver_load_date,
+        dbt_valid_from,
+        dbt_valid_to,
+        case when dbt_valid_to is null then 1 else 0 end as is_active
 from {{ ref('salesforce_contact_snapshot') }}
        {% if is_incremental()%}
     where 
@@ -29,26 +36,26 @@ from {{ ref('salesforce_contact_snapshot') }}
 cleaned as 
 (
 select
-    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
-    TRIM(ID) AS CONTACT_ID,
-    ACCOUNT_ID,
+    ID_DATE_KEY as ID_DATE_KEY,
+    TRIM(CONTACT_ID) AS CONTACT_ID,
+    ACCOUNT_ID as ACCOUNT_ID,
     TRIM(NAME) AS NAME,
     TRIM(FIRST_NAME) AS FIRST_NAME,
     TRIM(LAST_NAME) AS LAST_NAME,
     TRIM(SALUTATION) AS SALUTATION,
     TRIM(TITLE) AS TITLE,
     TRIM(DEPARTMENT) AS DEPARTMENT,
-    EMAIL,
-    PHONE,
-    MOBILE_PHONE,
+    EMAIL as EMAIL,
+    PHONE as PHONE,
+    MOBILE_PHONE as MOBILE_PHONE,
     TRIM(MAILING_STREET) AS MAILING_STREET,
     TRIM(MAILING_CITY) AS MAILING_CITY,
     TRIM(MAILING_STATE) AS MAILING_STATE,
     TRY_CAST(MAILING_POSTAL_CODE AS INT) AS MAILING_POSTAL_CODE,
     TRIM(MAILING_COUNTRY) AS MAILING_COUNTRY,
-    LEAD_SOURCE,
+    LEAD_SOURCE as LEAD_SOURCE,
     TRIM(OWNER_ID) AS OWNER_ID,
-    CREATED_DATE,
+    CREATED_DATE as CREATED_DATE,
     TRIM(CREATED_BY_ID) AS CREATED_BY_ID,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
     TRIM(LAST_MODIFIED_BY_ID) AS LAST_MODIFIED_BY_ID,

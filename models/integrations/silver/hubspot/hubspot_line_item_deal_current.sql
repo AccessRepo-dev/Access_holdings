@@ -15,12 +15,8 @@
 ) }}
 
 
-    SELECT
-        CATEGORY,
-        TYPE_ID,
-        DEAL_ID,
-        LINE_ITEM_ID,
-        _FIVETRAN_SYNCED
-    FROM
-    {{ get_raw_source(company, sourcesystem, 'LINE_ITEM_DEAL') }}
+    SELECT {{ hs_canonical_line_item_deal(company, sourcesystem) }}, 
+            _FIVETRAN_SYNCED AS _FIVETRAN_SYNCED,
+            CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+    FROM {{ get_raw_source(company, sourcesystem, 'LINE_ITEM_DEAL') }}
 
