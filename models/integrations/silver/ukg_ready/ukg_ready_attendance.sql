@@ -1,9 +1,10 @@
 {% set company = var("company", "wagway") | lower %}
 {% set sourcesystem = var("sourcesystem", "ukg_ready") | lower %}
-{{ config(enabled=var("sourcesystem", "ukg_ready") == "ukg_ready") }}
 
 {{
     config(
+        enabled=(var("sourcesystem", "ukg_ready") | lower) in ["ukg_ready"]
+        and (var("company", "wagway") | lower) in ["wagway"],
         database=get_target_database(company),
         materialized="incremental",
         incremental_strategy="merge",
@@ -37,9 +38,9 @@ with
 
             /* Cleaning scalar columns */
             trim(status) as status,
-            cast(last_end as date) as last_end,
+            cast(last_end as timestamp_ntz) as last_end,
             trim(last_punch_action_type) as last_punch_action_type,
-            cast(last_start as date) as last_start,
+            cast(last_start as timestamp_ntz) as last_start,
             cast(_loaded_at as timestamp_tz) as _loaded_at,
             trim(_etl_batch_id) as _etl_batch_id,
 

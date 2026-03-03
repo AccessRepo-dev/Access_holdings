@@ -1,13 +1,10 @@
 {% set company = var("company", "zeus") | lower %}
-{{
-    config(
-        enabled=var("sourcesystem", "adp_workforce_now") | lower
-        == "adp_workforce_now"
-    )
-}}
+{% set sourcesystem = var("sourcesystem", "adp_workforce_now") | lower %}
 
 {{
     config(
+        enabled=(var("sourcesystem", "adp_workforce_now") | lower) in ["adp_workforce_now"]
+        and (var("company", "zeus") | lower) in ["zeus"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_hr_employee",
@@ -87,18 +84,20 @@ with
             ) as employee_type,
             cast(w.original_hire_date as date) as original_hire_date,
             cast(w.original_hire_date as date) as hire_date,
-            w.termination_date as termination_date,
+            w.termination_date ,
             coalesce(
                 wah.assignment_status_reason_short_name,
                 wah.assignment_status_reason_long_name,
                 'Unknown'
             ) as termination_reason,
             case
+                when w.termination_date is null
+                then ''
                 when wah.voluntary_indicator = true
                 then 'Voluntary'
-                when wah.voluntary_indicator = false
+                when wah.voluntary_indicator = false 
                 then 'Involuntary'
-                else 'Termination'
+                else 'Unknown'
             end as termination_type,
             hash(
                 coalesce(home_work_location_address_city_name, '')

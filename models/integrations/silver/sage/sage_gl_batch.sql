@@ -12,6 +12,7 @@
 with source_data as (
     select *
     from {{ get_raw_source(company, sourcesystem, 'GL_BATCH') }}
+
     {% if is_incremental() %}
     where 
         cast(WHENMODIFIED as timestamp_ntz) > (

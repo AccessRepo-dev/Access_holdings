@@ -1,8 +1,10 @@
 {% set company = var("company", "playfly") | lower %}
-{{ config(enabled=var("sourcesystem", "ukg_pro") | lower == "ukg_pro") }}
+{% set sourcesystem = var("sourcesystem", "ukg_pro") | lower %}
 
 {{
     config(
+        enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
+        and (var("company", "playfly") | lower) in ["playfly"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_subsidiary_mapping",
@@ -19,7 +21,7 @@ with
             HR_Company_Name AS COMPANY_NAME,
             HR_ID as DIM_COMPANY_ID,
             current_timestamp()::timestamp_ntz as gold_load_date
-        from {{ ref("subsidiary_mapping") }}
+        from {{ source('playfly_ukg_pro_silver',"playfly_subsidiary_mapping") }}
 
     )
 select *

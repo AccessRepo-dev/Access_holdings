@@ -1,13 +1,10 @@
 {% set company = var("company", "zeus") | lower %}
-{{
-    config(
-        enabled=var("sourcesystem", "adp_workforce_now") | lower
-        == "adp_workforce_now"
-    )
-}}
+{% set sourcesystem = var("sourcesystem", "adp_workforce_now") | lower %}
 
 {{
     config(
+        enabled=(var("sourcesystem", "adp_workforce_now") | lower) in ["adp_workforce_now"]
+        and (var("company", "zeus") | lower) in ["zeus"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_pay_code_mapping",
@@ -23,7 +20,7 @@ with
             TRIM(BUCKET) as BUCKET,
             current_timestamp()::timestamp_ntz as gold_load_date
 
-        from {{ ref("pay_code_mapping") }}
+        FROM  {{ source('zeus_adp_workforce_now_silver', 'pay_code_mapping') }} 
 
     )
 select *

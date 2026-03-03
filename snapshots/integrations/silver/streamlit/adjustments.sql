@@ -4,14 +4,23 @@
 {% set sourcesystem = var('sourcesystem') %}
 {% set src = 'streamlit'%}
 {% set src_table = company ~ '_adjustments' %}
+{% set is_ci = var('is_ci_run', false) %}
 
+{# Determine schema based on CI/CD mode #}
+{% if is_ci %}
+    {% set snapshot_schema = target.schema %}
+    {{ log("CI MODE - Using schema: " ~ snapshot_schema, info=True) }}
+{% else %}
+    {% set snapshot_schema = 'silver' %}
+    {{ log("CD MODE - Using schema: " ~ snapshot_schema, info=True) }}
+{% endif %}
 
 {{
     config(
         enabled = var('company','wagway') | lower in ('wagway','playfly','amh','spotless','zeus')
-        and (var("sourcesystem", "netsuite") | lower) in ["streamlit", "netsuite", "sage"],
+        and (var("sourcesystem", "streamlit") | lower) in ["streamlit", "netsuite", "sage","sedona"],
         database = get_target_database(company),
-        target_schema = 'silver',
+        target_schema = snapshot_schema,
         alias = sourcesystem ~ '_Adjustments', 
         strategy = 'check',
         check_cols = ['AMOUNT','LAST_UPDATED_AT','LAST_UPDATED_BY'],

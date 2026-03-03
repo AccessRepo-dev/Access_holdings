@@ -1,8 +1,10 @@
 {% set company = var("company", "playfly") | lower %}
-{{ config(enabled=var("sourcesystem", "ukg_pro") | lower == "ukg_pro") }}
+{% set sourcesystem = var("sourcesystem", "ukg_pro") | lower %}
 
 {{
     config(
+        enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
+        and (var("company", "playfly") | lower) in ["playfly"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_hr_location",
@@ -16,6 +18,7 @@ with
         select
 
             id as dim_location_id,
+            null as location,
             md5(coalesce(state, '')) as STATE_KEY,
             city,
             country_code,

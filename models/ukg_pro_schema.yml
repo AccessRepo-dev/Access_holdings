@@ -11,4 +11,11 @@ sources:
       - name: ORGANIZATION_LEVEL
       - name: EARNING_HISTORY_BASE_ELEMENT
       - name: EARNING
+  - name: playfly_ukg_pro_silver
+    database: playfly_dev
+    schema: silver
+    tables:
+      - name: playfly_class_mapping
+      - name: playfly_department_mapping
+      - name: playfly_subsidiary_mapping
       

@@ -8,11 +8,62 @@
     enabled = var('sourcesystem') == 'sage',
     pre_hook=[
             "{{ replicate_table_from_dev(
-                source_database= this.database,
+                source_database= 'STREAMLIT_APPS',
                 source_schema='FINMAP_DEV',
                 table_name = var('company') ~ '_COA_MAPPING'
-            ) }}"
+            ) }}",
+
+        """
+        {% if is_incremental() %}
+        MERGE INTO {{ this }} tgt
+        USING (
+            SELECT
+                t.COA_ID,
+                COALESCE(a.ACCOUNTTITLE, 'Unknown') AS ACCOUNT_NAME,
+                COALESCE(c.NAME, 'Unknown')          AS CLASS_NAME,
+                COALESCE(d.TITLE, 'Unknown')         AS DEPARTMENT_NAME,
+                COALESCE(l.NAME, 'Unknown')          AS LOCATION_NAME,
+                COALESCE(p.NAME, 'Unknown')          AS PROJECT_NAME
+
+            FROM (
+                SELECT DISTINCT COA_ID, ACCOUNT_ID, CLASS_ID, DEPARTMENT_ID, LOCATION_ID, PROJECT_ID
+                FROM {{ this }}
+            ) t
+
+            LEFT JOIN (
+                SELECT DISTINCT ACCOUNTKEY, ACCOUNTTITLE
+                FROM {{ source(var('company') ~ '_' ~ var('sourcesystem') ~ '_raw', 'GL_ENTRY') }}
+            ) a ON a.ACCOUNTKEY = t.ACCOUNT_ID
+            LEFT JOIN {{ source(var('company') ~ '_' ~ var('sourcesystem') ~ '_raw', 'CLASS') }} c
+                ON c.RECORDNO = t.CLASS_ID
+            LEFT JOIN {{ source(var('company') ~ '_' ~ var('sourcesystem') ~ '_raw', 'DEPARTMENT') }} d
+                ON d.RECORDNO = t.DEPARTMENT_ID
+            LEFT JOIN {{ source(var('company') ~ '_' ~ var('sourcesystem') ~ '_raw', 'LOCATION') }} l
+                ON l.RECORDNO = t.LOCATION_ID
+            LEFT JOIN {{ source(var('company') ~ '_' ~ var('sourcesystem') ~ '_raw', 'PROJECT') }} p
+                ON p.RECORDNO = t.PROJECT_ID
+
+        ) src ON tgt.COA_ID = src.COA_ID
+
+        WHEN MATCHED AND NOT (
+            EQUAL_NULL(tgt.ACCOUNT_NAME,  src.ACCOUNT_NAME)  AND
+            EQUAL_NULL(tgt.CLASS_NAME,    src.CLASS_NAME)     AND
+            EQUAL_NULL(tgt.DEPARTMENT_NAME, src.DEPARTMENT_NAME) AND
+            EQUAL_NULL(tgt.LOCATION_NAME, src.LOCATION_NAME) AND
+            EQUAL_NULL(tgt.PROJECT_NAME,  src.PROJECT_NAME)
+        )
+        THEN UPDATE SET
+            tgt.ACCOUNT_NAME    = src.ACCOUNT_NAME,
+            tgt.CLASS_NAME      = src.CLASS_NAME,
+            tgt.DEPARTMENT_NAME = src.DEPARTMENT_NAME,
+            tgt.LOCATION_NAME   = src.LOCATION_NAME,
+            tgt.PROJECT_NAME    = src.PROJECT_NAME
+        ;
+        {% endif %}
+        """
+
         ],
+     
     materialized = 'incremental',
     alias = company ~ '_COA_MAPPING',
     incremental_strategy = 'merge',
@@ -24,15 +75,12 @@ with transaction as (
     DISTINCT
 
     HASH(COALESCE(e.ACCOUNTKEY,0), COALESCE(e.LOCATIONKEY,0),COALESCE(e.DEPARTMENTKEY,0),COALESCE(e.PROJECTDIMKEY,0),COALESCE(e.CLASSDIMKEY,0)) AS COA_ID,
-    
     COALESCE(e.ACCOUNTKEY, 0) AS ACCOUNT_ID,
     COALESCE(cast(e.ACCOUNTNO as varchar), 'Unknown') AS ACCOUNT_NUMBER,
     COALESCE(e.CLASSDIMKEY, 0) AS CLASS_ID,
     COALESCE(e.LOCATIONKEY, 0) AS LOCATION_ID,
-   COALESCE(e.PROJECTDIMKEY,0) AS PROJECT_ID,
+    COALESCE(e.PROJECTDIMKEY,0) AS PROJECT_ID,
     COALESCE(e.DEPARTMENTKEY, 0) AS DEPARTMENT_ID,
-    
- 
     COALESCE(e.ACCOUNTTITLE, 'Unknown') AS ACCOUNT_NAME,
     --COALESCE(e.DEPARTMENTTITLE, 'Unknown') AS DEPARTMENT_NAME,
   

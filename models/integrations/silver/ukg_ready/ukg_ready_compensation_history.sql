@@ -1,9 +1,10 @@
 {% set company = var("company", "wagway") | lower %}
 {% set sourcesystem = var("sourcesystem", "ukg_ready") | lower %}
-{{ config(enabled=var("sourcesystem", "ukg_ready") == "ukg_ready") }}
 
 {{
     config(
+        enabled=(var("sourcesystem", "ukg_ready") | lower) in ["ukg_ready"]
+        and (var("company", "wagway") | lower) in ["wagway"],
         database=get_target_database(company),
         materialized="incremental",
         incremental_strategy="merge",

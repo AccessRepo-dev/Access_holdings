@@ -1,13 +1,10 @@
 {% set company = var("company", "zeus") | lower %}
-{{
-    config(
-        enabled=var("sourcesystem", "adp_workforce_now") | lower
-        == "adp_workforce_now"
-    )
-}}
+{% set sourcesystem = var("sourcesystem", "adp_workforce_now") | lower %}
 
 {{
     config(
+        enabled=(var("sourcesystem", "adp_workforce_now") | lower) in ["adp_workforce_now"]
+        and (var("company", "zeus") | lower) in ["zeus"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_hr_location",
@@ -24,6 +21,7 @@ with
                 coalesce(home_work_location_address_city_name, '')
                 || coalesce(home_work_location_address_country_code, '')
             ) as dim_location_id,
+            null as location,
             null as state_key,
             home_work_location_address_city_name as city,
             home_work_location_address_country_code as country_code,

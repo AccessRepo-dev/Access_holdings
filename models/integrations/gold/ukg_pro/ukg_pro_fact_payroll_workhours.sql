@@ -1,8 +1,10 @@
 {% set company = var("company", "playfly") | lower %}
-{{ config(enabled=var("sourcesystem", "ukg_pro") | lower == "ukg_pro") }}
+{% set sourcesystem = var("sourcesystem", "ukg_pro") | lower %}
 
 {{
     config(
+        enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
+        and (var("company", "playfly") | lower) in ["playfly"],
         database=get_target_database(company),
         alias="fact_payroll_workhours",
         incremental_strategy="merge",
@@ -29,6 +31,8 @@ with
             total_earnings_amount,
             total_hours,
             total_hours_worked,
+            cast(null as int) as unpaid_absence_hours,
+            cast(null as int) as paid_absemce_hours,
             pay_date
         from {{ ref("ukg_pro_pay_register") }}
         where _fivetran_deleted = false

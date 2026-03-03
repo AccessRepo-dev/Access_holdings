@@ -1,8 +1,10 @@
 {% set company = var("company", "playfly") | lower %}
-{{ config(enabled=var("sourcesystem", "ukg_pro") | lower == "ukg_pro") }}
+{% set sourcesystem = var("sourcesystem", "ukg_pro") | lower %}
 
 {{
     config(
+        enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
+        and (var("company", "playfly") | lower) in ["playfly"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_hr_employee",
@@ -38,6 +40,8 @@ with
             cast(date_of_termination as date) as termination_date,
             termination_reason_description as termination_reason,
             case
+                when date_of_termination is null 
+                then ''
                 when term_type = 'I'
                 then 'Involuntary'
                 when term_type = 'V'
