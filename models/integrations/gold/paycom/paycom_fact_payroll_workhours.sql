@@ -56,7 +56,7 @@ with
         select *
         from punch_pairs
         where out_time is not null
-        union all
+        union all 
         select *
         from hr_hours
     ),
@@ -99,17 +99,29 @@ with
             cast(null as float) as bonus_total_hours,
             es.hourly_salary as hourly_pay_rate,
             cast(null as float) as total_deduction_amount,
-            e.scheduled_work_hours as total_hours,  -- Standard hours expected
-            h.total_hours_worked,  -- REMOVE SUM() - already aggregated
+            case
+                when e.scheduled_work_hours = 0 and e.employee_type = 'Full Time'
+                then 8
+                when e.scheduled_work_hours = 0
+                then h.total_hours_worked
+                when esil.pay_frequency = 'B'
+                then e.scheduled_work_hours / 10
+                when esil.pay_frequency = 'W'
+                then e.scheduled_work_hours / 5
+            end as total_hours,  -- Standard hours expected
+            case
+                when h.shift_details = 'HR Entry (8h)' then 0 else h.total_hours_worked
+            end as total_hours_worked,  -- REMOVE SUM() - already aggregated
             cast(null as float) as bonus_total_ot_hours,
             case
                 when h.shift_details = 'HR Entry (8h)' then h.total_hours_worked else 0
             end as paid_absence_hours,  -- REMOVE SUM() - already aggregated
             cast(null as float) as unpaid_absence_hours,
             case
-                when pay_class in ('SAL', 'RIS')
+                when es.pay_class in ('SAL', 'RIS')
                 then annual_salary / 250
-                when bonus_total_ot_hours is null then (h.total_hours_worked) * es.hourly_salary
+                when bonus_total_ot_hours is null
+                then (h.total_hours_worked) * es.hourly_salary
                 else (bonus_total_ot_hours + h.total_hours_worked) * es.hourly_salary
             end as total_earnings_amount,
             h.work_date as pay_date,
@@ -117,6 +129,7 @@ with
         from hours_worked h
         left join {{ ref("paycom_dim_employee") }} e on e.dim_employee_id = h.eecode
         left join {{ ref("paycom_employee_sensitive") }} es on es.eecode = h.eecode
+        left join {{ ref("paycom_employees") }} esil on esil.eecode = h.eecode
     -- REMOVE GROUP BY - hours_worked already has one row per employee per day
     )
 
