@@ -15,8 +15,8 @@
 
 with
     source as (
-        select
-            hash(dim_company_id, employee_id) as dim_employee_id,
+        select distinct
+            hash(c.company_name, employee_id) as dim_employee_id,
             hash(employee_id) as employee_id,
             
             null as hire_source,
@@ -45,9 +45,14 @@ with
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("ukg_ready_employees") }} e
         left join {{ ref("ukg_ready_dim_company") }} c on c.company_name = e.ein_name
-        left join ( SELECT DISTINCT EMPLOYEE_ACCOUNT_ID, AMOUNT_PERIOD FROM {{ ref("ukg_ready_compensation_history") }} WHERE EFFECTIVE_FROM <> '1900-12-31') ch on ch.employee_account_id = e.primary_account_id 
-        left join ( SELECT DISTINCT EMPLOYEE_ACCOUNT_ID, job_title FROM {{ ref("ukg_ready_attendance") }} ) a on  a.employee_account_id = e.primary_account_id 
-        left join  {{ ref("ukg_ready_dim_job") }} j on j.job_title = a.job_title
+        left join ( SELECT DISTINCT EMPLOYEE_ACCOUNT_ID, AMOUNT_PERIOD,
+                   ROW_NUMBER() OVER (PARTITION BY EMPLOYEE_ACCOUNT_ID ORDER BY effective_from DESC) as  ROW_NUMBER
+                    FROM {{ ref("ukg_ready_compensation_history") }} WHERE EFFECTIVE_FROM <> '1900-12-31') ch
+                     on ch.employee_account_id = e.primary_account_id  and ROW_NUMBER = 1
+        left join ( SELECT DISTINCT EMPLOYEE_ACCOUNT_ID, cost_centers_value_id, name FROM {{ ref("ukg_ready_attendance") }} a
+                    inner join  {{ ref("ukg_ready_cost_center_jobs") }} cj
+                    on a.cost_centers_value_id = cj.id) a1 on  a1.employee_account_id = e.primary_account_id 
+       left join  {{ ref("ukg_ready_dim_job") }} j on j.job_title = a1.name
         
 
        
