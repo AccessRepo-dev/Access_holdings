@@ -14,11 +14,11 @@
 }}
 
 
-with source as (select distinct ein_name from {{ ref("ukg_ready_employees") }})
-select
+with source as (select distinct id,ein_name from {{ ref("ukg_ready_lookup_eins") }})
 
-    row_number() over (order by ein_name) as dim_company_id,
-    null as company_id,
+select
+    id as dim_company_id,
+    id as company_id,
     null as company_code,
     ein_name as company_name,
     current_timestamp() as gold_load_date
