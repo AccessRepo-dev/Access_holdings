@@ -36,7 +36,7 @@ with
             trim(ein_name) as ein_name,
             trim(ein_tax_id) as ein_tax_id,
             trim(ein_country_id) as ein_country_id,
-            current_timestamp() as silver_load_date,
+            current_timestamp() as silver_load_date
 
         from source_data
     )
