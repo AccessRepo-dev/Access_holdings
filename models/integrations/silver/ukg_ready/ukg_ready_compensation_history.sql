@@ -35,7 +35,7 @@ with
             cast(id as int) as id,
 
             /* Employee object parsing */
-            employee:account_id::int as employee_account_id,
+            employee_account_id,
 
             /* Cleaning scalar columns */
             cast(effective_from as date) as effective_from,
@@ -45,7 +45,6 @@ with
             cast(time as int) as time,
             trim(time_period) as time_period,
             cast(num_pp_in_year as int) as num_pp_in_year,
-            _links,  -- OBJECT kept as-is
             trim(currency) as currency,
             current_timestamp() as silver_load_date,
 

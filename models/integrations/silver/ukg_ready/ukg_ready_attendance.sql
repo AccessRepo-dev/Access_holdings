@@ -33,9 +33,7 @@ with
     cleaned as (
         select
             /* Employee object parsing */
-            employee:account_id::int as employee_account_id,
-            trim(employee:display_name::text) as employee_display_name,
-
+            employee_account_id,
             /* Cleaning scalar columns */
             trim(status) as status,
             cast(last_end as timestamp_ntz) as last_end,
@@ -43,15 +41,13 @@ with
             cast(last_start as timestamp_ntz) as last_start,
             cast(_loaded_at as timestamp_tz) as _loaded_at,
             trim(_etl_batch_id) as _etl_batch_id,
-
+            trim(split(cost_centers_value_display_name, '(')[0]) as job_title,
             /* Cost center parsing */
-            cc.value:index::int as cost_center_index,
-            trim(cc.value:value.display_name::text) as cost_center_display_name,
-            cc.value:value.id::int as cost_center_id,
+            cost_centers_index,
+            cost_centers_value_id,
             current_timestamp() as silver_load_date,
 
         from source_data
-        left join lateral flatten(input => cost_centers) cc
     )
 
 select *

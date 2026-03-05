@@ -38,12 +38,10 @@ with
             try_cast(employee_id as varchar) as employee_id,
             cast(primary_account_id as number) as primary_account_id,
             cast(ein_name as varchar) as ein_name,
-            cast(_links as varchar) as _links,
             cast(status as varchar) as status,
-            cast(dates as varchar) as dates,
-            dates:"hired"::date as hired_date,
-            dates:"started"::date as started_date,
-            dates:"terminated"::date as terminated_date,
+            dates_hired as hired_date,
+            dates_started as started_date,
+            dates_terminated as terminated_date,
             current_timestamp() as silver_load_date
         from source_data
     )
