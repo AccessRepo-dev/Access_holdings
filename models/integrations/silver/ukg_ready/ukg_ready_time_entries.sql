@@ -33,44 +33,41 @@ with
     ),
 
     cleaned as (
-        select
+       select
             -- Original columns (flat fields)
             cast(start_date as date) as start_date,
             cast(end_date as date) as end_date,
-
+ 
             -- Parse EMPLOYEE object
-            employee:account_id::number as employee_account_id,
-
+            employee_account_id::number as employee_account_id,
+ 
             -- Flatten TIME_ENTRIES array and parse nested fields
-            time_entry.value:id::number as time_entry_id,
-            time_entry.value:date::date as time_entry_date,
-            time_entry.value:type::varchar as time_entry_type,
-            time_entry.value:approval_status::varchar as approval_status,
-            time_entry.value:total::number as total_milliseconds,
-            time_entry.value:total::number / 3600000 as total_hours,  -- Convert to hours
-            time_entry.value:calc_total::number as calc_total_milliseconds,
-            time_entry.value:calc_total::number / 3600000 as calc_total_hours,
-            time_entry.value:is_calc::boolean as is_calculated,
-            time_entry.value:is_raw::boolean as is_raw,
-
+            time_entries_id::number as time_entries_id,
+            time_entries_date::date as time_entries_date,
+            TIME_ENTRIES_END_TIME::timestamp as TIME_ENTRIES_END_TIME, -- Need to handle blank
+            TIME_ENTRIES_START_TIME::timestamp as TIME_ENTRIES_START_TIME,-- Need to handle blank
+            time_entries_type::varchar as time_entries_type,
+            TIME_ENTRIES_APPROVAL_STATUS::varchar as TIME_ENTRIES_APPROVAL_STATUS,
+            TIME_ENTRIES_CALC_START_TIME::timestamp as TIME_ENTRIES_CALC_START_TIME, 
+            TIME_ENTRIES_CALC_END_TIME::timestamp as TIME_ENTRIES_CALC_END_TIME,
+            TIME_ENTRIES_CALC_TOTAL::number as TIME_ENTRIES_CALC_TOTAL,
+            TIME_ENTRIES_CALC_TOTAL::number / 3600000 as TIME_ENTRIES_CALC_TOTAL_HOURS,  -- Convert to hours
+            TIME_ENTRIES_TOTAL::number as TIME_ENTRIES_TOTAL,
+            TIME_ENTRIES_TOTAL::number / 3600000 as TIME_ENTRIES_TOTAL_HOURS,
+            TIME_ENTRIES_IS_CALC::boolean as is_calculated,
+            TIME_ENTRIES_IS_RAW::boolean as is_raw,
+ 
             -- Parse nested TIME_OFF object within time_entries
-            time_entry.value:time_off.id::number as time_off_id,
-
+            TIME_ENTRIES_TIME_OFF_ID:time_off.id::number as TIME_ENTRIES_TIME_OFF_ID,
+ 
             -- Flatten COST_CENTERS array within time_entries
-            cost_center.value:index::number as cost_center_index,
-            cost_center.value:value.id::number as cost_center_id,
-
-            -- Add metadata
-            time_entry.index as time_entry_array_index,
-            cost_center.index as cost_center_array_index,
+            TIME_ENTRIES_COST_CENTERS_INDEX:index::number as TIME_ENTRIES_COST_CENTERS_INDEX,
+            TIME_ENTRIES_COST_CENTERS_VALUE_ID::number as TIME_ENTRIES_COST_CENTERS_VALUE_ID,
+ 
             current_timestamp() as silver_load_date
-
+ 
         from
-            source_data as raw,
-            lateral flatten(input => raw.time_entries, outer => true) as time_entry,
-            lateral flatten(
-                input => time_entry.value:cost_centers, outer => true
-            ) as cost_center
+            source_data
 
     )
 

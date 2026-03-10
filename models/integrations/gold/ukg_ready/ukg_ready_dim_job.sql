@@ -16,11 +16,11 @@
 with
     source as (
         select distinct
-            job_title,
+            ID as dim_job_id,
+            NAME as job_title,
             current_timestamp() as gold_load_date
-
-        from {{ ref("ukg_ready_attendance") }} e
+        from {{ ref("ukg_ready_cost_center_jobs") }} e
 
     )
-select row_number() over (order by job_title) as dim_job_id,job_title,gold_load_date
+select *
 from source

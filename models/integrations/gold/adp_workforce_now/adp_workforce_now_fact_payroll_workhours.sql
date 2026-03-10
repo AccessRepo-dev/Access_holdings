@@ -13,7 +13,37 @@
 }}
 
 with
+    active_FT as (
+        SELECT 
+            e.dim_employee_id as associate_oid,
+            'Unknown' as worker_id,
+            'Unknown' as time_card_id,
+            d.entry_date,
+            'Unknown' as pay_code,
+            'PT8H' as time_duration,
+            'Unknown' as bucket,
+            8 as hours,
+            0 as minutes,
+            null as seconds
 
+        FROM {{ ref("adp_workforce_now_dim_employee") }} e
+        LEFT JOIN (
+            SELECT DISTINCT associate_oid 
+            FROM {{ ref("adp_workforce_now_worker_time_card") }} t
+        ) t ON e.dim_employee_id = t.associate_oid
+        CROSS JOIN (
+            SELECT DATEADD(day, seq4(), '2020-01-01'::date) AS entry_date
+            FROM TABLE(GENERATOR(ROWCOUNT => 50000))
+        ) d
+        WHERE 
+            t.associate_oid is null
+            AND e.employee_status = 'Active'
+            AND e.employee_type = 'Full Time'
+            AND d.entry_date BETWEEN e.hire_date AND CURRENT_DATE()
+            AND DAYOFWEEK(d.entry_date) NOT IN (0, 6) 
+        
+
+    ),
     hours_cte as (
         select
             associate_oid,
@@ -39,6 +69,20 @@ with
         left join
             {{ ref("adp_workforce_now_dim_pay_code_mapping") }} pm
             on pm.pay_code = wtct.pay_code
+    
+     union 
+        select
+            associate_oid,
+            worker_id,
+            time_card_id,
+            entry_date,
+            pay_code,
+            time_duration,
+            bucket,
+            hours,
+            minutes,
+            seconds
+        from active_FT
 
     ),
 
