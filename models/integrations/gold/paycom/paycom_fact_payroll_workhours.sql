@@ -6,37 +6,37 @@
         enabled=(var("sourcesystem", "paycom") | lower) in ["paycom"]
         and (var("company", "amh") | lower) in ["amh"],
         database=get_target_database(company),
-        alias="fact_payroll_workhours",
+        alias ="fact_payroll_workhours",
         incremental_strategy="merge",
     )
 }}
 
 with
-    base_punches as (
+    bASe_punches AS (
         select
             eecode,
-            punchtime::date as work_date,
-            punchtime::timestamp_ntz as punch_timestamp,
+            punchtime::date AS work_date,
+            punchtime::timestamp_ntz AS punch_timestamp,
             punchtype,
             row_number() over (
                 partition by eecode, punchtime::date order by punchtime
-            ) as punch_order
+            ) AS punch_order
         from {{ ref("paycom_punch_history") }}
         where upper(punchtype) in ('ID', 'OD', 'HR')
     ),
 
     -- Identify punch pairs (ID followed by OD)
-    punch_pairs as (
+    punch_pairs AS (
         select
             curr.eecode,
             curr.work_date,
-            curr.punch_timestamp as in_time,
-            next_punch.punch_timestamp as out_time,
+            curr.punch_timestamp AS in_time,
+            next_punch.punch_timestamp AS out_time,
             timestampdiff(second, curr.punch_timestamp, next_punch.punch_timestamp)
-            / 3600.0 as hours_worked
-        from base_punches curr
+            / 3600.0 AS hours_worked
+        from bASe_punches curr
         left join
-            base_punches next_punch
+            bASe_punches next_punch
             on curr.eecode = next_punch.eecode
             and curr.work_date = next_punch.work_date
             and next_punch.punch_order = curr.punch_order + 1
@@ -45,79 +45,128 @@ with
     ),
 
     -- HR entries
-    hr_hours as (
-        select eecode, work_date, null as in_time, null as out_time, 8.0 as hours_worked
-        from base_punches
+    hr_hours AS (
+        select eecode, work_date, null AS in_time, null AS out_time, 8.0 AS hours_worked
+        from bASe_punches
         where punchtype = 'HR'
     ),
 
     -- Combine all
-    combined_hours as (
+    combined_hours AS (
         select *
         from punch_pairs
         where out_time is not null
-        union all
+        union all 
         select *
         from hr_hours
     ),
 
-    hours_worked as (
+    hours_worked AS (
         select
             eecode,
             work_date,
-            round(sum(hours_worked), 2) as total_hours_worked,
-            count(*) as shift_count,
-            min(in_time) as first_punch_in,
-            max(out_time) as last_punch_out,
+            round(sum(hours_worked), 2) AS total_hours_worked,
+            count(*) AS shift_count,
+            min(in_time) AS first_punch_in,
+            max(out_time) AS lASt_punch_out,
             listagg(
-                case
-                    when in_time is not null
-                    then
+                CASE
+                    WHEN in_time is not null
+                    THEN
                         to_varchar(in_time, 'HH24:MI')
                         || '-'
                         || to_varchar(out_time, 'HH24:MI')
-                    else 'HR Entry (8h)'
-                end,
+                    ELSE 'HR Entry (8h)'
+                END,
                 ' | '
-            ) within group (order by in_time) as shift_details
+            ) within group (order by in_time) AS shift_details
         from combined_hours
-        group by eecode, work_date  -- ADD THIS LINE - it was missing!
+        group by eecode, work_date  -- ADD THIS LINE - it wAS missing!
     ),
-
-    source as (
+    hours_worked_wB AS (
         select
-            es.annual_salary as annual_salary,
-            null as currency_code,
-            h.eecode as dim_employee_id,
-            h.eecode as employee_id,
+            h.eecode,
+            h.work_date,
+            round(sum(h.hours_worked) over (
+                partition by h.eecode, 
+                case
+                    when esil.pay_frequency = 'W' then date_trunc('week', h.work_date)
+                    when esil.pay_frequency = 'B' then date_trunc('week', dateadd(day,
+                        -mod(datediff(day, '2023-01-02'::date, h.work_date), 14),
+                        h.work_date
+                    ))
+                    else date_trunc('month', h.work_date)
+                end
+            ), 2) as period_total_hours
+        from combined_hours h
+        left join {{ ref("paycom_employees") }} esil
+            on esil.eecode = h.eecode
+    ),
+    source AS (
+        select
+            es.annual_salary AS annual_salary,
+            null AS currency_code,
+            h.eecode AS dim_employee_id,
+            h.eecode AS employee_id,
             e.dim_company_id,
             e.dim_location_id,
             e.dim_job_id,
-            null as dim_organization_level_id,
-            cast(null as float) as total_tax_amount,
-            cast(null as float) as net_amount,
-            cast(null as float) as bonus_total_hours,
-            es.hourly_salary as hourly_pay_rate,
-            cast(null as float) as total_deduction_amount,
-            e.scheduled_work_hours as total_hours,  -- Standard hours expected
-            h.total_hours_worked,  -- REMOVE SUM() - already aggregated
-            cast(null as float) as bonus_total_ot_hours,
+            null AS dim_organization_level_id,
+            CAST(null AS float) AS total_tax_amount,
+            CAST(null AS float) AS net_amount,
+            CAST(null AS float) AS bonus_total_hours,
+            es.hourly_salary AS hourly_pay_rate,
+            CAST(null AS float) AS total_deduction_amount,
+            CASE
+                WHEN e.scheduled_work_hours = 0 and e.employee_type = 'Full Time'
+                THEN 8
+                WHEN e.scheduled_work_hours = 0
+                THEN h.total_hours_worked
+                WHEN esil.pay_frequency = 'B'
+                THEN e.scheduled_work_hours / 10
+                WHEN esil.pay_frequency = 'W'
+                THEN e.scheduled_work_hours / 5
+            END AS total_hours,  -- Standard hours expected
+
             case
-                when h.shift_details = 'HR Entry (8h)' then h.total_hours_worked else 0
-            end as paid_absence_hours,  -- REMOVE SUM() - already aggregated
-            cast(null as float) as unpaid_absence_hours,
-            case
-                when pay_class in ('SAL', 'RIS')
-                then annual_salary / 250
-                when bonus_total_ot_hours is null then (h.total_hours_worked) * es.hourly_salary
-                else (bonus_total_ot_hours + h.total_hours_worked) * es.hourly_salary
-            end as total_earnings_amount,
-            h.work_date as pay_date,
-            current_timestamp()::timestamp_ntz as gold_load_date
+                when shift_details <> 'HR Entry (8h)' then
+                    case
+                        when esil.pay_frequency = 'W' and period_total_hours > 40
+                            then (wb.period_total_hours - 40) / 5
+                        when esil.pay_frequency = 'B' and period_total_hours > 80
+                            then (wb.period_total_hours - 80) / 10
+                        else 0
+                    end
+                else 0
+            end as bonus_total_ot_hours,
+
+            CASE 
+                WHEN h.shift_details = 'HR Entry (8h)' THEN 0 
+                ELSE h.total_hours_worked - bonus_total_ot_hours
+            END AS total_hours_worked, 
+
+
+            CASE
+                WHEN h.shift_details = 'HR Entry (8h)' THEN h.total_hours_worked ELSE 0
+            END AS paid_absence_hours,  
+
+
+            CAST(null AS float) AS unpaid_absence_hours,
+            CASE
+                WHEN es.pay_clASs in ('SAL', 'RIS')
+                THEN annual_salary / 250
+                WHEN bonus_total_ot_hours is null
+                THEN (h.total_hours_worked) * es.hourly_salary
+                ELSE (bonus_total_ot_hours + h.total_hours_worked) * es.hourly_salary
+            END AS total_earnings_amount,
+            h.work_date AS pay_date,
+            current_timestamp()::timestamp_ntz AS gold_load_date
         from hours_worked h
+        left join hours_worked_wB wb on h.eecode = wb.eecode and h.work_date = wb.work_date
         left join {{ ref("paycom_dim_employee") }} e on e.dim_employee_id = h.eecode
         left join {{ ref("paycom_employee_sensitive") }} es on es.eecode = h.eecode
-    -- REMOVE GROUP BY - hours_worked already has one row per employee per day
+        left join {{ ref("paycom_employees") }} esil on esil.eecode = h.eecode
+   
     )
 
 select *

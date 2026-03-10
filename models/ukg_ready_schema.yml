@@ -18,3 +18,9 @@ sources:
       - name: LOOKUP_PAY_TYPES
       - name: LOOKUP_TERMINATION_REASONS
       - name: TIME_ENTRIES
+
+  - name: wagway_ukg_ready_silver
+    database: wagway_dev
+    schema: silver
+    tables:
+      - name: wagway_subsidiary_mapping

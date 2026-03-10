@@ -7,19 +7,22 @@
         and (var("company", "wagway") | lower) in ["wagway"],
         database=get_target_database(company),
         materialized="incremental",
-        alias="dim_hr_company",
+        alias="dim_subsidiary_mapping",
         incremental_strategy="merge",
-        unique_key="dim_company_id",
+        unique_key="subsidiary_id",
     )
 }}
 
+with
+    source as (
+        select
+            DIM_SUBSIDIARY_ID,
+            SUBSIDIARY_NAME,
+            COMPANY_NAME,
+            DIM_COMPANY_ID,
+            current_timestamp()::timestamp_ntz as gold_load_date
+        from {{ source('wagway_ukg_ready_silver',"wagway_subsidiary_mapping") }}
 
-with source as (select distinct id,ein_name from {{ ref("ukg_ready_lookup_eins") }})
-
-select
-    id as dim_company_id,
-    id as company_id,
-    null as company_code,
-    ein_name as company_name,
-    current_timestamp() as gold_load_date
+    )
+select *
 from source

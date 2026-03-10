@@ -1,0 +1,35 @@
+DIM_SUBSIDIARY_ID,SUBSIDIARY_NAME,DIM_COMPANY_ID,COMPANY_NAME
+1,WagWay Group,118954945,WagWay Group LLC
+2,WagWay Group : WagWay Group LLC : PUPS Holdings LLC,118954945,WagWay Group LLC
+3,WagWay Group : WagWay Group LLC : Pawville Holdings LLC : Pawville Intermediate Holdings LLC,118962031,Pawville Intermediate Holdings LLC
+4,WagWay Group : WagWay Group LLC,118954945,WagWay Group LLC
+5,WagWay Group : WagWay Group LLC : Pawville Holdings LLC,118954945,WagWay Group LLC
+6,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : PUPS Intermediate Holdings LLC,118962030,PUPS Intermediate Holdings LLC
+11,WagWay Group : WagWay Group LLC : x WagWay Group LLC Elimination,118954945,WagWay Group LLC
+16,WagWay Group : PUPS Management Holdco LLC,118954945,WagWay Group LLC
+19,WagWay Group : Pawville Management Holdco LLC,118954945,WagWay Group LLC
+20,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : CHI-PUPS Intermediate Holdings LLC : PPC 1332 S Michigan LLC,119031554,CHI-PUPS Intermediate Holdings LLC
+21,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : CHI-PUPS Intermediate Holdings LLC : PPC 1624 W Division Street LLC,119031554,CHI-PUPS Intermediate Holdings LLC
+22,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : CHI-PUPS Intermediate Holdings LLC : PPC 2811 N Lincoln LLC,119031554,CHI-PUPS Intermediate Holdings LLC
+23,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : CHI-PUPS Intermediate Holdings LLC : PPC 316 W Illinois Street LLC,119031554,CHI-PUPS Intermediate Holdings LLC
+24,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : CHI-PUPS Intermediate Holdings LLC : PPC 468 N New Street LLC,119031554,CHI-PUPS Intermediate Holdings LLC
+25,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : CHI-PUPS Intermediate Holdings LLC : PPC 850 N State Street LLC,119031554,CHI-PUPS Intermediate Holdings LLC
+26,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : Williamsburg PUPS Holdings LLC : PPC 87 Kent Avenue LLC,119031553,Williamsburg PUPS Holdings LLC
+28,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : CHI-PUPS Intermediate Holdings LLC : PPC 211 N Harbor Drive LLC,119031554,CHI-PUPS Intermediate Holdings LLC
+29,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : PUPS Intermediate Holdings LLC : PPC 302 Livingston Street LLC,118962030,PUPS Intermediate Holdings LLC
+31,WagWay Group : WagWay Group LLC : Pawville Holdings LLC : Pawville Intermediate Holdings LLC : Pawville Florida LLC,118962031,Pawville Intermediate Holdings LLC
+32,WagWay Group : WagWay Group LLC : Pawville Holdings LLC : Pawville Intermediate Holdings LLC : Pawville Georgia LLC,118962031,Pawville Intermediate Holdings LLC
+33,WagWay Group : WagWay Group LLC : Pawville Holdings LLC : Pawville Intermediate Holdings LLC : Pawville South Carolina LLC,118962031,Pawville Intermediate Holdings LLC
+35,WagWay Group : WagWay Group LLC : Pawville Holdings LLC : Pawville Intermediate Holdings LLC : Pawville North Carolina LLC,118962031,Pawville Intermediate Holdings LLC
+36,WagWay Group : WagWay Group LLC : Pawville Holdings LLC : Pawville Intermediate Holdings LLC : Pawville Property LLC,118962031,Pawville Intermediate Holdings LLC
+37,WagWay Group : WagWay Group LLC : Pawville Holdings LLC : Pawville Intermediate Holdings LLC : Pawville Vet Services LLC,118962031,Pawville Intermediate Holdings LLC
+39,WagWay Group : WagWay Group LLC : Pawville Holdings LLC : Pawville Intermediate Holdings LLC : Pawville Vet Services LLC : Paw Springs Veterinary Clinics PLLC,118962499,"Paw Springs Veterinary Hospitals, PLLC"
+41,WagWay Group : WagWay Group LLC : Pawville Holdings LLC : Pawville Intermediate Holdings LLC : x Elimination Pawville Intermediate Holdings,118962031,Pawville Intermediate Holdings LLC
+42,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : PUPS Intermediate Holdings LLC : x Elimination PUPS Intermediate Holdings,118962030,PUPS Intermediate Holdings LLC
+43,WagWay Group : x Wagway Group Elimination,118954945,WagWay Group LLC
+44,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : CHI-PUPS Intermediate Holdings LLC XXX,119031554,CHI-PUPS Intermediate Holdings LLC
+45,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : Williamsburg PUPS Holdings LLC2,119031553,Williamsburg PUPS Holdings LLC
+46,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : CHI-PUPS Intermediate Holdings LLC,119031554,CHI-PUPS Intermediate Holdings LLC
+47,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : Williamsburg PUPS Holdings LLC,119031553,Williamsburg PUPS Holdings LLC
+48,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : CHI-PUPS Intermediate Holdings LLC : x Elimination CHI PUPS Intermediate Holdings,119031554,CHI-PUPS Intermediate Holdings LLC
+49,WagWay Group : WagWay Group LLC : PUPS Holdings LLC : Williamsburg PUPS Holdings LLC : x Elimination Williamsburg PUPS Intermediate Holdings,119031553,Williamsburg PUPS Holdings LLC
