@@ -83,7 +83,25 @@ with
         from combined_hours
         group by eecode, work_date  -- ADD THIS LINE - it wAS missing!
     ),
-
+    hours_worked_wB AS (
+        select
+            h.eecode,
+            h.work_date,
+            round(sum(h.hours_worked) over (
+                partition by h.eecode, 
+                case
+                    when esil.pay_frequency = 'W' then date_trunc('week', h.work_date)
+                    when esil.pay_frequency = 'B' then date_trunc('week', dateadd(day,
+                        -mod(datediff(day, '2023-01-02'::date, h.work_date), 14),
+                        h.work_date
+                    ))
+                    else date_trunc('month', h.work_date)
+                end
+            ), 2) as period_total_hours
+        from combined_hours h
+        left join {{ ref("paycom_employees") }} esil
+            on esil.eecode = h.eecode
+    ),
     source AS (
         select
             es.annual_salary AS annual_salary,
@@ -110,23 +128,29 @@ with
                 THEN e.scheduled_work_hours / 5
             END AS total_hours,  -- Standard hours expected
 
-
-             -- REMOVE SUM() - already aggregated
-
-            CASE WHEN  total_hours_worked > total_hours AND h.shift_details <> 'HR Entry (8h)'  THEN total_hours_worked - total_hours 
-                ELSE 0 
-            END AS bonus_total_ot_hours,
+            case
+                when shift_details <> 'HR Entry (8h)' then
+                    case
+                        when esil.pay_frequency = 'W' and period_total_hours > 40
+                            then (wb.period_total_hours - 40) / 5
+                        when esil.pay_frequency = 'B' and period_total_hours > 80
+                            then (wb.period_total_hours - 80) / 10
+                        else 0
+                    end
+                else 0
+            end as bonus_total_ot_hours,
 
             CASE 
                 WHEN h.shift_details = 'HR Entry (8h)' THEN 0 
-                WHEN  total_hours_worked > total_hours THEN  total_hours 
-                ELSE h.total_hours_worked
+                ELSE h.total_hours_worked - bonus_total_ot_hours
             END AS total_hours_worked, 
 
 
             CASE
                 WHEN h.shift_details = 'HR Entry (8h)' THEN h.total_hours_worked ELSE 0
-            END AS paid_absence_hours,  -- REMOVE SUM() - already aggregated
+            END AS paid_absence_hours,  
+
+
             CAST(null AS float) AS unpaid_absence_hours,
             CASE
                 WHEN es.pay_clASs in ('SAL', 'RIS')
@@ -138,6 +162,7 @@ with
             h.work_date AS pay_date,
             current_timestamp()::timestamp_ntz AS gold_load_date
         from hours_worked h
+        left join hours_worked_wB wb on h.eecode = wb.eecode and h.work_date = wb.work_date
         left join {{ ref("paycom_dim_employee") }} e on e.dim_employee_id = h.eecode
         left join {{ ref("paycom_employee_sensitive") }} es on es.eecode = h.eecode
         left join {{ ref("paycom_employees") }} esil on esil.eecode = h.eecode
