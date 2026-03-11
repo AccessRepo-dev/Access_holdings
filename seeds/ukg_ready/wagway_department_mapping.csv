@@ -1,0 +1,200 @@
+DIM_DEPARTMENT_ID,DEPARTMENT_NAME,DIM_HR_DEPARTMENT_ID,HR_DEPARTMENT_NAME
+2,Boarding,60255978571,Boarding
+2,Boarding,60255985602,Boarding
+2,Boarding,60255978479,Boarding
+2,Boarding,60255978470,Boarding
+2,Boarding,60255978451,Boarding
+2,Boarding,60255985426,Boarding
+2,Boarding,60255985611,Boarding
+2,Boarding,60256149129,Boarding
+2,Boarding,60256149154,Boarding
+2,Boarding,60255985417,Boarding
+2,Boarding,60255978460,Boarding
+2,Boarding,60255985465,Boarding
+2,Boarding,60255985435,Boarding
+2,Boarding,60255978488,Boarding
+2,Boarding,60255985620,Boarding
+2,Boarding,60255978442,Boarding
+2,Boarding,60255985455,Boarding
+2,Boarding,60255985444,Boarding
+2,Boarding,60255985630,Boarding
+2,Boarding,60256149120,Boarding
+14,Corporate,60255985416,Corporate
+14,Corporate,60255978562,Corporate
+14,Corporate,60255985010,Corporate
+14,Corporate,60255985454,Corporate
+14,Corporate,60255985004,Corporate
+14,Corporate,60255985014,Corporate
+14,Corporate,60255985007,Corporate
+,,60255985420,CSR
+,,60255985605,CSR
+,,60255985623,CSR
+,,60255985429,CSR
+,,60255985459,CSR
+,,60255985447,CSR
+,,60255985614,CSR
+,,60255985633,CSR
+,,60255985438,CSR
+,,60255985468,CSR
+3,Daycare,60255978461,Daycare
+3,Daycare,60255978480,Daycare
+3,Daycare,60255978443,Daycare
+3,Daycare,60255985466,Daycare
+3,Daycare,60255985427,Daycare
+3,Daycare,60255985603,Daycare
+3,Daycare,60256149130,Daycare
+3,Daycare,60255978490,Daycare
+3,Daycare,60255985612,Daycare
+3,Daycare,60255985445,Daycare
+3,Daycare,60256149121,Daycare
+3,Daycare,60255985436,Daycare
+3,Daycare,60255985621,Daycare
+3,Daycare,60255978471,Daycare
+3,Daycare,60255985457,Daycare
+3,Daycare,60255985418,Daycare
+3,Daycare,60255978452,Daycare
+3,Daycare,60255985631,Daycare
+3,Daycare,60255978572,Daycare
+3,Daycare,60256149155,Daycare
+19,Executive,60255985015,Executive
+18,Finance,60255985016,Finance
+8,Grooming,60256149122,Grooming
+8,Grooming,60256149131,Grooming
+8,Grooming,60255978462,Grooming
+8,Grooming,60255978576,Grooming
+8,Grooming,60255985428,Grooming
+8,Grooming,60255978491,Grooming
+8,Grooming,60256149156,Grooming
+8,Grooming,60255985622,Grooming
+8,Grooming,60255978444,Grooming
+8,Grooming,60255985613,Grooming
+8,Grooming,60255985604,Grooming
+8,Grooming,60255978472,Grooming
+8,Grooming,60255985467,Grooming
+8,Grooming,60255985458,Grooming
+8,Grooming,60255985437,Grooming
+8,Grooming,60255985632,Grooming
+8,Grooming,60255978481,Grooming
+8,Grooming,60255985419,Grooming
+8,Grooming,60255985446,Grooming
+8,Grooming,60255978453,Grooming
+16,HR,60255985017,HR
+17,IT,60255985018,IT
+15,Marketing,60255985019,Marketing
+5,Pet Sitting,60255985624,Pet Sitting
+5,Pet Sitting,60255978482,Pet Sitting
+5,Pet Sitting,60255978492,Pet Sitting
+5,Pet Sitting,60255985606,Pet Sitting
+5,Pet Sitting,60255985469,Pet Sitting
+5,Pet Sitting,60256149157,Pet Sitting
+5,Pet Sitting,60255985430,Pet Sitting
+5,Pet Sitting,60255985421,Pet Sitting
+5,Pet Sitting,60255985615,Pet Sitting
+5,Pet Sitting,60255985448,Pet Sitting
+5,Pet Sitting,60255985460,Pet Sitting
+5,Pet Sitting,60255978463,Pet Sitting
+5,Pet Sitting,60256149123,Pet Sitting
+5,Pet Sitting,60255978454,Pet Sitting
+5,Pet Sitting,60255985439,Pet Sitting
+5,Pet Sitting,60255985634,Pet Sitting
+5,Pet Sitting,60255978445,Pet Sitting
+5,Pet Sitting,60255978473,Pet Sitting
+5,Pet Sitting,60256149132,Pet Sitting
+5,Pet Sitting,60255978577,Pet Sitting
+4,Playcare,60255985625,Playcare
+11,Retail,60256149133,Retail
+11,Retail,60256149158,Retail
+11,Retail,60255978578,Retail
+11,Retail,60255978455,Retail
+11,Retail,60255978446,Retail
+11,Retail,60255978493,Retail
+11,Retail,60255978483,Retail
+11,Retail,60256149124,Retail
+11,Retail,60255978474,Retail
+11,Retail,60255978464,Retail
+25,Store Management,60255985449,Store Management
+25,Store Management,60255985440,Store Management
+25,Store Management,60255978465,Store Management
+25,Store Management,60255985607,Store Management
+25,Store Management,60255985431,Store Management
+25,Store Management,60256149125,Store Management
+25,Store Management,60255985422,Store Management
+25,Store Management,60255978494,Store Management
+25,Store Management,60255978484,Store Management
+25,Store Management,60255985635,Store Management
+25,Store Management,60255978475,Store Management
+25,Store Management,60256149159,Store Management
+25,Store Management,60255978579,Store Management
+25,Store Management,60255985616,Store Management
+25,Store Management,60255985626,Store Management
+25,Store Management,60255985461,Store Management
+25,Store Management,60255978447,Store Management
+25,Store Management,60255985470,Store Management
+25,Store Management,60255978456,Store Management
+25,Store Management,60256149134,Store Management
+9,Training,60255985432,Training
+9,Training,60255985462,Training
+9,Training,60256149126,Training
+9,Training,60255985441,Training
+9,Training,60255985617,Training
+9,Training,60255985608,Training
+9,Training,60255978485,Training
+9,Training,60255978448,Training
+9,Training,60255985423,Training
+9,Training,60255985450,Training
+9,Training,60255985627,Training
+9,Training,60255978495,Training
+9,Training,60255978457,Training
+9,Training,60256149160,Training
+9,Training,60255985471,Training
+9,Training,60255978580,Training
+9,Training,60256149135,Training
+9,Training,60255978476,Training
+9,Training,60255978466,Training
+9,Training,60255985636,Training
+7,Transportation,60255978467,Transportation
+7,Transportation,60255985433,Transportation
+7,Transportation,60255985451,Transportation
+7,Transportation,60255985609,Transportation
+7,Transportation,60255978458,Transportation
+7,Transportation,60255985628,Transportation
+7,Transportation,60255985637,Transportation
+7,Transportation,60255985442,Transportation
+7,Transportation,60255985463,Transportation
+7,Transportation,60255985600,Transportation
+7,Transportation,60255985424,Transportation
+7,Transportation,60256149127,Transportation
+7,Transportation,60256149161,Transportation
+7,Transportation,60255978560,Transportation
+7,Transportation,60255978581,Transportation
+7,Transportation,60256149136,Transportation
+7,Transportation,60255978477,Transportation
+7,Transportation,60255978449,Transportation
+7,Transportation,60255978486,Transportation
+7,Transportation,60255985618,Transportation
+,,60255985011,Vet Clinic Management
+,,60255985005,Vet Clinic Management
+,,60255985009,Vet Clinic Management
+12,Vet Services,60255985008,Vet Services
+12,Vet Services,60255985006,Vet Services
+12,Vet Services,60255985012,Vet Services
+6,Walking,60255978487,Walking
+6,Walking,60256149128,Walking
+6,Walking,60255978561,Walking
+6,Walking,60255985610,Walking
+6,Walking,60255985464,Walking
+6,Walking,60255985619,Walking
+6,Walking,60255985601,Walking
+6,Walking,60255978478,Walking
+6,Walking,60255985638,Walking
+6,Walking,60256149162,Walking
+6,Walking,60255978582,Walking
+6,Walking,60255978459,Walking
+6,Walking,60255978450,Walking
+6,Walking,60256149137,Walking
+6,Walking,60255978468,Walking
+6,Walking,60255985434,Walking
+6,Walking,60255985443,Walking
+6,Walking,60255985425,Walking
+6,Walking,60255985629,Walking
+6,Walking,60255985452,Walking

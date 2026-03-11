@@ -18,6 +18,7 @@ with
             null as state_key,--md5(coalesce(mad.state_code, '')) as state_key,
             period_start_date,
             dim_department_id,
+            dim_location_id,
             DIM_SUBSIDIARY_ID,
             dim_class_id,
             sum(case when a.metric_l1 = 'Revenue' then amount else 0 end) as rev,
@@ -48,6 +49,7 @@ with
 select
     period_start_date,
     dim_department_id,
+    dim_location_id,
     DIM_SUBSIDIARY_ID,
     dim_class_id,
     state_key,

@@ -4,12 +4,16 @@ sources:
     schema: ukg_ready
     tables:
       - name: EMPLOYEES
+      - name: EMPLOYEE_DETAILS
+      - name: COST_CENTERS_LOCATION
+
       - name: BENEFITS
       - name: PAY_PERIOD_PROFILES
       - name: ATTENDANCE
       - name: COMPENSATION_HISTORY
       - name: COMPENSATION_TOTAL
       - name: COST_CENTER_JOBS
+      - name: COST_CENTERS_DEPARTMENT
       - name: LOOKUP_EARNING_CODES
       - name: LOOKUP_EINS
       - name: LOOKUP_EMPLOYEE_TYPES
@@ -24,3 +28,5 @@ sources:
     schema: silver
     tables:
       - name: wagway_subsidiary_mapping
+      - name: wagway_hr_location_mapping
+      - name: wagway_department_mapping

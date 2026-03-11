@@ -17,7 +17,7 @@ with
     source as (
         select distinct
             -- hash(c.dim_company_id, primary_account_id) as dim_employee_id,
-            ID as dim_employee_id, 
+            e.ID as dim_employee_id, 
             e.primary_account_id as employee_id,
             null as hire_source,
             e.status as employee_status,
@@ -28,11 +28,11 @@ with
             null as termination_reason,
             null as termination_type,
             dim_company_id,
-            null as dim_location_id,
-            cast(cost_centers_value_id as int) as dim_job_id,
+            d.cost_center_department_id as dim_location_id,
+            d.cost_center_location_id as dim_job_id,
             null as dim_parent_class_id,
             null as dim_class_id,
-            null as dim_department_id,
+            d.cost_center_department_id as dim_department_id,
             null as dim_location_ns_id,
             null as supervisor_company_id,
             null as manager_id,
@@ -49,9 +49,8 @@ with
                    ROW_NUMBER() OVER (PARTITION BY EMPLOYEE_ACCOUNT_ID ORDER BY effective_from DESC) as  ROW_NUMBER
                     FROM {{ ref("ukg_ready_compensation_history") }} WHERE EFFECTIVE_FROM <> '1900-12-31') ch
                      on ch.employee_account_id = e.ID  and ROW_NUMBER = 1
-        left join ( select * from  {{ ref("ukg_ready_attendance") }} 
-                        QUALIFY ROW_NUMBER() OVER (PARTITION BY employee_account_id ORDER BY COALESCE(LAST_END,LAST_START) DESC) = 1) a on e.ID = a.employee_account_id
-
+        left join  {{ ref("ukg_ready_employee_details") }}  d on e.ID = d.ID
+        
     )
 select *
 from source s

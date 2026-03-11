@@ -15,7 +15,7 @@
 with
     source_data as (
         select *
-        from {{ get_raw_source(company, sourcesystem, "COST_CENTER_JOBS") }}
+        from {{ get_raw_source(company, sourcesystem, "COST_CENTERS_LOCATION") }}
         {% if is_incremental() %}
             where
                 cast(_loaded_at as timestamp_ntz) > (
@@ -35,14 +35,8 @@ with
     cleaned as (
         select
             cast(id as int) as id,
+            cast(parent_id as int) as parent_id,
             trim(name) as name,
-            trim(abbreviation) as abbreviation,
-            cast(visible as boolean) as visible,
-            cast(applicant_tracking_display as boolean) as applicant_tracking_display,
-            cast(
-                applicant_tracking_display_only as boolean
-            ) as applicant_tracking_display_only,
-            trim(description) as description,
             current_timestamp() as silver_load_date
 
         from source_data

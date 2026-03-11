@@ -90,14 +90,23 @@ with
             round(sum(h.hours_worked) over (
                 partition by h.eecode, 
                 case
-                    when esil.pay_frequency = 'W' then date_trunc('week', h.work_date)
-                    when esil.pay_frequency = 'B' then date_trunc('week', dateadd(day,
-                        -mod(datediff(day, '2023-01-02'::date, h.work_date), 14),
-                        h.work_date
-                    ))
-                    else date_trunc('month', h.work_date)
-                end
-            ), 2) as period_total_hours
+            when esil.pay_frequency = 'W'
+                then dateadd(day, -mod(datediff(day, '2022-12-31'::date, h.work_date), 7), h.work_date)
+            when esil.pay_frequency = 'B'
+                then dateadd(day, -mod(datediff(day, '2022-12-31'::date, h.work_date), 14), h.work_date)
+            else date_trunc('month', h.work_date)
+            end
+            ), 2) as period_total_hours,
+            count(distinct h.work_date) over (
+            partition by h.eecode,
+            case
+                when esil.pay_frequency = 'W'
+                    then dateadd(day, -mod(datediff(day, '2022-12-31'::date, h.work_date), 7), h.work_date)
+                when esil.pay_frequency = 'B'
+                    then dateadd(day, -mod(datediff(day, '2022-12-31'::date, h.work_date), 14), h.work_date)
+                else date_trunc('month', h.work_date)
+            end
+        ) as period_distinct_days
         from combined_hours h
         left join {{ ref("paycom_employees") }} esil
             on esil.eecode = h.eecode
@@ -118,27 +127,30 @@ with
             es.hourly_salary AS hourly_pay_rate,
             CAST(null AS float) AS total_deduction_amount,
             CASE
-                WHEN e.scheduled_work_hours = 0 and e.employee_type = 'Full Time'
-                THEN 8
+                WHEN e.scheduled_work_hours = 0 and e.employee_type = 'Full Time' and  esil.pay_frequency = 'B'
+                THEN 80/wb.period_distinct_days
+                WHEN e.scheduled_work_hours = 0 and e.employee_type = 'Full Time' and  esil.pay_frequency = 'W'
+                THEN 40/wb.period_distinct_days
                 WHEN e.scheduled_work_hours = 0
                 THEN h.total_hours_worked
                 WHEN esil.pay_frequency = 'B'
-                THEN e.scheduled_work_hours / 10
+                THEN e.scheduled_work_hours / wb.period_distinct_days
                 WHEN esil.pay_frequency = 'W'
-                THEN e.scheduled_work_hours / 5
+                THEN e.scheduled_work_hours / wb.period_distinct_days
             END AS total_hours,  -- Standard hours expected
 
             case
                 when shift_details <> 'HR Entry (8h)' then
                     case
                         when esil.pay_frequency = 'W' and period_total_hours > 40
-                            then (wb.period_total_hours - 40) / 5
+                            then (wb.period_total_hours - 40) / wb.period_distinct_days
                         when esil.pay_frequency = 'B' and period_total_hours > 80
-                            then (wb.period_total_hours - 80) / 10
+                            then (wb.period_total_hours - 80) / wb.period_distinct_days
                         else 0
                     end
                 else 0
             end as bonus_total_ot_hours,
+            
 
             CASE 
                 WHEN h.shift_details = 'HR Entry (8h)' THEN 0 

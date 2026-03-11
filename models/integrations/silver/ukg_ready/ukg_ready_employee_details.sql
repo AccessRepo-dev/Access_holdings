@@ -15,7 +15,7 @@
 with
     source_data as (
         select *
-        from {{ get_raw_source(company, sourcesystem, "COST_CENTER_JOBS") }}
+        from {{ get_raw_source(company, sourcesystem, "EMPLOYEE_DETAILS") }}
         {% if is_incremental() %}
             where
                 cast(_loaded_at as timestamp_ntz) > (
@@ -23,9 +23,7 @@ with
                         dateadd(
                             day,
                             -1,
-                            coalesce(
-                                max(_loaded_at), '1900-01-01'::timestamp_ntz
-                            )
+                            coalesce(max(_loaded_at), '1900-01-01'::timestamp_ntz)
                         )
                     from {{ this }}
                 )
@@ -35,14 +33,8 @@ with
     cleaned as (
         select
             cast(id as int) as id,
-            trim(name) as name,
-            trim(abbreviation) as abbreviation,
-            cast(visible as boolean) as visible,
-            cast(applicant_tracking_display as boolean) as applicant_tracking_display,
-            cast(
-                applicant_tracking_display_only as boolean
-            ) as applicant_tracking_display_only,
-            trim(description) as description,
+            cast(cost_center_location_id as int) as cost_center_location_id,
+            cast(cost_center_department_id as int) as cost_center_department_id,
             current_timestamp() as silver_load_date
 
         from source_data

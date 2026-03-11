@@ -1,0 +1,232 @@
+DIM_LOCATION_ID,LOCATION_NAME,DIM_HR_LOCATION_ID,HR_LOCATION_NAME
+11,Jacksonville,60256149158,Jacksonville
+11,Jacksonville,60256149159,Jacksonville
+11,Jacksonville,60256149154,Jacksonville
+11,Jacksonville,60256149155,Jacksonville
+11,Jacksonville,60256149156,Jacksonville
+11,Jacksonville,60256149157,Jacksonville
+11,Jacksonville,60256149160,Jacksonville
+11,Jacksonville,60256149162,Jacksonville
+11,Jacksonville,60256149161,Jacksonville
+,,60255985013,WagWay Group
+12,Midtown,60255985008,Midtown
+12,Midtown,60255985009,Midtown
+12,Midtown,60255985007,Midtown
+16,Surf City,60255978459,Surf City
+16,Surf City,60255978458,Surf City
+16,Surf City,60255978451,Surf City
+16,Surf City,60255978454,Surf City
+16,Surf City,60255978453,Surf City
+16,Surf City,60255978455,Surf City
+16,Surf City,60255978457,Surf City
+16,Surf City,60255978456,Surf City
+16,Surf City,60255978452,Surf City
+7,Lakeshore East,60255985437,Lakeshore East
+7,Lakeshore East,60255985439,Lakeshore East
+7,Lakeshore East,60255985438,Lakeshore East
+7,Lakeshore East,60255985436,Lakeshore East
+7,Lakeshore East,60255985440,Lakeshore East
+7,Lakeshore East,60255985443,Lakeshore East
+7,Lakeshore East,60255985442,Lakeshore East
+7,Lakeshore East,60255985441,Lakeshore East
+7,Lakeshore East,60255985435,Lakeshore East
+3,Streeterville,60255985613,Streeterville
+3,Streeterville,60255985615,Streeterville
+3,Streeterville,60255985614,Streeterville
+3,Streeterville,60255985618,Streeterville
+3,Streeterville,60255985619,Streeterville
+3,Streeterville,60255985611,Streeterville
+3,Streeterville,60255985617,Streeterville
+3,Streeterville,60255985616,Streeterville
+3,Streeterville,60255985612,Streeterville
+2,Gold Coast,60255985434,Gold Coast
+2,Gold Coast,60255985430,Gold Coast
+2,Gold Coast,60255985427,Gold Coast
+2,Gold Coast,60255985431,Gold Coast
+2,Gold Coast,60255985426,Gold Coast
+2,Gold Coast,60255985429,Gold Coast
+2,Gold Coast,60255985433,Gold Coast
+2,Gold Coast,60255985432,Gold Coast
+2,Gold Coast,60255985428,Gold Coast
+4,River North,60255985471,River North
+4,River North,60255985467,River North
+4,River North,60255985469,River North
+4,River North,60255985470,River North
+4,River North,60255985465,River North
+4,River North,60255985468,River North
+4,River North,60255985601,River North
+4,River North,60255985466,River North
+4,River North,60255985600,River North
+25,Clayton,60255985005,Clayton
+25,Clayton,60255985006,Clayton
+25,Clayton,60255985004,Clayton
+,,60255978562,North Carolina
+14,Northchase,60255978480,Northchase
+14,Northchase,60255978487,Northchase
+14,Northchase,60255978479,Northchase
+14,Northchase,60255978484,Northchase
+14,Northchase,60255978482,Northchase
+14,Northchase,60255978486,Northchase
+14,Northchase,60255978483,Northchase
+14,Northchase,60255978485,Northchase
+14,Northchase,60255978481,Northchase
+17,Winder,60255978447,Winder
+17,Winder,60255978448,Winder
+17,Winder,60255978444,Winder
+17,Winder,60255978443,Winder
+17,Winder,60255978449,Winder
+17,Winder,60255978450,Winder
+17,Winder,60255978446,Winder
+17,Winder,60255978445,Winder
+17,Winder,60255978442,Winder
+,,60255985454,New York
+8,Wicker Park,60255985622,Wicker Park
+8,Wicker Park,60255985626,Wicker Park
+8,Wicker Park,60255985623,Wicker Park
+8,Wicker Park,60255985629,Wicker Park
+8,Wicker Park,60255985627,Wicker Park
+8,Wicker Park,60255985625,Wicker Park
+8,Wicker Park,60255985620,Wicker Park
+8,Wicker Park,60255985624,Wicker Park
+8,Wicker Park,60255985621,Wicker Park
+8,Wicker Park,60255985628,Wicker Park
+12,Midtown,60255978571,Midtown
+12,Midtown,60255978572,Midtown
+12,Midtown,60255978578,Midtown
+12,Midtown,60255978576,Midtown
+12,Midtown,60255978581,Midtown
+12,Midtown,60255978582,Midtown
+12,Midtown,60255978580,Midtown
+12,Midtown,60255978577,Midtown
+12,Midtown,60255978579,Midtown
+,,60255985458,Old Town
+,,60255985462,Old Town
+,,60255985464,Old Town
+,,60255985459,Old Town
+,,60255985461,Old Town
+,,60255985463,Old Town
+,,60255985460,Old Town
+,,60255985457,Old Town
+,,60255985455,Old Town
+,,60255985416,Chicago
+15,Scotts Hill,60255978466,Scotts Hill
+15,Scotts Hill,60255978460,Scotts Hill
+15,Scotts Hill,60255978462,Scotts Hill
+15,Scotts Hill,60255978465,Scotts Hill
+15,Scotts Hill,60255978464,Scotts Hill
+15,Scotts Hill,60255978461,Scotts Hill
+15,Scotts Hill,60255978467,Scotts Hill
+15,Scotts Hill,60255978468,Scotts Hill
+15,Scotts Hill,60255978463,Scotts Hill
+25,Clayton,60256149130,Clayton
+25,Clayton,60256149133,Clayton
+25,Clayton,60256149135,Clayton
+25,Clayton,60256149136,Clayton
+25,Clayton,60256149129,Clayton
+25,Clayton,60256149134,Clayton
+25,Clayton,60256149132,Clayton
+25,Clayton,60256149137,Clayton
+25,Clayton,60256149131,Clayton
+,,60255978433,PAW
+,,60255978440,PAW
+,,60255978435,PAW
+,,60255978437,PAW
+,,60255978441,PAW
+,,60255978434,PAW
+,,60255978439,PAW
+,,60255978432,PAW
+,,60255978436,PAW
+,,60255978438,PAW
+,,60255977727,PAW
+9,South Loop,60255985610,South Loop
+9,South Loop,60255985608,South Loop
+9,South Loop,60255985609,South Loop
+9,South Loop,60255985603,South Loop
+9,South Loop,60255985606,South Loop
+9,South Loop,60255985605,South Loop
+9,South Loop,60255985602,South Loop
+9,South Loop,60255985607,South Loop
+9,South Loop,60255985604,South Loop
+,,60255985023,PUPS
+,,60255985413,PUPS
+,,60255985022,PUPS
+,,60255985411,PUPS
+,,60255985409,PUPS
+,,60255985414,PUPS
+,,60255985410,PUPS
+,,60255985020,PUPS
+,,60255985412,PUPS
+,,60255985415,PUPS
+,,60255985021,PUPS
+,,60255985408,PUPS
+13,North Shore,60255978491,North Shore
+13,North Shore,60255978560,North Shore
+13,North Shore,60255978492,North Shore
+13,North Shore,60255978495,North Shore
+13,North Shore,60255978493,North Shore
+13,North Shore,60255978494,North Shore
+13,North Shore,60255978561,North Shore
+13,North Shore,60255978490,North Shore
+13,North Shore,60255978488,North Shore
+,,60255977726,WagWay Learning
+,,60255977723,WagWay Learning
+,,60255977725,WagWay Learning
+,,60255977724,WagWay Learning
+,,60255985017,WagWay Group
+,,60255985014,WagWay Group
+,,60255985015,WagWay Group
+,,60255985018,WagWay Group
+,,60255985016,WagWay Group
+,,60255985019,WagWay Group
+1,Williamsburg,60255985636,Williamsburg
+1,Williamsburg,60255985634,Williamsburg
+1,Williamsburg,60255985638,Williamsburg
+1,Williamsburg,60255985635,Williamsburg
+1,Williamsburg,60255985630,Williamsburg
+1,Williamsburg,60255985633,Williamsburg
+1,Williamsburg,60255985632,Williamsburg
+1,Williamsburg,60255985631,Williamsburg
+1,Williamsburg,60255985637,Williamsburg
+5,DoBro,60255985420,DoBro
+5,DoBro,60255985421,DoBro
+5,DoBro,60255985425,DoBro
+5,DoBro,60255985422,DoBro
+5,DoBro,60255985419,DoBro
+5,DoBro,60255985418,DoBro
+5,DoBro,60255985424,DoBro
+5,DoBro,60255985417,DoBro
+5,DoBro,60255985423,DoBro
+10,Pawley's Island,60255978472,Pawley's Island
+10,Pawley's Island,60255978474,Pawley's Island
+10,Pawley's Island,60255978478,Pawley's Island
+10,Pawley's Island,60255978470,Pawley's Island
+10,Pawley's Island,60255978475,Pawley's Island
+10,Pawley's Island,60255978473,Pawley's Island
+10,Pawley's Island,60255978477,Pawley's Island
+10,Pawley's Island,60255978471,Pawley's Island
+10,Pawley's Island,60255978476,Pawley's Island
+6,Lakeview,60255985445,Lakeview
+6,Lakeview,60255985444,Lakeview
+6,Lakeview,60255985451,Lakeview
+6,Lakeview,60255985448,Lakeview
+6,Lakeview,60255985446,Lakeview
+6,Lakeview,60255985447,Lakeview
+6,Lakeview,60255985450,Lakeview
+6,Lakeview,60255985449,Lakeview
+6,Lakeview,60255985452,Lakeview
+15,Scotts Hill,60255985012,Scotts Hill
+15,Scotts Hill,60255985010,Scotts Hill
+15,Scotts Hill,60255985011,Scotts Hill
+18,Citrus,60256149127,Citrus
+18,Citrus,60256149124,Citrus
+18,Citrus,60256149126,Citrus
+18,Citrus,60256149120,Citrus
+18,Citrus,60256149128,Citrus
+18,Citrus,60256149125,Citrus
+18,Citrus,60256149121,Citrus
+18,Citrus,60256149122,Citrus
+18,Citrus,60256149123,Citrus
+,,60255985002,PET
+,,60255985001,PET
+,,60255985003,PET
+,,60252190487,
