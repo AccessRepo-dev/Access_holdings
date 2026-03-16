@@ -1,20 +1,20 @@
-Department_ID,Department_Code,Department_Name
-19,EXEC,Executive
-20,GENFIN,Finance
-21,CSVCS,Creative Services
-22,LEGAL,Legal / Risk Mgmt
-23,HR,Human Resources
-25,MKTNG,Marketing / PR
-26,BD,Business Development
-27,GA,G&A
-28,SALES,Sales
-29,FMGMT,Field Management
-30,OPS,Operations
-31,RSRCH,Research
-33,SLSSUP,Sales Support
-34,PROD,Production
-35,PRTACT,Partnership Activation
-36,PNP,Pricing & Planning
-38,ESVCS,Event Services
-39,STRAT,Strategy/Corp Development
-40,SALELO,Sales - Local
+DIM_DEPARTMENT_ID,DEPARTMENT_NAME,DIM_HR_DEPARTMENT_ID,HR_DEPARTMENT_NAME
+34,Production,PROD,Production
+28,Sales,SALES,Sales
+38,Event Services,ESVCS,Event Services
+21,Creative Services,CSVCS,Creative Services
+33,Sales Support,SLSSUP,Sales Support
+22,Legal / Risk Mgmt,LEGAL,Legal Risk Mgmt
+19,Executive,EXEC,Executive
+20,Finance,GENFIN,Finance
+35,Partnership Activation,PRTACT,Partnership Activation
+40,Sales - Local,SALELO,Sales Local
+23,Human Resources,HR,Human Resources
+39,Strategy/Corp Development,STRAT,Strategy Corp Development
+29,Field Management,FMGMT,Field Management
+31,Research,RSRCH,Research
+26,Business Development,BD,Business Development
+25,Marketing / PR,MKTNG,Marketing PR
+27,G&A,GA,G and A
+30,Operations,OPS,Operations
+36,Pricing & Planning,PNP,Pricing and Planning

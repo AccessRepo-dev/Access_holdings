@@ -18,10 +18,10 @@ with
             currency_code,
             hash(concat(employee_id, company_id)) as dim_employee_id,
             employee_id,
-            company_id  as dim_company_id,
-            location_id as dim_location_id,
-            job_code as dim_job_id,
-            id as dim_organization_level_id,
+            -- company_id  as dim_company_id,
+            -- location_id as dim_location_id,
+            -- job_code as dim_job_id,
+            -- id as dim_organization_level_id,
             total_tax_amount,
             net_amount,
             bonus_total_hours,
@@ -33,7 +33,8 @@ with
             total_hours_worked,
             cast(null as int) as unpaid_absence_hours,
             cast(null as int) as paid_absemce_hours,
-            pay_date
+            pay_date,
+            current_timestamp()::timestamp_ntz AS gold_load_date
         from {{ ref("ukg_pro_pay_register") }}
         where _fivetran_deleted = false
     )

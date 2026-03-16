@@ -22,12 +22,8 @@ with
                 when regexp_like(trim(location), '^[0-9]{4}.*')
                 then trim(regexp_replace(trim(location), '^[0-9]{4}\\s*', ''))
                 else trim(location)
-            end as location,
-            null as state_key,
-            null as city,
-            null as country_code,
-            null as state,
-            null as zip_or_postal_code,
+            end as location_name,
+           
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("paycom_employees") }}
 

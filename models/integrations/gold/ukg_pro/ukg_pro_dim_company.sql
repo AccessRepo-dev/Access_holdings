@@ -17,7 +17,6 @@ with
     source as (
         select
             id as dim_company_id,
-            id as company_id,
             company_code,
             company_name,
             current_timestamp()::timestamp_ntz as gold_load_date

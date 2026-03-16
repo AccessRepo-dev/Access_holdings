@@ -17,7 +17,6 @@ with
     source as (
         select
             id as dim_department_id,
-            id as department_id,
             description as department_name,
             current_timestamp()::timestamp_ntz as gold_load_date
 

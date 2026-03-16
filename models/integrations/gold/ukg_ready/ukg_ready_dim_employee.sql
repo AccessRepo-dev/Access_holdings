@@ -16,7 +16,6 @@
 with
     source as (
         select distinct
-            -- hash(c.dim_company_id, primary_account_id) as dim_employee_id,
             e.ID as dim_employee_id, 
             e.primary_account_id as employee_id,
             null as hire_source,
@@ -30,10 +29,9 @@ with
             dim_company_id,
             d.cost_center_department_id as dim_location_id,
             d.cost_center_location_id as dim_job_id,
-            null as dim_parent_class_id,
             null as dim_class_id,
             d.cost_center_department_id as dim_department_id,
-            null as dim_location_ns_id,
+            null as dim_job_group_id,
             null as supervisor_company_id,
             null as manager_id,
             null as employee_status_reason_code,

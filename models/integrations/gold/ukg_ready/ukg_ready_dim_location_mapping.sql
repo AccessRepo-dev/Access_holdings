@@ -16,7 +16,10 @@
 with
     source as (
         select
-            *,
+            COALESCE(DIM_LOCATION_ID,0) as DIM_LOCATION_ID,
+            LOCATION_NAME,
+            COALESCE(DIM_HR_LOCATION_ID,0) as DIM_HR_LOCATION_ID,
+            HR_LOCATION_NAME,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ source('wagway_ukg_ready_silver',"wagway_hr_location_mapping") }}
 

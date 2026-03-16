@@ -18,7 +18,6 @@ with source as (select distinct id,ein_name from {{ ref("ukg_ready_lookup_eins")
 
 select
     id as dim_company_id,
-    id as company_id,
     null as company_code,
     ein_name as company_name,
     current_timestamp() as gold_load_date

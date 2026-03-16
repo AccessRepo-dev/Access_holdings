@@ -165,10 +165,6 @@ with
             null as currency_code,
             h.associate_oid as dim_employee_id,
             h.associate_oid as employee_id,
-            e.dim_company_id,
-            e.dim_location_id,
-            e.dim_job_id,
-            null as dim_organization_level_id,
             cast(null as int) as total_tax_amount,
             cast(null as int) as net_amount,
             cast(null as int) as bonus_total_hours,
@@ -192,10 +188,6 @@ with
         group by
             h.worker_id,
             h.associate_oid,
-            dim_company_id,
-            dim_job_id,
-            dim_location_id,
-            dim_organization_level_id,
             entry_date,
             annual_rate_amount_amount_value,
             hourly_rate_amount_amount_value

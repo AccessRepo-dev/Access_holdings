@@ -16,7 +16,10 @@
 with
     source as (
         select
-            *,
+            coalesce(DIM_DEPARTMENT_ID , 0) as DIM_DEPARTMENT_ID, 
+             DEPARTMENT_NAME , 
+            COALESCE(DIM_HR_DEPARTMENT_ID,0) AS  DIM_HR_DEPARTMENT_ID, 
+            HR_DEPARTMENT_NAME ,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ source('wagway_ukg_ready_silver',"wagway_department_mapping") }}
 

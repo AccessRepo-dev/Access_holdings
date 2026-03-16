@@ -15,7 +15,6 @@ with
     agg as (
         select
 
-            null as state_key,--md5(coalesce(mad.state_code, '')) as state_key,
             period_start_date,
             dim_department_id,
             dim_location_id,
@@ -52,7 +51,6 @@ select
     dim_location_id,
     DIM_SUBSIDIARY_ID,
     dim_class_id,
-    state_key,
     -1 * rev as revenue,
     -1 * (rev + cogs) as gross_profit,
     -1 * (rev + cogs + fce + ce + oe + other) as ebitda

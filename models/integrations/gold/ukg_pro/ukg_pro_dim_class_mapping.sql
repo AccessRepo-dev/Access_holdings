@@ -16,11 +16,10 @@
 with
     source as (
         select
-            DIM_CLASS_ID,
+            DIM_CLASS_ID ,
             CLASS_NAME,
-            PARENT_CLASS_NAME,
-            ORGANIZATION_LEVEL_NAME,
-            DIM_ORGANIZATION_ID,
+            ORGANIZATION_LEVEL_NAME AS HR_CLASS_NAME,
+            DIM_ORGANIZATION_ID AS DIM_HR_CLASS_ID,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ source("playfly_ukg_pro_silver","playfly_class_mapping") }} 
 

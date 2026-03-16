@@ -55,12 +55,6 @@ with
     worker_classification as (
         select
             worker_id,
-            -- MAX(CASE WHEN classification_type = 'Job Class' THEN classification_id
-            -- END) AS job_class,
-            -- MAX(CASE WHEN classification_type = 'EEOC' THEN classification_id END)
-            -- AS eeoc,
-            -- MAX(CASE WHEN classification_type = 'NAICS' THEN classification_id END)
-            -- AS naics,
             coalesce(
                 max(
                     case

@@ -17,7 +17,6 @@ with
     source as (
         select
             id as dim_job_id,
-            id as job_id,
             title as job_title,
             -- job_family_code as job_group,
             current_timestamp()::timestamp_ntz as gold_load_date

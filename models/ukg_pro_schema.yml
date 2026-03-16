@@ -11,6 +11,20 @@ sources:
       - name: ORGANIZATION_LEVEL
       - name: EARNING_HISTORY_BASE_ELEMENT
       - name: EARNING
+
+  - name: spotless_ukg_pro_raw
+    database: spotless_raw
+    schema: ukg_pro
+    tables:
+      - name: EMPLOYMENT
+      - name: PAY_REGISTER
+      - name: LOCATION
+      - name: COMPANY
+      - name: JOB
+      - name: ORGANIZATION_LEVEL
+      - name: EARNING_HISTORY_BASE_ELEMENT
+      - name: EARNING
+      
   - name: playfly_ukg_pro_silver
     database: playfly_dev
     schema: silver

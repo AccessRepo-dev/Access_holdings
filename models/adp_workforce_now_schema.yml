@@ -28,4 +28,5 @@ sources:
     schema: silver
     tables:
       - name: pay_code_mapping
+      - name: zeus_subsidiary_mapping
 

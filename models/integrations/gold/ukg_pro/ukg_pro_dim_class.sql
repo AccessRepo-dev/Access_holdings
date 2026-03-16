@@ -17,7 +17,6 @@ with
     source as (
         select
             id as dim_class_id,
-            id as class_id,
             description as class_name,
             current_timestamp()::timestamp_ntz as gold_load_date
 
