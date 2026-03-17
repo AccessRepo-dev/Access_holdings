@@ -25,15 +25,26 @@ with
             hourly_pay_rate,
             total_deduction_amount,
             total_earnings_amount,
+            {%if company = 'spotless'%}
             e.SCHEDULED_WORK_HRS as total_hours,
             total_hours as total_hours_worked,
+            {%else%}
+            total_hours,
+            total_hours_worked,
+            {%endif%}
             cast(null as int) as unpaid_absence_hours,
             cast(null as int) as paid_absence_hours,
             pay_date,
             current_timestamp()::timestamp_ntz AS gold_load_date
         from {{ ref("ukg_pro_pay_register") }} p
-        left join {{ref("ukg_pro_employment")}} e on e.employee_id = p.employee_id and e.company_id = p.company_id
-        where p._fivetran_deleted = false and e._fivetran_deleted = false and total_earnings_amount <> 0 and total_hours <> 0
+        {%if company = 'spotless'%}
+            left join {{ref("ukg_pro_employment")}} e on e.employee_id = p.employee_id and e.company_id = p.company_id
+            where p._fivetran_deleted = false and e._fivetran_deleted = false and total_earnings_amount <> 0 and total_hours <> 0
+        {%else%}
+            where p._fivetran_deleted = false 
+        {%endif%}
+       
+        
     )
 select *
 from source
