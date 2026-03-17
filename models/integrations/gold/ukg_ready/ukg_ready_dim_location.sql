@@ -24,8 +24,8 @@ WITH RECURSIVE org_hierarchy AS (
     JOIN org_hierarchy h ON c.PARENT_ID = h.ID
 )
 SELECT DISTINCT
-    ID AS dim_department_id,
-    NAME AS department_name,
+    ID AS dim_location_id,
+    NAME AS location_name,
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS gold_load_date
 FROM org_hierarchy 
 WHERE level = 3
