@@ -14,12 +14,20 @@
 }}
 
 
-    select
-    c.id as dim_location_id,
-    p.name as location_name,
-     current_timestamp()::timestamp_ntz as gold_load_date
-from {{ ref("ukg_ready_cost_center_department") }} c
-left join {{ ref("ukg_ready_cost_center_department") }} p on c.parent_id = p.id
--- left join {{ ref("ukg_ready_cost_center_department") }} pp on p.parent_id = pp.id
--- left join {{ ref("ukg_ready_cost_center_department") }} ppp on pp.parent_id = ppp.id
+WITH RECURSIVE org_hierarchy AS (
+    SELECT ID, NAME, PARENT_ID, 1 AS level
+    FROM {{ ref("ukg_ready_cost_center_org") }}
+    WHERE PARENT_ID IS NULL
+    UNION ALL
+    SELECT c.ID, c.NAME, c.PARENT_ID, h.level + 1
+    FROM {{ ref("ukg_ready_cost_center_org") }} c
+    JOIN org_hierarchy h ON c.PARENT_ID = h.ID
+)
+SELECT DISTINCT
+    ID AS dim_department_id,
+    NAME AS department_name,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS gold_load_date
+FROM org_hierarchy 
+WHERE level = 3
+
  

@@ -14,46 +14,18 @@
 }}
 
 
-
-
-
-with level4 as 
-(
-    select
-    DISTINCT
-    ppp.id,
-    ppp.name
-from {{ ref("ukg_ready_cost_center_department") }} c
-left join {{ ref("ukg_ready_cost_center_department") }} p on c.parent_id = p.id
-left join {{ ref("ukg_ready_cost_center_department") }} pp on p.parent_id = pp.id
-left join {{ ref("ukg_ready_cost_center_department") }} ppp on pp.parent_id = ppp.id
- 
-),
-level3 as 
-(
-    select
-    DISTINCT
-    pp.id
-from {{ ref("ukg_ready_cost_center_department") }} c
-left join {{ ref("ukg_ready_cost_center_department") }} p on c.parent_id = p.id
-left join {{ ref("ukg_ready_cost_center_department") }} pp on p.parent_id = pp.id
-where pp.id  not in (select id from level4 where id is not null )
- 
-),
-level2 as
-(select
-    DISTINCT
-    p.id ,
-    p.name 
-from {{ ref("ukg_ready_cost_center_department") }} c
-left join {{ ref("ukg_ready_cost_center_department") }} p on c.parent_id = p.id
-where p.id not in (select  id from level3) and  p.id not in (select  id from level4 where id is not null)
+WITH RECURSIVE org_hierarchy AS (
+    SELECT ID, NAME, PARENT_ID, 1 AS level
+    FROM {{ ref("ukg_ready_cost_center_org") }}
+    WHERE PARENT_ID IS NULL
+    UNION ALL
+    SELECT c.ID, c.NAME, c.PARENT_ID, h.level + 1
+    FROM {{ ref("ukg_ready_cost_center_org") }} c
+    JOIN org_hierarchy h ON c.PARENT_ID = h.ID
 )
-select
-    DISTINCT
-    c.id as dim_department_id,
-    SPLIT_PART(name, '(', 1) as department_name,
-    current_timestamp() as gold_load_date
-from {{ ref("ukg_ready_cost_center_department") }} c
-where c.id not in (select  id from level2) and  c.id not in (select  id from level4 where id is not null) and c.id not in (select  id from level3)
-
+SELECT DISTINCT
+    ID AS dim_department_id,
+    NAME AS department_name,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS gold_load_date
+FROM org_hierarchy 
+WHERE level = 4
