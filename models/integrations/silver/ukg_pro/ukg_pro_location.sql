@@ -24,7 +24,7 @@ cleaned as (
         TRIM(COUNTRY_CODE) AS COUNTRY_CODE,
         CAST(IS_ACTIVE AS boolean) AS IS_ACTIVE,
         TRIM(STATE) AS STATE,
-        CAST(ZIP_OR_POSTAL_CODE AS INT) AS ZIP_OR_POSTAL_CODE,
+        CAST(nullif(ZIP_OR_POSTAL_CODE,'') AS INT) AS ZIP_OR_POSTAL_CODE,
         _FIVETRAN_DELETED
     from source_data
 )

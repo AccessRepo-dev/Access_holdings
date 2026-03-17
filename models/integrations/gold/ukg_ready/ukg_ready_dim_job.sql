@@ -19,7 +19,7 @@ with
             ID as dim_job_id,
             NAME as job_title,
             current_timestamp() as gold_load_date
-        from {{ ref("ukg_ready_cost_center_location") }} e
+        from {{ ref("ukg_ready_cost_center_org") }} e
 
     )
 select *

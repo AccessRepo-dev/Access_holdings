@@ -15,7 +15,7 @@
 with
     source_data as (
         select *
-        from {{ get_raw_source(company, sourcesystem, "COST_CENTERS_DEPARTMENT") }}
+        from {{ get_raw_source(company, sourcesystem, "COST_CENTERS_STORE") }}
         {% if is_incremental() %}
             where
                 cast(_loaded_at as timestamp_ntz) > (

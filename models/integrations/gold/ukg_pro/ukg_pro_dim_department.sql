@@ -4,7 +4,7 @@
 {{
     config(
         enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
-        and (var("company", "playfly") | lower) in ["playfly"],
+        and (var("company", "playfly") | lower) in ["playfly","spotless"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_hr_department",
@@ -21,7 +21,7 @@ with
             current_timestamp()::timestamp_ntz as gold_load_date
 
         from {{ ref("ukg_pro_organization_level") }}
-        where level in (3)
+        where level in (1)
         and is_active = true
 
     )

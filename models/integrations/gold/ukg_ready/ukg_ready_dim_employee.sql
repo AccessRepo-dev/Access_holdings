@@ -48,6 +48,7 @@ with
                     FROM {{ ref("ukg_ready_compensation_history") }} WHERE EFFECTIVE_FROM <> '1900-12-31') ch
                      on ch.employee_account_id = e.ID  and ROW_NUMBER = 1
         left join  {{ ref("ukg_ready_employee_details") }}  d on e.ID = d.ID
+        where lower(e.employee_id) not like '%test%' and lower(e.employee_id) not like 'v%' 
         
     )
 select *

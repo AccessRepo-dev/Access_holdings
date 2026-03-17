@@ -33,7 +33,7 @@ with
     cleaned as (
         select
             /* Account object parsing */
-            account:id::int as account_id,
+            account_id::int as account_id,
 
             /* Cleaning scalar columns */
             cast(amount as float) as amount,

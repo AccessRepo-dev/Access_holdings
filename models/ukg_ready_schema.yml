@@ -5,7 +5,7 @@ sources:
     tables:
       - name: EMPLOYEES
       - name: EMPLOYEE_DETAILS
-      - name: COST_CENTERS_LOCATION
+      - name: COST_CENTERS_STORE
 
       - name: BENEFITS
       - name: PAY_PERIOD_PROFILES
@@ -13,7 +13,7 @@ sources:
       - name: COMPENSATION_HISTORY
       - name: COMPENSATION_TOTAL
       - name: COST_CENTER_JOBS
-      - name: COST_CENTERS_DEPARTMENT
+      - name: COST_CENTERS_ORG
       - name: LOOKUP_EARNING_CODES
       - name: LOOKUP_EINS
       - name: LOOKUP_EMPLOYEE_TYPES

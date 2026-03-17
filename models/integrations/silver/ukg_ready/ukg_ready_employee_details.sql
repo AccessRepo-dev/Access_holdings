@@ -33,8 +33,8 @@ with
     cleaned as (
         select
             cast(id as int) as id,
-            cast(cost_center_location_id as int) as cost_center_location_id,
-            cast(cost_center_department_id as int) as cost_center_department_id,
+            cast(COST_CENTER_JOB_ID as int) as COST_CENTER_JOB_ID,
+            cast(cost_center_store_id as int) as cost_center_store_id,
             current_timestamp() as silver_load_date
 
         from source_data

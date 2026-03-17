@@ -14,7 +14,7 @@ sources:
 
   - name: spotless_ukg_pro_raw
     database: spotless_raw
-    schema: ukg_pro
+    schema: ukg_pro_lite
     tables:
       - name: EMPLOYMENT
       - name: PAY_REGISTER
@@ -32,4 +32,10 @@ sources:
       - name: playfly_class_mapping
       - name: playfly_department_mapping
       - name: playfly_subsidiary_mapping
+
+  - name: spotless_ukg_pro_silver
+    database: spotless_dev
+    schema: silver
+    tables:
+      - name: spotless_subsidiary_mapping
       

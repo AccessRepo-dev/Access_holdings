@@ -139,8 +139,7 @@ with
         from 
         {{ ref("paycom_dim_employee") }} e 
         left join {{ ref("paycom_employee_sensitive") }} es on es.eecode = e.dim_employee_id
-        left join {{ref("sage_dim_date")}} d on d.DATE_VALUE between  e.hire_date
-                         AND COALESCE(e.termination_date, CURRENT_DATE())
+       
         left join {{ ref("paycom_employees") }} esil on esil.eecode = es.eecode
         where coalesce(exempt_status, 'Unknown') = 'Exempt'--dim_employee_id not in (select distinct eecode from hours_worked)
         and IS_WEEKDAY = 1

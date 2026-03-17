@@ -1,10 +1,10 @@
-{% set company = var("company", "playfly") | lower %}
+{% set company = var("company", "spotless") | lower %}
 {% set sourcesystem = var("sourcesystem", "ukg_pro") | lower %}
 
 {{
     config(
         enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
-        and (var("company", "playfly") | lower) in ["playfly","spotless"],
+        and (var("company", "spotless") | lower) in ["playfly","spotless"],
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
@@ -12,8 +12,7 @@
 ) }}
 
 with source_data as (
-    select *
-    from {{ get_raw_source(company, sourcesystem, 'EMPLOYMENT') }}
+    select * from {{ get_raw_source(company, sourcesystem, 'EMPLOYMENT') }}
     {% if is_incremental() %}
     where 
         cast(DATE_TIME_CHANGED as timestamp_ntz) > (
@@ -28,7 +27,11 @@ cleaned as (
         TRY_CAST(EMPLOYEE_ID AS VARCHAR)                     AS EMPLOYEE_ID,
         TRY_CAST(COMPANY_ID AS VARCHAR)                      AS COMPANY_ID,
         CAST(ORIGINAL_HIRE_DATE AS TIMESTAMP_NTZ)            AS ORIGINAL_HIRE_DATE,
+        {% if company == 'playfly'%}
         CAST(COALESCE(NULLIF(TRIM(HIRE_SOURCE), ''), 'Unknown') AS VARCHAR) AS HIRE_SOURCE,
+        {%else%}
+        Null as HIRE_SOURCE,
+        {%endif%}
         CAST(TRIM(EMPLOYEE_STATUS_CODE) AS VARCHAR)          AS EMPLOYEE_STATUS_CODE,
         CAST(EMPLOYEE_TYPE_CODE AS VARCHAR)                  AS EMPLOYEE_TYPE_CODE,
         CAST(JOB_CHANGE_REASON_CODE AS VARCHAR)              AS JOB_CHANGE_REASON_CODE,

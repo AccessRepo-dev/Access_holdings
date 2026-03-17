@@ -1,4 +1,4 @@
-Finance_ID,Finance_Subsidiary_Name, HR_Company_Name,HR_ID
+DIM_SUBSIDIARY_ID,SUBSIDIARY_NAME,COMPANY_NAME,DIM_COMPANY_ID
 1,Parent Company,Playfly LLC,79AGT
 2,"Parent Company : Playfly, LLC",Playfly LLC,79AGT
 3,"Parent Company : Playfly, LLC : PF 22 Cassatt",Playfly LLC,79AGT
@@ -10,3 +10,4 @@ Finance_ID,Finance_Subsidiary_Name, HR_Company_Name,HR_ID
 12,Parent Company : Playfly Europe,Playfly LLC,79AGT
 13,Parent Company : Paragon Sports Marketing LLC,Playfly LLC,79AGT
 14,Parent Company : Vision Insights,Playfly LLC,79AGT
+
