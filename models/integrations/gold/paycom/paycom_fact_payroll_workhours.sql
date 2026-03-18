@@ -113,6 +113,17 @@ with
         left join {{ ref("paycom_employees") }} esil
             on esil.eecode = h.eecode
     ),
+    date_spine AS (
+    SELECT 
+        DATE_VALUE,
+        DAYOFWEEK(DATE_VALUE) AS day_of_week,
+        CASE WHEN DAYOFWEEK(DATE_VALUE) BETWEEN 1 AND 5 THEN 1 ELSE 0 END AS is_weekday
+    FROM (
+        SELECT DATEADD(DAY, SEQ4(), '2020-01-01'::DATE) AS DATE_VALUE
+        FROM TABLE(GENERATOR(ROWCOUNT => 3650))  -- ~10 years
+    )
+    WHERE DATE_VALUE <= CURRENT_DATE()
+),
     non_punch_record_employees as (
         select 
             es.annual_salary AS annual_salary,
@@ -139,7 +150,7 @@ with
         from 
         {{ ref("paycom_dim_employee") }} e 
         left join {{ ref("paycom_employee_sensitive") }} es on es.eecode = e.dim_employee_id
-       
+        left join date_spine d on d.DATE_VALUE between  e.hire_date AND COALESCE(e.termination_date, CURRENT_DATE())
         left join {{ ref("paycom_employees") }} esil on esil.eecode = es.eecode
         where coalesce(exempt_status, 'Unknown') = 'Exempt'--dim_employee_id not in (select distinct eecode from hours_worked)
         and IS_WEEKDAY = 1
