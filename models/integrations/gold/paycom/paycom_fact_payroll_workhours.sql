@@ -131,7 +131,7 @@ with
             dim_employee_id,
             dim_employee_id AS employee_id,
             CAST(null AS float) AS total_tax_amount,
-            CAST(null AS float) AS net_amount,
+            
             CAST(null AS float) AS bonus_total_hours,
             es.annual_salary/2080 AS hourly_pay_rate,
             CAST(null AS float) AS total_deduction_amount,
@@ -144,6 +144,7 @@ with
 
             CAST(null AS float) AS unpaid_absence_hours,
             total_hours_worked * hourly_pay_rate as total_earnings_amount,
+            CAST(total_earnings_amount AS float) AS net_amount,
             d.DATE_VALUE AS pay_date,
             current_timestamp()::timestamp_ntz AS gold_load_date
 
@@ -163,7 +164,7 @@ with
             h.eecode AS dim_employee_id,
             h.eecode AS employee_id,
             CAST(null AS float) AS total_tax_amount,
-            CAST(null AS float) AS net_amount,
+            
             CAST(null AS float) AS bonus_total_hours,
 
             COALESCE( nullif(es.hourly_salary,0),
@@ -202,6 +203,7 @@ with
             CAST(null AS float) AS unpaid_absence_hours,
 
             (bonus_total_ot_hours + total_hours_worked) * hourly_pay_rate as total_earnings_amount,
+            CAST(total_earnings_amount AS float) AS net_amount,
             h.work_date AS pay_date,
             current_timestamp()::timestamp_ntz AS gold_load_date
         from hours_worked h

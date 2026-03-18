@@ -11,7 +11,7 @@
     )
 }}
 
-{%if company == 'playfly'%} }
+{%if company == 'playfly'%} 
 with
     source as (
         select
