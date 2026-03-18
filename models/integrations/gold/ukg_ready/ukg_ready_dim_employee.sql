@@ -27,10 +27,10 @@ with
             null as termination_reason,
             null as termination_type,
             dim_company_id,
-            d.COST_CENTER_JOB_ID as dim_location_id,
+            store.PARENT_ID as dim_location_id,
             d.COST_CENTER_JOB_ID as dim_job_id,
             null as dim_class_id,
-            d.COST_CENTER_JOB_ID as dim_department_id,
+            job.PARENT_ID as dim_department_id,
             null as dim_job_group_id,
             null as supervisor_company_id,
             null as manager_id,
@@ -48,6 +48,8 @@ with
                     FROM {{ ref("ukg_ready_compensation_history") }} WHERE EFFECTIVE_FROM <> '1900-12-31') ch
                      on ch.employee_account_id = e.ID  and ROW_NUMBER = 1
         left join  {{ ref("ukg_ready_employee_details") }}  d on e.ID = d.ID
+        left join {{ref("ukg_ready_cost_center_org")}} job on d.COST_CENTER_JOB_ID = job.ID
+        left join {{ref("ukg_ready_cost_center_store")}} store on d.COST_CENTER_STORE_ID = store.ID
         where lower(e.employee_id) not like '%test%' and lower(e.employee_id) not like 'v%' 
         
     )

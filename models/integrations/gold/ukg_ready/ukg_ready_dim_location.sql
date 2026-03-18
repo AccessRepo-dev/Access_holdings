@@ -16,11 +16,11 @@
 
 WITH RECURSIVE org_hierarchy AS (
     SELECT ID, NAME, PARENT_ID, 1 AS level
-    FROM {{ ref("ukg_ready_cost_center_org") }}
+    FROM {{ ref("ukg_ready_cost_center_store") }}
     WHERE PARENT_ID IS NULL
     UNION ALL
     SELECT c.ID, c.NAME, c.PARENT_ID, h.level + 1
-    FROM {{ ref("ukg_ready_cost_center_org") }} c
+    FROM {{ ref("ukg_ready_cost_center_store") }} c
     JOIN org_hierarchy h ON c.PARENT_ID = h.ID
 )
 SELECT DISTINCT
@@ -29,5 +29,3 @@ SELECT DISTINCT
     CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS gold_load_date
 FROM org_hierarchy 
 WHERE level = 3
-
- 

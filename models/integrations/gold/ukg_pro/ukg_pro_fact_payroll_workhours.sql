@@ -26,8 +26,9 @@ with
             total_deduction_amount,
             total_earnings_amount,
             {%if company == 'spotless'%}
-            e.SCHEDULED_WORK_HRS as total_hours,
-            total_hours as total_hours_worked,
+            CASE WHEN e.full_time_or_part_time_code = 'P' then p.total_hours else
+            e.SCHEDULED_WORK_HRS END as total_hours,
+            p.total_hours as total_hours_worked,
             {%else%}
             total_hours,
             total_hours_worked,
