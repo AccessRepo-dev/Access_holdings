@@ -4,7 +4,7 @@
 {{
     config(
         enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
-        and (var("company", "playfly") | lower) in ["playfly"],
+        and (var("company", "playfly") | lower) in ["playfly","spotless"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_subsidiary_mapping",
@@ -16,12 +16,17 @@
 with
     source as (
         select
-            Finance_ID as DIM_SUBSIDIARY_ID,
-            FINANCE_SUBSIDIARY_NAME as SUBSIDIARY_NAME,
-            HR_Company_Name AS COMPANY_NAME,
-            HR_ID as DIM_COMPANY_ID,
+            DIM_SUBSIDIARY_ID,
+            SUBSIDIARY_NAME,
+            COMPANY_NAME,
+            DIM_COMPANY_ID,
             current_timestamp()::timestamp_ntz as gold_load_date
+        {%if company == 'playfly'%}
         from {{ source('playfly_ukg_pro_silver',"playfly_subsidiary_mapping") }}
+        {%else%}
+        from {{ source('spotless_ukg_pro_silver',"spotless_subsidiary_mapping") }}
+        {%endif%}
+
 
     )
 select *

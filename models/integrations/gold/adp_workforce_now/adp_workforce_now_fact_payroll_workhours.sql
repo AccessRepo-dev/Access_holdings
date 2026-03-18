@@ -165,12 +165,8 @@ with
             null as currency_code,
             h.associate_oid as dim_employee_id,
             h.associate_oid as employee_id,
-            e.dim_company_id,
-            e.dim_location_id,
-            e.dim_job_id,
-            null as dim_organization_level_id,
-            cast(null as int) as total_tax_amount,
-            cast(null as int) as net_amount,
+            cast(null as float) as total_tax_amount,
+            
             cast(null as int) as bonus_total_hours,
             hourly_rate_amount_amount_value as hourly_pay_rate,
             8 as total_hours,
@@ -178,8 +174,9 @@ with
             sum(h.bonus_total_ot_hours_cte) as bonus_total_ot_hours,
             sum(h.paid_absence_hours) as paid_absence_hours,
             sum(h.unpaid_absence_hours) as unpaid_absence_hours,
-            cast(null as int) as total_deduction_amount,
+            cast(null as float) as total_deduction_amount,
             (total_hours_worked + bonus_total_ot_hours)* hourly_pay_rate as total_earnings_amount,
+            cast(total_earnings_amount as float) as net_amount,
             h.entry_date as pay_date,
             current_timestamp()::timestamp_ntz as gold_load_date
         from hours h
@@ -192,10 +189,6 @@ with
         group by
             h.worker_id,
             h.associate_oid,
-            dim_company_id,
-            dim_job_id,
-            dim_location_id,
-            dim_organization_level_id,
             entry_date,
             annual_rate_amount_amount_value,
             hourly_rate_amount_amount_value

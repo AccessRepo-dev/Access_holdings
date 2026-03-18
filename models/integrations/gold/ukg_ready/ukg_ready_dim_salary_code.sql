@@ -6,19 +6,20 @@
         enabled=(var("sourcesystem", "ukg_ready") | lower) in ["ukg_ready"]
         and (var("company", "wagway") | lower) in ["wagway"],
         database=get_target_database(company),
-        materialized="incremental",
-        alias="dim_hr_company",
+        alias="dim_salary_code",
         incremental_strategy="merge",
-        unique_key="dim_company_id",
     )
 }}
 
 
-with source as (select distinct id,ein_name from {{ ref("ukg_ready_lookup_eins") }})
+SELECT 
+    dim_earning_id,
+    description,
+    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS gold_load_date
+FROM (
+    VALUES 
+        (1, 'Total Tax Amount'),
+        (2, 'Total Deduction Amount'),
+        (3, 'Net Amount')
+) AS t(dim_earning_id, description)
 
-select
-    id as dim_company_id,
-    null as company_code,
-    ein_name as company_name,
-    current_timestamp() as gold_load_date
-from source

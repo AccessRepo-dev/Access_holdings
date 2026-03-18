@@ -14,15 +14,17 @@
 with
     bASe_punches AS (
         select
-            eecode,
+            h.eecode,
             punchtime::date AS work_date,
             punchtime::timestamp_ntz AS punch_timestamp,
             punchtype,
             row_number() over (
-                partition by eecode, punchtime::date order by punchtime
+                partition by h.eecode, punchtime::date order by punchtime
             ) AS punch_order
-        from {{ ref("paycom_punch_history") }}
+        from {{ ref("paycom_punch_history") }} h
+        left join {{ ref("paycom_employees") }} esil on esil.eecode = h.eecode
         where upper(punchtype) in ('ID', 'OD', 'HR')
+        and coalesce(exempt_status, 'Unknown') <>'Exempt'
     ),
 
     -- Identify punch pairs (ID followed by OD)
@@ -90,61 +92,108 @@ with
             round(sum(h.hours_worked) over (
                 partition by h.eecode, 
                 case
-                    when esil.pay_frequency = 'W' then date_trunc('week', h.work_date)
-                    when esil.pay_frequency = 'B' then date_trunc('week', dateadd(day,
-                        -mod(datediff(day, '2023-01-02'::date, h.work_date), 14),
-                        h.work_date
-                    ))
-                    else date_trunc('month', h.work_date)
-                end
-            ), 2) as period_total_hours
+            when esil.pay_frequency = 'W'
+                then dateadd(day, -mod(datediff(day, '2022-12-31'::date, h.work_date), 7), h.work_date)
+            when esil.pay_frequency = 'B'
+                then dateadd(day, -mod(datediff(day, '2022-12-31'::date, h.work_date), 14), h.work_date)
+            else date_trunc('month', h.work_date)
+            end
+            ), 2) as period_total_hours,
+            count(distinct h.work_date) over (
+            partition by h.eecode,
+            case
+                when esil.pay_frequency = 'W'
+                    then dateadd(day, -mod(datediff(day, '2022-12-31'::date, h.work_date), 7), h.work_date)
+                when esil.pay_frequency = 'B'
+                    then dateadd(day, -mod(datediff(day, '2022-12-31'::date, h.work_date), 14), h.work_date)
+                else date_trunc('month', h.work_date)
+            end
+        ) as period_distinct_days
         from combined_hours h
         left join {{ ref("paycom_employees") }} esil
             on esil.eecode = h.eecode
     ),
+    date_spine AS (
+    SELECT 
+        DATE_VALUE,
+        DAYOFWEEK(DATE_VALUE) AS day_of_week,
+        CASE WHEN DAYOFWEEK(DATE_VALUE) BETWEEN 1 AND 5 THEN 1 ELSE 0 END AS is_weekday
+    FROM (
+        SELECT DATEADD(DAY, SEQ4(), '2020-01-01'::DATE) AS DATE_VALUE
+        FROM TABLE(GENERATOR(ROWCOUNT => 3650))  -- ~10 years
+    )
+    WHERE DATE_VALUE <= CURRENT_DATE()
+),
+    non_punch_record_employees as (
+        select 
+            es.annual_salary AS annual_salary,
+            null AS currency_code,
+            dim_employee_id,
+            dim_employee_id AS employee_id,
+            CAST(null AS float) AS total_tax_amount,
+            
+            CAST(null AS float) AS bonus_total_hours,
+            es.annual_salary/2080 AS hourly_pay_rate,
+            CAST(null AS float) AS total_deduction_amount,
+            8  as total_hours,  -- Standard hours expected
+            0 as bonus_total_ot_hours,
+        
+            8 as total_hours_worked, 
+            0 as paid_absence_hours,  
+
+
+            CAST(null AS float) AS unpaid_absence_hours,
+            total_hours_worked * hourly_pay_rate as total_earnings_amount,
+            CAST(total_earnings_amount AS float) AS net_amount,
+            d.DATE_VALUE AS pay_date,
+            current_timestamp()::timestamp_ntz AS gold_load_date
+
+        from 
+        {{ ref("paycom_dim_employee") }} e 
+        left join {{ ref("paycom_employee_sensitive") }} es on es.eecode = e.dim_employee_id
+        left join date_spine d on d.DATE_VALUE between  e.hire_date AND COALESCE(e.termination_date, CURRENT_DATE())
+        left join {{ ref("paycom_employees") }} esil on esil.eecode = es.eecode
+        where coalesce(exempt_status, 'Unknown') = 'Exempt'--dim_employee_id not in (select distinct eecode from hours_worked)
+        and IS_WEEKDAY = 1
+    )
+    ,
     source AS (
         select
             es.annual_salary AS annual_salary,
             null AS currency_code,
             h.eecode AS dim_employee_id,
             h.eecode AS employee_id,
-            e.dim_company_id,
-            e.dim_location_id,
-            e.dim_job_id,
-            null AS dim_organization_level_id,
             CAST(null AS float) AS total_tax_amount,
-            CAST(null AS float) AS net_amount,
+            
             CAST(null AS float) AS bonus_total_hours,
-            es.hourly_salary AS hourly_pay_rate,
+
+            COALESCE( nullif(es.hourly_salary,0),
+            case when nullif(es.last_pay_rate,0) > 100 then es.last_pay_rate/2080 else es.last_pay_rate end,es.annual_salary/2080)  AS hourly_pay_rate,
             CAST(null AS float) AS total_deduction_amount,
-            CASE
-                WHEN e.scheduled_work_hours = 0 and e.employee_type = 'Full Time'
-                THEN 8
-                WHEN e.scheduled_work_hours = 0
-                THEN h.total_hours_worked
-                WHEN esil.pay_frequency = 'B'
-                THEN e.scheduled_work_hours / 10
-                WHEN esil.pay_frequency = 'W'
-                THEN e.scheduled_work_hours / 5
-            END AS total_hours,  -- Standard hours expected
+            -- Standard hours expected
 
             case
                 when shift_details <> 'HR Entry (8h)' then
                     case
                         when esil.pay_frequency = 'W' and period_total_hours > 40
-                            then (wb.period_total_hours - 40) / 5
+                            then (wb.period_total_hours - 40) / wb.period_distinct_days
                         when esil.pay_frequency = 'B' and period_total_hours > 80
-                            then (wb.period_total_hours - 80) / 10
+                            then (wb.period_total_hours - 80) / wb.period_distinct_days
                         else 0
                     end
                 else 0
             end as bonus_total_ot_hours,
+            
 
             CASE 
                 WHEN h.shift_details = 'HR Entry (8h)' THEN 0 
                 ELSE h.total_hours_worked - bonus_total_ot_hours
             END AS total_hours_worked, 
-
+            CASE
+                WHEN e.scheduled_work_hours = 0 then total_hours_worked
+                ELSE e.scheduled_work_hours / wb.period_distinct_days
+                  
+            END AS total_hours, 
 
             CASE
                 WHEN h.shift_details = 'HR Entry (8h)' THEN h.total_hours_worked ELSE 0
@@ -152,13 +201,9 @@ with
 
 
             CAST(null AS float) AS unpaid_absence_hours,
-            CASE
-                WHEN es.pay_clASs in ('SAL', 'RIS')
-                THEN annual_salary / 250
-                WHEN bonus_total_ot_hours is null
-                THEN (h.total_hours_worked) * es.hourly_salary
-                ELSE (bonus_total_ot_hours + h.total_hours_worked) * es.hourly_salary
-            END AS total_earnings_amount,
+
+            (bonus_total_ot_hours + total_hours_worked) * hourly_pay_rate as total_earnings_amount,
+            CAST(total_earnings_amount AS float) AS net_amount,
             h.work_date AS pay_date,
             current_timestamp()::timestamp_ntz AS gold_load_date
         from hours_worked h
@@ -166,6 +211,9 @@ with
         left join {{ ref("paycom_dim_employee") }} e on e.dim_employee_id = h.eecode
         left join {{ ref("paycom_employee_sensitive") }} es on es.eecode = h.eecode
         left join {{ ref("paycom_employees") }} esil on esil.eecode = h.eecode
+         
+        union
+        select * from non_punch_record_employees
    
     )
 

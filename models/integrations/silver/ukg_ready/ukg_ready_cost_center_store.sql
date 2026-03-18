@@ -15,7 +15,7 @@
 with
     source_data as (
         select *
-        from {{ get_raw_source(company, sourcesystem, "COMPENSATION_TOTAL") }}
+        from {{ get_raw_source(company, sourcesystem, "COST_CENTERS_STORE") }}
         {% if is_incremental() %}
             where
                 cast(_loaded_at as timestamp_ntz) > (
@@ -23,7 +23,9 @@ with
                         dateadd(
                             day,
                             -1,
-                            coalesce(max(_loaded_at), '1900-01-01'::timestamp_ntz)
+                            coalesce(
+                                max(_loaded_at), '1900-01-01'::timestamp_ntz
+                            )
                         )
                     from {{ this }}
                 )
@@ -32,13 +34,10 @@ with
 
     cleaned as (
         select
-            /* Account object parsing */
-            account_id::int as account_id,
-
-            /* Cleaning scalar columns */
-            cast(amount as float) as amount,
-            trim(currency) as currency,
-            current_timestamp() as silver_load_date,
+            cast(id as int) as id,
+            cast(parent_id as int) as parent_id,
+            trim(name) as name,
+            current_timestamp() as silver_load_date
 
         from source_data
     )

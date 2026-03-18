@@ -7,23 +7,21 @@
         and (var("company", "zeus") | lower) in ["zeus"],
         database=get_target_database(company),
         materialized="incremental",
-        alias="dim_hr_location",
+        alias="dim_subsidiary_mapping",
         incremental_strategy="merge",
-        unique_key="DIM_LOCATION_ID",
+        unique_key="subsidiary_id",
     )
 }}
 
 with
     source as (
         select
-            distinct
-            hash(
-                coalesce(home_work_location_address_city_name, '')
-                || coalesce(home_work_location_address_country_code, '')
-            ) as dim_location_id,
-            home_work_location_address_city_name as location_name,
+            DIM_SUBSIDIARY_ID,
+            SUBSIDIARY_NAME,
+            COMPANY_NAME,
+            DIM_COMPANY_ID,
             current_timestamp()::timestamp_ntz as gold_load_date
-        from {{ ref("adp_workforce_now_work_assignment_history") }} wah
+        from {{ source('zeus_adp_workforce_now_silver',"zeus_subsidiary_mapping") }}
 
     )
 select *

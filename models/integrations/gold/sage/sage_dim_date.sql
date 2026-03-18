@@ -1,7 +1,7 @@
 {% set company = var('company', 'unknown_company') | lower %}
 
 {{ config(
-    enabled = var('sourcesystem', 'none') == 'sage',
+    enabled = var('sourcesystem', 'none') in ('sage','paycom'),
     database = get_target_database(company),
     alias = 'dim_date',
     materialized = 'incremental',

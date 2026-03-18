@@ -4,7 +4,7 @@
 {{
     config(
         enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
-        and (var("company", "playfly") | lower) in ["playfly"],
+        and (var("company", "playfly") | lower) in ["playfly","spotless"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_hr_company",
@@ -17,7 +17,6 @@ with
     source as (
         select
             id as dim_company_id,
-            id as company_id,
             company_code,
             company_name,
             current_timestamp()::timestamp_ntz as gold_load_date

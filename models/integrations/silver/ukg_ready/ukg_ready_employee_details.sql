@@ -15,7 +15,7 @@
 with
     source_data as (
         select *
-        from {{ get_raw_source(company, sourcesystem, "COMPENSATION_TOTAL") }}
+        from {{ get_raw_source(company, sourcesystem, "EMPLOYEE_DETAILS") }}
         {% if is_incremental() %}
             where
                 cast(_loaded_at as timestamp_ntz) > (
@@ -32,13 +32,10 @@ with
 
     cleaned as (
         select
-            /* Account object parsing */
-            account_id::int as account_id,
-
-            /* Cleaning scalar columns */
-            cast(amount as float) as amount,
-            trim(currency) as currency,
-            current_timestamp() as silver_load_date,
+            cast(id as int) as id,
+            cast(COST_CENTER_JOB_ID as int) as COST_CENTER_JOB_ID,
+            cast(cost_center_store_id as int) as cost_center_store_id,
+            current_timestamp() as silver_load_date
 
         from source_data
     )

@@ -34,12 +34,8 @@ SELECT
     lc.CURRENCY as currency_code,
     e.dim_employee_id,
     e.employee_id,
-    e.dim_company_id,
-    e.dim_location_id,
-    e.dim_job_id,
-    cast(null as int) dim_organization_level_id,
+
     cast(null as float) as  total_tax_amount,
-    cast(null as float) as  net_amount,
     cast(null as float) as  bonus_total_hours,
     cast(null as float) as  bonus_total_ot_hours,
     lc.HOURLY_PAY       AS HOURLY_PAY_RATE,
@@ -60,7 +56,9 @@ SELECT
         ELSE 0
     END AS PAID_ABSENCE_HOURS,
     (PAID_ABSENCE_HOURS + total_hours_worked) * HOURLY_PAY_RATE AS TOTAL_EARNINGS_AMOUNT,
-    cast(null as int) as unpaid_absence_hours
+    TOTAL_EARNINGS_AMOUNT as  net_amount,
+    cast(null as int) as unpaid_absence_hours,
+    current_timestamp()::timestamp_ntz AS gold_load_date
     
 FROM  {{ ref("ukg_ready_time_entries") }} te
 LEFT JOIN {{ ref("ukg_ready_dim_employee") }} e

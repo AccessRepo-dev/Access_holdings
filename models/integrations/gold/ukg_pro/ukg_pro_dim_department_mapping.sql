@@ -16,9 +16,10 @@
 with
     source as (
         select
-            cast(department_id as int) as dim_department_id,
-            trim(department_code) as department_code,
-            trim(department_name) as department_name,
+             DIM_DEPARTMENT_ID, 
+             DEPARTMENT_NAME , 
+             DIM_HR_DEPARTMENT_ID , 
+             HR_DEPARTMENT_NAME ,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ source("playfly_ukg_pro_silver","playfly_department_mapping") }}
 

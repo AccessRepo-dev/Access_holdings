@@ -13,14 +13,18 @@
     )
 }}
 
-with
-    source as (
-        select distinct
-            ID as dim_job_id,
-            NAME as job_title,
-            current_timestamp() as gold_load_date
-        from {{ ref("ukg_ready_cost_center_jobs") }} e
 
-    )
-select *
-from source
+ SELECT 
+    job.ID AS dim_job_id,
+    dep.NAME AS job_title,
+    CURRENT_TIMESTAMP() AS gold_load_date
+FROM {{ ref("ukg_ready_cost_center_org") }} job
+LEFT JOIN {{ ref("ukg_ready_cost_center_org") }} dep ON job.PARENT_ID = dep.ID
+WHERE job.ID NOT IN (
+    SELECT DISTINCT PARENT_ID 
+    FROM {{ ref("ukg_ready_cost_center_org") }} 
+    WHERE PARENT_ID IS NOT NULL
+)
+
+
+

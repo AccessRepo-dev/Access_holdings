@@ -4,7 +4,7 @@
 {{
     config(
         enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
-        and (var("company", "playfly") | lower) in ["playfly"],
+        and (var("company", "playfly") | lower) in ["playfly","spotless"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_hr_employee",
@@ -54,12 +54,6 @@ with
             organization_level_1_id as dim_class_id,
             organization_level_3_id as dim_department_id,
             hash(coalesce(j.job_family_code, '')) as dim_job_group_id,
-            -- md5(coalesce(organization_level_1_id, '') || coalesce(1, '') ) as
-            -- dim_organization_level_id,
-            -- md5(coalesce(organization_level_2_id, '') || coalesce(2, '') ) as
-            -- dim_class_id,
-            -- md5(coalesce(organization_level_4_id, '') || coalesce(4, '') ) as
-            -- dim_location_ns_id,
             md5(coalesce(supervisor_co_id, '')) as supervisor_company_id,
             supervisor_id as manager_id,
             job_change_reason_code as employee_status_reason_code,
@@ -68,8 +62,6 @@ with
             scheduled_work_hrs as scheduled_work_hours,
             weekly_hours,
             date_time_changed,
-            -- employee_type_code,
-            -- term_reason,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("ukg_pro_employment") }} e
         left join {{ ref("ukg_pro_job") }} j on j.id = e.primary_job_id

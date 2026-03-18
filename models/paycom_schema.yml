@@ -13,4 +13,10 @@ sources:
     schema: silver
     tables:
       - name: amh_termination_type_mapping
+      - name: amh_location_mapping
+  - name: amh_paycom_gold
+    database: amh_dev
+    schema: Gold
+    tables:
+      - name: dim_date
      
