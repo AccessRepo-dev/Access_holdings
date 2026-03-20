@@ -4,7 +4,7 @@
 {{
     config(
         enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
-        and (var("company", "playfly") | lower) in ["playfly","spotless"],
+        and (var("company", "playfly") | lower) in ["playfly"],
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
