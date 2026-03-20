@@ -4,7 +4,7 @@
 {{
     config(
         enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
-        and (var("company", "playfly") | lower) in ["playfly"],
+        and (var("company", "spotless") | lower) in ["spotless"],
         database=get_target_database(company),
         materialized="incremental",
         alias="dim_hr_location",
@@ -15,18 +15,13 @@
 
 with
     source as (
-        select
-
-            id as dim_location_id,
-            null as location,
-            md5(coalesce(state, '')) as STATE_KEY,
-            city,
-            country_code,
-            state,
-            zip_or_postal_code,
+        select distinct
+           
+            a.ID AS DIM_LOCATION_ID,
+            a.DESCRIPTION AS LOCATION_NAME,
+           
             current_timestamp()::timestamp_ntz as gold_load_date
-        from {{ ref("ukg_pro_location") }}
-        where is_active = true and _fivetran_deleted = false
+        from {{ ref("ukg_pro_location") }} a
 
     )
 select *

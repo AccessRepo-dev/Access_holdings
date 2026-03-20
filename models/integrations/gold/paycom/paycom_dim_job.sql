@@ -17,7 +17,6 @@ with
     source as (
         select distinct
             hash(position_title) as dim_job_id,
-            hash(position_title) as job_id,
             position_title as job_title,
             -- job_family_code as job_group,
             current_timestamp()::timestamp_ntz as gold_load_date

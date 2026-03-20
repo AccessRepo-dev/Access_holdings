@@ -55,12 +55,6 @@ with
     worker_classification as (
         select
             worker_id,
-            -- MAX(CASE WHEN classification_type = 'Job Class' THEN classification_id
-            -- END) AS job_class,
-            -- MAX(CASE WHEN classification_type = 'EEOC' THEN classification_id END)
-            -- AS eeoc,
-            -- MAX(CASE WHEN classification_type = 'NAICS' THEN classification_id END)
-            -- AS naics,
             coalesce(
                 max(
                     case
@@ -80,7 +74,7 @@ with
             null as hire_source,
             w.status_value as employee_status,
             coalesce(
-                wah.worker_type_short_name, wah.worker_type_short_name, 'Unknown'
+                wah.worker_type_short_name, wah.worker_type_long_name, 'Unknown'
             ) as employee_type,
             cast(w.original_hire_date as date) as original_hire_date,
             cast(w.original_hire_date as date) as hire_date,
@@ -105,8 +99,6 @@ with
             ) as dim_location_id,
             wc.company_id as dim_company_id,
             hash(coalesce(job_title, job_short_name, job_long_name)) as dim_job_id,
-            -- null as dim_organization_level_id,
-            -- null as dim_parent_class_id,
             null as dim_class_id,
             wd.department_id as dim_department_id,
             wcl.selected_classification as dim_job_group_id,
@@ -129,6 +121,8 @@ with
             on wah.worker_id = w.id
             and wah._fivetran_active = true
             and wah.primary_indicator = true
+        QUALIFY ROW_NUMBER() OVER (PARTITION BY wah.worker_id ORDER BY wah._fivetran_synced DESC) = 1
+
 
     )
 select *

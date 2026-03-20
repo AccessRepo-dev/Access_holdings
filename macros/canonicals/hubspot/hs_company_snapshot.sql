@@ -1,4 +1,4 @@
-{% macro crm_company_snapshot(company, sourcesystem) %}
+{% macro hs_canonical_company(company, sourcesystem) %}
 
 {# -------------------------------
    Normalize inputs
@@ -61,6 +61,38 @@
       'PROPERTY_HS_LASTMODIFIEDDATE': 'PROPERTY_HS_LASTMODIFIEDDATE',
       'PROPERTY_COMPANY_TYPE': 'PROPERTY_COMPANY_TYPE',
       'PROPERTY_NUMBEROFEMPLOYEES': 'PROPERTY_NUMBEROFEMPLOYEES'
+    },
+    'amh': {
+      'ID': 'ID',
+      'PROPERTY_NAME': 'PROPERTY_NAME',
+      'PROPERTY_DOMAIN': 'PROPERTY_DOMAIN',
+      'PROPERTY_PHONE': 'PROPERTY_PHONE',
+      'PROPERTY_ADDRESS': 'PROPERTY_ADDRESS',
+      'PROPERTY_CITY': 'PROPERTY_CITY',
+      'PROPERTY_STATE': 'PROPERTY_STATE',
+      'PROPERTY_COUNTRY': 'PROPERTY_COUNTRY',
+      'PROPERTY_INDUSTRY': 'PROPERTY_INDUSTRY',
+      'PROPERTY_HUBSPOT_OWNER_ID': 'PROPERTY_HUBSPOT_OWNER_ID',
+      'PROPERTY_ANNUALREVENUE': 'PROPERTY_ANNUALREVENUE',
+      'PROPERTY_CREATEDATE': 'PROPERTY_CREATEDATE',
+      'PROPERTY_HS_LASTMODIFIEDDATE': 'PROPERTY_HS_LASTMODIFIEDDATE',
+      'PROPERTY_NUMBEROFEMPLOYEES': 'PROPERTY_NUMBEROFEMPLOYEES'
+    },
+    'playfly': {
+      'ID': 'ID',
+      'PROPERTY_NAME': 'PROPERTY_NAME',
+      'PROPERTY_DOMAIN': 'PROPERTY_DOMAIN',
+      'PROPERTY_PHONE': 'PROPERTY_PHONE',
+      'PROPERTY_ADDRESS': 'PROPERTY_ADDRESS',
+      'PROPERTY_CITY': 'PROPERTY_CITY',
+      'PROPERTY_STATE': 'PROPERTY_STATE',
+      'PROPERTY_COUNTRY': 'PROPERTY_COUNTRY',
+      'PROPERTY_INDUSTRY': 'PROPERTY_INDUSTRY',
+      'PROPERTY_HUBSPOT_OWNER_ID': 'PROPERTY_HUBSPOT_OWNER_ID',
+      'PROPERTY_ANNUALREVENUE': 'PROPERTY_ANNUALREVENUE',
+      'PROPERTY_CREATEDATE': 'PROPERTY_CREATEDATE',
+      'PROPERTY_HS_LASTMODIFIEDDATE': 'PROPERTY_HS_LASTMODIFIEDDATE',
+      'PROPERTY_NUMBEROFEMPLOYEES': 'PROPERTY_NUMBEROFEMPLOYEES'
     }
   },
 
@@ -79,13 +111,16 @@
 {# -------------------------------
    Validate source
 -------------------------------- #}
-{% if source not in mappings %}
-  {{ exceptions.raise_compiler_error(
-      'No CRM mapping defined for source: ' ~ source
-  ) }}
+{# -------------------------------
+   Resolve company mapping safely
+-------------------------------- #}
+{% if source in ['hubspot_pawville', 'hubspot'] %}
+  {% set company_mapping = mappings.get(source, {}).get(company, {}) %}
+{% else %}
+  {# Non-hubspot source → bypass safely #}
+  {% set company_mapping = {} %}
 {% endif %}
 
-{% set company_mapping = mappings[source].get(company, {}) %}
 
 {# -------------------------------
    Generate SELECT list (NULL-safe)

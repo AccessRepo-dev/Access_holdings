@@ -208,7 +208,9 @@ seeds:
     paycom:
       +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
       +schema: SILVER
-
+    ukg_ready:
+      +database: "{{ env_var('DBT_' ~ var('company','NONE') | upper, var('company','none') ~ '_dev') }}"
+      +schema: SILVER
     macro_economic:
       +database: "{{env_var('DBT_ACCESS')}}"
       +schema: SILVER

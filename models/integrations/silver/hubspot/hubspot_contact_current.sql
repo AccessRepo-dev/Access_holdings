@@ -15,7 +15,14 @@
 
 WITH raw AS (
 
-    SELECT *
+    SELECT concat(id,'_',to_varchar(dbt_valid_from,'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
+        {{ hs_canonical_contact(company, sourcesystem) }},
+        _fivetran_synced,
+        _FIVETRAN_DELETED,
+        current_timestamp() as silver_load_date,
+        dbt_valid_from,
+        dbt_valid_to,
+        case when dbt_valid_to is null then 1 else 0 end as is_active
     from {{ ref('hubspot_contact_snapshot') }}
 
     {% if is_incremental() %}
@@ -31,7 +38,7 @@ WITH raw AS (
 cleaned AS (
 
     SELECT
-        CONCAT(ID, '_', TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) AS ID_DATE_KEY,
+        ID_DATE_KEY AS ID_DATE_KEY,
         CAST(TRIM(ID) AS INT) AS ID,
         INITCAP(TRIM(PROPERTY_FIRSTNAME)) AS PROPERTY_FIRSTNAME,
         INITCAP(TRIM(PROPERTY_LASTNAME)) AS PROPERTY_LASTNAME,
@@ -42,17 +49,9 @@ cleaned AS (
         REGEXP_REPLACE(TRIM(PROPERTY_MOBILEPHONE), '[^0-9]', '') AS PROPERTY_MOBILEPHONE,
         REGEXP_REPLACE(TRIM(PROPERTY_HS_CALCULATED_PHONE_NUMBER), '[^0-9]', '') AS PROPERTY_HS_CALCULATED_PHONE_NUMBER,
         REGEXP_REPLACE(TRIM(PROPERTY_HS_CALCULATED_MOBILE_NUMBER), '[^0-9]', '') AS PROPERTY_HS_CALCULATED_MOBILE_NUMBER,
-        {% if company | lower == 'wagway' and sourcesystem | lower == 'hubspot' %}
         PROPERTY_CLUB_C,
         PROPERTY_GINGR_EMAIL,
-        {%elif company | lower == 'wagway' and sourcesystem | lower == 'hubspot_pawville' %}
-        CAST(NULL AS VARCHAR) AS PROPERTY_CLUB_C,
-        PROPERTY_GINGR_EMAIL,
-        {%else%}
-        CAST(NULL AS VARCHAR) AS PROPERTY_CLUB_C,
-        CAST(NULL AS VARCHAR) AS GINGR_EMAIL,
-        {%endif%}
-
+    
         -- Lifecycle stage normalized to lowercase
         LOWER(TRIM(PROPERTY_LIFECYCLESTAGE)) AS PROPERTY_LIFECYCLESTAGE,
 
@@ -66,11 +65,7 @@ cleaned AS (
         PROPERTY_FIRST_DEAL_CREATED_DATE,
 
         LOWER(TRIM(PROPERTY_HS_LEAD_STATUS)) AS PROPERTY_HS_LEAD_STATUS,
-        {%if company | lower == 'wagway' and sourcesystem | lower == 'hubspot'%}
         LOWER(TRIM(PROPERTY_LEADSTATUS)) AS PROPERTY_LEADSTATUS,
-        {%else%}
-        CAST(NULL AS VARCHAR) AS PROPERTY_LEADSTATUS,
-        {%endif%}
         PROPERTY_HS_IS_UNWORKED,
         PROPERTY_ASSOCIATEDCOMPANYID,
         -- Address cleanup
@@ -82,20 +77,14 @@ cleaned AS (
         REGEXP_REPLACE(TRIM(PROPERTY_FAX), '[^0-9]', '') AS PROPERTY_FAX,
 
         TRIM(PROPERTY_HS_TIMEZONE) AS PROPERTY_HS_TIMEZONE,
-
-        {% if company | lower == 'amh' %}
-            -- This column exists only for AMH
-            TRIM(PROPERTY_MIDDLE_NAME) AS PROPERTY_MIDDLE_NAME,
-        {%else%}
-            CAST(NULL AS VARCHAR) AS PROPERTY_MIDDLE_NAME,
-        {% endif %}
-
-        _FIVETRAN_SYNCED,
+        TRIM(PROPERTY_MIDDLE_NAME) AS PROPERTY_MIDDLE_NAME,
         CAST(TRIM(PROPERTY_LASTMODIFIEDDATE) AS TIMESTAMP_NTZ) AS PROPERTY_LASTMODIFIEDDATE,
+        _FIVETRAN_SYNCED AS _FIVETRAN_SYNCED,
+        _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
         CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
         CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
         CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
-        CASE WHEN DBT_VALID_TO IS NULL THEN 1 ELSE 0 END AS IS_ACTIVE
+        IS_ACTIVE AS IS_ACTIVE
 
     FROM raw
 )

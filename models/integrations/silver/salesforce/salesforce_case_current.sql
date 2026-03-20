@@ -17,7 +17,14 @@
 
 with raw as 
 (
-select *
+select  concat(id,'_',to_varchar(dbt_valid_from,'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
+        {{ sf_canonical_case(company, sourcesystem) }},
+        _FIVETRAN_DELETED,
+        _fivetran_synced,
+        current_timestamp() as silver_load_date,
+        dbt_valid_from,
+        dbt_valid_to,
+        case when dbt_valid_to is null then 1 else 0 end as is_active
 from {{ ref('salesforce_case_snapshot') }}
     {% if is_incremental()%}
     where 
@@ -29,25 +36,25 @@ from {{ ref('salesforce_case_snapshot') }}
 cleaned as 
 (
     select
-    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
-    TRIM(ID) AS CASE_ID,
-    ACCOUNT_ID,
-    CONTACT_ID,
-    OWNER_ID,
-    STATUS,
-    ORIGIN,
-    REASON,
-    SUBJECT,
-    DESCRIPTION,
-    IS_CLOSED,
+    ID_DATE_KEY as ID_DATE_KEY,
+    TRIM(CASE_ID) AS CASE_ID,
+    ACCOUNT_ID as ACCOUNT_ID,
+    CONTACT_ID as CONTACT_ID,
+    OWNER_ID as OWNER_ID,
+    STATUS as STATUS,
+    ORIGIN as ORIGIN,
+    REASON as REASON,
+    SUBJECT as SUBJECT,
+    DESCRIPTION as DESCRIPTION,
+    IS_CLOSED as IS_CLOSED,
     CAST(CLOSED_DATE AS TIMESTAMP_NTZ) AS CLOSED_DATE,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
     _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
-     _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+    _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
+    SILVER_LOAD_DATE AS SILVER_LOAD_DATE,
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
     CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
-    CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active
+    Is_Active AS Is_Active
     from raw
 )
 

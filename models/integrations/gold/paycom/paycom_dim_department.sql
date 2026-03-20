@@ -18,7 +18,6 @@ with
         select
             distinct 
             hash(department_description) as dim_department_id,
-            hash(department_description) as department_id,
             department_description as department_name,
             current_timestamp()::timestamp_ntz as gold_load_date
 

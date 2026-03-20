@@ -38,11 +38,10 @@ with
             cast(name as varchar) as name,
             cast(active as boolean) as active,
             cast(effective_from as date) as effective_from,
-            cast(period_type as varchar) as period_type,
-            period_type:"type"::string as period_type_type,
-            period_type:"params":"week_day"::string as week_day,
-            period_type:"params":"num_weeks"::number as num_weeks,
-            period_type:"params":"start_date"::date as start_date,
+            period_type_type::string as period_type_type,
+            period_type_params_week_day::string as week_day,
+            period_type_params_num_weeks::number as num_weeks,
+            period_type_params_start_date::date as start_date,
             current_timestamp() as silver_load_date,
 
         from source_data

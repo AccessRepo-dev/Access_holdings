@@ -43,7 +43,7 @@ with
                 applicant_tracking_display_only as boolean
             ) as applicant_tracking_display_only,
             trim(description) as description,
-            current_timestamp() as silver_load_date,
+            current_timestamp() as silver_load_date
 
         from source_data
     )

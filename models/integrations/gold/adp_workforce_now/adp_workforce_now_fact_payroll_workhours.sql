@@ -13,7 +13,37 @@
 }}
 
 with
+    active_FT as (
+        SELECT 
+            e.dim_employee_id as associate_oid,
+            'Unknown' as worker_id,
+            'Unknown' as time_card_id,
+            d.entry_date,
+            'Unknown' as pay_code,
+            'PT8H' as time_duration,
+            'Unknown' as bucket,
+            8 as hours,
+            0 as minutes,
+            null as seconds
 
+        FROM {{ ref("adp_workforce_now_dim_employee") }} e
+        LEFT JOIN (
+            SELECT DISTINCT associate_oid 
+            FROM {{ ref("adp_workforce_now_worker_time_card") }} t
+        ) t ON e.dim_employee_id = t.associate_oid
+        CROSS JOIN (
+            SELECT DATEADD(day, seq4(), '2020-01-01'::date) AS entry_date
+            FROM TABLE(GENERATOR(ROWCOUNT => 50000))
+        ) d
+        WHERE 
+            t.associate_oid is null
+            AND e.employee_status = 'Active'
+            AND e.employee_type = 'Full Time'
+            AND d.entry_date BETWEEN e.hire_date AND CURRENT_DATE()
+            AND DAYOFWEEK(d.entry_date) NOT IN (0, 6) 
+        
+
+    ),
     hours_cte as (
         select
             associate_oid,
@@ -39,6 +69,20 @@ with
         left join
             {{ ref("adp_workforce_now_dim_pay_code_mapping") }} pm
             on pm.pay_code = wtct.pay_code
+    
+     union 
+        select
+            associate_oid,
+            worker_id,
+            time_card_id,
+            entry_date,
+            pay_code,
+            time_duration,
+            bucket,
+            hours,
+            minutes,
+            seconds
+        from active_FT
 
     ),
 
@@ -121,12 +165,8 @@ with
             null as currency_code,
             h.associate_oid as dim_employee_id,
             h.associate_oid as employee_id,
-            e.dim_company_id,
-            e.dim_location_id,
-            e.dim_job_id,
-            null as dim_organization_level_id,
-            cast(null as int) as total_tax_amount,
-            cast(null as int) as net_amount,
+            cast(null as float) as total_tax_amount,
+            
             cast(null as int) as bonus_total_hours,
             hourly_rate_amount_amount_value as hourly_pay_rate,
             8 as total_hours,
@@ -134,8 +174,9 @@ with
             sum(h.bonus_total_ot_hours_cte) as bonus_total_ot_hours,
             sum(h.paid_absence_hours) as paid_absence_hours,
             sum(h.unpaid_absence_hours) as unpaid_absence_hours,
-            cast(null as int) as total_deduction_amount,
+            cast(null as float) as total_deduction_amount,
             (total_hours_worked + bonus_total_ot_hours)* hourly_pay_rate as total_earnings_amount,
+            cast(total_earnings_amount as float) as net_amount,
             h.entry_date as pay_date,
             current_timestamp()::timestamp_ntz as gold_load_date
         from hours h
@@ -148,10 +189,6 @@ with
         group by
             h.worker_id,
             h.associate_oid,
-            dim_company_id,
-            dim_job_id,
-            dim_location_id,
-            dim_organization_level_id,
             entry_date,
             annual_rate_amount_amount_value,
             hourly_rate_amount_amount_value

@@ -21,12 +21,7 @@ with
                 coalesce(home_work_location_address_city_name, '')
                 || coalesce(home_work_location_address_country_code, '')
             ) as dim_location_id,
-            null as location,
-            null as state_key,
-            home_work_location_address_city_name as city,
-            home_work_location_address_country_code as country_code,
-            null as state,
-            home_work_location_address_postal_code as zip_or_postal_code,
+            home_work_location_address_city_name as location_name,
             current_timestamp()::timestamp_ntz as gold_load_date
         from {{ ref("adp_workforce_now_work_assignment_history") }} wah
 

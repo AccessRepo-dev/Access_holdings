@@ -4,12 +4,16 @@ sources:
     schema: ukg_ready
     tables:
       - name: EMPLOYEES
+      - name: EMPLOYEE_DETAILS
+      - name: COST_CENTERS_STORE
+
       - name: BENEFITS
       - name: PAY_PERIOD_PROFILES
       - name: ATTENDANCE
       - name: COMPENSATION_HISTORY
       - name: COMPENSATION_TOTAL
       - name: COST_CENTER_JOBS
+      - name: COST_CENTERS_ORG
       - name: LOOKUP_EARNING_CODES
       - name: LOOKUP_EINS
       - name: LOOKUP_EMPLOYEE_TYPES
@@ -18,3 +22,11 @@ sources:
       - name: LOOKUP_PAY_TYPES
       - name: LOOKUP_TERMINATION_REASONS
       - name: TIME_ENTRIES
+
+  - name: wagway_ukg_ready_silver
+    database: wagway_dev
+    schema: silver
+    tables:
+      - name: wagway_subsidiary_mapping
+      - name: wagway_hr_location_mapping
+      - name: wagway_department_mapping

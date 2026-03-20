@@ -4,7 +4,7 @@
 {{
     config(
         enabled=(var("sourcesystem", "ukg_pro") | lower) in ["ukg_pro"]
-        and (var("company", "playfly") | lower) in ["playfly"],
+        and (var("company", "playfly") | lower) in ["playfly","spotless"],
     database = get_target_database(company),
     materialized = 'incremental',
     incremental_strategy = 'merge',
@@ -21,10 +21,12 @@ cleaned as (
     select 
         CAST(ID AS VARCHAR) AS ID,
         TRIM(CITY) AS CITY,
+        TRIM(LOCATION_GL_SEGMENT) AS LOCATION_GL_SEGMENT,
+        TRIM(DESCRIPTION) AS DESCRIPTION,
         TRIM(COUNTRY_CODE) AS COUNTRY_CODE,
         CAST(IS_ACTIVE AS boolean) AS IS_ACTIVE,
         TRIM(STATE) AS STATE,
-        CAST(ZIP_OR_POSTAL_CODE AS INT) AS ZIP_OR_POSTAL_CODE,
+        CAST(nullif(ZIP_OR_POSTAL_CODE,'') AS INT) AS ZIP_OR_POSTAL_CODE,
         _FIVETRAN_DELETED
     from source_data
 )

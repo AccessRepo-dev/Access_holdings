@@ -17,8 +17,14 @@
 
 with raw as 
 (
-select 
-    *
+select     concat(id,'_',to_varchar(dbt_valid_from,'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
+        {{ sf_canonical_task(company, sourcesystem) }},
+        _FIVETRAN_DELETED,
+        _fivetran_synced,
+        current_timestamp() as silver_load_date,
+        dbt_valid_from,
+        dbt_valid_to,
+        case when dbt_valid_to is null then 1 else 0 end as is_active
 from {{ ref('salesforce_task_snapshot') }}
     {% if is_incremental()%}
     where 
@@ -27,19 +33,18 @@ from {{ ref('salesforce_task_snapshot') }}
 ),
 
 cleaned as (
-select 
-    CONCAT(ID,'_',TO_VARCHAR(DBT_VALID_FROM, 'YYYYMMDDHH24MISSFF3')) as ID_DATE_KEY,
-    TRIM(ID) AS ACTIVITY_ID,
+select ID_DATE_KEY AS ID_DATE_KEY,
+    TRIM(ACTIVITY_ID) AS ACTIVITY_ID,
     TRIM(OWNER_ID) AS OWNER_ID,
     TRIM(WHO_ID) AS WHO_ID,
     TRIM(WHAT_ID) AS WHAT_ID,
     CAST(LAST_MODIFIED_DATE AS TIMESTAMP_NTZ) AS LAST_MODIFIED_DATE,
     _FIVETRAN_DELETED AS _FIVETRAN_DELETED,
     _FIVETRAN_SYNCED::timestamp_ntz  AS _FIVETRAN_SYNCED,
-    CURRENT_TIMESTAMP()::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
+    SILVER_LOAD_DATE::TIMESTAMP_NTZ AS SILVER_LOAD_DATE,
     CAST(DBT_VALID_FROM AS TIMESTAMP_NTZ) AS DBT_VALID_FROM,
     CAST(DBT_VALID_TO AS TIMESTAMP_NTZ) AS DBT_VALID_TO,
-    CASE WHEN dbt_valid_to IS NULL THEN 1 ELSE 0 END AS Is_Active
+    IS_ACTIVE AS IS_ACTIVE
 from raw
 )
 

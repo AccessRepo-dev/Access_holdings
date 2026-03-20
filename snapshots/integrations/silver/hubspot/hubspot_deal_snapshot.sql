@@ -29,8 +29,11 @@
     )
 }}
 
-select
-    *
+SELECT * 
+    {%if company == 'playfly'%}
+    EXCLUDE (PROPERTY_SOLUTIONS_LEAD_FORM), 
+    cast(nullif(PROPERTY_SOLUTIONS_LEAD_FORM,'None') as int) as PROPERTY_SOLUTIONS_LEAD_FORM
+    {%endif%}
 from {{ get_raw_source(company, sourcesystem, 'DEAL') }}
 
 {% endsnapshot %}
