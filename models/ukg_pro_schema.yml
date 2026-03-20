@@ -38,4 +38,5 @@ sources:
     schema: silver
     tables:
       - name: spotless_subsidiary_mapping
+      - name: spotless_location_mapping
       

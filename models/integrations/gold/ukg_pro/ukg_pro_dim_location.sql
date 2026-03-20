@@ -1,4 +1,4 @@
-{% set company = var("company", "spotless") | lower %}
+{% set company = var("company", "playfly") | lower %}
 {% set sourcesystem = var("sourcesystem", "ukg_pro") | lower %}
 
 {{
@@ -7,21 +7,21 @@
         and (var("company", "spotless") | lower) in ["spotless"],
         database=get_target_database(company),
         materialized="incremental",
-        alias="dim_location_mapping",
-
+        alias="dim_hr_location",
+        incremental_strategy="merge",
+        unique_key="DIM_LOCATION_ID",
     )
 }}
 
 with
     source as (
-        select
-            DIM_HR_LOCATION_ID,
-            HR_LOCATION_NAME,
-            DIM_LOCATION_ID,
-            LOCATION_NAME,
-            
+        select distinct
+           
+            a.ID AS DIM_LOCATION_ID,
+            a.DESCRIPTION AS LOCATION_NAME,
+           
             current_timestamp()::timestamp_ntz as gold_load_date
-        from  {{ source("spotless_ukg_pro_silver","spotless_location_mapping") }}  b 
+        from {{ ref("ukg_pro_location") }} a
 
     )
 select *

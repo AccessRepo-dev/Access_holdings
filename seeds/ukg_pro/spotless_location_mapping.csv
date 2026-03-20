@@ -1,0 +1,276 @@
+DIM_LOCATION_ID,Location_Name,Dim_HR_Location_ID,HR_Location_Name
+605,C63-Gilbert-Lindsay & Germann,C24,COBB063-Gilbert-Lindsay
+358,WV Dunbar - Village Plaza 016,E03,ULTMHQ4-Dunbar-Dunbar Vil
+1293,COBB306-Nampa-Caldwell,D43,COBBHQ3-Nampa-Caldwell
+474,OH Heath Hebron,E01,ULTMHQ2-Heath-Hebron
+4,WV Morgantown Mileground,C95,ULTM043-Morgantown-Milegr
+594,C49-Queen Creek-Hunt & Empire,B90,COBB049-Queen Creek-W Hun
+581,C124-Wadsworth Pkwy,B73,COBB124-Westminster-Wadsw
+0,,D44,COBBHQ4–Boise-W Hays
+18,D65 -- AZ Phoenix - Thunderbird,D65,COBB204 -Phoenix-Thunder
+475,VA Roanoke Electric Rd,E02,ULTMHQ3-Roanoke-Electric
+625,C98-Thornton-120th & Holly,B75,COBB098-Thornton-120th &
+0,,E07,COBB143-Denver-Broadway
+479,OH Springfield Bechtle Ave,C10,ULTM026-Springfield-N Bec
+617,C88-Denver-E Evans,B81,COBB088-Denver-E Evans
+0,,D81,SPTLRMT-PA-Dauphin-Harris
+138,MD Glen Burnie (Bowl America),B99,FLAG024-Glen Burnie-Ritch
+0,,D80,SPTLRMT-PA-Dauphin-Hummel
+1284,C137 Castle Rock – Carnaby,C97,COBB137-Castle Rock-Carna
+571,C48-Gilbert - S. Higley,B85,COBB048-Gilbert-S Higley
+612,C82-Parker-Parker & Pine,B82,COBB082-Parker-Twenty Mil
+0,,D82,SPTLRMT-CA-Los Angeles-Co
+19,Avondale - N Avondale,D64,COBB203-Avondale-N Avonda
+496,C01-Scottsdale,A05,COBB001-Scottsdale-N Pima
+497,C02-Phoenix,A17,COBB002-Phoenix-E Bell
+498,C03-Chandler,A10,COBB003-Chandler-S Alma S
+499,C04-Surprise,A00,COBB004-Surprise-W Bell
+500,C05-Mesa,A07,COBB005-Mesa-S Signal But
+572,C100-Castle Pines-7621 Beverly Blvd,B72,COBB100-Castle Pines-CP
+550,C101-Littleton - S Wadsworth Blvd,B35,COBB101-Littleton-S Wadsw
+551,C102-Aurora - S Havana St,A76,COBB102-Aurora-S Havana
+552,C103-Littleton - S Broadway,A74,COBB103-Littleton-S Broad
+553,C104-Thornton - E 144th Ave,A75,COBB104-Thornton-E 144th
+554,C105-Thornton - S Wadsworth Blvd,A80,COBB105-Lakewood-S Wadswo
+555,C106-Littleton - County Line Pl,A81,COBB106-Highlands Ranch-C
+556,C107-Aurora - Smoky Hill & Yellowstone,A70,COBB107-Aurora-E Smokey H
+558,C108-Hess Rd,B30,COBB108-Parker-Hess
+501,C10-Tempe Autoplex,A23,COBB010-Tempe-S Autoplex
+559,C110-Parker - Cottonwood Dr,B16,COBB110-Parker-Cottonwood
+560,C111-Fort Collins - S Timberline Rd,B05,COBB111-Fort Collins-S Ti
+561,C112-Fort Collins - College Ave,B06,COBB112-Fort Collins-N Co
+562,C114-Thornton - Grant St,A98,COBB114-Thornton-S Grant
+564,C115-Thornton - E 104th Ave,B48,COBB115-Thornton-E 104th
+565,C116-Commerce City - Belle Creek Blvd,B09,COBB116-Commerce City-Bel
+566,C117-Lakewood - Alameda Pkwy,B07,COBB117-Lakewood-W Alamed
+502,C11-Tempe Kyrene,A21,COBB011-Tempe-W Baseline
+567,C125-Denver - Colorado Blvd,B24,COBB125-Denver-Colorado
+568,C126-Thornton - Grant St,B26,COBB126-Thornton-Grant
+503,C12-Gilbert,A03,COBB012-Gilbert-N Val Vis
+504,C14-Cave Creek,A15,COBB014-Cave Creek-N Tatu
+505,C15-Glendale,A18,COBB015-Glendale-W Bell
+506,C16-Gilbert Queen Creek,A16,COBB016-Gilbert-E Queen C
+507,C17-Mesa Ellsworth,B20,COBB017-Mesa-S Ellsworth
+508,C18-Ironwood,B14,COBB018-San Tan Valley-N
+509,C19-Ahwatukee,A40,COBB019-Phoenix-E Chandle
+510,C20-Phoenix 7th Street,A24,COBB020-Phoenix-N 7th
+511,C22-Chandler,A11,COBB022-Chandler-S Arizon
+512,C23-Laveen,A20,COBB023-Laveen-W Basline
+513,C24-Beardsley,A09,COBB024-Phoenix-N Cave Cr
+514,C25-Gantzel,A42,COBB025-San Tan Valley-N
+515,C26-Phoenix Indian School,A27,COBB026-Phoenix-E Indian
+516,C27-Tempte Kyrene Elliot,A22,COBB027-Tempe-S Kyrene
+517,C28-Mesa Alma School,A08,COBB028-Mesa-S Alma Schoo
+518,C29-Phoenix Baseline,A02,COBB029-Phoenix-E Baselin
+519,C30-Scottsdale-N Scottsdale Rd,A12,COBB030-Scottsdale-N Scot
+520,C31-Tempe Ray & Priest,A25,COBB031-Tempe-S Priest
+521,C32-Gilbert W Warner Rd,A04,COBB032-Gilbert-W Warner
+522,C33-Litchfield W Indian School,A01,COBB033-Litchfield Park-W
+523,C34-Gilbert-S Val Vista Dr,A13,COBB034-Gilbert-S Val Vis
+524,C35-Mesa-E Southern Ave,A19,COBB035-Mesa-E Southern
+525,C36-Glendale-67th Ave & Cactus,A49,COBB036-Glendale-N 67th
+526,C37-Phoenix-W Happy Valley Rd,A06,COBB037-Phoenix-W Happy V
+527,C38-Phoenix-N 75th Ave,A14,COBB038-Phoenix-N 75th
+528,C39-Phoenix-W Indian School,A43,COBB039-Phoenix-W Indian
+529,C40-W Yuma-Good Year,B25,COBB040-Goodyear-W Yuma
+589,C41 Scottsdale-Indian Bend & Pima,B70,COBB041-Scottsdale-Indian
+590,C42-Avondale-N 99th,B65,COBB042-Avondale-N 99th
+530,C43-Scottsdale-E Indian School,A59,COBB043-Scottsdale-E Indi
+531,C44-Litchfield Park-N Dysart,A69,COBB044-Litchfield Park-N
+591,C45-Surprise-W Waddell,B67,COBB045-Surprise-W Waddel
+592,C46-Peoria - W Northern,B76,COBB046-Glendale-SEC Nort
+532,C50-Glendale-N 67th Ave,A79,COBB050-Chandler-W Ray
+533,C51-Phoenix-N 16th St,A72,COBB051-Phoenix-N 16th
+596,C52-Phoenix-25th & Peoria,B77,COBB052-Phoenix-25th & Pe
+597,C53-Phoenix-67th & Lower Buckeye,B71,COBB053-Phoenix-67th & Lo
+557,C54-McDowell Rd,B31,COBB054-Tolleson-W McDowe
+534,C57-Phoenix-W Bethany Home,B42,COBB057-Phoenix-W Bethany
+601,C59-Phoenix-67th & McDowell,B86,COBB059-Phoenix-67th & Mc
+602,C60-Phoenix-N 51st Ave,B84,COBB060-Phoenix-51st & Va
+607,C65-Phoenix-51st & Southern,B87,COBB065-Phoenix-51st-5120
+535,C70-Aurora - Tower Rd & 38th Ave,A26,COBB070-Aurora-Tower
+536,C71-Lakewood - Wadsworth Blvd & Jewell A,A28,COBB071-Lakewood-S Webste
+537,C72-Broomfield - Main St & 112th Ave,A65,COBB072-Broomfield-Main
+538,C73-Aurora - Airport Blvd & Alameda,A48,COBB073-Aurora-S Airport
+539,C74-Aurora - S Chambers Rd,B04,COBB074-Aurora-S Chambers
+608,C75-Aurora-Havana & Iliff,B74,COBB075-Aurora-Havana Ili
+609,C76-Centennial-Arapahoe,B69,COBB076-Centennial-Arapah
+540,C78-Lakewood-W Colfax,A39,COBB078-Lakewood-W Colfax
+541,C80-Arvada - Wadsworth Blvd & 66th Ave,A45,COBB080-Arvada-Wadsworth
+542,C81-Northglenn - Washington St & 115th,A46,COBB081-Northglenn-Washin
+613,C83-Northglenn-Huron,B54,COBB083-Northglenn-Huron
+543,C86-Aurora-E Mississippi,B47,COBB086-Aurora-E Mississi
+616,C87-Denver- Federal Blvd,B29,COBB087-Denver-Federal
+617,C88-Denver-E Evans,C88,COBB135-Lakewood-Wadswort
+544,C90-Denver-Tower,A66,COBB090-Denver-Tower
+545,C91-Littleton-W Ken Caryl,A68,COBB091-Littleton-W Ken C
+546,C92-Thornton-Washington,B15,COBB092-Thornton-Washingt
+547,C93-Windsor - Birch St & 16th St,A50,COBB093-Windsor-Main
+548,C94-Erie - Highway CO 7,B39,COBB094-Erie-CO-7
+549,C96-Lafayette - Arapahoe Rd,B10,COBB096-Lafayette-Arapaho
+626,C99-Firestone-Hwy 119,B83,COBB099-Firestone-Hwy 119
+107,CAS Corp,C46,COBBHQ1-Scottsdale-E Bahi
+107,CAS Corp,C73,COBBHQ2-Denver-S Colorado
+1287,COBB138-Sheridan-S Santa Fe,D15,COBB138-Sheridan-S Santa
+22,COBB141-Aurora-S-Parker,D74,COBB141-Aurora-S Parker
+1288,COBB301-Star-W State,D00,COBB301-Star-W State
+1289,COBB302-Twin Falls-Pole Line,D01,COBB302-Twin Falls-Pole L
+1290,COBB303-Nampa-E Hawaii,D02,COBB303-Nampa-E Hawaii
+1291,COBB304-Meridian-S Ten Mile,D03,COBB304-Meridian-S Ten Mi
+1292,COBB305-Caldwell-Cleveland,D04,COBB305-Caldwell-Clevelan
+1293,COBB306-Nampa-Caldwell,D05,COBB306-Nampa-Caldwell
+1294,COBB307-Eagle-E State,D06,COBB307-Eagle-E State
+1295,COBB308-Meridian-N Linder,D07,COBB308-Meridian-N Linder
+1296,COBB309-Meridian-W Overland,D08,COBB309-Meridian-W Overla
+1297,COBB351-Ontario-SE 1st,D09,COBB351-Ontario-SE 1st
+1298,COBB352-Boise-W Overland,D10,COBB352-Boise-W Overland
+1299,COBB353-Boise-Fairview,D11,COBB353-Boise-Fairview
+1300,COBB354-Boise-W State,D12,COBB354-Boise-W State
+1301,COBB355-Meridian-S Silverstone,D13,COBB355-Meridian-S Silver
+1302,COBB356-Caldwell-Bluebird,D14,COBB356-Caldwell-Bluebird
+29,D84 FLAG114-PA Horsham-Easton,D84,FLAG114-Horsham-Easton
+30,D85 FLAG115-PA Strafford-Lancaster,D85,FLAG115-Strafford-Lancast
+31,D86 FLAG116-PA Chester-E Market,D86,FLAG116-Chester-E Market
+32,D87 FLAG117-PA Warrington-Easton-75,D87,FLAG117-Warrington-Easton
+33,D88 FLAG118-PA North Wales-Welsh,D88,FLAG118-North Wales-Welsh
+34,D89 FLAG119-PA E Norriton-W Germantown,D89,FLAG119-East Norriton-W G
+111,DC Connecticut Ave,A56,FLAG001-Washington-Connec
+210,DC Wisconsin Ave (DC Wash n Shine),B46,FLAG030-Washington-Wiscon
+27,Flag NE Corp,E14,FLAGHQ2-Northeast HQ
+1283,Lynchburg – Old Forest 045,C94,ULTM045-Lynchburg-Peace
+634,MD Bowie - Crain Hwy (Whip Clean),C30,FLAG040-Bowie-Crain
+5,MD Brandywine - Cadillac Dr (Smitty's),D19,FLAG065-Brandywine-Cadill
+636,MD Camp Springs - Allentown Way (Roys),C70,FLAG055-Camp Springs-Alle
+115,MD Chapman,A54,FLAG004-Rockville-Chapman
+451,MD Cockeysville (Autospa),B21,FLAG036-Cockeysville-York
+137,MD District Heights (Prestige),B38,FLAG023-District Heights-
+363,MD Edgewater (Washaus),B00,FLAG032-Edgewater-Solomon
+10,MD Elkton - Commerce Center Dr,D34,FLAG078-Elkton-E Pulaski
+113,MD Gaithersburg,A61,FLAG002-Gaithersburg-Bure
+114,MD Germantown,A51,FLAG003-Germantown-Middle
+117,MD Hungerford,A60,FLAG005-Rockville-Hungerf
+438,MD Pasadena (Hog Neck),B32,FLAG034-Pasadena-Hog Neck
+630,MD Randallstown - Liberty Rd,C16,FLAG048-Randallstown-Libe
+1278,MD Severn - Donaldson,C00,FLAG043-Severn-Donaldson
+635,MD Timonium - Padonia Rd,C31,FLAG052-Timonium-W Padoni
+453,MD Waldorf - St. Patricks (Klean Wave),B57,FLAG038-Waldorf-St Patric
+368,MD Waldorf (Marquee),B08,FLAG033-Waldorf-Old Washi
+569,MD White Plaines - Wawa,B60,FLAG039-White Plaines-Waw
+487,Morgantown - Sesame 036,C07,ULTM036-Morgantown-Seasam
+11,NJ Brooklawn - Browning Ln,D39,FLAG083-Brooklawn-Kings
+6,NJ Vineland - Delsea Dr,D16,FLAG062-Vineland-S Delsea
+1303,NY Bayshore - Sunrise Hwy,D18,FLAG064-Bayshore-Sunrise
+446,OH Chillicothe - N. Bridge 018,B28,ULTM018-Chillicothe-N Bri
+481,OH Dayton - Brandt Pike,B78,ULTM028-Dayton-Brandt Pik
+476,OH Fairborn Dayton Yellow Springs,B62,ULTM023-Fairborn-Dayton Y
+474,OH Heath Hebron,B66,ULTM021-Heath-Hebron
+477,OH Washington Ct Hse Crossings Drive,B64,ULTM024-Washington Courth
+473,OH Zanesville 020,B53,ULTM020-Zanesville-Northp
+435,OK Bartlesville - Washington (Mr. Klean),B12,OKIE024-Bartlesville-SE W
+439,OK Bixby S Memorial (Let's GO),B17,OKIE034-Bixby-S Memorial
+447,OK Broken Arrow - Elm (Let's GO),B22,OKIE036-Broken Arrow-S El
+365,OK Chickasha - W. Grand (Shine Time),B03,OKIE028-Chickasha-W Grand
+62,OK Choctaw - NE 23rd,A34,OKIE007-Choctaw-NE 23rd
+67,OK Corp,C49,OKIEHQ1-Oklahoma City-N O
+60,OK Del City - SE 29th,A38,OKIE005-Del City-SE 29th
+366,OK Duncan - US-81 (Shine Time),B02,OKIE029-Duncan-US-81
+167,OK Edmond - E 2nd,B56,OKIE014-Edmond-E 2nd
+171,OK Edmond - E Memorial,B58,OKIE017-Edmond-E Memorial
+58,OK Edmond - N. Santa Fe,A29,OKIE003-Edmond-N Santa Fe
+490,OK Edmond - NW 150th (Foam Wash),B55,OKIE031-Edmond-NW 150th
+66,OK Edmond - NW 178th,A31,OKIE011-Edmond-NW 178th
+440,OK Jenks - S. Elm (Let's GO),B19,OKIE035-Jenks-S Elm
+170,OK Lawton - NW Cache,A99,OKIE016-Lawton-NW Cache
+56,OK Moore - S. Telephone,A35,OKIE001-Moore-S Telephone
+57,OK Mustang - E. State Hwy 152,A32,OKIE002-Mustang-E State H
+61,OK Norman - W Main,A36,OKIE006-Norman-W Main
+64,OK OKC - S I 44 (SW 104th),A30,OKIE009-Oklahoma City-S I
+108,OK OKC - S Western,A47,OKIE012-Oklahoma City-S W
+65,OK OKC - Watermark (May Ave),A37,OKIE010-Oklahoma City-Wat
+367,OK OKC/Moore - South Penn (Shine Time),B01,OKIE030-Oklahoma City-S P
+441,OK Shawnee - Kickapoo (Let's GO),B18,OKIE037-Shawnee-N Kickapo
+434,OK Tulsa - E Admiral (Mr. Klean),B13,OKIE023-Tulsa-E Admiral
+493,OK Tulsa - Harvard (Freedom Wash),B52,OKIE038-Tulsa-S Harvard
+436,OK Tulsa - N. Lewis (Mr. Klean),B11,OKIE025-Tulsa-Lewis
+169,OK Yukon - E Main,A41,OKIE015-Yukon-E Main
+63,OK Yukon - NW 10th,A33,OKIE008-Yukon-NW 10th
+109,OK Yukon - SW 15th (Tunnel Car Wash),A44,OKIE013-Yukon-SW 15th
+12,PA Trooper- Ridge Pike,D17,FLAG063-Trooper-Ridge Pik
+8,"PA, Phoenixville - Kimberton Rd",C96,FLAG060-Phoenixville-Kimb
+1282,South Boston - Old Halifax,C93,ULTM044-South Boston
+1,Spotless Brands,C66,SPTLRMT-PA-Chester-Elvers
+1,Spotless Brands,C68,SPTLRMT-TN
+1,Spotless Brands,C91,SPTLRMT-DE
+1,Spotless Brands,C64,SPTLRMT-OH-Hamilton-Butle
+1,Spotless Brands,C67,SPTLRMT-PA-Cumberland-Upp
+1,Spotless Brands,E04,SPTLRMT-PA-Cumberland-SS
+1,Spotless Brands,D63,SPTLRMT-PA-Chester Spring
+1,Spotless Brands,C52,SPTLRMT-AL
+1,Spotless Brands,C69,SPTLRMT-TX
+1,Spotless Brands,C92,SPTLRMT-AR
+1,Spotless Brands,C65,SPTLRMT-PA
+1,Spotless Brands,C51,SPTLHQ1-Oakbrook Terrace-
+1,Spotless Brands,C56,SPTLRMT-MD
+1,Spotless Brands,C58,SPTLRMT-MD-Carroll
+1,Spotless Brands,D62,SPTLRMT-NH
+1,Spotless Brands,C62,SPTLRMT-NY
+1,Spotless Brands,C54,SPTLRMT-FL
+1,Spotless Brands,C60,SPTLRMT-MN
+1,Spotless Brands,C57,SPTLRMT-MD-Anne Arundel
+1,Spotless Brands,C53,SPTLRMT-AL-Shelby
+1,Spotless Brands,C63,SPTLRMT-OH
+1,Spotless Brands,C55,SPTLRMT-GA
+1,Spotless Brands,C59,SPTLRMT-MI-Kent
+1,Spotless Brands,C61,SPTLRMT-NJ
+359,TN Central Morristown - MLK Parkway 017,A84,ULTM017-Morristown-Dr MLK
+349,TN East Morristown - Crockett Trace 007,A93,ULTM007-Morristown-Crocke
+348,TN Elizabethton 006,B50,ULTM006-Elizabethton-Over
+344,TN Greeneville 002,A90,ULTM002-Greeneville-E And
+345,TN Johnson City - Market St 003,A89,ULTM003-Johnson City-Mark
+346,TN Johnson City - Oakland Avenue 004,A88,ULTM004-Johnson City-Oakl
+347,TN Kingsport - E Stone 005,A85,ULTM005-Kingsport-E Stone
+350,TN Kingsport - Minnich Trail 008,A86,ULTM008-Kingsport-Minnich
+351,TN Piney Flats - Bristol Hwy 009,A96,ULTM009-Piney Flats-Brist
+450,TN Seymour 035,B23,ULTM035-Seymour-E Macon
+343,TN West Morristown 001,A91,ULTM001-Morristown-W Andr
+360,Ultimate Shine Corporate,C50,ULTMHQ1-Morristown-W 1st
+132,VA Annandale,A78,FLAG018-Annandale-Little
+125,VA Ashburn Junction,A62,FLAG013-Ashburn-Junction
+124,VA Ashburn Pipeline,A63,FLAG012-Ashburn-Pipeline
+352,VA Bristol - Euclid Ave 010,A82,ULTM010-Bristol-Euclid
+122,VA Chantilly,A52,FLAG010-Chantilly-Lee Jac
+356,VA Christiansburg 014,A87,ULTM014-Christiansburg-N
+112,VA Corp,C47,FLAGWH1-Sterling-Ladbrook
+112,VA Corp,C48,FLAGHQ1-Herndon-Herndon
+126,VA Dulles 28,A64,FLAG011-Sterling-Towlern
+139,VA Fairfax (Embassy),B40,FLAG025-Fairfax-Fairfax
+119,VA Gainesville,A53,FLAG007-Gainesville-Dave
+133,VA Gainesville Lee Highway,A77,FLAG019-Gainesville-Lee
+570,VA Haymarket (Top Shine),C01,FLAG044-Haymarket-John Ja
+120,VA Herndon,A58,FLAG008-Herndon-Grant
+130,VA Herndon (Clocktower),A71,FLAG016-Herndon-Centrevil
+134,VA Leesburg (Station),B34,FLAG020-Leesburg-Catoctin
+127,VA Manassas,A67,FLAG014-Manassas-Centrevi
+140,VA Manassas (Embassy),B45,FLAG026-Manassas-Centrevi
+362,VA Manassas Hoadly (Prestige),B49,FLAG031-Manassas-Hoadly R
+141,VA McLean (Embassy),B44,FLAG027-McLean-Old Domini
+452,VA Oaklawn,B96,FLAG037-Leesburg-Trimble
+128,VA One Loudoun,B37,FLAG015-Ashburn-Board Ove
+131,VA Purcellville,A73,FLAG017-Purcellville-N Ma
+1280,VA Roanoke - Williamson,C39,ULTM040-Roanoke-Williamso
+353,VA Roanoke 011,A94,ULTM011-Roanoke-Rutgers
+475,VA Roanoke Electric Rd,B63,ULTM022-Roanoke-Electric
+355,VA Rocky Mount 013,A92,ULTM013-Rocky Mount-Old F
+354,VA Salem 012,A83,ULTM012-Salem-E Main
+118,VA South Riding,A55,FLAG006-Chantilly-Town Ha
+142,VA Springfield (Embassy),B43,FLAG028-Springfield-Rolli
+143,VA Sterling (Embassy),B41,FLAG029-Sterling-Pidgeon
+445,VA Sudley Manor (Station Manassas),B27,FLAG035-Manassas-Sudley M
+121,VA Vienna,A57,FLAG009-Vienna-Maple
+135,VA Woodbridge (Smart),B36,FLAG021-Woodbridge-Minnie
+136,VA Woodbridge (Tacketts),B33,FLAG022-Woodbridge-Harbor
+357,WV Charleston - MacCorkle Ave 015,A95,ULTM015-Charleston-MacCor
+358,WV Dunbar - Village Plaza 016,A97,ULTM016-Dunbar-Dunbar Vil
+478,WV Mall Loop White Hall (Middleton Comm),B61,ULTM025-White Hall-Mall L
+472,WV South Parkersburg 019,B51,ULTM019-Parkersburg-Pike
+483,York Center Drive Sams/WM Outlot 030,C11,ULTM030-Dayton-York Cente
