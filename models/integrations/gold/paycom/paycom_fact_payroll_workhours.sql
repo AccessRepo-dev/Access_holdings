@@ -112,6 +112,7 @@ with
         from combined_hours h
         left join {{ ref("paycom_employees") }} esil
             on esil.eecode = h.eecode
+        QUALIFY ROW_NUMBER() OVER (PARTITION BY h.eecode, h.work_date ORDER BY h.work_date) = 1
     ),
     date_spine AS (
     SELECT 
@@ -185,15 +186,6 @@ with
             end as bonus_total_ot_hours,
             
 
-            CASE 
-                WHEN h.shift_details = 'HR Entry (8h)' THEN 0 
-                ELSE h.total_hours_worked - bonus_total_ot_hours
-            END AS total_hours_worked, 
-            CASE
-                WHEN e.scheduled_work_hours = 0 then total_hours_worked
-                ELSE e.scheduled_work_hours / wb.period_distinct_days
-                  
-            END AS total_hours, 
 
             CASE
                 WHEN h.shift_details = 'HR Entry (8h)' THEN h.total_hours_worked ELSE 0
@@ -202,9 +194,11 @@ with
 
             CAST(null AS float) AS unpaid_absence_hours,
 
-            (bonus_total_ot_hours + total_hours_worked) * hourly_pay_rate as total_earnings_amount,
-            CAST(total_earnings_amount AS float) AS net_amount,
             h.work_date AS pay_date,
+            shift_details,
+            scheduled_work_hours,
+            period_distinct_days,
+            total_hours_worked as raw_total_hours_worked,
             current_timestamp()::timestamp_ntz AS gold_load_date
         from hours_worked h
         left join hours_worked_wB wb on h.eecode = wb.eecode and h.work_date = wb.work_date
@@ -212,10 +206,55 @@ with
         left join {{ ref("paycom_employee_sensitive") }} es on es.eecode = h.eecode
         left join {{ ref("paycom_employees") }} esil on esil.eecode = h.eecode
          
-        union
-        select * from non_punch_record_employees
+        
    
+    ),
+    hours_cal as 
+    (   
+        Select *, 
+         CASE 
+                WHEN shift_details = 'HR Entry (8h)' THEN 0 
+                ELSE raw_total_hours_worked - bonus_total_ot_hours
+            END AS total_hours_worked
+        from source
     )
-
-select *
-from source
+select annual_salary, 
+        currency_code, 
+        dim_employee_id, 
+        employee_id,
+        total_tax_amount, 
+        bonus_total_hours, 
+        hourly_pay_rate, 
+        total_deduction_amount,
+        bonus_total_ot_hours,
+        total_hours_worked,  
+            CASE
+                WHEN scheduled_work_hours = 0 then total_hours_worked
+                ELSE scheduled_work_hours / period_distinct_days 
+            END AS total_hours,
+        paid_absence_hours, 
+        unpaid_absence_hours,
+        (bonus_total_ot_hours + total_hours_worked) * hourly_pay_rate as total_earnings_amount,
+           CAST(total_earnings_amount AS float) AS net_amount,
+        pay_date, 
+        gold_load_date
+from hours_cal
+    union all
+    select annual_salary, 
+        currency_code, 
+        dim_employee_id, 
+        employee_id,
+        total_tax_amount, 
+        bonus_total_hours, 
+        hourly_pay_rate, 
+        total_deduction_amount,
+        bonus_total_ot_hours,
+        total_hours_worked, 
+        total_hours,
+        paid_absence_hours, 
+        unpaid_absence_hours,
+        total_earnings_amount,
+        net_amount,
+        pay_date, 
+        gold_load_date
+        from non_punch_record_employees

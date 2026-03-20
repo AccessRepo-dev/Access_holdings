@@ -21,7 +21,11 @@ with
             current_timestamp()::timestamp_ntz as gold_load_date
 
         from {{ ref("ukg_pro_organization_level") }}
+        {%if company == 'playfly'%}
+        where level in (3)
+        {%else%}
         where level in (1)
+        {%endif%}
         and is_active = true
 
     )

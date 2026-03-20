@@ -51,8 +51,13 @@ with
             company_id as dim_company_id,
             primary_work_location_id as dim_location_id,
             primary_job_id as dim_job_id,
+            {%if company == 'playfly'%}
             organization_level_1_id as dim_class_id,
             organization_level_3_id as dim_department_id,
+            {%else%}
+            null as dim_class_id,
+            organization_level_1_id as dim_department_id,
+            {%endif%}
             hash(coalesce(j.job_family_code, '')) as dim_job_group_id,
             md5(coalesce(supervisor_co_id, '')) as supervisor_company_id,
             supervisor_id as manager_id,

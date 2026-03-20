@@ -21,22 +21,27 @@ with
             total_tax_amount,
             net_amount,
             bonus_total_hours,
-            bonus_total_ot_hours,
+            
             hourly_pay_rate,
             total_deduction_amount,
             total_earnings_amount,
-            {%if company == 'spotless'%}
-            CASE WHEN e.full_time_or_part_time_code = 'P' then p.total_hours else
-            e.SCHEDULED_WORK_HRS END as total_hours,
-            p.total_hours as total_hours_worked,
-            {%else%}
-            total_hours,
-            total_hours_worked,
-            {%endif%}
+            {% if company == 'spotless' %}
+                
+                CASE
+                    WHEN e.full_time_or_part_time_code = 'P' and p.total_hours > 0 THEN p.total_hours
+                    WHEN e.full_time_or_part_time_code = 'P' and p.total_hours < 0 THEN 0
+                    ELSE e.SCHEDULED_WORK_HRS
+                END AS total_hours,
+
+                total_hours as total_hours_worked,
+            {% else %}
+                total_hours,
+                total_hours_worked ,
+            {% endif %}
+            
             cast(null as int) as unpaid_absence_hours,
             cast(null as int) as paid_absence_hours,
-            pay_date,
-            current_timestamp()::timestamp_ntz AS gold_load_date
+            pay_date
         from {{ ref("ukg_pro_pay_register") }} p
         {%if company == 'spotless'%}
             left join {{ref("ukg_pro_employment")}} e on e.employee_id = p.employee_id and e.company_id = p.company_id
@@ -47,5 +52,21 @@ with
        
         
     )
-select *
+,
+ot as (
+select 
+*,
+{%if company == 'spotless'%}
+    CASE
+        WHEN total_hours_worked > total_hours then total_hours_worked - total_hours
+        ELSE 0
+    END AS bonus_total_ot_hours
+{%else%}
+    0 as bonus_total_ot_hours
+{%endif%}
 from source
+)
+select 
+* EXCLUDE(total_hours_worked), 
+total_hours_worked - bonus_total_ot_hours AS total_hours_worked
+from ot

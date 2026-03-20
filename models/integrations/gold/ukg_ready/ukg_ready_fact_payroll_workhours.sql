@@ -28,7 +28,8 @@ WITH latest_comp AS (
         
     FROM   {{ ref("ukg_ready_compensation_history") }}
      WHERE EFFECTIVE_FROM <> '1900-12-31'
-)
+),
+base_source as (
 SELECT
     cast(null as float) as annual_salary,
     lc.CURRENCY as currency_code,
@@ -36,8 +37,7 @@ SELECT
     e.employee_id,
 
     cast(null as float) as  total_tax_amount,
-    cast(null as float) as  bonus_total_hours,
-    cast(null as float) as  bonus_total_ot_hours,
+ 
     lc.HOURLY_PAY       AS HOURLY_PAY_RATE,
     cast(null as float) as  total_deduction_amount,
     CASE 
@@ -49,6 +49,7 @@ SELECT
         THEN 0
         ELSE  te.TIME_ENTRIES_CALC_TOTAL / 3600000.0 
     END  AS total_hours_worked, 
+
     te.TIME_ENTRIES_DATE AS pay_date,
     CASE
         WHEN te.time_entries_time_off_id IS not NULL 
@@ -66,6 +67,17 @@ LEFT JOIN {{ ref("ukg_ready_dim_employee") }} e
 LEFT JOIN latest_comp lc
     ON te.EMPLOYEE_ACCOUNT_ID = lc.EMPLOYEE_ACCOUNT_ID
     AND te.time_entries_date >= EFFECTIVE_FROM and te.time_entries_date < COALESCE(EFFECTIVE_TILL,  '2050-01-01')
+
+) select 
+* EXCLUDE(total_hours_worked),
+CASE WHEN total_hours > 0 and total_hours_worked > TOTAL_HOURS 
+THEN  total_hours_worked - TOTAL_HOURS
+ELSE 0
+END AS bonus_total_ot_hours,
+total_hours_worked - bonus_total_ot_hours as total_hours_worked
+FROM 
+base_source
+
 
 
 
